@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+    <head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>夜雨飘零</title><meta name="description" content="编程也是一种信仰。"/><meta property="og:description" content="编程也是一种信仰。"/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io?p=3"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">            <link rel="canonical" href="https://yeyupiaoling.github.io?p=3">            <link rel="stylesheet" href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+    </head>
+    <body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+</div>
+        <main>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html">
+                    深度学习神经网络中的梯度检查
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html">
+                前言 反向传播计算梯度$\frac{\partial J}{\partial \theta}$， $\theta$表示模型的参数。 $J$是使用正向传播和损失函数来计算的。 计算公式如下： $$ \frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{1} $$ 因为向前传播相对容易实现，所以比较容易获得正确的结果，确定要计算成本$J$ 正确。因此，可以通过计算$J$ 验证计算$\frac{\partial J}{\partial \theta}$ 。 一维梯度检查 一维线性函数$J(\theta) = \theta x$。该模型只包含一个实值参数$\theta$，并采取x作为输入。 一维线性模型 上图显示了关键的计算步骤：首先从开始$x$，然后评估该功能 $J(x)$（“前向传播”）。然后计算导数 $\frac{\partial J}{\partial \thet.....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466412156">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972209709.html">
+                    深度学习神经网络中正则化的使用
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972209709.html">
+                前言 如果训练数据集不够大，由于深度学习模型具有非常大的灵活性和容量，以至于过度拟合可能是一个严重的问题，为了解决这个问题，引入了正则化的这个方法。要在神经网络中加入正则化，除了在激活层中加入正则函数，应该dropout也是可以起到正则的效果。我们来试试吧。 前提工作 在使用之前，我们还要先导入所需的依赖包，和加载数据，其中有些依赖包可以在这里下载。 # coding=utf-8 import matplotlib.pyplot as plt from reg_utils import compute_cost, predict, forward_propagation, backward_propagation, update_parameters from reg_utils import sigmoid, relu, initialize_parameters, load_2D_dataset from testCases import * # 加载数据 train_X, train_Y, test_X, test_Y = load_2D_dataset() 以下就是我们使用到.....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972209709.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466394391">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972209709.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584972209709.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html">
+                    深度学习神经网络中权重的初始化
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html">
+                前言 良好的初始化权重有以下的好处： 加快梯度下降的收敛速度 增加梯度下降收敛到较低训练（和泛化）错误的几率 所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式： 零初始化，将权重参数初始化为零。 随机初始化，使用随机的方式，初始化权重参数。 He初始化，这个公式的初始化方式。 我们来尝试这个三种方法吧。 模型函数 编写一个 model函数，使用这个函数可以测试各种初始化权重参数的效果。 在编写 model函数之前，我们先要导入对于依赖包，其中有些依赖包可以在这里下载。 # coding=utf-8 import numpy as np from init_utils import compute_loss, forward_propagation, backward_propagation from init_utils import update_parameters, predict, load_dataset # 加载图像数据集:蓝色/红点在圆圈中 train_X, train_Y, test_X, test_Y = load_dataset() 其中使用的....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466423248">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html">
+                    《Improving Deep Neural Networks》的理论知识点
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html">
+                深度学习的实践方面 如果有10,000,000个例子，数据集拆分一般是98%训练，1%验证，1%测试。 验证和测试的数据集通常是来自同样的分配。 如果神经网络模型有很大的差异，一般的解决办法是增加数据集和添加正则。 当训练集错误较小，而验证集较大时，通常是增加正则lambda、增加数据集。 当增加正则化超参数lambda时，权重会被推向更小，接近0. 将参数keep_prob从（比如说）0.5增加到0.6可能会导致减少正则效应、最终导致更小的训练集数据的错误。 增加训练集、添加Dropout、加正则可以减少方差（减少过度拟合）。 权重衰减是一种正则化技术(如L2正规化), 导致梯度下降在每次迭代中收缩权重。 我们归一化输入的X，是因为这个可以使得损失函数更快地进行优化。 在测试使用反向dropout方法时，不要使用dropout（不要使用随机消除单位），也不要在训练中使用计算中保留的1/keep_prob因子。 优化算法 当输入是来自第8个小批次的第7个示例时，表示第3层的激活的符合是：$a^{[3]{8}(7)}$。 小批量梯度下降（在单个小批量上计算）的一次迭代比批量梯度下降.......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466409370">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html">
+                    Python2实现简单的爬虫
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html">
+                前言 有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。 爬虫的框架 整体框架 下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下： 调度端：主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口； URL管理器：管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL； 网页下载器：通过URL下载网页数据，并以字符串保存； 网页解析器：解析网页下载器获取到的字符串数据，获取用户需要的数据； 价值数据：所有有用的数据都存储在这里。 *图像来自慕课网课程 下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。 *图像来自慕课网课程 URL管理器 如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466395849">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971882247.html">
+                    构建深度神经网络实现猫的二分类
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971882247.html">
+                前言 这次使用一个猫的数据集，我们使用深度神经网络来识别这个是猫或者不是猫。 导包 这里导入了两个工具类，可以从这里下载，这里包含了这个函数和用到的数据集，其中用到了h5py，如果读者没有安装的话，要先用pip安装这个库，还有以下用到的库也要安装。 # coding=utf-8 from dnn_utils_v2 import sigmoid, sigmoid_backward, relu, relu_backward from lr_utils import load_dataset import numpy as np import matplotlib.pyplot as plt import scipy from scipy import ndimage 初始化网络参数 在网络定义之前，需要先对网络的参数进行初始化，这里分两个来初始化，一个是两层网络的，另一个是L层网络的。 两层网络的初始化 对两层网络的参数初始化要用到输入层的大小、隐藏层的大小、输出层的大小。 def initialize_parameters(n_x, n_h, n_y): """ 初始化参数 :par......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971882247.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466420461">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971882247.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971882247.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html">
+                    使用带有隐层的神经网络实现颜色二分类
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html">
+                前言 数据集是一个红色和蓝色的的分布。其分布图如下： 导包 导入依赖包，这个两个分别是加载数据的工具函数和数据集，这个两个程序可以在这里下载。这个工具函数中使用到sklearn包，使用之前还要使用pip安装该函数。 from planar_utils import sigmoid, load_planar_dataset from testCases_v2 import * 加载数据 加载数据和获取数据的形状 # 加载数据 X, Y = load_planar_dataset() # 获取数据的形状 shape_X = X.shape shape_Y = Y.shape m = shape_X[1] 神经网络模型 定义神经网络结构 定义神经网络结构，比如数据的大小，对应的标签和有多少个隐层。 def layer_sizes(X, Y): """ 定义神经网络结构 :param X: 形状的输入数据集(输入大小，示例数量) :param Y: 形状标签(输出尺寸，示例数量) :return: n_x -- 输入层的大小。 n_h -- 隐藏层的大小。 n_y -- 隐藏层的大小。。.......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466408709">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html">
+                    使用Logistic回归实现猫的二分类
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html">
+                前言 这里使用到的是一个猫的数据集，根据这个数据集训练图像是不是猫，数据集的图像如下： 导入包 如果没有安装对应的包，请使用pip安装对应的包，这个使用了一个lr_utils的工具类，这个工具类是加载数据集的工具，可以到这里下载。这个工具类也使用一个h5py，所以也要安装该包。 # coding=utf-8 import matplotlib.pyplot as plt import numpy as np import scipy from scipy import ndimage from lr_utils import load_dataset 获取数据 接下来就是加载数据和对数据进行处理 # 加载数据 train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes = load_dataset() # 读取图像的大小 m_train = train_set_x_orig.shape[0] m_test = test_set_x_orig.shape[0] num_px = train_set_x_ori......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466399487">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">
+                    《Neural Networks and Deep Learning》的理论知识点
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">
+                目录 @[toc] 深度学介绍 AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如： 汽车行业，农业和供应链。 深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。 关于迭代不同ML思想的图： 这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法； 可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。 寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。 ReLU激活函数的图表如下： 猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。 为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466401544">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">
+                    《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">
+                *本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 PaddlePaddle还可以迁移到Android或者Linux设备上，在这些部署了PaddlePaddle的设备同样可以做深度学习的预测。在这篇文章中我们就介绍如何把PaddlePaddle迁移到Android手机上，并在Android的APP中使用PaddlePaddle。 编译PaddlePaddle库 使用Docker编译PaddlePaddle库 使用Docker编译PaddlePaddle真的会很方便，如果你对比了下面部分的使用Linux编译PaddlePaddle库，你就会发现使用Docker会少很多麻烦，比如安装一些依赖库等等。而且Docker是跨平台的，不管读者使用的是Windows，Linux，还是Mac，都可以使用Docker。以下操作方法都是在64位的Ubuntu 16.04上实现的。 首先安装Docker，在Ubuntu上安装很简单，只要一条命令就可以了 sudo apt install docker.io 安装完成之后，可以使用docker --version命令查看是.......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466422847">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971401082.html">
+                    《我的PaddlePaddle学习之路》笔记十三——把PaddlePaddle部署到网站服务器上
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971401082.html">
+                *本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 如果读者使用过百度等的一些图像识别的接口，比如百度的细粒度图像识别接口，应该了解这个过程，省略其他的安全方面的考虑。这个接口大体的流程是，我们把图像上传到百度的网站上，然后服务器把这些图像转换成功矢量数据，最后就是拿这些数据传给深度学习的预测接口，比如是PaddlePaddle的预测接口，获取到预测结果，返回给客户端。这个只是简单的流程，真实的复杂性远远不止这些，但是我们只需要了解这些，然后去搭建属于我们的图像识别接口。 环境 系统是：64位 Ubuntu 16.04 开发语言是：Python2.7 web框架是：flask 预测接口是：图像识别 flask的熟悉 安装flask 安装flask很简单，只要一条命令就可以了： pip install flask 同时我们也使用到flask_cors，所以我们也要安装这个库 pip install flask_cors 主要安装的是这两个库，如果还缺少哪些库，可以使用pip命令安装，*代表读者缺少的库： pip install * 测试fl....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971401082.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466420076">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971401082.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971401082.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971340241.html">
+                    《我的PaddlePaddle学习之路》笔记十二——可视化工具VisualDL的使用
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971340241.html">
+                *本篇文章基于 PaddlePaddle 0.13.0、Python 2.7 前言 VisualDL是一个面向深度学习任务设计的可视化工具，包含了scalar、参数分布、模型结构、图像可视化等功能。可以这样说：“所见即所得”。我们可以借助VisualDL来观察我们训练的情况，方便我们对训练的模型进行分析，改善模型的收敛情况。 之前我们使用的paddle.v2.plot接口，也可以观察训练的情况，但是只是支持CSOT的折线图而已。而VisualDL可以支持一下这个功能： scalar，趋势图，可用于训练测试误差的展示 image, 图片的可视化，可用于卷积层或者其他参数的图形化展示 histogram, 用于参数分布及变化趋势的展示 graph，用于训练模型结构的可视化 以上的图像来自VisualDL的Github 既然那么方便，那么我们就来尝试一下吧。VisualDL底层采用C++编写，但是它在提供C++ SDK的同时，也支持Python SDK，我们主要是使用Python的SDK。顺便说一下，VisualDL除了支持PaddlePaddle,之外，还支持pytorch,....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971340241.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466405231">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971340241.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971340241.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971267141.html">
+                    《我的PaddlePaddle学习之路》笔记十一——新版本Fluid的使用
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971267141.html">
+                *本篇文章基于 PaddlePaddle 0.13.0、Python 2.7 *Fluid版本的使用可以学习笔者的新系列教程：《PaddlePaddle从入门到炼丹》 前言 PaddlePaddle的Fluid是0.11.0提出的，Fluid 是设计用来让用户像Pytorch和Tensorflow Eager Execution一样执行程序。在这些系统中，不再有模型这个概念，应用也不再包含一个用于描述Operator图或者一系列层的符号描述，而是像通用程序那样描述训练或者预测的过程。而Fluid与PyTorch或Eager Execution的区别在于Fluid不依赖Python提供的控制流，例如 if-else-then或者for，而是提供了基于C++实现的控制流并暴露了对应的用with语法实现的Python接口。例如我们会在例子中使用到的代码片段： with fluid.program_guard(inference_program): test_accuracy = fluid.evaluator.Accuracy(input=out, label=label) test_ta.....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971267141.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466410040">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971267141.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971267141.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971203171.html">
+                    《我的PaddlePaddle学习之路》笔记十——自定义图像数据集实现目标检测
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971203171.html">
+                *本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 在阅读这一篇文章之前，要先阅读上一篇文章使用VOC数据集的实现目标检测，因为大部分的程序都是使用上一篇文章所使用到的代码和数据集的格式。在这篇文章中介绍如何使用自定义的图像数据集来做目标检测。 数据集介绍 我们本次使用的到的数据集是自然场景下的车牌，不知读者是否还记得在车牌端到端的识别这篇文章中，我们使用到的车牌是如何裁剪的，我们是使用OpenCV经过多重的的图像处理才达到车牌定位的，而且定位的效果比较差。在这篇文章中我们尝试使用神经网络来定位车牌位置。 下载车牌 我们先从网络上下载车牌数据，来提供给我们进行训练，核心代码片段如下： def start_download(self): self.download_sum = 0 gsm = 80 str_gsm = str(gsm) pn = 0 if not os.path.exists(self.save_path): os.makedirs(self.save_path) while self.download_sum &lt; self.do......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971203171.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466396940">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971203171.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971203171.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971126233.html">
+                    《我的PaddlePaddle学习之路》笔记九——使用VOC数据集的实现目标检测
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971126233.html">
+                *本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 目标检测的使用范围很广，比如我们使用相机拍照时，要正确检测人脸的位置，从而做进一步处理，比如美颜等等。在目标检测的深度学习领域上，从2014年到2016年，先后出现了R-CNN，Fast R-CNN, Faster R-CNN, ION, HyperNet, SDP-CRC, YOLO,G-CNN, SSD等神经网络模型，使得目标检测不管是在准确度上，还是速度上都有很大提高，几乎可以达到实时检测。 VOC数据集 VOC数据集介绍 PASCAL VOC挑战赛是视觉对象的分类识别和检测的一个基准测试，提供了检测算法和学习性能的标准图像注释数据集和标准的评估系统。 PASCAL VOC图片集包括20个目录： 人类； 动物(鸟、猫、牛、狗、马、羊)； 交通工具(飞机、自行车、船、公共汽车、小轿车、摩托车、火车)； 室内(瓶子、椅子、餐桌、盆栽植物、沙发、电视)。 这些类别在data/label_list文件中都有列出来，但这个文件中多了一个类别，就是背景（background） 下载VOC数据集 可以通....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971126233.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466408326">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971126233.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971126233.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971061243.html">
+                    《我的PaddlePaddle学习之路》笔记八——场景文字识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971061243.html">
+                *本篇文章基于 PaddlePaddle 0.10.0、Python 2.7 前言 在前两篇文章验证码端到端的识别和车牌端到端的识别这两篇文章中其实就使用到了场景文字识别了，在本篇中就针对场景文字识别这个问题好好说说。 场景文字识别到底有什么用呢，说得大一些在自动驾驶领域，公路上总会有很多的路牌和标识，这些路牌标识通常会有很多的文字说明，我们就要识别这些文字来了解它们的含义。还有老师在黑板上写的笔记，如果使用场景文字识别技术，我们直接拍个照，直接识别黑板中的文字内容，就可以省去很多抄笔记时间了。 数据集的介绍 场景文字是怎样的呢，来看看这张图像 这张图像中包含了大量的文字，我们要做的就是把这些文字识别出来。这张图像是SynthText in the Wild Dataset，这个数据集非常大，有41G。为了方便学习，我们在本项目中使用这个数据集，而是使用更小的Task 2.3: Word Recognition (2013 edition)，这个数据集的训练数据和测试数据一共也就160M左右，非常适合我们做学习使用，该数据集的图像如下： 数据的读取 官方给出的数据读取列表有两....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971061243.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466397374">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971061243.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971061243.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970992783.html">
+                    《我的PaddlePaddle学习之路》笔记七——车牌端到端的识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970992783.html">
+                本篇文章基于 PaddlePaddle 0.10.0、Python 2.7 前言 车牌识别的应用场景有很多，比如在停车场。通过车牌识别登记入库和出库的车辆的情况，并计算该车停留时间，然后折算费用。还可以在公路上识别来往的车辆，方便交警的检查等等。接下来我们就是使用PaddlePaddle来做一个车牌识别，我们直接通过段端到端识别，不用分割即可完成识别。在阅读这篇文章时，你应该先阅读上一篇验证码端到端的识别，在上一篇的很多细节，在本篇中不会很说得很细。 车牌的采集 车牌的下载 在做车牌识别之前，我们要先数据。这些车牌数据我打算从百度图片中获取，所以我先编写一个程序来帮我们下载车牌图像。 # -- coding:utf-8 -*- import re import uuid import requests import os class DownloadImages: def init(self, download_max, key_word): self.download_sum = 0 self.download_max = download_max self.key_....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970992783.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466401018">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970992783.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584970992783.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html">
+                    《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html">
+                *本篇文章基于 PaddlePaddle 0.10.0、Python 2.7 前言 在上一篇文章中介绍了验证码的识别，但是使用的传统的验证码分割，然后通过图像分类的方法来实现验证码的识别的，这中方法比较繁琐，工作量比较多。在本篇文章会介绍验证码端到端的识别，直接一步到位，不用图像分割那么麻烦了。好吧，现在开始吧！ 数据集介绍 在本篇文章中同样是使用方正系统的验证码，该数据集在上一篇文章《我的PaddlePaddle学习之路》笔记五——验证码的识别已有介绍，在这里我就不介绍了，需要了解的可以点击链接去到上一篇文章查看。 获取验证码 下载验证码和修改验证码同样在上一篇文章有介绍，如果读者需要同样可以回到上一篇文章查看。 验证码我们有了，有看过上一篇文章的读者会第一反应说还缺图像列表。没错，训练和测试都需要一个图像列表 把图像转成灰度图 在生成列表之前，我们还有对图像做一些处理，就是把图像灰度化。 **注意：**在此之前应该把图像文件命名，文件名为验证码对应的字符，并把所有的验证码放在data_temp 然后执行以下的程序批量处理 # coding=utf-8 import os f....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466410423">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html">
+                    《我的PaddlePaddle学习之路》笔记五——验证码的识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html">
+                本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集介绍 本次使用的验证码是方正系统，现在很多的大学的教务系统用的就是这个方正系统，刚好既然那么普遍，我们就用它练一练手。经过观察大量的验证码发现，该系统的验证码只有小写的字母和数字，这样分类就少了很多了。该系统的验证码如下： 验证码尺寸说明 7227只有数字和小写字母 1227第一个X方向的从5开始裁剪到17，Y取全部，即从0裁剪到27 1227第二个X方向的从17开始裁剪到29，Y取全部，即从0裁剪到27 1227第三个X方向的从29开始裁剪到41，Y取全部，即从0裁剪到27 1227第四个X方向的从41开始裁剪到53，Y取全部，即从0裁剪到27 通过上面表上说明，我们就可以开始裁剪验证码了。在裁剪之前我们先要下载编写一个程序，让它来帮我们下载更多的验证码 下载验证码 编写一个下载验证码的程序DownloadYanZhengMa.py，这里我们只需要传入保存路径和要下载的数量就可以了。 # -- coding:utf-8 -- import re import uuid i....
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466412475">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+    <article>
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970774428.html">
+                    《我的PaddlePaddle学习之路》笔记四——自定义图像数据集的识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+            <a class="abstract vditor-reset" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970774428.html">
+                *本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集介绍 如果我们要训练自己的数据集的话,就需要先建立图像列表文件,下面的代码是Myreader.py读取图像数据集的一部分,从这些代码中可以看出,图像列表中,图像的路径和标签是以\t来分割的,所以我们在生成这个列表的时候,使用\t就可以了. def train_reader(self,train_list, buffered_size=1024): def reader(): with open(train_list, 'r') as f: lines = [line.strip() for line in f] for line in lines: img_path, lab = line.strip().split('\t') yield img_path, int(lab) return paddle.reader.xmap_readers(self.train_mapper, reader, cpu_count(), buffered_size) 生成的图像列表的结构是这样的: ../imag......
+            </a>
+        <footer class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970774428.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466417577">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970774428.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584970774428.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </footer>
+    </article>
+
+    <nav class="pagination">
+                <a class="page-num" href="https://yeyupiaoling.github.io/p/1">1</a>
+                <a class="page-num" href="https://yeyupiaoling.github.io/p/2">2</a>
+                <span class="current page-num">3</span>
+                <a class="page-num" href="https://yeyupiaoling.github.io/p/4">4</a>
+                <a class="page-num" href="https://yeyupiaoling.github.io/p/5">5</a>
+            </nav>
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+        </main>
+    </body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 1545ms, 2020/04/07 11:38:48 -->

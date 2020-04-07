@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>使用PaddlePaddle实现人脸对比和人脸识别 - 夜雨飘零</title><meta name="description" content="前言 本文章我们来学习一下使用PaddlePaddle实现人脸对比和人脸识别，使用的训练数据集是CASIA-WebFace。 数据集介绍 我们使用的是CASIA-WebFace数据集，该人脸数据集是目前最大的公开人脸数据集。该人脸数据集一共有包含10,575个人，494,414张图像，包含彩色图和灰图。各大人脸数据集情况如下表。 DatasetSubjectsImagesAvailability LFW [1]5,74913,233Public WDRef [2]2,99599,773Public (feature only) CelebFaces [3]10,177202,599Private SFC [4]4,0304,400,000Private CACD [5]2,000163,446Public (partial annotated) CASIA-WebFace10,575494,414Public 训练模型 为了方便读取数据集，我们要生成一个图像列表，用于训练时读取数据，这个列表的作用具体可以阅读笔者之前的文章《我的PaddlePaddle学习之路》笔记四——自...."/><meta property="og:description" content="前言 本文章我们来学习一下使用PaddlePaddle实现人脸对比和人脸识别，使用的训练数据集是CASIA-WebFace。 数据集介绍 我们使用的是CASIA-WebFace数据集，该人脸数据集是目前最大的公开人脸数据集。该人脸数据集一共有包含10,575个人，494,414张图像，包含彩色图和灰图。各大人脸数据集情况如下表。 DatasetSubjectsImagesAvailability LFW [1]5,74913,233Public WDRef [2]2,99599,773Public (feature only) CelebFaces [3]10,177202,599Private SFC [4]4,0304,400,000Private CACD [5]2,000163,446Public (partial annotated) CASIA-WebFace10,575494,414Public 训练模型 为了方便读取数据集，我们要生成一个图像列表，用于训练时读取数据，这个列表的作用具体可以阅读笔者之前的文章《我的PaddlePaddle学习之路》笔记四——自...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="使用PaddlePaddle实现人脸对比和人脸识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="使用PaddlePaddle实现人脸对比和人脸识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="在Android手机上使用PaddleMobile实现图像分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973225565.html">
+            <link rel="next" title="Caffe模型转PaddlePaddle的Fluid版本预测模型" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973420477.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#前言">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#数据集介绍">数据集介绍</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#训练模型">训练模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#预测">预测</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#人脸对比">人脸对比</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#人脸识别">人脸识别</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html">
+                    使用PaddlePaddle实现人脸对比和人脸识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466415438">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20190605.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="前言">前言</h1>
+<p>本文章我们来学习一下使用PaddlePaddle实现人脸对比和人脸识别，使用的训练数据集是CASIA-WebFace。</p>
+<h1 id="数据集介绍">数据集介绍</h1>
+<p>我们使用的是CASIA-WebFace数据集，该人脸数据集是目前最大的公开人脸数据集。该人脸数据集一共有包含10,575个人，494,414张图像，包含彩色图和灰图。各大人脸数据集情况如下表。</p>
+<table>
+<thead>
+<tr>
+<th align="center">Dataset</th>
+<th align="center">Subjects</th>
+<th align="center">Images</th>
+<th align="center">Availability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">LFW [1]</td>
+<td align="center">5,749</td>
+<td align="center">13,233</td>
+<td align="center">Public</td>
+</tr>
+<tr>
+<td align="center">WDRef [2]</td>
+<td align="center">2,995</td>
+<td align="center">99,773</td>
+<td align="center">Public (feature only)</td>
+</tr>
+<tr>
+<td align="center">CelebFaces [3]</td>
+<td align="center">10,177</td>
+<td align="center">202,599</td>
+<td align="center">Private</td>
+</tr>
+<tr>
+<td align="center">SFC [4]</td>
+<td align="center">4,030</td>
+<td align="center">4,400,000</td>
+<td align="center">Private</td>
+</tr>
+<tr>
+<td align="center">CACD [5]</td>
+<td align="center">2,000</td>
+<td align="center">163,446</td>
+<td align="center">Public (partial annotated)</td>
+</tr>
+<tr>
+<td align="center">CASIA-WebFace</td>
+<td align="center">10,575</td>
+<td align="center">494,414</td>
+<td align="center">Public</td>
+</tr>
+</tbody>
+</table>
+<h1 id="训练模型">训练模型</h1>
+<p>为了方便读取数据集，我们要生成一个图像列表，用于训练时读取数据，这个列表的作用具体可以阅读笔者之前的文章<a href="https://blog.csdn.net/qq_33200967/article/details/79095265" target="_blank">《我的PaddlePaddle学习之路》笔记四——自定义图像数据集的识别</a>，执行下面代码生成人脸数据集的图像列表。下载CASIA-WebFace数据集并解压，执行代码时传入解压后的根目录，执行之后会在<code>/home/test</code>生成一个图像列表文件夹。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 生成图像列表程序</span>
+<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">json</span>
+<span class="highlight-ln"> 4</span>
+<span class="highlight-ln"> 5</span><span class="highlight-k">class</span> <span class="highlight-nc">CreateDataList</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 7</span>        <span class="highlight-k">pass</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-k">def</span> <span class="highlight-nf">createTrainDataList</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">data_root_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln">10</span>        <span class="highlight-c1"># # 把生产的数据列表都放在自己的总类别文件夹中</span>
+<span class="highlight-ln">11</span>        <span class="highlight-n">data_list_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">''</span>
+<span class="highlight-ln">12</span>        <span class="highlight-c1"># 所有类别的信息</span>
+<span class="highlight-ln">13</span>        <span class="highlight-n">class_detail</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">14</span>        <span class="highlight-c1"># 获取所有类别</span>
+<span class="highlight-ln">15</span>        <span class="highlight-n">class_dirs</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">16</span>        <span class="highlight-c1"># 类别标签</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">class_label</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">18</span>        <span class="highlight-c1"># 获取总类别的名称</span>
+<span class="highlight-ln">19</span>        <span class="highlight-n">father_paths</span> <span class="highlight-o">=</span> <span class="highlight-n">data_root_path</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'/'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">20</span>        <span class="highlight-k">while</span> <span class="highlight-bp">True</span><span class="highlight-p">:</span>
+<span class="highlight-ln">21</span>            <span class="highlight-k">if</span> <span class="highlight-n">father_paths</span><span class="highlight-p">[</span><span class="highlight-n">father_paths</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span> <span class="highlight-o">==</span> <span class="highlight-s1">''</span><span class="highlight-p">:</span>
+<span class="highlight-ln">22</span>                <span class="highlight-k">del</span> <span class="highlight-n">father_paths</span><span class="highlight-p">[</span><span class="highlight-n">father_paths</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">23</span>            <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln">24</span>                <span class="highlight-k">break</span>
+<span class="highlight-ln">25</span>        <span class="highlight-n">father_path</span> <span class="highlight-o">=</span> <span class="highlight-n">father_paths</span><span class="highlight-p">[</span><span class="highlight-n">father_paths</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">26</span>
+<span class="highlight-ln">27</span>        <span class="highlight-n">all_class_images</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">28</span>        <span class="highlight-c1"># 读取每个类别</span>
+<span class="highlight-ln">29</span>        <span class="highlight-k">for</span> <span class="highlight-n">class_dir</span> <span class="highlight-ow">in</span> <span class="highlight-n">class_dirs</span><span class="highlight-p">:</span>
+<span class="highlight-ln">30</span>            <span class="highlight-c1"># 每个类别的信息</span>
+<span class="highlight-ln">31</span>            <span class="highlight-n">class_detail_list</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
+<span class="highlight-ln">32</span>            <span class="highlight-n">test_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">33</span>            <span class="highlight-n">trainer_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">34</span>            <span class="highlight-c1"># 把生产的数据列表都放在自己的总类别文件夹中</span>
+<span class="highlight-ln">35</span>            <span class="highlight-n">data_list_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"/home/test/</span><span class="highlight-si">%s</span><span class="highlight-s2">/"</span> <span class="highlight-o">%</span> <span class="highlight-n">father_path</span>
+<span class="highlight-ln">36</span>            <span class="highlight-c1"># 统计每个类别有多少张图片</span>
+<span class="highlight-ln">37</span>            <span class="highlight-n">class_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">38</span>            <span class="highlight-c1"># 获取类别路径</span>
+<span class="highlight-ln">39</span>            <span class="highlight-n">path</span> <span class="highlight-o">=</span> <span class="highlight-n">data_root_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"/"</span> <span class="highlight-o">+</span> <span class="highlight-n">class_dir</span>
+<span class="highlight-ln">40</span>            <span class="highlight-c1"># 获取所有图片</span>
+<span class="highlight-ln">41</span>            <span class="highlight-n">img_paths</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">42</span>            <span class="highlight-k">for</span> <span class="highlight-n">img_path</span> <span class="highlight-ow">in</span> <span class="highlight-n">img_paths</span><span class="highlight-p">:</span>
+<span class="highlight-ln">43</span>                <span class="highlight-c1"># 每张图片的路径</span>
+<span class="highlight-ln">44</span>                <span class="highlight-n">name_path</span> <span class="highlight-o">=</span> <span class="highlight-n">path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/'</span> <span class="highlight-o">+</span> <span class="highlight-n">img_path</span>
+<span class="highlight-ln">45</span>                <span class="highlight-c1"># 如果不存在这个文件夹,就创建</span>
+<span class="highlight-ln">46</span>                <span class="highlight-n">isexist</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">47</span>                <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">isexist</span><span class="highlight-p">:</span>
+<span class="highlight-ln">48</span>                    <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">49</span>                <span class="highlight-c1"># 每10张图片取一个做测试数据</span>
+<span class="highlight-ln">50</span>                <span class="highlight-n">trainer_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">51</span>                <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"trainer.list"</span><span class="highlight-p">,</span> <span class="highlight-s1">'a'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">52</span>                    <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">name_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\t</span><span class="highlight-si">%d</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">class_label</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\n</span><span class="highlight-s2">"</span><span class="highlight-p">)</span>
+<span class="highlight-ln">53</span>
+<span class="highlight-ln">54</span>                <span class="highlight-n">class_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">55</span>                <span class="highlight-n">all_class_images</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">56</span>            <span class="highlight-n">class_label</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">57</span>            <span class="highlight-c1"># 说明的json文件的class_detail数据</span>
+<span class="highlight-ln">58</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_name'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">class_dir</span>
+<span class="highlight-ln">59</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_label'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">class_label</span>
+<span class="highlight-ln">60</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_test_images'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">test_sum</span>
+<span class="highlight-ln">61</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_trainer_images'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">trainer_sum</span>
+<span class="highlight-ln">62</span>            <span class="highlight-n">class_detail</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">class_detail_list</span><span class="highlight-p">)</span>
+<span class="highlight-ln">63</span>        <span class="highlight-c1"># 获取类别数量</span>
+<span class="highlight-ln">64</span>        <span class="highlight-n">all_class_sum</span> <span class="highlight-o">=</span> <span class="highlight-n">class_dirs</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span>
+<span class="highlight-ln">65</span>        <span class="highlight-c1"># 说明的json文件信息</span>
+<span class="highlight-ln">66</span>        <span class="highlight-n">readjson</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
+<span class="highlight-ln">67</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'all_class_name'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">father_path</span>
+<span class="highlight-ln">68</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'all_class_sum'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">all_class_sum</span>
+<span class="highlight-ln">69</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'all_class_images'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">all_class_images</span>
+<span class="highlight-ln">70</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'class_detail'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">class_detail</span>
+<span class="highlight-ln">71</span>        <span class="highlight-n">jsons</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">dumps</span><span class="highlight-p">(</span><span class="highlight-n">readjson</span><span class="highlight-p">,</span> <span class="highlight-n">sort_keys</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">indent</span><span class="highlight-o">=</span><span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-n">separators</span><span class="highlight-o">=</span><span class="highlight-p">(</span><span class="highlight-s1">','</span><span class="highlight-p">,</span> <span class="highlight-s1">': '</span><span class="highlight-p">))</span>
+<span class="highlight-ln">72</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"readme.json"</span><span class="highlight-p">,</span><span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">73</span>            <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">jsons</span><span class="highlight-p">)</span>
+<span class="highlight-ln">74</span>
+<span class="highlight-ln">75</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">76</span>    <span class="highlight-n">createDataList</span> <span class="highlight-o">=</span> <span class="highlight-n">CreateDataList</span><span class="highlight-p">()</span>
+<span class="highlight-ln">77</span>    <span class="highlight-n">createDataList</span><span class="highlight-o">.</span><span class="highlight-n">createTrainDataList</span><span class="highlight-p">(</span><span class="highlight-s1">'/home/test/WebFace/'</span><span class="highlight-p">)</span>
+</code></pre>
+<p>编写读取图像的reader，这个reader对图像做的预处理的进行中心裁剪，因为人脸都是居中的，进行居中裁剪可以去掉其他的背景的影响。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 把图像和label读取成reader</span>
+<span class="highlight-ln"> 2</span><span class="highlight-c1"># coding=utf-8</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">cv2</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
+<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">random</span>
+<span class="highlight-ln"> 7</span><span class="highlight-kn">from</span> <span class="highlight-nn">multiprocessing</span> <span class="highlight-kn">import</span> <span class="highlight-n">cpu_count</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span><span class="highlight-k">class</span> <span class="highlight-nc">MyReader</span><span class="highlight-p">:</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-p">,</span> <span class="highlight-n">center_crop_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">128</span><span class="highlight-p">):</span>
+<span class="highlight-ln">11</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">imageSize</span> <span class="highlight-o">=</span> <span class="highlight-n">imageSize</span>
+<span class="highlight-ln">12</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">type_size</span> <span class="highlight-o">=</span> <span class="highlight-n">type_size</span>
+<span class="highlight-ln">13</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">center_crop_size</span> <span class="highlight-o">=</span> <span class="highlight-n">center_crop_size</span>
+<span class="highlight-ln">14</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">default_image_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">250</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span>    <span class="highlight-k">def</span> <span class="highlight-nf">train_mapper</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">sample</span><span class="highlight-p">):</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">sample</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">sparse_label</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-mi">0</span> <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">type_size</span><span class="highlight-p">)]</span>
+<span class="highlight-ln">19</span>        <span class="highlight-n">sparse_label</span><span class="highlight-p">[</span><span class="highlight-n">label</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">20</span>        <span class="highlight-c1"># 裁剪中心图片</span>
+<span class="highlight-ln">21</span>        <span class="highlight-k">def</span> <span class="highlight-nf">crop_img</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">center_crop_size</span><span class="highlight-p">):</span>
+<span class="highlight-ln">22</span>            <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">imread</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">)</span>
+<span class="highlight-ln">23</span>            <span class="highlight-k">if</span> <span class="highlight-n">center_crop_size</span> <span class="highlight-o">&lt;</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">default_image_size</span><span class="highlight-p">:</span>
+<span class="highlight-ln">24</span>                <span class="highlight-n">side</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">default_image_size</span> <span class="highlight-o">-</span> <span class="highlight-n">center_crop_size</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-mi">2</span>
+<span class="highlight-ln">25</span>                <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-p">[</span><span class="highlight-n">side</span><span class="highlight-p">:</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">default_image_size</span> <span class="highlight-o">-</span> <span class="highlight-n">side</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">side</span><span class="highlight-p">:</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">default_image_size</span> <span class="highlight-o">-</span> <span class="highlight-n">side</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">26</span>            <span class="highlight-k">return</span> <span class="highlight-n">img</span>
+<span class="highlight-ln">27</span>
+<span class="highlight-ln">28</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">crop_img</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">center_crop_size</span><span class="highlight-p">)</span>
+<span class="highlight-ln">29</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">imageSize</span><span class="highlight-p">))</span>
+<span class="highlight-ln">30</span>        <span class="highlight-k">return</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">),</span> <span class="highlight-n">label</span><span class="highlight-p">,</span> <span class="highlight-n">sparse_label</span>
+<span class="highlight-ln">31</span>    <span class="highlight-c1"># 获取训练的reader</span>
+<span class="highlight-ln">32</span>    <span class="highlight-k">def</span> <span class="highlight-nf">train_reader</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">train_list</span><span class="highlight-p">,</span> <span class="highlight-n">buffered_size</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">):</span>
+<span class="highlight-ln">33</span>        <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
+<span class="highlight-ln">34</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">train_list</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">35</span>                <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span> <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">f</span><span class="highlight-p">]</span>
+<span class="highlight-ln">36</span>                <span class="highlight-c1"># 打乱数据</span>
+<span class="highlight-ln">37</span>                <span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span><span class="highlight-n">lines</span><span class="highlight-p">)</span>
+<span class="highlight-ln">38</span>                <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
+<span class="highlight-ln">39</span>                    <span class="highlight-n">line</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">40</span>                    <span class="highlight-n">img_path</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
+<span class="highlight-ln">41</span>                    <span class="highlight-n">img_label</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">42</span>
+<span class="highlight-ln">43</span>                    <span class="highlight-k">yield</span> <span class="highlight-n">img_path</span><span class="highlight-p">,</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">img_label</span><span class="highlight-p">)</span>
+<span class="highlight-ln">44</span>
+<span class="highlight-ln">45</span>        <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">xmap_readers</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">train_mapper</span><span class="highlight-p">,</span> <span class="highlight-n">reader</span><span class="highlight-p">,</span> <span class="highlight-n">cpu_count</span><span class="highlight-p">(),</span> <span class="highlight-n">buffered_size</span><span class="highlight-p">)</span>
+</code></pre>
+<p>编写卷积神经网络，这个是根据resnet修改的网络。使用了6个卷积块，最后的返回值是最后一个池化层和最后一个全连接层，输出最后一层池化层是为了在预测的是获取图像的人脸特征，做人脸对比。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
+<span class="highlight-ln"> 3</span>
+<span class="highlight-ln"> 4</span>
+<span class="highlight-ln"> 5</span><span class="highlight-k">def</span> <span class="highlight-nf">conv_bn_layer</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 6</span>                  <span class="highlight-n">ch_out</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 7</span>                  <span class="highlight-n">filter_size</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 8</span>                  <span class="highlight-n">stride</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 9</span>                  <span class="highlight-n">padding</span><span class="highlight-p">,</span>
+<span class="highlight-ln">10</span>                  <span class="highlight-n">active_type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">(),</span>
+<span class="highlight-ln">11</span>                  <span class="highlight-n">ch_in</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">):</span>
+<span class="highlight-ln">12</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">img_conv</span><span class="highlight-p">(</span>
+<span class="highlight-ln">13</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-nb">input</span><span class="highlight-p">,</span>
+<span class="highlight-ln">14</span>        <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-n">filter_size</span><span class="highlight-p">,</span>
+<span class="highlight-ln">15</span>        <span class="highlight-n">num_channels</span><span class="highlight-o">=</span><span class="highlight-n">ch_in</span><span class="highlight-p">,</span>
+<span class="highlight-ln">16</span>        <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-n">ch_out</span><span class="highlight-p">,</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-n">stride</span><span class="highlight-p">,</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-n">padding</span><span class="highlight-p">,</span>
+<span class="highlight-ln">19</span>        <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Linear</span><span class="highlight-p">(),</span>
+<span class="highlight-ln">20</span>        <span class="highlight-n">bias_attr</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
+<span class="highlight-ln">21</span>    <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">batch_norm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">active_type</span><span class="highlight-p">,</span> <span class="highlight-n">moving_average_fraction</span><span class="highlight-o">=</span><span class="highlight-mf">0.999</span><span class="highlight-p">)</span>
+<span class="highlight-ln">22</span>
+<span class="highlight-ln">23</span>
+<span class="highlight-ln">24</span><span class="highlight-k">def</span> <span class="highlight-nf">shortcut</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">ch_in</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">):</span>
+<span class="highlight-ln">25</span>    <span class="highlight-k">if</span> <span class="highlight-n">ch_in</span> <span class="highlight-o">!=</span> <span class="highlight-n">ch_out</span><span class="highlight-p">:</span>
+<span class="highlight-ln">26</span>        <span class="highlight-k">return</span> <span class="highlight-n">conv_bn_layer</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Linear</span><span class="highlight-p">())</span>
+<span class="highlight-ln">27</span>    <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln">28</span>        <span class="highlight-k">return</span> <span class="highlight-n">ipt</span>
+<span class="highlight-ln">29</span>
+<span class="highlight-ln">30</span><span class="highlight-k">def</span> <span class="highlight-nf">basicblock</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">ch_in</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">):</span>
+<span class="highlight-ln">31</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_bn_layer</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">32</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_bn_layer</span><span class="highlight-p">(</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Linear</span><span class="highlight-p">())</span>
+<span class="highlight-ln">33</span>    <span class="highlight-n">short</span> <span class="highlight-o">=</span> <span class="highlight-n">shortcut</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">ch_in</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">)</span>
+<span class="highlight-ln">34</span>    <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">addto</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span> <span class="highlight-n">short</span><span class="highlight-p">],</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">())</span>
+<span class="highlight-ln">35</span>
+<span class="highlight-ln">36</span>
+<span class="highlight-ln">37</span><span class="highlight-k">def</span> <span class="highlight-nf">layer_warp</span><span class="highlight-p">(</span><span class="highlight-n">block_func</span><span class="highlight-p">,</span> <span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">ch_in</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-n">count</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">):</span>
+<span class="highlight-ln">38</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">block_func</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">ch_in</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">)</span>
+<span class="highlight-ln">39</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">count</span><span class="highlight-p">):</span>
+<span class="highlight-ln">40</span>        <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">block_func</span><span class="highlight-p">(</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">41</span>    <span class="highlight-k">return</span> <span class="highlight-n">tmp</span>
+<span class="highlight-ln">42</span>
+<span class="highlight-ln">43</span>
+<span class="highlight-ln">44</span><span class="highlight-k">def</span> <span class="highlight-nf">resnet</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">class_dim</span><span class="highlight-p">):</span>
+<span class="highlight-ln">45</span>    <span class="highlight-n">n</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">46</span>    <span class="highlight-n">feature_maps</span> <span class="highlight-o">=</span> <span class="highlight-mi">512</span>
+<span class="highlight-ln">47</span>    <span class="highlight-n">ipt_bn</span> <span class="highlight-o">=</span> <span class="highlight-n">ipt</span> <span class="highlight-o">-</span> <span class="highlight-mf">128.0</span>
+<span class="highlight-ln">48</span>    <span class="highlight-c1"># 获取卷积层输出</span>
+<span class="highlight-ln">49</span>    <span class="highlight-n">conv1</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_bn_layer</span><span class="highlight-p">(</span><span class="highlight-n">ipt_bn</span><span class="highlight-p">,</span> <span class="highlight-n">ch_in</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">ch_out</span><span class="highlight-o">=</span><span class="highlight-mi">8</span><span class="highlight-p">,</span> <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">50</span>    <span class="highlight-c1"># 多个残差块组合</span>
+<span class="highlight-ln">51</span>    <span class="highlight-n">res0</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_warp</span><span class="highlight-p">(</span><span class="highlight-n">basicblock</span><span class="highlight-p">,</span> <span class="highlight-n">conv1</span><span class="highlight-p">,</span> <span class="highlight-mi">8</span><span class="highlight-p">,</span> <span class="highlight-mi">16</span><span class="highlight-p">,</span> <span class="highlight-n">n</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">52</span>    <span class="highlight-n">res1</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_warp</span><span class="highlight-p">(</span><span class="highlight-n">basicblock</span><span class="highlight-p">,</span> <span class="highlight-n">res0</span><span class="highlight-p">,</span> <span class="highlight-mi">16</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-n">n</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">53</span>    <span class="highlight-n">res2</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_warp</span><span class="highlight-p">(</span><span class="highlight-n">basicblock</span><span class="highlight-p">,</span> <span class="highlight-n">res1</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">64</span><span class="highlight-p">,</span> <span class="highlight-n">n</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
+<span class="highlight-ln">54</span>    <span class="highlight-n">res3</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_warp</span><span class="highlight-p">(</span><span class="highlight-n">basicblock</span><span class="highlight-p">,</span> <span class="highlight-n">res2</span><span class="highlight-p">,</span> <span class="highlight-mi">64</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">n</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
+<span class="highlight-ln">55</span>    <span class="highlight-n">res4</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_warp</span><span class="highlight-p">(</span><span class="highlight-n">basicblock</span><span class="highlight-p">,</span> <span class="highlight-n">res3</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-mi">256</span><span class="highlight-p">,</span> <span class="highlight-n">n</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
+<span class="highlight-ln">56</span>    <span class="highlight-n">res5</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_warp</span><span class="highlight-p">(</span><span class="highlight-n">basicblock</span><span class="highlight-p">,</span> <span class="highlight-n">res4</span><span class="highlight-p">,</span> <span class="highlight-mi">256</span><span class="highlight-p">,</span> <span class="highlight-n">feature_maps</span><span class="highlight-p">,</span> <span class="highlight-n">n</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
+<span class="highlight-ln">57</span>    <span class="highlight-c1"># 最后使用池化层来降维</span>
+<span class="highlight-ln">58</span>    <span class="highlight-n">pool</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">img_pool</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">res5</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'pool'</span><span class="highlight-p">,</span> <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">8</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">pooling</span><span class="highlight-o">.</span><span class="highlight-n">Avg</span><span class="highlight-p">())</span>
+<span class="highlight-ln">59</span>
+<span class="highlight-ln">60</span>    <span class="highlight-n">fc</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">pool</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">class_dim</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Softmax</span><span class="highlight-p">())</span>
+<span class="highlight-ln">61</span>    <span class="highlight-k">return</span> <span class="highlight-n">pool</span><span class="highlight-p">,</span> <span class="highlight-n">fc</span>
+</code></pre>
+<p>开始训练模型</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-c1"># 训练代码</span>
+<span class="highlight-ln">  2</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
+<span class="highlight-ln">  3</span><span class="highlight-kn">import</span> <span class="highlight-nn">sys</span>
+<span class="highlight-ln">  4</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
+<span class="highlight-ln">  5</span><span class="highlight-kn">from</span> <span class="highlight-nn">paddle.v2.plot</span> <span class="highlight-kn">import</span> <span class="highlight-n">Ploter</span>
+<span class="highlight-ln">  6</span>
+<span class="highlight-ln">  7</span><span class="highlight-n">step</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">  8</span>
+<span class="highlight-ln">  9</span><span class="highlight-k">class</span> <span class="highlight-nc">PaddleUtil</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 10</span>
+<span class="highlight-ln"> 11</span>    <span class="highlight-c1"># **********************获取参数***************************************</span>
+<span class="highlight-ln"> 12</span>    <span class="highlight-k">def</span> <span class="highlight-nf">get_parameters</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 13</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">parameters_path</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 14</span>            <span class="highlight-c1"># 使用cost创建parameters</span>
+<span class="highlight-ln"> 15</span>            <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">cost</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 16</span>                <span class="highlight-k">raise</span> <span class="highlight-ne">NameError</span><span class="highlight-p">(</span><span class="highlight-s1">'请输入cost参数'</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 17</span>            <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 18</span>                <span class="highlight-c1"># 根据损失函数创建参数</span>
+<span class="highlight-ln"> 19</span>                <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">create</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 20</span>                <span class="highlight-k">print</span> <span class="highlight-s2">"cost"</span>
+<span class="highlight-ln"> 21</span>                <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<span class="highlight-ln"> 22</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 23</span>            <span class="highlight-c1"># 使用之前训练好的参数</span>
+<span class="highlight-ln"> 24</span>            <span class="highlight-k">try</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 25</span>                <span class="highlight-c1"># 使用训练好的参数</span>
+<span class="highlight-ln"> 26</span>                <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 27</span>                    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">Parameters</span><span class="highlight-o">.</span><span class="highlight-n">from_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 28</span>                <span class="highlight-k">print</span> <span class="highlight-s2">"使用parameters"</span>
+<span class="highlight-ln"> 29</span>                <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<span class="highlight-ln"> 30</span>            <span class="highlight-k">except</span> <span class="highlight-ne">Exception</span> <span class="highlight-k">as</span> <span class="highlight-n">e</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 31</span>                <span class="highlight-k">raise</span> <span class="highlight-ne">NameError</span><span class="highlight-p">(</span><span class="highlight-s2">"你的参数文件错误,具体问题是:</span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">e</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 32</span>
+<span class="highlight-ln"> 33</span>    <span class="highlight-c1"># ***********************获取训练器***************************************</span>
+<span class="highlight-ln"> 34</span>    <span class="highlight-c1"># datadim 数据大小</span>
+<span class="highlight-ln"> 35</span>    <span class="highlight-k">def</span> <span class="highlight-nf">get_trainer</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-p">,</span> <span class="highlight-n">parameters_path</span><span class="highlight-p">,</span> <span class="highlight-n">batch_size</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 36</span>        <span class="highlight-c1"># 获得图片对于的信息标签</span>
+<span class="highlight-ln"> 37</span>        <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"label"</span><span class="highlight-p">,</span> <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">integer_value</span><span class="highlight-p">(</span><span class="highlight-n">type_size</span><span class="highlight-p">))</span>
+<span class="highlight-ln"> 38</span>        <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"image"</span><span class="highlight-p">,</span> <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">dense_vector</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">))</span>
+<span class="highlight-ln"> 39</span>
+<span class="highlight-ln"> 40</span>        <span class="highlight-c1"># 获取全连接层,也就是分类器</span>
+<span class="highlight-ln"> 41</span>        <span class="highlight-n">fea</span><span class="highlight-p">,</span> <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">resnet</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">class_dim</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 42</span>        <span class="highlight-c1"># 获得损失函数</span>
+<span class="highlight-ln"> 43</span>        <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">classification_cost</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 44</span>
+<span class="highlight-ln"> 45</span>        <span class="highlight-c1"># 获得参数</span>
+<span class="highlight-ln"> 46</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">parameters_path</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 47</span>            <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 48</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 49</span>            <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 50</span>
+<span class="highlight-ln"> 51</span>        <span class="highlight-s1">'''
+</span><span class="highlight-ln"> 52</span><span class="highlight-s1">        定义优化方法
+</span><span class="highlight-ln"> 53</span><span class="highlight-s1">        learning_rate 迭代的速度
+</span><span class="highlight-ln"> 54</span><span class="highlight-s1">        momentum 跟前面动量优化的比例
+</span><span class="highlight-ln"> 55</span><span class="highlight-s1">        regularzation 正则化,防止过拟合
+</span><span class="highlight-ln"> 56</span><span class="highlight-s1">        '''</span>
+<span class="highlight-ln"> 57</span>        <span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">Momentum</span><span class="highlight-p">(</span>
+<span class="highlight-ln"> 58</span>            <span class="highlight-n">momentum</span><span class="highlight-o">=</span><span class="highlight-mf">0.9</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 59</span>            <span class="highlight-n">regularization</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">L2Regularization</span><span class="highlight-p">(</span><span class="highlight-n">rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.0005</span> <span class="highlight-o">*</span> <span class="highlight-n">batch_size</span><span class="highlight-p">),</span>
+<span class="highlight-ln"> 60</span>            <span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.00001</span> <span class="highlight-o">/</span> <span class="highlight-n">batch_size</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 61</span>            <span class="highlight-n">learning_rate_decay_a</span><span class="highlight-o">=</span><span class="highlight-mf">0.1</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 62</span>            <span class="highlight-n">learning_rate_decay_b</span><span class="highlight-o">=</span><span class="highlight-mi">128000</span> <span class="highlight-o">*</span> <span class="highlight-mi">35</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 63</span>            <span class="highlight-n">learning_rate_schedule</span><span class="highlight-o">=</span><span class="highlight-s2">"discexp"</span><span class="highlight-p">,</span> <span class="highlight-p">)</span>
+<span class="highlight-ln"> 64</span>        
+<span class="highlight-ln"> 65</span>
+<span class="highlight-ln"> 66</span>        <span class="highlight-s1">'''
+</span><span class="highlight-ln"> 67</span><span class="highlight-s1">        创建训练器
+</span><span class="highlight-ln"> 68</span><span class="highlight-s1">        cost 分类器
+</span><span class="highlight-ln"> 69</span><span class="highlight-s1">        parameters 训练参数,可以通过创建,也可以使用之前训练好的参数
+</span><span class="highlight-ln"> 70</span><span class="highlight-s1">        update_equation 优化方法
+</span><span class="highlight-ln"> 71</span><span class="highlight-s1">        '''</span>
+<span class="highlight-ln"> 72</span>        <span class="highlight-n">trainer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">SGD</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">cost</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 73</span>                                     <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 74</span>                                     <span class="highlight-n">update_equation</span><span class="highlight-o">=</span><span class="highlight-n">optimizer</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 75</span>        <span class="highlight-k">return</span> <span class="highlight-n">trainer</span>
+<span class="highlight-ln"> 76</span>
+<span class="highlight-ln"> 77</span>    <span class="highlight-c1"># ***********************开始训练***************************************</span>
+<span class="highlight-ln"> 78</span>    <span class="highlight-k">def</span> <span class="highlight-nf">start_trainer</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">trainer</span><span class="highlight-p">,</span> <span class="highlight-n">num_passes</span><span class="highlight-p">,</span> <span class="highlight-n">save_parameters_name</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_reader</span><span class="highlight-p">,</span> <span class="highlight-n">batch_size</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 79</span>        <span class="highlight-c1"># 获得数据</span>
+<span class="highlight-ln"> 80</span>        <span class="highlight-n">reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">trainer_reader</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 81</span>                                                           <span class="highlight-n">buf_size</span><span class="highlight-o">=</span><span class="highlight-mi">5000</span><span class="highlight-p">),</span>
+<span class="highlight-ln"> 82</span>                              <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-n">batch_size</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 83</span>        <span class="highlight-c1"># 保证保存模型的目录是存在的</span>
+<span class="highlight-ln"> 84</span>        <span class="highlight-n">father_path</span> <span class="highlight-o">=</span> <span class="highlight-n">save_parameters_name</span><span class="highlight-p">[:</span><span class="highlight-n">save_parameters_name</span><span class="highlight-o">.</span><span class="highlight-n">rfind</span><span class="highlight-p">(</span><span class="highlight-s2">"/"</span><span class="highlight-p">)]</span>
+<span class="highlight-ln"> 85</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 86</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 87</span>
+<span class="highlight-ln"> 88</span>        <span class="highlight-c1"># 指定每条数据和padd.layer.data的对应关系</span>
+<span class="highlight-ln"> 89</span>        <span class="highlight-n">feeding</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"image"</span><span class="highlight-p">:</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-s2">"label"</span><span class="highlight-p">:</span> <span class="highlight-mi">1</span><span class="highlight-p">}</span>
+<span class="highlight-ln"> 90</span>        
+<span class="highlight-ln"> 91</span>        <span class="highlight-n">train_title</span> <span class="highlight-o">=</span> <span class="highlight-s2">"Train cost"</span>
+<span class="highlight-ln"> 92</span>        <span class="highlight-n">error_title</span> <span class="highlight-o">=</span> <span class="highlight-s2">"Error"</span>
+<span class="highlight-ln"> 93</span>        <span class="highlight-n">cost_ploter</span> <span class="highlight-o">=</span> <span class="highlight-n">Ploter</span><span class="highlight-p">(</span><span class="highlight-n">train_title</span><span class="highlight-p">,</span> <span class="highlight-n">error_title</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 94</span>
+<span class="highlight-ln"> 95</span>        <span class="highlight-c1"># 定义训练事件,画出折线图,该事件的图可以在notebook上显示，命令行不会正常输出</span>
+<span class="highlight-ln"> 96</span>        <span class="highlight-k">def</span> <span class="highlight-nf">event_handler_plot</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 97</span>            <span class="highlight-k">global</span> <span class="highlight-n">step</span>
+<span class="highlight-ln"> 98</span>            <span class="highlight-k">if</span> <span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">EndIteration</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 99</span>                <span class="highlight-k">if</span> <span class="highlight-n">step</span> <span class="highlight-o">%</span> <span class="highlight-mi">1</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
+<span class="highlight-ln">100</span>                    <span class="highlight-n">cost_ploter</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">train_title</span><span class="highlight-p">,</span> <span class="highlight-n">step</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
+<span class="highlight-ln">101</span>                    <span class="highlight-c1"># cost_ploter.append(error_title, step, event.metrics['classification_error_evaluator'])</span>
+<span class="highlight-ln">102</span>                    <span class="highlight-n">cost_ploter</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">()</span>
+<span class="highlight-ln">103</span>                <span class="highlight-n">step</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">104</span>                <span class="highlight-k">if</span> <span class="highlight-n">step</span> <span class="highlight-o">%</span> <span class="highlight-mi">100</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
+<span class="highlight-ln">105</span>                    <span class="highlight-c1"># 保存训练好的参数</span>
+<span class="highlight-ln">106</span>                    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">save_parameters_name</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">107</span>                        <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">save_parameter_to_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
+<span class="highlight-ln">108</span>
+<span class="highlight-ln">109</span>        <span class="highlight-s1">'''
+</span><span class="highlight-ln">110</span><span class="highlight-s1">        开始训练
+</span><span class="highlight-ln">111</span><span class="highlight-s1">        reader 训练数据
+</span><span class="highlight-ln">112</span><span class="highlight-s1">        num_passes 训练的轮数
+</span><span class="highlight-ln">113</span><span class="highlight-s1">        event_handler 训练的事件,比如在训练的时候要做一些什么事情
+</span><span class="highlight-ln">114</span><span class="highlight-s1">        feeding 说明每条数据和padd.layer.data的对应关系
+</span><span class="highlight-ln">115</span><span class="highlight-s1">        '''</span>
+<span class="highlight-ln">116</span>        <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">reader</span><span class="highlight-p">,</span>
+<span class="highlight-ln">117</span>                      <span class="highlight-n">num_passes</span><span class="highlight-o">=</span><span class="highlight-n">num_passes</span><span class="highlight-p">,</span>
+<span class="highlight-ln">118</span>                      <span class="highlight-n">event_handler</span><span class="highlight-o">=</span><span class="highlight-n">event_handler_plot</span><span class="highlight-p">,</span>
+<span class="highlight-ln">119</span>                      <span class="highlight-n">feeding</span><span class="highlight-o">=</span><span class="highlight-n">feeding</span><span class="highlight-p">)</span>
+<span class="highlight-ln">120</span>
+<span class="highlight-ln">121</span>
+<span class="highlight-ln">122</span>
+<span class="highlight-ln">123</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">124</span>    <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">init</span><span class="highlight-p">(</span><span class="highlight-n">use_gpu</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_count</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">125</span>    <span class="highlight-c1"># 类别总数</span>
+<span class="highlight-ln">126</span>    <span class="highlight-n">type_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">10575</span>
+<span class="highlight-ln">127</span>    <span class="highlight-c1"># 图片大小</span>
+<span class="highlight-ln">128</span>    <span class="highlight-n">imageSize</span> <span class="highlight-o">=</span> <span class="highlight-mi">128</span>
+<span class="highlight-ln">129</span>    <span class="highlight-c1"># 中心裁剪大小</span>
+<span class="highlight-ln">130</span>    <span class="highlight-n">crop_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">128</span>
+<span class="highlight-ln">131</span>    <span class="highlight-c1"># Batch Size</span>
+<span class="highlight-ln">132</span>    <span class="highlight-n">batch_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">256</span>
+<span class="highlight-ln">133</span>    <span class="highlight-c1"># 保存的model路径</span>
+<span class="highlight-ln">134</span>    <span class="highlight-n">parameters_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"/home/test/model.tar"</span>
+<span class="highlight-ln">135</span>    <span class="highlight-c1"># 数据的大小</span>
+<span class="highlight-ln">136</span>    <span class="highlight-n">datadim</span> <span class="highlight-o">=</span> <span class="highlight-n">imageSize</span> <span class="highlight-o">*</span> <span class="highlight-n">imageSize</span>
+<span class="highlight-ln">137</span>    <span class="highlight-n">paddleUtil</span> <span class="highlight-o">=</span> <span class="highlight-n">PaddleUtil</span><span class="highlight-p">()</span>
+<span class="highlight-ln">138</span>
+<span class="highlight-ln">139</span>    <span class="highlight-c1"># *******************************开始训练**************************************</span>
+<span class="highlight-ln">140</span>    <span class="highlight-n">myReader</span> <span class="highlight-o">=</span> <span class="highlight-n">MyReader</span><span class="highlight-p">(</span><span class="highlight-n">imageSize</span><span class="highlight-o">=</span><span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">,</span> <span class="highlight-n">center_crop_size</span><span class="highlight-o">=</span><span class="highlight-n">crop_size</span><span class="highlight-p">)</span>
+<span class="highlight-ln">141</span>    <span class="highlight-n">trainer_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">myReader</span><span class="highlight-o">.</span><span class="highlight-n">train_reader</span><span class="highlight-p">(</span><span class="highlight-n">train_list</span><span class="highlight-o">=</span><span class="highlight-s2">"/home/test/train_set/trainer.list"</span><span class="highlight-p">)</span>
+<span class="highlight-ln">142</span>    <span class="highlight-c1"># 获取训练器</span>
+<span class="highlight-ln">143</span>    <span class="highlight-n">trainer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddleUtil</span><span class="highlight-o">.</span><span class="highlight-n">get_trainer</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-o">=</span><span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">,</span> <span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">,</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-n">batch_size</span><span class="highlight-p">)</span>
+<span class="highlight-ln">144</span>
+<span class="highlight-ln">145</span>    <span class="highlight-n">paddleUtil</span><span class="highlight-o">.</span><span class="highlight-n">start_trainer</span><span class="highlight-p">(</span><span class="highlight-n">trainer</span><span class="highlight-o">=</span><span class="highlight-n">trainer</span><span class="highlight-p">,</span> <span class="highlight-n">num_passes</span><span class="highlight-o">=</span><span class="highlight-mi">50</span><span class="highlight-p">,</span> <span class="highlight-n">save_parameters_name</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">,</span>
+<span class="highlight-ln">146</span>                             <span class="highlight-n">trainer_reader</span><span class="highlight-o">=</span><span class="highlight-n">trainer_reader</span><span class="highlight-p">,</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-n">batch_size</span><span class="highlight-p">)</span>
+</code></pre>
+<h1 id="预测">预测</h1>
+<p>经过上面的训练之后，获得得到了一个训练好的模型，我们将会使用这个模型来进行人脸对比和人脸识别。</p>
+<h2 id="人脸对比">人脸对比</h2>
+<p>人脸对比，人脸对比其实就是做普通的分类预测，但是输出的不是最后一层全连接层，而是最后一层池化层，这样输出的就是人脸的特征，然后使用对角余弦函数来计算他们的相似度。</p>
+<ul>
+<li>通过人脸对比的方式实现一些场景的应用。比如对比证件上的人脸和真实的人脸是否为同一个人，操作方式判断人脸相似度的<code>result</code>是否达到预设值，推荐相似度为0.8时，为同一个人。</li>
+<li>利用这种的人脸对比方式，有可以实现人脸识别。
+<ul>
+<li>首先我们可以把人脸以注册人脸的方式加入到注册人脸库中，加关联到该人脸的信息；</li>
+<li>然后要进行识别时，把要识别的人脸和已注册的人脸库中的人脸进行对比，当对比为识别为同一个人脸，就算识别成功</li>
+<li>这样的处理方式好处是，不需要每次增加新的用户时，需要收集大量该用户的人脸，只有收集一张或者多张多角度的人脸，完全可以使用同一个模型进行人脸对比。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 预测代码</span>
+<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
+<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">cv2</span>
+<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">math</span>
+<span class="highlight-ln"> 7</span><span class="highlight-kn">from</span> <span class="highlight-nn">sklearn</span> <span class="highlight-kn">import</span> <span class="highlight-n">preprocessing</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span><span class="highlight-c1"># 获取参数</span>
+<span class="highlight-ln">11</span><span class="highlight-k">def</span> <span class="highlight-nf">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln">12</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">13</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">Parameters</span><span class="highlight-o">.</span><span class="highlight-n">from_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
+<span class="highlight-ln">14</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span><span class="highlight-c1"># 获取预测器</span>
+<span class="highlight-ln">17</span><span class="highlight-k">def</span> <span class="highlight-nf">get_inference</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">fea</span><span class="highlight-p">):</span>
+<span class="highlight-ln">18</span>    <span class="highlight-n">inferer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">inference</span><span class="highlight-o">.</span><span class="highlight-n">Inference</span><span class="highlight-p">(</span><span class="highlight-n">output_layer</span><span class="highlight-o">=</span><span class="highlight-n">fea</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">)</span>
+<span class="highlight-ln">19</span>    <span class="highlight-k">return</span> <span class="highlight-n">inferer</span>
+<span class="highlight-ln">20</span>    
+<span class="highlight-ln">21</span><span class="highlight-c1"># 预处理图片</span>
+<span class="highlight-ln">22</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">):</span>
+<span class="highlight-ln">23</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">imread</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">)</span>
+<span class="highlight-ln">24</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">reshape</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">])</span>
+<span class="highlight-ln">25</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">center_crop</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
+<span class="highlight-ln">26</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">))</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span>
+<span class="highlight-ln">27</span>        <span class="highlight-k">return</span> <span class="highlight-n">img</span>
+<span class="highlight-ln">28</span>
+<span class="highlight-ln">29</span><span class="highlight-c1"># 使用训练好的参数进行预测</span>
+<span class="highlight-ln">30</span><span class="highlight-k">def</span> <span class="highlight-nf">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">inferer</span><span class="highlight-p">,</span> <span class="highlight-n">image_paths</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">):</span>
+<span class="highlight-ln">31</span>    <span class="highlight-c1"># 获得要预测的图片</span>
+<span class="highlight-ln">32</span>    <span class="highlight-n">test_data</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">33</span>    <span class="highlight-k">for</span> <span class="highlight-n">image_path</span> <span class="highlight-ow">in</span> <span class="highlight-n">image_paths</span><span class="highlight-p">:</span>
+<span class="highlight-ln">34</span>        <span class="highlight-n">test_data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">([</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">)])</span>
+<span class="highlight-ln">35</span>
+<span class="highlight-ln">36</span>    <span class="highlight-c1"># 获得预测结果</span>
+<span class="highlight-ln">37</span>    <span class="highlight-n">probs</span> <span class="highlight-o">=</span> <span class="highlight-n">inferer</span><span class="highlight-o">.</span><span class="highlight-n">infer</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">test_data</span><span class="highlight-p">)</span>
+<span class="highlight-ln">38</span>    <span class="highlight-c1"># 获取两个图片的预测输出</span>
+<span class="highlight-ln">39</span>    <span class="highlight-n">prob1</span> <span class="highlight-o">=</span> <span class="highlight-n">probs</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
+<span class="highlight-ln">40</span>    <span class="highlight-n">prob2</span> <span class="highlight-o">=</span> <span class="highlight-n">probs</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">41</span>
+<span class="highlight-ln">42</span>    <span class="highlight-c1"># 对角余弦值</span>
+<span class="highlight-ln">43</span>    <span class="highlight-n">dist</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">prob1</span><span class="highlight-p">,</span> <span class="highlight-n">prob2</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">prob1</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">prob2</span><span class="highlight-p">))</span>
+<span class="highlight-ln">44</span>    
+<span class="highlight-ln">45</span>    <span class="highlight-k">return</span> <span class="highlight-n">dist</span>
+<span class="highlight-ln">46</span>
+<span class="highlight-ln">47</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">48</span>    <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">init</span><span class="highlight-p">(</span><span class="highlight-n">use_gpu</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_count</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">49</span>    <span class="highlight-c1"># 类别总数</span>
+<span class="highlight-ln">50</span>    <span class="highlight-n">type_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">10575</span>
+<span class="highlight-ln">51</span>    <span class="highlight-c1"># 图片大小</span>
+<span class="highlight-ln">52</span>    <span class="highlight-n">imageSize</span> <span class="highlight-o">=</span> <span class="highlight-mi">128</span>
+<span class="highlight-ln">53</span>    <span class="highlight-c1"># 保存的model路径</span>
+<span class="highlight-ln">54</span>    <span class="highlight-n">parameters_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"/home/test/model.tar"</span>
+<span class="highlight-ln">55</span>    <span class="highlight-c1"># 数据的大小</span>
+<span class="highlight-ln">56</span>    <span class="highlight-n">datadim</span> <span class="highlight-o">=</span> <span class="highlight-n">imageSize</span> <span class="highlight-o">*</span> <span class="highlight-n">imageSize</span>
+<span class="highlight-ln">57</span>    <span class="highlight-c1"># 获取预测器</span>
+<span class="highlight-ln">58</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">59</span>    <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"image"</span><span class="highlight-p">,</span> <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">dense_vector</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">))</span>
+<span class="highlight-ln">60</span>    <span class="highlight-n">fea</span><span class="highlight-p">,</span> <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">resnet</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">class_dim</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">)</span>
+<span class="highlight-ln">61</span>    <span class="highlight-n">inferer</span> <span class="highlight-o">=</span> <span class="highlight-n">get_inference</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">fea</span><span class="highlight-o">=</span><span class="highlight-n">fea</span><span class="highlight-p">)</span>
+<span class="highlight-ln">62</span>
+<span class="highlight-ln">63</span>	<span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">64</span>    <span class="highlight-n">image_path1</span><span class="highlight-p">,</span> <span class="highlight-n">image_path2</span> <span class="highlight-o">=</span> <span class="highlight-s2">"/home/test/0.jpg"</span><span class="highlight-p">,</span> <span class="highlight-s2">"/home/test/1.jpg"</span>
+<span class="highlight-ln">65</span>    <span class="highlight-n">image_path</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">image_path1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">66</span>    <span class="highlight-n">image_path</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">image_path2</span><span class="highlight-p">)</span>
+<span class="highlight-ln">67</span>    
+<span class="highlight-ln">68</span>    <span class="highlight-c1"># 得到两张图的相似度</span>
+<span class="highlight-ln">69</span>    <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">inferer</span><span class="highlight-o">=</span><span class="highlight-n">inferer</span><span class="highlight-p">,</span> <span class="highlight-n">image_paths</span><span class="highlight-o">=</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-o">=</span><span class="highlight-n">imageSize</span><span class="highlight-p">)</span>
+<span class="highlight-ln">70</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"两张图像的相似度为："</span> <span class="highlight-o">+</span> <span class="highlight-n">result</span> <span class="highlight-p">)</span>
+</code></pre>
+<h2 id="人脸识别">人脸识别</h2>
+<p>这个是人脸识别方式是不推荐使用的，它就是一个分类的操作，输入一张人脸图片，获取对应的人脸的label和概率。<br>
+但是如果要加入新的人脸，需要收集大量该用户的人脸，并再次进行训练，得到新的模型。<br>
+这样的识别方式，扩展性非常弱，但是识别速度比较快，不需要每张人脸都进行对比。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 预测代码</span>
+<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">cv2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
+<span class="highlight-ln"> 5</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span><span class="highlight-c1"># 获取参数</span>
+<span class="highlight-ln"> 8</span><span class="highlight-k">def</span> <span class="highlight-nf">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">10</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">Parameters</span><span class="highlight-o">.</span><span class="highlight-n">from_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
+<span class="highlight-ln">11</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<span class="highlight-ln">12</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span><span class="highlight-c1"># 获取预测器</span>
+<span class="highlight-ln">15</span><span class="highlight-k">def</span> <span class="highlight-nf">get_inference</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">fea</span><span class="highlight-p">):</span>
+<span class="highlight-ln">16</span>    <span class="highlight-n">inferer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">inference</span><span class="highlight-o">.</span><span class="highlight-n">Inference</span><span class="highlight-p">(</span><span class="highlight-n">output_layer</span><span class="highlight-o">=</span><span class="highlight-n">fea</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">)</span>
+<span class="highlight-ln">17</span>    <span class="highlight-k">return</span> <span class="highlight-n">inferer</span>
+<span class="highlight-ln">18</span>
+<span class="highlight-ln">19</span>
+<span class="highlight-ln">20</span><span class="highlight-c1"># 预处理图片</span>
+<span class="highlight-ln">21</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">):</span>
+<span class="highlight-ln">22</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">imread</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">)</span>
+<span class="highlight-ln">23</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">reshape</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">])</span>
+<span class="highlight-ln">24</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">center_crop</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
+<span class="highlight-ln">25</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">))</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span>
+<span class="highlight-ln">26</span>    <span class="highlight-k">return</span> <span class="highlight-n">img</span>
+<span class="highlight-ln">27</span>
+<span class="highlight-ln">28</span>
+<span class="highlight-ln">29</span><span class="highlight-c1"># 使用训练好的参数进行预测</span>
+<span class="highlight-ln">30</span><span class="highlight-k">def</span> <span class="highlight-nf">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">inferer</span><span class="highlight-p">,</span> <span class="highlight-n">image_paths</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">):</span>
+<span class="highlight-ln">31</span>    <span class="highlight-c1"># 获得要预测的图片</span>
+<span class="highlight-ln">32</span>    <span class="highlight-n">test_data</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">33</span>    <span class="highlight-n">test_data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">([</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">)])</span>
+<span class="highlight-ln">34</span>
+<span class="highlight-ln">35</span>    <span class="highlight-c1"># 获得预测结果</span>
+<span class="highlight-ln">36</span>    <span class="highlight-n">probs</span> <span class="highlight-o">=</span> <span class="highlight-n">inferer</span><span class="highlight-o">.</span><span class="highlight-n">infer</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">test_data</span><span class="highlight-p">)</span>
+<span class="highlight-ln">37</span>    <span class="highlight-c1"># 处理预测结果</span>
+<span class="highlight-ln">38</span>    <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">probs</span><span class="highlight-p">)</span>
+<span class="highlight-ln">39</span>    <span class="highlight-c1"># 返回概率最大的值和其对应的概率值</span>
+<span class="highlight-ln">40</span>    <span class="highlight-k">return</span> <span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">probs</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][(</span><span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">])]</span>
+<span class="highlight-ln">41</span>
+<span class="highlight-ln">42</span>
+<span class="highlight-ln">43</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">44</span>    <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">init</span><span class="highlight-p">(</span><span class="highlight-n">use_gpu</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_count</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">45</span>    <span class="highlight-c1"># 类别总数</span>
+<span class="highlight-ln">46</span>    <span class="highlight-n">type_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">10575</span>
+<span class="highlight-ln">47</span>    <span class="highlight-c1"># 图片大小</span>
+<span class="highlight-ln">48</span>    <span class="highlight-n">imageSize</span> <span class="highlight-o">=</span> <span class="highlight-mi">128</span>
+<span class="highlight-ln">49</span>    <span class="highlight-c1"># 保存的model路径</span>
+<span class="highlight-ln">50</span>    <span class="highlight-n">parameters_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"/home/test/model.tar"</span>
+<span class="highlight-ln">51</span>    <span class="highlight-c1"># 数据的大小</span>
+<span class="highlight-ln">52</span>    <span class="highlight-n">datadim</span> <span class="highlight-o">=</span> <span class="highlight-n">imageSize</span> <span class="highlight-o">*</span> <span class="highlight-n">imageSize</span>
+<span class="highlight-ln">53</span>    <span class="highlight-c1"># 获取预测器</span>
+<span class="highlight-ln">54</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">55</span>    <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"image"</span><span class="highlight-p">,</span> <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">dense_vector</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">))</span>
+<span class="highlight-ln">56</span>    <span class="highlight-n">fea</span><span class="highlight-p">,</span> <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">resnet</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">class_dim</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">)</span>
+<span class="highlight-ln">57</span>    <span class="highlight-n">inferer</span> <span class="highlight-o">=</span> <span class="highlight-n">get_inference</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">fea</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">)</span>
+<span class="highlight-ln">58</span>
+<span class="highlight-ln">59</span>    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"/home/test/0.jpg"</span>
+<span class="highlight-ln">60</span>
+<span class="highlight-ln">61</span>    <span class="highlight-c1"># 获取人脸对比的label和概率</span>
+<span class="highlight-ln">62</span>    <span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">inferer</span><span class="highlight-o">=</span><span class="highlight-n">inferer</span><span class="highlight-p">,</span> <span class="highlight-n">image_paths</span><span class="highlight-o">=</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-o">=</span><span class="highlight-n">imageSize</span><span class="highlight-p">)</span>
+<span class="highlight-ln">63</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'预测结果为:</span><span class="highlight-si">%d</span><span class="highlight-s1">,可信度为:</span><span class="highlight-si">%f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-n">probability</span><span class="highlight-p">))</span>
+</code></pre>
+                <div>
+                    <hr>
+
+标题：使用PaddlePaddle实现人脸对比和人脸识别<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973225565.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 在Android手机上使用PaddleMobile实现图像分类&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973420477.html">
+                            <span>Caffe模型转PaddlePaddle的Fluid版本预测模型&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="使用PaddlePaddle实现人脸对比和人脸识别"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466415438"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466415438",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 601ms, 2020/04/07 11:38:46 -->

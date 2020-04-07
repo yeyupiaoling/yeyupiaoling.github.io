@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类 - 夜雨飘零</title><meta name="description" content="前言 我们在第五章学习了循环神经网络，在第五章中我们使用循环神经网络实现了一个文本分类的模型，不过使用的数据集是PaddlePaddle自带的一个数据集，我们并没有了解到PaddlePaddle是如何使用读取文本数据集的，那么本章我们就来学习一下如何使用PaddlePaddle训练自己的文本数据集。我们将会从中文文本数据集的制作开始介绍，一步步讲解如何使用训练一个中文文本分类神经网络模型。 GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note12 爬取文本数据集 网络上一些高质量的中文文本分类数据集相当少，经过充分考虑之后，绝对自己从网络中爬取自己的中文文本数据集。在GitHub中有一个开源的爬取今日头条中文新闻标题的代码，链接地址请查看最后的参考资料。我们在这个开源代码上做一些简单修改后，就使用他来爬取数据。 创建一个download_text_data.py文件，这个就是爬取数据集的程序。首先导入相应的依赖包。 import os import random import requests im...."/><meta property="og:description" content="前言 我们在第五章学习了循环神经网络，在第五章中我们使用循环神经网络实现了一个文本分类的模型，不过使用的数据集是PaddlePaddle自带的一个数据集，我们并没有了解到PaddlePaddle是如何使用读取文本数据集的，那么本章我们就来学习一下如何使用PaddlePaddle训练自己的文本数据集。我们将会从中文文本数据集的制作开始介绍，一步步讲解如何使用训练一个中文文本分类神经网络模型。 GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note12 爬取文本数据集 网络上一些高质量的中文文本分类数据集相当少，经过充分考虑之后，绝对自己从网络中爬取自己的中文文本数据集。在GitHub中有一个开源的爬取今日头条中文新闻标题的代码，链接地址请查看最后的参考资料。我们在这个开源代码上做一些简单修改后，就使用他来爬取数据。 创建一个download_text_data.py文件，这个就是爬取数据集的程序。首先导入相应的依赖包。 import os import random import requests im...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974968544.html">
+            <link rel="next" title="《PaddlePaddle从入门到炼丹》十三——自定义图像数生成" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975142214.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#前言">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#爬取文本数据集">爬取文本数据集</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#制作训练数据">制作训练数据</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#定义模型">定义模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#定义数据读取">定义数据读取</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#训练模型">训练模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#预测文本">预测文本</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#参考资料">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html">
+                    《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466422128">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180624.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="前言">前言</h1>
+<p>我们在第五章学习了循环神经网络，在第五章中我们使用循环神经网络实现了一个文本分类的模型，不过使用的数据集是PaddlePaddle自带的一个数据集，我们并没有了解到PaddlePaddle是如何使用读取文本数据集的，那么本章我们就来学习一下如何使用PaddlePaddle训练自己的文本数据集。我们将会从中文文本数据集的制作开始介绍，一步步讲解如何使用训练一个中文文本分类神经网络模型。</p>
+<p>GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note12" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note12</a></p>
+<h1 id="爬取文本数据集">爬取文本数据集</h1>
+<p>网络上一些高质量的中文文本分类数据集相当少，经过充分考虑之后，绝对自己从网络中爬取自己的中文文本数据集。在GitHub中有一个开源的爬取今日头条中文新闻标题的代码，链接地址请查看最后的参考资料。我们在这个开源代码上做一些简单修改后，就使用他来爬取数据。</p>
+<p>创建一个<code>download_text_data.py</code>文件，这个就是爬取数据集的程序。首先导入相应的依赖包。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
+<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">random</span>
+<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">requests</span>
+<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">json</span>
+<span class="highlight-ln">5</span><span class="highlight-kn">import</span> <span class="highlight-nn">time</span>
+</code></pre>
+<p>然后设置新闻的分类列表，这些是我们将要爬取的新闻类别。第一个值是分类的标签，第二个值是分类的中文名称，第三个是网络访问的请求头，通过值获取相应类别的新闻。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 分类新闻参数</span>
+<span class="highlight-ln"> 2</span><span class="highlight-n">news_classify</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-s1">'民生'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_story'</span><span class="highlight-p">],</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-s1">'文化'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_culture'</span><span class="highlight-p">],</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-p">[</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-s1">'娱乐'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_entertainment'</span><span class="highlight-p">],</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-p">[</span><span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-s1">'体育'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_sports'</span><span class="highlight-p">],</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-p">[</span><span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-s1">'财经'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_finance'</span><span class="highlight-p">],</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-p">[</span><span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-s1">'房产'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_house'</span><span class="highlight-p">],</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-p">[</span><span class="highlight-mi">6</span><span class="highlight-p">,</span> <span class="highlight-s1">'汽车'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_car'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">10</span>    <span class="highlight-p">[</span><span class="highlight-mi">7</span><span class="highlight-p">,</span> <span class="highlight-s1">'教育'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_edu'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">11</span>    <span class="highlight-p">[</span><span class="highlight-mi">8</span><span class="highlight-p">,</span> <span class="highlight-s1">'科技'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_tech'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">12</span>    <span class="highlight-p">[</span><span class="highlight-mi">9</span><span class="highlight-p">,</span> <span class="highlight-s1">'军事'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_military'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">13</span>    <span class="highlight-p">[</span><span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-s1">'旅游'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_travel'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">14</span>    <span class="highlight-p">[</span><span class="highlight-mi">11</span><span class="highlight-p">,</span> <span class="highlight-s1">'国际'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_world'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">15</span>    <span class="highlight-p">[</span><span class="highlight-mi">12</span><span class="highlight-p">,</span> <span class="highlight-s1">'证券'</span><span class="highlight-p">,</span> <span class="highlight-s1">'stock'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">16</span>    <span class="highlight-p">[</span><span class="highlight-mi">13</span><span class="highlight-p">,</span> <span class="highlight-s1">'农业'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_agriculture'</span><span class="highlight-p">],</span>
+<span class="highlight-ln">17</span>    <span class="highlight-p">[</span><span class="highlight-mi">14</span><span class="highlight-p">,</span> <span class="highlight-s1">'游戏'</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_game'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">18</span><span class="highlight-p">]</span>
+</code></pre>
+<p>以下代码片段是爬取数据的核心代码。<code>get_data</code>函数的<code>tup</code>参数是上面定义的新闻类别，<code>data_path</code>参数是保存爬取的文本数据。为了让爬取的程序更像正常的网络访问，这里还设置了一个访问请求头参数<code>querystring</code>和请求头<code>headers</code>，然后通过<code>requests.request</code>进行网络访问，爬取新闻数据，并对其进行解析，最后把需要的数据保存到本地文件中。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 已经下载的新闻标题的ID</span>
+<span class="highlight-ln"> 2</span><span class="highlight-n">downloaded_data_id</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln"> 3</span><span class="highlight-c1"># 已经下载新闻标题的数量</span>
+<span class="highlight-ln"> 4</span><span class="highlight-n">downloaded_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln"> 5</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span><span class="highlight-k">def</span> <span class="highlight-nf">get_data</span><span class="highlight-p">(</span><span class="highlight-n">tup</span><span class="highlight-p">,</span> <span class="highlight-n">data_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-k">global</span> <span class="highlight-n">downloaded_data_id</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-k">global</span> <span class="highlight-n">downloaded_sum</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'============</span><span class="highlight-si">%s</span><span class="highlight-s1">============'</span> <span class="highlight-o">%</span> <span class="highlight-n">tup</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">])</span>
+<span class="highlight-ln">11</span>    <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-s2">"http://it.snssdk.com/api/news/feed/v63/"</span>
+<span class="highlight-ln">12</span>    <span class="highlight-c1"># 分类新闻的访问参数，模仿正常网络访问</span>
+<span class="highlight-ln">13</span>    <span class="highlight-n">t</span> <span class="highlight-o">=</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">time</span><span class="highlight-p">()</span> <span class="highlight-o">/</span> <span class="highlight-mi">10000</span><span class="highlight-p">)</span>
+<span class="highlight-ln">14</span>    <span class="highlight-n">t</span> <span class="highlight-o">=</span> <span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randint</span><span class="highlight-p">(</span><span class="highlight-mi">6</span> <span class="highlight-o">*</span> <span class="highlight-n">t</span><span class="highlight-p">,</span> <span class="highlight-mi">10</span> <span class="highlight-o">*</span> <span class="highlight-n">t</span><span class="highlight-p">)</span>
+<span class="highlight-ln">15</span>    <span class="highlight-n">querystring</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"category"</span><span class="highlight-p">:</span> <span class="highlight-n">tup</span><span class="highlight-p">[</span><span class="highlight-mi">2</span><span class="highlight-p">],</span> <span class="highlight-s2">"max_behot_time"</span><span class="highlight-p">:</span> <span class="highlight-n">t</span><span class="highlight-p">,</span> <span class="highlight-s2">"last_refresh_sub_entrance_interval"</span><span class="highlight-p">:</span> <span class="highlight-s2">"1524907088"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">16</span>                   <span class="highlight-s2">"loc_mode"</span><span class="highlight-p">:</span> <span class="highlight-s2">"5"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">17</span>                   <span class="highlight-s2">"tt_from"</span><span class="highlight-p">:</span> <span class="highlight-s2">"pre_load_more"</span><span class="highlight-p">,</span> <span class="highlight-s2">"cp"</span><span class="highlight-p">:</span> <span class="highlight-s2">"51a5ee4f38c50q1"</span><span class="highlight-p">,</span> <span class="highlight-s2">"plugin_enable"</span><span class="highlight-p">:</span> <span class="highlight-s2">"0"</span><span class="highlight-p">,</span> <span class="highlight-s2">"iid"</span><span class="highlight-p">:</span> <span class="highlight-s2">"31047425023"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">18</span>                   <span class="highlight-s2">"device_id"</span><span class="highlight-p">:</span> <span class="highlight-s2">"51425358841"</span><span class="highlight-p">,</span> <span class="highlight-s2">"ac"</span><span class="highlight-p">:</span> <span class="highlight-s2">"wifi"</span><span class="highlight-p">,</span> <span class="highlight-s2">"channel"</span><span class="highlight-p">:</span> <span class="highlight-s2">"tengxun"</span><span class="highlight-p">,</span> <span class="highlight-s2">"aid"</span><span class="highlight-p">:</span> <span class="highlight-s2">"13"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">19</span>                   <span class="highlight-s2">"app_name"</span><span class="highlight-p">:</span> <span class="highlight-s2">"news_article"</span><span class="highlight-p">,</span> <span class="highlight-s2">"version_code"</span><span class="highlight-p">:</span> <span class="highlight-s2">"631"</span><span class="highlight-p">,</span> <span class="highlight-s2">"version_name"</span><span class="highlight-p">:</span> <span class="highlight-s2">"6.3.1"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">20</span>                   <span class="highlight-s2">"device_platform"</span><span class="highlight-p">:</span> <span class="highlight-s2">"android"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">21</span>                   <span class="highlight-s2">"ab_version"</span><span class="highlight-p">:</span> <span class="highlight-s2">"333116,297979,317498,336556,295827,325046,239097,324283,170988,335432,332098,325198,336443,330632,297058,276203,286212,313219,328615,332041,329358,322321,327537,335710,333883,335102,334828,328670,324007,317077,334305,280773,335671,319960,333985,331719,336452,214069,31643,332881,333968,318434,207253,266310,321519,247847,281298,328218,335998,325618,333327,336199,323429,287591,288418,260650,326188,324614,335477,271178,326588,326524,326532"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">22</span>                   <span class="highlight-s2">"ab_client"</span><span class="highlight-p">:</span> <span class="highlight-s2">"a1,c4,e1,f2,g2,f7"</span><span class="highlight-p">,</span> <span class="highlight-s2">"ab_feature"</span><span class="highlight-p">:</span> <span class="highlight-s2">"94563,102749"</span><span class="highlight-p">,</span> <span class="highlight-s2">"abflag"</span><span class="highlight-p">:</span> <span class="highlight-s2">"3"</span><span class="highlight-p">,</span> <span class="highlight-s2">"ssmix"</span><span class="highlight-p">:</span> <span class="highlight-s2">"a"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">23</span>                   <span class="highlight-s2">"device_type"</span><span class="highlight-p">:</span> <span class="highlight-s2">"MuMu"</span><span class="highlight-p">,</span> <span class="highlight-s2">"device_brand"</span><span class="highlight-p">:</span> <span class="highlight-s2">"Android"</span><span class="highlight-p">,</span> <span class="highlight-s2">"language"</span><span class="highlight-p">:</span> <span class="highlight-s2">"zh"</span><span class="highlight-p">,</span> <span class="highlight-s2">"os_api"</span><span class="highlight-p">:</span> <span class="highlight-s2">"19"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">24</span>                   <span class="highlight-s2">"os_version"</span><span class="highlight-p">:</span> <span class="highlight-s2">"4.4.4"</span><span class="highlight-p">,</span> <span class="highlight-s2">"uuid"</span><span class="highlight-p">:</span> <span class="highlight-s2">"008796762094657"</span><span class="highlight-p">,</span> <span class="highlight-s2">"openudid"</span><span class="highlight-p">:</span> <span class="highlight-s2">"b7215ea70ca32066"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">25</span>                   <span class="highlight-s2">"manifest_version_code"</span><span class="highlight-p">:</span> <span class="highlight-s2">"631"</span><span class="highlight-p">,</span> <span class="highlight-s2">"resolution"</span><span class="highlight-p">:</span> <span class="highlight-s2">"1280*720"</span><span class="highlight-p">,</span> <span class="highlight-s2">"dpi"</span><span class="highlight-p">:</span> <span class="highlight-s2">"240"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">26</span>                   <span class="highlight-s2">"update_version_code"</span><span class="highlight-p">:</span> <span class="highlight-s2">"6310"</span><span class="highlight-p">,</span> <span class="highlight-s2">"_rticket"</span><span class="highlight-p">:</span> <span class="highlight-s2">"1524907088018"</span><span class="highlight-p">,</span> <span class="highlight-s2">"plugin"</span><span class="highlight-p">:</span> <span class="highlight-s2">"256"</span><span class="highlight-p">}</span>
+<span class="highlight-ln">27</span>
+<span class="highlight-ln">28</span>    <span class="highlight-n">headers</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span>
+<span class="highlight-ln">29</span>        <span class="highlight-s1">'cache-control'</span><span class="highlight-p">:</span> <span class="highlight-s2">"no-cache"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">30</span>        <span class="highlight-s1">'postman-token'</span><span class="highlight-p">:</span> <span class="highlight-s2">"26530547-e697-1e8b-fd82-7c6014b3ee86"</span><span class="highlight-p">,</span>
+<span class="highlight-ln">31</span>        <span class="highlight-s1">'User-Agent'</span><span class="highlight-p">:</span> <span class="highlight-s1">'Dalvik/1.6.0 (Linux; U; Android 4.4.4; MuMu Build/V417IR) NewsArticle/6.3.1 okhttp/3.7.0.2'</span>
+<span class="highlight-ln">32</span>    <span class="highlight-p">}</span>
+<span class="highlight-ln">33</span>
+<span class="highlight-ln">34</span>    <span class="highlight-c1"># 进行网络请求</span>
+<span class="highlight-ln">35</span>    <span class="highlight-n">response</span> <span class="highlight-o">=</span> <span class="highlight-n">requests</span><span class="highlight-o">.</span><span class="highlight-n">request</span><span class="highlight-p">(</span><span class="highlight-s2">"GET"</span><span class="highlight-p">,</span> <span class="highlight-n">url</span><span class="highlight-p">,</span> <span class="highlight-n">headers</span><span class="highlight-o">=</span><span class="highlight-n">headers</span><span class="highlight-p">,</span> <span class="highlight-n">params</span><span class="highlight-o">=</span><span class="highlight-n">querystring</span><span class="highlight-p">)</span>
+<span class="highlight-ln">36</span>    <span class="highlight-c1"># 获取返回的数据</span>
+<span class="highlight-ln">37</span>    <span class="highlight-n">new_data</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">loads</span><span class="highlight-p">(</span><span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-n">text</span><span class="highlight-p">)</span>
+<span class="highlight-ln">38</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'a'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">fp</span><span class="highlight-p">:</span>
+<span class="highlight-ln">39</span>        <span class="highlight-k">for</span> <span class="highlight-n">item</span> <span class="highlight-ow">in</span> <span class="highlight-n">new_data</span><span class="highlight-p">[</span><span class="highlight-s1">'data'</span><span class="highlight-p">]:</span>
+<span class="highlight-ln">40</span>            <span class="highlight-n">item</span> <span class="highlight-o">=</span> <span class="highlight-n">item</span><span class="highlight-p">[</span><span class="highlight-s1">'content'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">41</span>            <span class="highlight-n">item</span> <span class="highlight-o">=</span> <span class="highlight-n">item</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\"</span><span class="highlight-s1">'</span><span class="highlight-p">,</span> <span class="highlight-s1">'"'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">42</span>            <span class="highlight-n">item</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">loads</span><span class="highlight-p">(</span><span class="highlight-n">item</span><span class="highlight-p">)</span>
+<span class="highlight-ln">43</span>            <span class="highlight-c1"># 判断数据中是否包含id和新闻标题</span>
+<span class="highlight-ln">44</span>            <span class="highlight-k">if</span> <span class="highlight-s1">'item_id'</span> <span class="highlight-ow">in</span> <span class="highlight-n">item</span><span class="highlight-o">.</span><span class="highlight-n">keys</span><span class="highlight-p">()</span> <span class="highlight-ow">and</span> <span class="highlight-s1">'title'</span> <span class="highlight-ow">in</span> <span class="highlight-n">item</span><span class="highlight-o">.</span><span class="highlight-n">keys</span><span class="highlight-p">():</span>
+<span class="highlight-ln">45</span>                <span class="highlight-n">item_id</span> <span class="highlight-o">=</span> <span class="highlight-n">item</span><span class="highlight-p">[</span><span class="highlight-s1">'item_id'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">46</span>                <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">downloaded_sum</span><span class="highlight-p">,</span> <span class="highlight-n">tup</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">tup</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">item</span><span class="highlight-p">[</span><span class="highlight-s1">'item_id'</span><span class="highlight-p">],</span> <span class="highlight-n">item</span><span class="highlight-p">[</span><span class="highlight-s1">'title'</span><span class="highlight-p">])</span>
+<span class="highlight-ln">47</span>                <span class="highlight-c1"># 通过新闻id判断是否已经下载过</span>
+<span class="highlight-ln">48</span>                <span class="highlight-k">if</span> <span class="highlight-n">item_id</span> <span class="highlight-ow">not</span> <span class="highlight-ow">in</span> <span class="highlight-n">downloaded_data_id</span><span class="highlight-p">:</span>
+<span class="highlight-ln">49</span>                    <span class="highlight-n">downloaded_data_id</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">item_id</span><span class="highlight-p">)</span>
+<span class="highlight-ln">50</span>                    <span class="highlight-c1"># 安装固定格式追加写入文件中</span>
+<span class="highlight-ln">51</span>                    <span class="highlight-n">line</span> <span class="highlight-o">=</span> <span class="highlight-sa">u</span><span class="highlight-s2">"{}_!_{}_!_{}_!_{}"</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">item</span><span class="highlight-p">[</span><span class="highlight-s1">'item_id'</span><span class="highlight-p">],</span> <span class="highlight-n">tup</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">tup</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">item</span><span class="highlight-p">[</span><span class="highlight-s1">'title'</span><span class="highlight-p">])</span>
+<span class="highlight-ln">52</span>                    <span class="highlight-n">line</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span><span class="highlight-p">,</span> <span class="highlight-s1">''</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\r</span><span class="highlight-s1">'</span><span class="highlight-p">,</span> <span class="highlight-s1">''</span><span class="highlight-p">)</span>
+<span class="highlight-ln">53</span>                    <span class="highlight-n">line</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span>
+<span class="highlight-ln">54</span>                    <span class="highlight-n">fp</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">line</span><span class="highlight-p">)</span>
+<span class="highlight-ln">55</span>                    <span class="highlight-n">downloaded_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+</code></pre>
+<p>有时候爬取时间比较长，可能中途需要中断。所以就需要以下的代码进行处理，读取已经保存的文本数据的文件中的数据ID，通过使用这个数据集，在爬取数据的时候就不再重复保存数据了。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">get_routine</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-k">global</span> <span class="highlight-n">downloaded_sum</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 从文件中读取已经有的数据，避免数据重复</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-k">if</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">fp</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 6</span>            <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">fp</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()</span>
+<span class="highlight-ln"> 7</span>            <span class="highlight-n">downloaded_sum</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">lines</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 8</span>            <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 9</span>                <span class="highlight-n">item_id</span> <span class="highlight-o">=</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'_!_'</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<span class="highlight-ln">10</span>                <span class="highlight-n">downloaded_data_id</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">item_id</span><span class="highlight-p">)</span>
+<span class="highlight-ln">11</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'在文件中已经读起了</span><span class="highlight-si">%d</span><span class="highlight-s1">条数据'</span> <span class="highlight-o">%</span> <span class="highlight-n">downloaded_sum</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>    <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln">13</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">dirname</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">))</span>
+<span class="highlight-ln">14</span>
+<span class="highlight-ln">15</span>    <span class="highlight-k">while</span> <span class="highlight-mi">1</span><span class="highlight-p">:</span>
+<span class="highlight-ln">16</span>        <span class="highlight-c1"># 　开始下载数据</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">sleep</span><span class="highlight-p">(</span><span class="highlight-mi">10</span><span class="highlight-p">)</span>
+<span class="highlight-ln">18</span>        <span class="highlight-k">for</span> <span class="highlight-n">classify</span> <span class="highlight-ow">in</span> <span class="highlight-n">news_classify</span><span class="highlight-p">:</span>
+<span class="highlight-ln">19</span>            <span class="highlight-n">get_data</span><span class="highlight-p">(</span><span class="highlight-n">classify</span><span class="highlight-p">,</span> <span class="highlight-n">data_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">20</span>        <span class="highlight-c1"># 当下载量超过300000就停止下载</span>
+<span class="highlight-ln">21</span>        <span class="highlight-k">if</span> <span class="highlight-n">downloaded_sum</span> <span class="highlight-o">&gt;=</span> <span class="highlight-mi">300000</span><span class="highlight-p">:</span>
+<span class="highlight-ln">22</span>            <span class="highlight-k">break</span>
+</code></pre>
+<p>最后在main入口中启动爬取文本数据的函数。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">2</span>    <span class="highlight-n">data_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'datasets/news_classify_data.txt'</span>
+<span class="highlight-ln">3</span>    <span class="highlight-n">dict_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"datasets/dict_txt.txt"</span>
+<span class="highlight-ln">4</span>    <span class="highlight-c1"># 下载数据集</span>
+<span class="highlight-ln">5</span>    <span class="highlight-n">get_routine</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">)</span>
+</code></pre>
+<p>在爬取过程中，输出信息：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>============文化============
+<span class="highlight-ln">2</span>17 1 文化 6646565189942510093 世界第一豪宅，坐落于北京，一根柱子27个亿，世界首富都买不起！
+<span class="highlight-ln">3</span>18 1 文化 6658382232383652104 俗语讲：“男怕初一，女怕十五”，这话什么意思？有道理吗？
+<span class="highlight-ln">4</span>19 1 文化 6636596124998173192 浙江一员工请假条火了，内容令人狂笑不止，字迹却让人念念不忘
+<span class="highlight-ln">5</span>20 1 文化 6658848073562718734 难怪悟空被赶下山后菩提神秘消失，你看看方寸山门口对联写了啥？
+<span class="highlight-ln">6</span>21 1 文化 6658952207871771140 他把183件国宝无偿捐给美国，捐回中国却收了450万美元
+</code></pre>
+<h1 id="制作训练数据">制作训练数据</h1>
+<p>上面爬取的文本数据并不能直接拿来训练，因为PaddlePaddle训练的数据不能是字符串的，所以需要对这些文本数据转换成整型类型的数据。就是把一个字对应上唯一的数字，最后把全部的文字转换成数字。</p>
+<p>创建<code>create_data.py</code>文件。创建<code>create_dict()</code>函数，这个函数用来创建一个数据字典。数字字典就是把每个字都对应一个一个数字，包括标点符号。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-c1"># 把下载得数据生成一个字典</span>
+<span class="highlight-ln"> 4</span><span class="highlight-k">def</span> <span class="highlight-nf">create_dict</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-n">dict_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-n">dict_set</span> <span class="highlight-o">=</span> <span class="highlight-nb">set</span><span class="highlight-p">()</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 读取已经下载得数据</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-c1"># 把数据生成一个元组</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
+<span class="highlight-ln">11</span>        <span class="highlight-n">title</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'_!_'</span><span class="highlight-p">)[</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span><span class="highlight-p">,</span> <span class="highlight-s1">''</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>        <span class="highlight-k">for</span> <span class="highlight-n">s</span> <span class="highlight-ow">in</span> <span class="highlight-n">title</span><span class="highlight-p">:</span>
+<span class="highlight-ln">13</span>            <span class="highlight-n">dict_set</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">s</span><span class="highlight-p">)</span>
+<span class="highlight-ln">14</span>    <span class="highlight-c1"># 把元组转换成字典，一个字对应一个数字</span>
+<span class="highlight-ln">15</span>    <span class="highlight-n">dict_list</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">16</span>    <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">17</span>    <span class="highlight-k">for</span> <span class="highlight-n">s</span> <span class="highlight-ow">in</span> <span class="highlight-n">dict_set</span><span class="highlight-p">:</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">dict_list</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">([</span><span class="highlight-n">s</span><span class="highlight-p">,</span> <span class="highlight-n">i</span><span class="highlight-p">])</span>
+<span class="highlight-ln">19</span>        <span class="highlight-n">i</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">20</span>    <span class="highlight-c1"># 添加未知字符</span>
+<span class="highlight-ln">21</span>    <span class="highlight-n">dict_txt</span> <span class="highlight-o">=</span> <span class="highlight-nb">dict</span><span class="highlight-p">(</span><span class="highlight-n">dict_list</span><span class="highlight-p">)</span>
+<span class="highlight-ln">22</span>    <span class="highlight-n">end_dict</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"&lt;unk&gt;"</span><span class="highlight-p">:</span> <span class="highlight-n">i</span><span class="highlight-p">}</span>
+<span class="highlight-ln">23</span>    <span class="highlight-n">dict_txt</span><span class="highlight-o">.</span><span class="highlight-n">update</span><span class="highlight-p">(</span><span class="highlight-n">end_dict</span><span class="highlight-p">)</span>
+<span class="highlight-ln">24</span>    <span class="highlight-c1"># 把这些字典保存到本地中</span>
+<span class="highlight-ln">25</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">dict_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">26</span>        <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">dict_txt</span><span class="highlight-p">))</span>
+<span class="highlight-ln">27</span>
+<span class="highlight-ln">28</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"数据字典生成完成！"</span><span class="highlight-p">)</span>
+</code></pre>
+<p>生成的数据字典类型如下：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>{'港': 712, '选': 367, '所': 0, '斯': 1,
+</code></pre>
+<p>创建一个数据自己之后，就使用这个数据字典把下载数据转换成数字，还有标签。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">create_data_list</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'test_list.txt'</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 3</span>        <span class="highlight-k">pass</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'train_list.txt'</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-k">pass</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'dict_txt.txt'</span><span class="highlight-p">),</span> <span class="highlight-s1">'r'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_data</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-n">dict_txt</span> <span class="highlight-o">=</span> <span class="highlight-nb">eval</span><span class="highlight-p">(</span><span class="highlight-n">f_data</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_classify_data.txt'</span><span class="highlight-p">),</span> <span class="highlight-s1">'r'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_data</span><span class="highlight-p">:</span>
+<span class="highlight-ln">11</span>        <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">f_data</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()</span>
+<span class="highlight-ln">12</span>    <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">13</span>    <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
+<span class="highlight-ln">14</span>        <span class="highlight-n">title</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'_!_'</span><span class="highlight-p">)[</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span><span class="highlight-p">,</span> <span class="highlight-s1">''</span><span class="highlight-p">)</span>
+<span class="highlight-ln">15</span>        <span class="highlight-n">l</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'_!_'</span><span class="highlight-p">)[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">16</span>        <span class="highlight-n">labs</span> <span class="highlight-o">=</span> <span class="highlight-s2">""</span>
+<span class="highlight-ln">17</span>        <span class="highlight-k">if</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-mi">10</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
+<span class="highlight-ln">18</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'test_list.txt'</span><span class="highlight-p">),</span> <span class="highlight-s1">'a'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_test</span><span class="highlight-p">:</span>
+<span class="highlight-ln">19</span>                <span class="highlight-k">for</span> <span class="highlight-n">s</span> <span class="highlight-ow">in</span> <span class="highlight-n">title</span><span class="highlight-p">:</span>
+<span class="highlight-ln">20</span>                    <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">dict_txt</span><span class="highlight-p">[</span><span class="highlight-n">s</span><span class="highlight-p">])</span>
+<span class="highlight-ln">21</span>                    <span class="highlight-n">labs</span> <span class="highlight-o">=</span> <span class="highlight-n">labs</span> <span class="highlight-o">+</span> <span class="highlight-n">lab</span> <span class="highlight-o">+</span> <span class="highlight-s1">','</span>
+<span class="highlight-ln">22</span>                <span class="highlight-n">labs</span> <span class="highlight-o">=</span> <span class="highlight-n">labs</span><span class="highlight-p">[:</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">23</span>                <span class="highlight-n">labs</span> <span class="highlight-o">=</span> <span class="highlight-n">labs</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span> <span class="highlight-o">+</span> <span class="highlight-n">l</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span>
+<span class="highlight-ln">24</span>                <span class="highlight-n">f_test</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">labs</span><span class="highlight-p">)</span>
+<span class="highlight-ln">25</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln">26</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'train_list.txt'</span><span class="highlight-p">),</span> <span class="highlight-s1">'a'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_train</span><span class="highlight-p">:</span>
+<span class="highlight-ln">27</span>                <span class="highlight-k">for</span> <span class="highlight-n">s</span> <span class="highlight-ow">in</span> <span class="highlight-n">title</span><span class="highlight-p">:</span>
+<span class="highlight-ln">28</span>                    <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">dict_txt</span><span class="highlight-p">[</span><span class="highlight-n">s</span><span class="highlight-p">])</span>
+<span class="highlight-ln">29</span>                    <span class="highlight-n">labs</span> <span class="highlight-o">=</span> <span class="highlight-n">labs</span> <span class="highlight-o">+</span> <span class="highlight-n">lab</span> <span class="highlight-o">+</span> <span class="highlight-s1">','</span>
+<span class="highlight-ln">30</span>                <span class="highlight-n">labs</span> <span class="highlight-o">=</span> <span class="highlight-n">labs</span><span class="highlight-p">[:</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">31</span>                <span class="highlight-n">labs</span> <span class="highlight-o">=</span> <span class="highlight-n">labs</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span> <span class="highlight-o">+</span> <span class="highlight-n">l</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span>
+<span class="highlight-ln">32</span>                <span class="highlight-n">f_train</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">labs</span><span class="highlight-p">)</span>
+<span class="highlight-ln">33</span>        <span class="highlight-n">i</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">34</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"数据列表生成完成！"</span><span class="highlight-p">)</span>
+</code></pre>
+<p>转换后的数据如下：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>321,364,535,897,322,263,354,337,441,815,943	12
+<span class="highlight-ln">2</span>540,299,884,1092,671,938	13
+</code></pre>
+<p>这里顺便增加获取字典长度的函数，因为在训练的时候获取神经网络分类器的时候需要用到。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取字典的长度</span>
+<span class="highlight-ln">2</span><span class="highlight-k">def</span> <span class="highlight-nf">get_dict_len</span><span class="highlight-p">(</span><span class="highlight-n">dict_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln">3</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">dict_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">4</span>        <span class="highlight-n">line</span> <span class="highlight-o">=</span> <span class="highlight-nb">eval</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<span class="highlight-ln">5</span>
+<span class="highlight-ln">6</span>    <span class="highlight-k">return</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">keys</span><span class="highlight-p">())</span>
+</code></pre>
+<p>最后执行创建数据字典和生成数据列表的函数就可以生成待训练的数据了。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">2</span>    <span class="highlight-c1"># 把生产的数据列表都放在自己的总类别文件夹中</span>
+<span class="highlight-ln">3</span>    <span class="highlight-n">data_root_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"datasets/"</span>
+<span class="highlight-ln">4</span>    <span class="highlight-n">data_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'news_classify_data.txt'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">5</span>    <span class="highlight-n">dict_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">,</span> <span class="highlight-s2">"dict_txt.txt"</span><span class="highlight-p">)</span>
+<span class="highlight-ln">6</span>    <span class="highlight-c1"># 创建数据字典</span>
+<span class="highlight-ln">7</span>    <span class="highlight-n">create_dict</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-n">dict_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">8</span>    <span class="highlight-c1"># 创建数据列表</span>
+<span class="highlight-ln">9</span>    <span class="highlight-n">create_data_list</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">)</span>
+</code></pre>
+<p>在执行的过程中会输出信息：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>数据字典生成完成！
+<span class="highlight-ln">2</span>数据列表生成完成！
+</code></pre>
+<h1 id="定义模型">定义模型</h1>
+<p>然后我们定义一个文本分类模型，这里使用的是双向单层LSTM模型，据说百度的情感分析也是使用这个模型的。我们创建一个<code>bilstm_net.py</code>文件，用于定义双向单层LSTM模型。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-k">def</span> <span class="highlight-nf">bilstm_net</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">dict_dim</span><span class="highlight-p">,</span> <span class="highlight-n">class_dim</span><span class="highlight-p">,</span> <span class="highlight-n">emb_dim</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">hid_dim</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">hid_dim2</span><span class="highlight-o">=</span><span class="highlight-mi">96</span><span class="highlight-p">,</span> <span class="highlight-n">emb_lr</span><span class="highlight-o">=</span><span class="highlight-mf">30.0</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># embedding layer</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-n">emb</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">embedding</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">data</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 6</span>                                 <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">dict_dim</span><span class="highlight-p">,</span> <span class="highlight-n">emb_dim</span><span class="highlight-p">],</span>
+<span class="highlight-ln"> 7</span>                                 <span class="highlight-n">param_attr</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">ParamAttr</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-n">emb_lr</span><span class="highlight-p">))</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-c1"># bi-lstm layer</span>
+<span class="highlight-ln">10</span>    <span class="highlight-n">fc0</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">emb</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">hid_dim</span> <span class="highlight-o">*</span> <span class="highlight-mi">4</span><span class="highlight-p">)</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span>    <span class="highlight-n">rfc0</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">emb</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">hid_dim</span> <span class="highlight-o">*</span> <span class="highlight-mi">4</span><span class="highlight-p">)</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span>    <span class="highlight-n">lstm_h</span><span class="highlight-p">,</span> <span class="highlight-n">c</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">dynamic_lstm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc0</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">hid_dim</span> <span class="highlight-o">*</span> <span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-n">is_reverse</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span>    <span class="highlight-n">rlstm_h</span><span class="highlight-p">,</span> <span class="highlight-n">c</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">dynamic_lstm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">rfc0</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">hid_dim</span> <span class="highlight-o">*</span> <span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-n">is_reverse</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<span class="highlight-ln">17</span>
+<span class="highlight-ln">18</span>    <span class="highlight-c1"># extract last layer</span>
+<span class="highlight-ln">19</span>    <span class="highlight-n">lstm_last</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">sequence_last_step</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">lstm_h</span><span class="highlight-p">)</span>
+<span class="highlight-ln">20</span>    <span class="highlight-n">rlstm_last</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">sequence_last_step</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">rlstm_h</span><span class="highlight-p">)</span>
+<span class="highlight-ln">21</span>
+<span class="highlight-ln">22</span>    <span class="highlight-c1"># concat layer</span>
+<span class="highlight-ln">23</span>    <span class="highlight-n">lstm_concat</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">concat</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">lstm_last</span><span class="highlight-p">,</span> <span class="highlight-n">rlstm_last</span><span class="highlight-p">],</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">24</span>
+<span class="highlight-ln">25</span>    <span class="highlight-c1"># full connect layer</span>
+<span class="highlight-ln">26</span>    <span class="highlight-n">fc1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">lstm_concat</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">hid_dim2</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'tanh'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">27</span>    <span class="highlight-c1"># softmax layer</span>
+<span class="highlight-ln">28</span>    <span class="highlight-n">prediction</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc1</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">class_dim</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'softmax'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">29</span>    <span class="highlight-k">return</span> <span class="highlight-n">prediction</span>
+</code></pre>
+<h1 id="定义数据读取">定义数据读取</h1>
+<p>接下来我们定义<code>text_reader.py</code>文件，用于读取文本数据集。这相对图片读取来说，这比较简单。</p>
+<p>首先导入相应的依赖包。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">from</span> <span class="highlight-nn">multiprocessing</span> <span class="highlight-kn">import</span> <span class="highlight-n">cpu_count</span>
+<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle</span>
+</code></pre>
+<p>因为在上一个程序已经把文本转换成PaddlePaddle可读数据，所以直接就可以在文件中读取数据成了。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 训练数据的预处理</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">train_mapper</span><span class="highlight-p">(</span><span class="highlight-n">sample</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">sample</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">data</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">)</span> <span class="highlight-k">for</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">','</span><span class="highlight-p">)]</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-k">return</span> <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span><span class="highlight-c1"># 训练数据的reader</span>
+<span class="highlight-ln"> 8</span><span class="highlight-k">def</span> <span class="highlight-nf">train_reader</span><span class="highlight-p">(</span><span class="highlight-n">train_list_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
+<span class="highlight-ln">11</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">train_list_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">12</span>            <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()</span>
+<span class="highlight-ln">13</span>            <span class="highlight-c1"># 打乱数据</span>
+<span class="highlight-ln">14</span>            <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span><span class="highlight-n">lines</span><span class="highlight-p">)</span>
+<span class="highlight-ln">15</span>            <span class="highlight-c1"># 开始获取每张图像和标签</span>
+<span class="highlight-ln">16</span>            <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
+<span class="highlight-ln">17</span>                <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">18</span>                <span class="highlight-k">yield</span> <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">label</span>
+<span class="highlight-ln">19</span>
+<span class="highlight-ln">20</span>    <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">xmap_readers</span><span class="highlight-p">(</span><span class="highlight-n">train_mapper</span><span class="highlight-p">,</span> <span class="highlight-n">reader</span><span class="highlight-p">,</span> <span class="highlight-n">cpu_count</span><span class="highlight-p">(),</span> <span class="highlight-mi">1024</span><span class="highlight-p">)</span>
+</code></pre>
+<p>这里跟训练的读取方式一样，只是没有一个打乱数据的操作。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 测试数据的预处理</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">test_mapper</span><span class="highlight-p">(</span><span class="highlight-n">sample</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">sample</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">data</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">)</span> <span class="highlight-k">for</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">','</span><span class="highlight-p">)]</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-k">return</span> <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span><span class="highlight-c1"># 测试数据的reader</span>
+<span class="highlight-ln"> 8</span><span class="highlight-k">def</span> <span class="highlight-nf">test_reader</span><span class="highlight-p">(</span><span class="highlight-n">test_list_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
+<span class="highlight-ln">11</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">test_list_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln">12</span>            <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()</span>
+<span class="highlight-ln">13</span>            <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
+<span class="highlight-ln">14</span>                <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">15</span>                <span class="highlight-k">yield</span> <span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">label</span>
+<span class="highlight-ln">16</span>    <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">xmap_readers</span><span class="highlight-p">(</span><span class="highlight-n">test_mapper</span><span class="highlight-p">,</span> <span class="highlight-n">reader</span><span class="highlight-p">,</span> <span class="highlight-n">cpu_count</span><span class="highlight-p">(),</span> <span class="highlight-mi">1024</span><span class="highlight-p">)</span>
+</code></pre>
+<h1 id="训练模型">训练模型</h1>
+<p>然后编写<code>train.py</code>文件，开始训练文本分类模型。首先到如相应的依赖包。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
+<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">shutil</span>
+<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle</span>
+<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
+<span class="highlight-ln">5</span><span class="highlight-kn">import</span> <span class="highlight-nn">create_data</span>
+<span class="highlight-ln">6</span><span class="highlight-kn">import</span> <span class="highlight-nn">text_reader</span>
+<span class="highlight-ln">7</span><span class="highlight-kn">import</span> <span class="highlight-nn">bilstm_net</span>
+</code></pre>
+<p>定义网络输入层，数据是一条文本数据，所以只有一个维度。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义输入数据， lod_level不为0指定输入数据为序列数据</span>
+<span class="highlight-ln">2</span><span class="highlight-n">words</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'words'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">,</span> <span class="highlight-n">lod_level</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">3</span><span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'label'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
+</code></pre>
+<p>接着是获取双向单层LSTM模型的分类器，这里需要用到文本数据集的字典大小，然后还需要分类器的大小，因为我们的文本数据有15个类别，所以这里分类器的大小是15。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取数据字典长度</span>
+<span class="highlight-ln">2</span><span class="highlight-n">dict_dim</span> <span class="highlight-o">=</span> <span class="highlight-n">create_data</span><span class="highlight-o">.</span><span class="highlight-n">get_dict_len</span><span class="highlight-p">(</span><span class="highlight-s1">'datasets/dict_txt.txt'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">3</span><span class="highlight-c1"># 获取长短期记忆网络</span>
+<span class="highlight-ln">4</span><span class="highlight-n">model</span> <span class="highlight-o">=</span> <span class="highlight-n">bilstm_net</span><span class="highlight-o">.</span><span class="highlight-n">bilstm_net</span><span class="highlight-p">(</span><span class="highlight-n">words</span><span class="highlight-p">,</span> <span class="highlight-n">dict_dim</span><span class="highlight-p">,</span> <span class="highlight-mi">15</span><span class="highlight-p">)</span>
+</code></pre>
+<p>然后是定义一系列的损失函数，准确率函数，克隆预测程序和优化方法。这里使用的优化方法是Adagrad优化方法，Adagrad优化方法多用于处理稀疏数据。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 获取损失函数和准确率</span>
+<span class="highlight-ln"> 2</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">cross_entropy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 3</span><span class="highlight-n">avg_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">mean</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 4</span><span class="highlight-n">acc</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">accuracy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 5</span>
+<span class="highlight-ln"> 6</span><span class="highlight-c1"># 获取预测程序</span>
+<span class="highlight-ln"> 7</span><span class="highlight-n">test_program</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">clone</span><span class="highlight-p">(</span><span class="highlight-n">for_test</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span><span class="highlight-c1"># 定义优化方法</span>
+<span class="highlight-ln">10</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">AdagradOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.002</span><span class="highlight-p">)</span>
+<span class="highlight-ln">11</span><span class="highlight-n">opt</span> <span class="highlight-o">=</span> <span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">avg_cost</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>
+<span class="highlight-ln">13</span><span class="highlight-c1"># 创建一个执行器，CPU训练速度比较慢</span>
+<span class="highlight-ln">14</span><span class="highlight-c1"># place = fluid.CPUPlace()</span>
+<span class="highlight-ln">15</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CUDAPlace</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
+<span class="highlight-ln">16</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
+<span class="highlight-ln">17</span><span class="highlight-c1"># 进行参数初始化</span>
+<span class="highlight-ln">18</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+</code></pre>
+<p>这里就是获取我们在上一个文件中定义读取数据的reader，根据不同的文本文件加载训练和预测的数据，准备进行训练。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取训练和预测数据</span>
+<span class="highlight-ln">2</span><span class="highlight-n">train_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">text_reader</span><span class="highlight-o">.</span><span class="highlight-n">train_reader</span><span class="highlight-p">(</span><span class="highlight-s1">'datasets/train_list.txt'</span><span class="highlight-p">),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
+<span class="highlight-ln">3</span><span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">text_reader</span><span class="highlight-o">.</span><span class="highlight-n">test_reader</span><span class="highlight-p">(</span><span class="highlight-s1">'datasets/test_list.txt'</span><span class="highlight-p">),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
+</code></pre>
+<p>最后在这里进行训练和测试，我们然执行器在训练的过程中输出训练时的是损失值和准确率。然后每40个batch打印一次信息和执行一次测试操作，查看网络模型在测试集中的准确率。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 定义输入数据的维度</span>
+<span class="highlight-ln"> 2</span><span class="highlight-n">feeder</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">DataFeeder</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-o">=</span><span class="highlight-n">place</span><span class="highlight-p">,</span> <span class="highlight-n">feed_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">words</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">])</span>
+<span class="highlight-ln"> 3</span>
+<span class="highlight-ln"> 4</span><span class="highlight-c1"># 开始训练</span>
+<span class="highlight-ln"> 5</span><span class="highlight-k">for</span> <span class="highlight-n">pass_id</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">10</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 进行训练</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">train_reader</span><span class="highlight-p">()):</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-n">train_cost</span><span class="highlight-p">,</span> <span class="highlight-n">train_acc</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
+<span class="highlight-ln"> 9</span>                             <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
+<span class="highlight-ln">10</span>                             <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">,</span> <span class="highlight-n">acc</span><span class="highlight-p">])</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span>        <span class="highlight-k">if</span> <span class="highlight-n">batch_id</span> <span class="highlight-o">%</span> <span class="highlight-mi">40</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
+<span class="highlight-ln">13</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Pass:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Batch:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">, Acc:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">train_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">train_acc</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]))</span>
+<span class="highlight-ln">14</span>            <span class="highlight-c1"># 进行测试</span>
+<span class="highlight-ln">15</span>            <span class="highlight-n">test_costs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">16</span>            <span class="highlight-n">test_accs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">17</span>            <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">test_reader</span><span class="highlight-p">()):</span>
+<span class="highlight-ln">18</span>                <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">test_program</span><span class="highlight-p">,</span>
+<span class="highlight-ln">19</span>                                              <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
+<span class="highlight-ln">20</span>                                              <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">,</span> <span class="highlight-n">acc</span><span class="highlight-p">])</span>
+<span class="highlight-ln">21</span>                <span class="highlight-n">test_costs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<span class="highlight-ln">22</span>                <span class="highlight-n">test_accs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_acc</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<span class="highlight-ln">23</span>            <span class="highlight-c1"># 计算平均预测损失在和准确率</span>
+<span class="highlight-ln">24</span>            <span class="highlight-n">test_cost</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">))</span>
+<span class="highlight-ln">25</span>            <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">))</span>
+<span class="highlight-ln">26</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Test:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">, ACC:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span><span class="highlight-p">))</span>
+</code></pre>
+<p>我可以在每pass训练结束之后保存一次预测模型，可以用于之后的预测。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span>    <span class="highlight-c1"># 保存预测模型</span>
+<span class="highlight-ln">2</span>    <span class="highlight-n">save_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'infer_model/'</span>
+<span class="highlight-ln">3</span>    <span class="highlight-c1"># 删除旧的模型文件</span>
+<span class="highlight-ln">4</span>    <span class="highlight-n">shutil</span><span class="highlight-o">.</span><span class="highlight-n">rmtree</span><span class="highlight-p">(</span><span class="highlight-n">save_path</span><span class="highlight-p">,</span> <span class="highlight-n">ignore_errors</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<span class="highlight-ln">5</span>    <span class="highlight-c1"># 创建保持模型文件目录</span>
+<span class="highlight-ln">6</span>    <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">save_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">7</span>    <span class="highlight-c1"># 保存预测模型</span>
+<span class="highlight-ln">8</span>    <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">io</span><span class="highlight-o">.</span><span class="highlight-n">save_inference_model</span><span class="highlight-p">(</span><span class="highlight-n">save_path</span><span class="highlight-p">,</span> <span class="highlight-n">feeded_var_names</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">words</span><span class="highlight-o">.</span><span class="highlight-n">name</span><span class="highlight-p">],</span> <span class="highlight-n">target_vars</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">model</span><span class="highlight-p">],</span> <span class="highlight-n">executor</span><span class="highlight-o">=</span><span class="highlight-n">exe</span><span class="highlight-p">)</span>
+</code></pre>
+<p>训练输出的信息：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>Pass:0, Batch:0, Cost:2.70816, Acc:0.07812
+<span class="highlight-ln"> 2</span>Test:0, Cost:2.68423, ACC:0.14427
+<span class="highlight-ln"> 3</span>Pass:0, Batch:40, Cost:2.01647, Acc:0.34375
+<span class="highlight-ln"> 4</span>Test:0, Cost:1.99191, ACC:0.34301
+<span class="highlight-ln"> 5</span>Pass:0, Batch:80, Cost:1.61981, Acc:0.47656
+<span class="highlight-ln"> 6</span>Test:0, Cost:1.69227, ACC:0.46456
+<span class="highlight-ln"> 7</span>Pass:0, Batch:120, Cost:1.40459, Acc:0.57812
+<span class="highlight-ln"> 8</span>Test:0, Cost:1.47188, ACC:0.53961
+<span class="highlight-ln"> 9</span>Pass:0, Batch:160, Cost:1.15466, Acc:0.65625
+<span class="highlight-ln">10</span>Test:0, Cost:1.32585, ACC:0.59393
+<span class="highlight-ln">11</span>Pass:0, Batch:200, Cost:1.08597, Acc:0.67188
+<span class="highlight-ln">12</span>Test:0, Cost:1.20917, ACC:0.63793
+<span class="highlight-ln">13</span>Pass:0, Batch:240, Cost:1.08081, Acc:0.66406
+<span class="highlight-ln">14</span>Test:0, Cost:1.14794, ACC:0.66145
+</code></pre>
+<h1 id="预测文本">预测文本</h1>
+<p>在上面的训练中，我们已经训练到了一个文本分类预测模型。接下来我们就使用这个模型来预测我们想要预测文本。</p>
+<p>创建<code>infer.py</code>文件开始进行预测，首先导入依赖包。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
+</code></pre>
+<p>然后创建执行器，并加载预测模型文件，获取到预测程序和输入数据的名称和网络分类器。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 创建执行器</span>
+<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
+<span class="highlight-ln">3</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
+<span class="highlight-ln">4</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+<span class="highlight-ln">5</span>
+<span class="highlight-ln">6</span><span class="highlight-c1"># 保存预测模型路径</span>
+<span class="highlight-ln">7</span><span class="highlight-n">save_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'infer_model/'</span>
+<span class="highlight-ln">8</span><span class="highlight-c1"># 从模型中获取预测程序、输入数据名称列表、分类器</span>
+<span class="highlight-ln">9</span><span class="highlight-p">[</span><span class="highlight-n">infer_program</span><span class="highlight-p">,</span> <span class="highlight-n">feeded_var_names</span><span class="highlight-p">,</span> <span class="highlight-n">target_var</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">io</span><span class="highlight-o">.</span><span class="highlight-n">load_inference_model</span><span class="highlight-p">(</span><span class="highlight-n">dirname</span><span class="highlight-o">=</span><span class="highlight-n">save_path</span><span class="highlight-p">,</span> <span class="highlight-n">executor</span><span class="highlight-o">=</span><span class="highlight-n">exe</span><span class="highlight-p">)</span>
+</code></pre>
+<p>因为我们输入的是文本数据，但是PaddlePaddle读取的数据是整型数据，所以我们需要一个函数帮助我们把文本字符根据数据集的字典转换成整型数据。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 获取数据</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">get_data</span><span class="highlight-p">(</span><span class="highlight-n">sentence</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 读取数据字典</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-s1">'datasets/dict_txt.txt'</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_data</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-n">dict_txt</span> <span class="highlight-o">=</span> <span class="highlight-nb">eval</span><span class="highlight-p">(</span><span class="highlight-n">f_data</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-n">dict_txt</span> <span class="highlight-o">=</span> <span class="highlight-nb">dict</span><span class="highlight-p">(</span><span class="highlight-n">dict_txt</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-c1"># 把字符串数据转换成列表数据</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-n">keys</span> <span class="highlight-o">=</span> <span class="highlight-n">dict_txt</span><span class="highlight-o">.</span><span class="highlight-n">keys</span><span class="highlight-p">()</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-n">data</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">for</span> <span class="highlight-n">s</span> <span class="highlight-ow">in</span> <span class="highlight-n">sentence</span><span class="highlight-p">:</span>
+<span class="highlight-ln">11</span>        <span class="highlight-c1"># 判断是否存在未知字符</span>
+<span class="highlight-ln">12</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">s</span> <span class="highlight-ow">in</span> <span class="highlight-n">keys</span><span class="highlight-p">:</span>
+<span class="highlight-ln">13</span>            <span class="highlight-n">s</span> <span class="highlight-o">=</span> <span class="highlight-s1">'&lt;unk&gt;'</span>
+<span class="highlight-ln">14</span>        <span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">dict_txt</span><span class="highlight-p">[</span><span class="highlight-n">s</span><span class="highlight-p">]))</span>
+<span class="highlight-ln">15</span>    <span class="highlight-k">return</span> <span class="highlight-n">data</span>
+</code></pre>
+<p>然后在这里获取数据。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">data</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln">2</span><span class="highlight-c1"># 获取图片数据</span>
+<span class="highlight-ln">3</span><span class="highlight-n">data1</span> <span class="highlight-o">=</span> <span class="highlight-n">get_data</span><span class="highlight-p">(</span><span class="highlight-s1">'京城最值得你来场文化之旅的博物馆'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">4</span><span class="highlight-n">data2</span> <span class="highlight-o">=</span> <span class="highlight-n">get_data</span><span class="highlight-p">(</span><span class="highlight-s1">'谢娜为李浩菲澄清网络谣言，之后她的两个行为给自己加分'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">5</span><span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">data1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">6</span><span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">data2</span><span class="highlight-p">)</span>
+</code></pre>
+<p>因为输入的不定长度的文本数据，所以我们需要根据不同的输入数据的长度创建张量数据。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取每句话的单词数量</span>
+<span class="highlight-ln">2</span><span class="highlight-n">base_shape</span> <span class="highlight-o">=</span> <span class="highlight-p">[[</span><span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">c</span><span class="highlight-p">)</span> <span class="highlight-k">for</span> <span class="highlight-n">c</span> <span class="highlight-ow">in</span> <span class="highlight-n">data</span><span class="highlight-p">]]</span>
+<span class="highlight-ln">3</span>
+<span class="highlight-ln">4</span><span class="highlight-c1"># 生成预测数据</span>
+<span class="highlight-ln">5</span><span class="highlight-n">tensor_words</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">create_lod_tensor</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">,</span> <span class="highlight-n">base_shape</span><span class="highlight-p">,</span> <span class="highlight-n">place</span><span class="highlight-p">)</span>
+</code></pre>
+<p>最后执行预测程序，获取预测结果。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 执行预测</span>
+<span class="highlight-ln">2</span><span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">infer_program</span><span class="highlight-p">,</span>
+<span class="highlight-ln">3</span>                 <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">feeded_var_names</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]:</span> <span class="highlight-n">tensor_words</span><span class="highlight-p">},</span>
+<span class="highlight-ln">4</span>                 <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-n">target_var</span><span class="highlight-p">)</span>
+</code></pre>
+<p>获取预测结果之后，获取预测结果的最大概率的标签，然后根据这个标签获取类别的名字。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 分类名称</span>
+<span class="highlight-ln">2</span><span class="highlight-n">names</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-s1">'民生'</span><span class="highlight-p">,</span> <span class="highlight-s1">'文化'</span><span class="highlight-p">,</span> <span class="highlight-s1">'娱乐'</span><span class="highlight-p">,</span> <span class="highlight-s1">'体育'</span><span class="highlight-p">,</span> <span class="highlight-s1">'财经'</span><span class="highlight-p">,</span>
+<span class="highlight-ln">3</span>         <span class="highlight-s1">'房产'</span><span class="highlight-p">,</span> <span class="highlight-s1">'汽车'</span><span class="highlight-p">,</span> <span class="highlight-s1">'教育'</span><span class="highlight-p">,</span> <span class="highlight-s1">'科技'</span><span class="highlight-p">,</span> <span class="highlight-s1">'军事'</span><span class="highlight-p">,</span>
+<span class="highlight-ln">4</span>         <span class="highlight-s1">'旅游'</span><span class="highlight-p">,</span> <span class="highlight-s1">'国际'</span><span class="highlight-p">,</span> <span class="highlight-s1">'证券'</span><span class="highlight-p">,</span> <span class="highlight-s1">'农业'</span><span class="highlight-p">,</span> <span class="highlight-s1">'游戏'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">5</span>
+<span class="highlight-ln">6</span><span class="highlight-c1"># 获取结果概率最大的label</span>
+<span class="highlight-ln">7</span><span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">)):</span>
+<span class="highlight-ln">8</span>    <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln">9</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'预测结果标签为：</span><span class="highlight-si">%d</span><span class="highlight-s1">， 名称为：</span><span class="highlight-si">%s</span><span class="highlight-s1">， 概率为：</span><span class="highlight-si">%f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">lab</span><span class="highlight-p">,</span> <span class="highlight-n">names</span><span class="highlight-p">[</span><span class="highlight-n">lab</span><span class="highlight-p">],</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-n">lab</span><span class="highlight-p">]))</span>
+</code></pre>
+<p>预测输出的信息：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>预测结果标签为：10， 名称为：旅游， 概率为：0.848075
+<span class="highlight-ln">2</span>预测结果标签为：2， 名称为：娱乐， 概率为：0.894570
+</code></pre>
+<h1 id="参考资料">参考资料</h1>
+<ol>
+<li><a href="https://github.com/fate233/toutiao-text-classfication-dataset" target="_blank">https://github.com/fate233/toutiao-text-classfication-dataset</a></li>
+<li><a href="https://github.com/baidu/Senta" target="_blank">https://github.com/baidu/Senta</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974968544.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975142214.html">
+                            <span>《PaddlePaddle从入门到炼丹》十三——自定义图像数生成&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584975038292.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466422128"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466422128",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 220ms, 2020/04/07 11:38:42 -->

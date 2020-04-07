@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>PaddlePaddle实现人脸识别系统一——人脸数据集的获取 - 夜雨飘零</title><meta name="description" content="前言 开发人脸识别系统，人脸数据集是必须的。所以在我们开发这套人脸识别系统的准备工作就是获取人脸数据集。本章将从公开的数据集到自制人脸数据集介绍，为我们之后开发人脸识别系统做好准备。 公开人脸数据集 公开的人脸数据集有很多，本中我们就介绍几个比较常用的人脸数据集。 CelebA人脸数据集 官方提供的下载地址：https://pan.baidu.com/s/1eSNpdRG#list/path=%2F 该数据集下载后有3个文件夹，Anno文件夹是存放标注文件的，Eval文件夹是存放评估列表文件的，Img文件是存放图片文件的。 Img中有3中类型的图像文件，其中 img_align_celeba.zip是经过对人脸居中，裁剪，并统一大小为178*178的jpg图片； img_align_celeba_png.7z中的图片跟img_align_celeba.zip中的图片一样，唯一不同的是这些图片是png格式的，所以这些图片要大得多。 img_celeba.7z这个是人脸图片的原始图片，没有经过居中裁剪等处理的图片。 Anno文件夹中有5个标注文件，其中 identity_CelebA...."/><meta property="og:description" content="前言 开发人脸识别系统，人脸数据集是必须的。所以在我们开发这套人脸识别系统的准备工作就是获取人脸数据集。本章将从公开的数据集到自制人脸数据集介绍，为我们之后开发人脸识别系统做好准备。 公开人脸数据集 公开的人脸数据集有很多，本中我们就介绍几个比较常用的人脸数据集。 CelebA人脸数据集 官方提供的下载地址：https://pan.baidu.com/s/1eSNpdRG#list/path=%2F 该数据集下载后有3个文件夹，Anno文件夹是存放标注文件的，Eval文件夹是存放评估列表文件的，Img文件是存放图片文件的。 Img中有3中类型的图像文件，其中 img_align_celeba.zip是经过对人脸居中，裁剪，并统一大小为178*178的jpg图片； img_align_celeba_png.7z中的图片跟img_align_celeba.zip中的图片一样，唯一不同的是这些图片是png格式的，所以这些图片要大得多。 img_celeba.7z这个是人脸图片的原始图片，没有经过居中裁剪等处理的图片。 Anno文件夹中有5个标注文件，其中 identity_CelebA...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="PaddlePaddle实现人脸识别系统一——人脸数据集的获取 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="PaddlePaddle实现人脸识别系统一——人脸数据集的获取 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="PaddlePaddle实现手写藏文识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973821313.html">
+            <link rel="next" title="PaddlePaddle实现人脸识别系统二——使用MTCNN实现人脸检测" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973948630.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#前言">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#公开人脸数据集">公开人脸数据集</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#CelebA人脸数据集">CelebA人脸数据集</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#LFW数据集">LFW数据集</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#WIDER人脸数据集">WIDER人脸数据集</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#制作人脸数据集">制作人脸数据集</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#第一阶段">第一阶段</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#第二阶段">第二阶段</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#参考资料">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html">
+                    PaddlePaddle实现人脸识别系统一——人脸数据集的获取
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466417204">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180212.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="前言">前言</h1>
+<p>开发人脸识别系统，人脸数据集是必须的。所以在我们开发这套人脸识别系统的准备工作就是获取人脸数据集。本章将从公开的数据集到自制人脸数据集介绍，为我们之后开发人脸识别系统做好准备。</p>
+<h1 id="公开人脸数据集">公开人脸数据集</h1>
+<p>公开的人脸数据集有很多，本中我们就介绍几个比较常用的人脸数据集。</p>
+<h2 id="CelebA人脸数据集">CelebA人脸数据集</h2>
+<p>官方提供的下载地址：<a href="https://pan.baidu.com/s/1eSNpdRG#list/path=%2F" target="_blank">https://pan.baidu.com/s/1eSNpdRG#list/path=%2F</a></p>
+<p>该数据集下载后有3个文件夹，Anno文件夹是存放标注文件的，Eval文件夹是存放评估列表文件的，Img文件是存放图片文件的。<br>
+Img中有3中类型的图像文件，其中</p>
+<ul>
+<li><code>img_align_celeba.zip</code>是经过对人脸居中，裁剪，并统一大小为<code>178*178</code>的jpg图片；</li>
+<li><code>img_align_celeba_png.7z</code>中的图片跟<code>img_align_celeba.zip</code>中的图片一样，唯一不同的是这些图片是png格式的，所以这些图片要大得多。</li>
+<li><code>img_celeba.7z</code>这个是人脸图片的原始图片，没有经过居中裁剪等处理的图片。</li>
+</ul>
+<p>Anno文件夹中有5个标注文件，其中</p>
+<ol>
+<li><code>identity_CelebA.txt</code>是指定每张图片对应的人脸标签，格式为<code>图片名称 人脸ID</code></li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>000001.jpg 2880
+<span class="highlight-ln">2</span>000002.jpg 2937
+<span class="highlight-ln">3</span>000003.jpg 8692
+<span class="highlight-ln">4</span>000004.jpg 5805
+</code></pre>
+<ol start="2">
+<li><code>list_attr_celeba.txt</code>文件是标注人脸属性的，比如该人脸是否黑色头发，是否戴眼镜等等</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>5_o_Clock_Shadow Arched_Eyebrows Attractive Bags_Under_Eyes Bald Bangs Big_Lips Big_Nose Black_Hair Blond_Hair Blurry Brown_Hair Bushy_Eyebrows Chubby Double_Chin Eyeglasses Goatee Gray_Hair Heavy_Makeup High_Cheekbones Male Mouth_Slightly_Open Mustache Narrow_Eyes No_Beard Oval_Face Pale_Skin Pointy_Nose Receding_Hairline Rosy_Cheeks Sideburns Smiling Straight_Hair Wavy_Hair Wearing_Earrings Wearing_Hat Wearing_Lipstick Wearing_Necklace Wearing_Necktie Young 
+<span class="highlight-ln">2</span>000001.jpg -1  1  1 -1 -1 -1 -1 -1 -1 -1 -1  1 -1 -1 -1 -1 -1 -1  1  1 -1  1 -1 -1  1 -1 -1  1 -1 -1 -1  1  1 -1  1 -1  1 -1 -1  1
+<span class="highlight-ln">3</span>000002.jpg -1 -1 -1  1 -1 -1 -1  1 -1 -1 -1  1 -1 -1 -1 -1 -1 -1 -1  1 -1  1 -1 -1  1 -1 -1 -1 -1 -1 -1  1 -1 -1 -1 -1 -1 -1 -1  1
+<span class="highlight-ln">4</span>000003.jpg -1 -1 -1 -1 -1 -1  1 -1 -1 -1  1 -1 -1 -1 -1 -1 -1 -1 -1 -1  1 -1 -1  1  1 -1 -1  1 -1 -1 -1 -1 -1  1 -1 -1 -1 -1 -1  1
+</code></pre>
+<ol start="3">
+<li><code>list_bbox_celeba.txt</code>文件是标注人脸在图片中的位置，标注信息为<code>image_id x_1 y_1 width height</code></li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>image_id x_1 y_1 width height
+<span class="highlight-ln">2</span>000001.jpg    95  71 226 313
+<span class="highlight-ln">3</span>000002.jpg    72  94 221 306
+<span class="highlight-ln">4</span>000003.jpg   216  59  91 126
+<span class="highlight-ln">5</span>000004.jpg   622 257 564 781
+</code></pre>
+<ol start="4">
+<li><code>list_landmarks_align_celeba.txt</code>该文件是居中后图片的人脸关键点的标注文件，一共有5个关键点，为<code>眼睛、鼻子和嘴角</code>。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>lefteye_x lefteye_y righteye_x righteye_y nose_x nose_y leftmouth_x leftmouth_y rightmouth_x rightmouth_y
+<span class="highlight-ln">2</span>000001.jpg 69  109  106  113   77  142   73  152  108  154
+<span class="highlight-ln">3</span>000002.jpg 69  110  107  112   81  135   70  151  108  153
+<span class="highlight-ln">4</span>000003.jpg 76  112  104  106  108  128   74  156   98  158
+<span class="highlight-ln">5</span>000004.jpg 72  113  108  108  101  138   71  155  101  151
+</code></pre>
+<ol start="5">
+<li><code>list_landmarks_celeba.txt</code>文件是原图片中人脸关键点的位置。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>lefteye_x lefteye_y righteye_x righteye_y nose_x nose_y leftmouth_x leftmouth_y rightmouth_x rightmouth_y
+<span class="highlight-ln">2</span>000001.jpg 165  184  244  176  196  249  194  271  266  260
+<span class="highlight-ln">3</span>000002.jpg 140  204  220  204  168  254  146  289  226  289
+<span class="highlight-ln">4</span>000003.jpg 244  104  264  105  263  121  235  134  251  140
+</code></pre>
+<h2 id="LFW数据集">LFW数据集</h2>
+<p>数据集下载地址：http://mmlab.ie.cuhk.edu.hk/archive/CNN/data/train.zip</p>
+<p>LFW数据集解压之后得到2个文件夹和2个文本文件。</p>
+<ul>
+<li><code>lfw_5590</code>和<code>net_7876</code>文件夹都是存放人脸图片的</li>
+<li><code>testImageList.txt</code>和<code>trainImageList.txt</code>都是标注信息文本文件，标注信息为<code>图片文件、人脸box的坐标位置、人脸5个关键点的坐标位置</code></li>
+</ul>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>lfw_5590\Aaron_Eckhart_0001.jpg 84 161 92 169 106.250000 107.750000 146.750000 112.250000 125.250000 142.750000 105.250000 157.750000 139.750000 161.750000
+<span class="highlight-ln">2</span>lfw_5590\Aaron_Guiel_0001.jpg 85 172 93 181 100.250000 111.250000 145.750000 116.750000 124.250000 136.750000 92.750000 159.750000 138.750000 163.750000
+<span class="highlight-ln">3</span>lfw_5590\Aaron_Peirsol_0001.jpg 88 173 94 179 106.750000 113.250000 146.750000 113.250000 129.250000 139.750000 108.250000 153.250000 146.750000 152.750000
+<span class="highlight-ln">4</span>lfw_5590\Aaron_Pena_0001.jpg 67 176 83 192 101.750000 116.750000 145.250000 103.750000 125.250000 136.750000 119.750000 163.750000 146.250000 155.750000
+</code></pre>
+<h2 id="WIDER人脸数据集">WIDER人脸数据集</h2>
+<p>官方提供图片下载地址：<a href="http://pan.baidu.com/s/1c0DfSmW" target="_blank">http://pan.baidu.com/s/1c0DfSmW</a><br>
+标注文件下载地址：http://mmlab.ie.cuhk.edu.hk/projects/WIDERFace/support/bbx_annotation/wider_face_split.zip</p>
+<p><code>WIDER_train.zip</code>解压是得到人脸图片，每张图片可呢个包含多个人脸。</p>
+<p><code>wider_face_train_bbx_gt.txt</code>文件也同样是标注人脸所在图片的位置，不过这里标注的方式，标注的信息为<code>xmin ymin width height</code>。第一行是图片的路径，第二行是标注的数量，因为图片中可能有多张人脸，第三就是图片的标注信息。</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>0--Parade/0_Parade_marchingband_1_849.jpg
+<span class="highlight-ln">2</span>1
+<span class="highlight-ln">3</span>449 330 122 149 0 0 0 0 0 0 
+<span class="highlight-ln">4</span>0--Parade/0_Parade_Parade_0_904.jpg
+<span class="highlight-ln">5</span>1
+<span class="highlight-ln">6</span>361 98 263 339 0 0 0 0 0 0 
+</code></pre>
+<p>通过上面的标注文件可以生成<code>wider_face_train.txt</code>，标注的方式变成<code>xmin ymin xmax ymax</code>。有些图片有多个标注数据，因为这个数据集的图片中多人脸的，跟前面的数据集不同，前面的都是一张图片只有一张人脸。</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>1--Handshaking/1_Handshaking_Handshaking_1_288 336.00 82.00 448.00 244.00 
+<span class="highlight-ln">2</span>1--Handshaking/1_Handshaking_Handshaking_1_924 271.42 425.64 508.92 681.64 
+<span class="highlight-ln">3</span>1--Handshaking/1_Handshaking_Handshaking_1_866 364.42 894.49 451.76 993.88 545.13 771.01 623.44 879.44 186.73 825.22 256.00 945.69 
+<span class="highlight-ln">4</span>1--Handshaking/1_Handshaking_Handshaking_1_164 223.46 100.68 351.16 275.03 532.87 100.68 665.48 279.94 
+<span class="highlight-ln">5</span>1--Handshaking/1_Handshaking_Handshaking_1_243 393.00 198.00 426.00 245.00 
+</code></pre>
+<h1 id="制作人脸数据集">制作人脸数据集</h1>
+<p>下面我们就介绍如何制作自己的人脸数据集，项目的开源地址：<a href="https://github.com/yeyupiaoling/FaceDataset" target="_blank">https://github.com/yeyupiaoling/FaceDataset</a> 。该项目可以分为两个阶段，第一阶段是人脸图片的获取和简单的清洗，第二阶段是人脸图片的高级清洗和标注人脸信息。人脸信息的标注和清洗使用到了百度的人脸识别服务。</p>
+<h2 id="第一阶段">第一阶段</h2>
+<p>爬取人脸图片的核心思路就是获取中国明星的名字，然后使用明星的名字作为图片搜索的关键字进行获取图片，然后删除下载过程损坏的图片和没有包含人脸的图片，或者过多人脸的图片（我们只保存一张图片只包含一张人脸的图片）。</p>
+<p>首先获取中国明星的名字，该功能主要在<code>get_star_name.py</code>中实现。获取明显的名字核心代码如下，获取的名字不能保证百分之百正确，所以可能需要手动去检查。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 获取明星的名字并保存到文件中</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">get_page</span><span class="highlight-p">(</span><span class="highlight-n">pages</span><span class="highlight-p">,</span> <span class="highlight-n">star_name</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-n">params</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 设置访问的请求头，包括分页数和明星所在的地区</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">12</span> <span class="highlight-o">*</span> <span class="highlight-n">pages</span> <span class="highlight-o">+</span> <span class="highlight-mi">12</span><span class="highlight-p">,</span> <span class="highlight-mi">12</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-n">params</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">({</span>
+<span class="highlight-ln"> 7</span>            <span class="highlight-s1">'resource_id'</span><span class="highlight-p">:</span> <span class="highlight-mi">28266</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 8</span>            <span class="highlight-s1">'from_mid'</span><span class="highlight-p">:</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span>
+<span class="highlight-ln"> 9</span>            <span class="highlight-s1">'format'</span><span class="highlight-p">:</span> <span class="highlight-s1">'json'</span><span class="highlight-p">,</span>
+<span class="highlight-ln">10</span>            <span class="highlight-s1">'ie'</span><span class="highlight-p">:</span> <span class="highlight-s1">'utf-8'</span><span class="highlight-p">,</span>
+<span class="highlight-ln">11</span>            <span class="highlight-s1">'oe'</span><span class="highlight-p">:</span> <span class="highlight-s1">'utf-8'</span><span class="highlight-p">,</span>
+<span class="highlight-ln">12</span>            <span class="highlight-s1">'query'</span><span class="highlight-p">:</span> <span class="highlight-s1">'明星'</span><span class="highlight-p">,</span>
+<span class="highlight-ln">13</span>            <span class="highlight-s1">'sort_key'</span><span class="highlight-p">:</span> <span class="highlight-s1">''</span><span class="highlight-p">,</span>
+<span class="highlight-ln">14</span>            <span class="highlight-s1">'sort_type'</span><span class="highlight-p">:</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span>
+<span class="highlight-ln">15</span>            <span class="highlight-s1">'stat0'</span><span class="highlight-p">:</span> <span class="highlight-s1">''</span><span class="highlight-p">,</span>
+<span class="highlight-ln">16</span>            <span class="highlight-s1">'stat1'</span><span class="highlight-p">:</span> <span class="highlight-n">star_name</span><span class="highlight-p">,</span>
+<span class="highlight-ln">17</span>            <span class="highlight-s1">'stat2'</span><span class="highlight-p">:</span> <span class="highlight-s1">''</span><span class="highlight-p">,</span>
+<span class="highlight-ln">18</span>            <span class="highlight-s1">'stat3'</span><span class="highlight-p">:</span> <span class="highlight-s1">''</span><span class="highlight-p">,</span>
+<span class="highlight-ln">19</span>            <span class="highlight-s1">'pn'</span><span class="highlight-p">:</span> <span class="highlight-n">i</span><span class="highlight-p">,</span>
+<span class="highlight-ln">20</span>            <span class="highlight-s1">'rn'</span><span class="highlight-p">:</span> <span class="highlight-mi">12</span><span class="highlight-p">})</span>
+<span class="highlight-ln">21</span>
+<span class="highlight-ln">22</span>    <span class="highlight-c1"># 请求的百度接口获取明星的名字</span>
+<span class="highlight-ln">23</span>    <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-s1">'https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php'</span>
+<span class="highlight-ln">24</span>
+<span class="highlight-ln">25</span>    <span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">26</span>    <span class="highlight-c1"># 根据请求头下载明星的名字</span>
+<span class="highlight-ln">27</span>    <span class="highlight-k">for</span> <span class="highlight-n">param</span> <span class="highlight-ow">in</span> <span class="highlight-n">params</span><span class="highlight-p">:</span>
+<span class="highlight-ln">28</span>        <span class="highlight-k">try</span><span class="highlight-p">:</span>
+<span class="highlight-ln">29</span>            <span class="highlight-c1"># 获取请求数据</span>
+<span class="highlight-ln">30</span>            <span class="highlight-n">res</span> <span class="highlight-o">=</span> <span class="highlight-n">requests</span><span class="highlight-o">.</span><span class="highlight-n">get</span><span class="highlight-p">(</span><span class="highlight-n">url</span><span class="highlight-p">,</span> <span class="highlight-n">params</span><span class="highlight-o">=</span><span class="highlight-n">param</span><span class="highlight-p">,</span> <span class="highlight-n">timeout</span><span class="highlight-o">=</span><span class="highlight-mi">50</span><span class="highlight-p">)</span>
+<span class="highlight-ln">31</span>            <span class="highlight-c1"># 把网页数据转换成json数据</span>
+<span class="highlight-ln">32</span>            <span class="highlight-n">js</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">loads</span><span class="highlight-p">(</span><span class="highlight-n">res</span><span class="highlight-o">.</span><span class="highlight-n">text</span><span class="highlight-p">)</span>
+<span class="highlight-ln">33</span>            <span class="highlight-c1"># 获取json中的明星数据</span>
+<span class="highlight-ln">34</span>            <span class="highlight-n">results</span> <span class="highlight-o">=</span> <span class="highlight-n">js</span><span class="highlight-o">.</span><span class="highlight-n">get</span><span class="highlight-p">(</span><span class="highlight-s1">'data'</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">get</span><span class="highlight-p">(</span><span class="highlight-s1">'result'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">35</span>        <span class="highlight-k">except</span> <span class="highlight-ne">AttributeError</span> <span class="highlight-k">as</span> <span class="highlight-n">e</span><span class="highlight-p">:</span>
+<span class="highlight-ln">36</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'【错误】出现错误：</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">e</span><span class="highlight-p">)</span>
+<span class="highlight-ln">37</span>            <span class="highlight-k">continue</span>
+<span class="highlight-ln">38</span>
+<span class="highlight-ln">39</span>        <span class="highlight-c1"># 从数据中提取明星的名字</span>
+<span class="highlight-ln">40</span>        <span class="highlight-k">for</span> <span class="highlight-n">result</span> <span class="highlight-ow">in</span> <span class="highlight-n">results</span><span class="highlight-p">:</span>
+<span class="highlight-ln">41</span>            <span class="highlight-n">img_name</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'ename'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">42</span>            <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">img_name</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span><span class="highlight-p">,)</span>
+</code></pre>
+<p>然后根据明星的名字从网上下载图片，该功能主要在<code>download_image.py</code>中实现，以下就是下载图片的核心代码片段。</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span># 获取百度图片下载图片
+<span class="highlight-ln"> 2</span>def download_image(key_word, download_max):
+<span class="highlight-ln"> 3</span>    download_sum = 0
+<span class="highlight-ln"> 4</span>    str_gsm = '80'
+<span class="highlight-ln"> 5</span>    # 把每个明显的图片存放在单独一个文件夹中
+<span class="highlight-ln"> 6</span>    save_path = 'star_image' + '/' + key_word
+<span class="highlight-ln"> 7</span>    if not os.path.exists(save_path):
+<span class="highlight-ln"> 8</span>        os.makedirs(save_path)
+<span class="highlight-ln"> 9</span>    while download_sum &lt; download_max:
+<span class="highlight-ln">10</span>        # 下载次数超过指定值就停止下载
+<span class="highlight-ln">11</span>        if download_sum &gt;= download_max:
+<span class="highlight-ln">12</span>            break
+<span class="highlight-ln">13</span>        str_pn = str(download_sum)
+<span class="highlight-ln">14</span>        # 定义百度图片的路径
+<span class="highlight-ln">15</span>        url = 'http://image.baidu.com/search/flip?tn=baiduimage&amp;ie=utf-8&amp;' \
+<span class="highlight-ln">16</span>              'word=' + key_word + '&amp;pn=' + str_pn + '&amp;gsm=' + str_gsm + '&amp;ct=&amp;ic=0&amp;lm=-1&amp;width=0&amp;height=0'
+<span class="highlight-ln">17</span>        try:
+<span class="highlight-ln">18</span>            # 获取当前页面的源码
+<span class="highlight-ln">19</span>            result = requests.get(url, timeout=30).text
+<span class="highlight-ln">20</span>            # 获取当前页面的图片URL
+<span class="highlight-ln">21</span>            img_urls = re.findall('"objURL":"(.*?)",', result, re.S)
+<span class="highlight-ln">22</span>            if len(img_urls) &lt; 1:
+<span class="highlight-ln">23</span>                break
+<span class="highlight-ln">24</span>            # 把这些图片URL一个个下载
+<span class="highlight-ln">25</span>            for img_url in img_urls:
+<span class="highlight-ln">26</span>                # 获取图片内容
+<span class="highlight-ln">27</span>                img = requests.get(img_url, timeout=30)
+<span class="highlight-ln">28</span>                img_name = save_path + '/' + str(uuid.uuid1()) + '.jpg'
+<span class="highlight-ln">29</span>                # 保存图片
+<span class="highlight-ln">30</span>                with open(img_name, 'wb') as f:
+<span class="highlight-ln">31</span>                    f.write(img.content)
+<span class="highlight-ln">32</span>                with open('image_url_list.txt', 'a+', encoding='utf-8') as f:
+<span class="highlight-ln">33</span>                    f.write(img_name + '\t' + img_url + '\n')
+<span class="highlight-ln">34</span>                download_sum += 1
+<span class="highlight-ln">35</span>                if download_sum &gt;= download_max:
+<span class="highlight-ln">36</span>                    break
+<span class="highlight-ln">37</span>        except Exception as e:
+<span class="highlight-ln">38</span>            download_sum += 1
+<span class="highlight-ln">39</span>            continue
+</code></pre>
+<p>下载图片完成之后，有很多损坏的图片，需要把这些损坏的图片删除，该功能主要在<code>delete_error_image.py</code>实现。下面是删除损坏图片的核心代码片段。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 删除不是JPEG或者PNG格式的图片</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">delete_error_image</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 获取父级目录的所有文件以及文件夹</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">image_paths</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-k">for</span> <span class="highlight-n">root</span><span class="highlight-p">,</span> <span class="highlight-n">dirs</span><span class="highlight-p">,</span> <span class="highlight-n">files</span> <span class="highlight-ow">in</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">walk</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-k">for</span> <span class="highlight-nb">file</span> <span class="highlight-ow">in</span> <span class="highlight-n">files</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 7</span>            <span class="highlight-n">image_paths</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">root</span><span class="highlight-p">,</span> <span class="highlight-nb">file</span><span class="highlight-p">))</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-k">for</span> <span class="highlight-n">image</span> <span class="highlight-ow">in</span> <span class="highlight-n">tqdm</span><span class="highlight-p">(</span><span class="highlight-n">image_paths</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-k">try</span><span class="highlight-p">:</span>
+<span class="highlight-ln">10</span>            <span class="highlight-c1"># 获取图片的类型</span>
+<span class="highlight-ln">11</span>            <span class="highlight-n">image_type</span> <span class="highlight-o">=</span> <span class="highlight-n">imghdr</span><span class="highlight-o">.</span><span class="highlight-n">what</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>            <span class="highlight-c1"># 如果图片格式不是JPEG同时也不是PNG就删除图片</span>
+<span class="highlight-ln">13</span>            <span class="highlight-k">if</span> <span class="highlight-n">image_type</span> <span class="highlight-ow">is</span> <span class="highlight-ow">not</span> <span class="highlight-s1">'jpeg'</span> <span class="highlight-ow">and</span> <span class="highlight-n">image_type</span> <span class="highlight-ow">is</span> <span class="highlight-ow">not</span> <span class="highlight-s1">'png'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">14</span>                <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">15</span>                <span class="highlight-k">continue</span>
+<span class="highlight-ln">16</span>            <span class="highlight-c1"># 删除灰度图</span>
+<span class="highlight-ln">17</span>            <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">numpy</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">))</span>
+<span class="highlight-ln">18</span>            <span class="highlight-k">if</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">)</span> <span class="highlight-ow">is</span> <span class="highlight-mi">2</span><span class="highlight-p">:</span>
+<span class="highlight-ln">19</span>                <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">20</span>        <span class="highlight-k">except</span><span class="highlight-p">:</span>
+<span class="highlight-ln">21</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">)</span>
+</code></pre>
+<p>下载的图片中可能没有人脸，或者包含多张人脸，所以我们要把这些图片删除掉，该功能主要在<code>delete_more_than_one.py</code>中实现。删除没有人脸或者过多人脸图片的关键代码片段如下。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 删除两个人脸以上的图片或者没有人脸的图片</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">delete_image</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-n">image_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-k">try</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 4</span>        <span class="highlight-n">face_num</span> <span class="highlight-o">=</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_num'</span><span class="highlight-p">])</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-k">if</span> <span class="highlight-n">face_num</span> <span class="highlight-ow">is</span> <span class="highlight-ow">not</span> <span class="highlight-mi">1</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 6</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 7</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 8</span>            <span class="highlight-n">face_type</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'face_type'</span><span class="highlight-p">][</span><span class="highlight-s1">'type'</span><span class="highlight-p">]</span>
+<span class="highlight-ln"> 9</span>            <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'face_type'</span><span class="highlight-p">][</span><span class="highlight-s1">'probability'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">10</span>            <span class="highlight-k">if</span> <span class="highlight-n">face_type</span> <span class="highlight-o">==</span> <span class="highlight-s1">'cartoon'</span> <span class="highlight-ow">and</span> <span class="highlight-n">probability</span> <span class="highlight-o">&gt;</span> <span class="highlight-mf">0.8</span><span class="highlight-p">:</span>
+<span class="highlight-ln">11</span>                <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>    <span class="highlight-k">except</span><span class="highlight-p">:</span>
+<span class="highlight-ln">13</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+</code></pre>
+<h2 id="第二阶段">第二阶段</h2>
+<p>第二阶段属于高级清理和标注人脸信息。这一个阶段首先是把每个文件夹中包含相同一个人的图片较多的人脸，选择其中一个作为主人脸图片。然后使用这个主图片来对比其他图片，判断是否是同一个人，如果不是就删除该图片。接着就删除URL文件中，一些删除的文件对应的URL。最好就使用百度的人脸检测服务标注清理后的图片，最终得到一个人脸数据集。</p>
+<p>首先是从众多图片中选择一个主图片，这个功能主要在<code>find_same_person.py</code>中实现，以下是获取主图片的核心代码片段。这个程序消耗时间比较多，其实也可以通过手动标记的方式，选择一个主的人脸图片，当然这个是非常大的一个工作量。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 寻找同一个人的作为0.jpg，作为主的参考图片</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">find_same_person</span><span class="highlight-p">(</span><span class="highlight-n">person_image_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 获取该人中的所有图片</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">image_paths</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">person_image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-k">if</span> <span class="highlight-s1">'0.jpg'</span> <span class="highlight-ow">in</span> <span class="highlight-n">image_paths</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-n">image_paths</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-s1">'0.jpg'</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-c1"># 临时选择第一个作为主图片</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-n">temp_image</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">person_image_path</span><span class="highlight-p">,</span> <span class="highlight-n">image_paths</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-n">main_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">person_image_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'0.jpg'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">if</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">main_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln">11</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">main_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>    <span class="highlight-n">shutil</span><span class="highlight-o">.</span><span class="highlight-n">copyfile</span><span class="highlight-p">(</span><span class="highlight-n">temp_image</span><span class="highlight-p">,</span> <span class="highlight-n">main_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">13</span>    <span class="highlight-k">for</span> <span class="highlight-n">main_image</span> <span class="highlight-ow">in</span> <span class="highlight-n">image_paths</span><span class="highlight-p">:</span>
+<span class="highlight-ln">14</span>        <span class="highlight-c1"># 获取主图片的全路径</span>
+<span class="highlight-ln">15</span>        <span class="highlight-n">main_image</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">person_image_path</span><span class="highlight-p">,</span> <span class="highlight-n">main_image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">16</span>        <span class="highlight-c1"># 获取主图片的base64</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">main_img</span> <span class="highlight-o">=</span> <span class="highlight-n">get_file_content</span><span class="highlight-p">(</span><span class="highlight-n">main_image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">18</span>        <span class="highlight-c1"># 统计相同人脸数量</span>
+<span class="highlight-ln">19</span>        <span class="highlight-n">same_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
+<span class="highlight-ln">20</span>        <span class="highlight-k">for</span> <span class="highlight-n">other_image</span> <span class="highlight-ow">in</span> <span class="highlight-n">image_paths</span><span class="highlight-p">:</span>
+<span class="highlight-ln">21</span>            <span class="highlight-c1"># 获取其他对比人脸的全路径</span>
+<span class="highlight-ln">22</span>            <span class="highlight-n">other_image</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">person_image_path</span><span class="highlight-p">,</span> <span class="highlight-n">other_image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">23</span>            <span class="highlight-c1"># 获取其他对比图片的base64</span>
+<span class="highlight-ln">24</span>            <span class="highlight-n">other_img</span> <span class="highlight-o">=</span> <span class="highlight-n">get_file_content</span><span class="highlight-p">(</span><span class="highlight-n">other_image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">25</span>            <span class="highlight-c1"># 获取对比结果</span>
+<span class="highlight-ln">26</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">match_image</span><span class="highlight-p">(</span><span class="highlight-n">main_img</span><span class="highlight-p">,</span> <span class="highlight-n">other_img</span><span class="highlight-p">)</span>
+<span class="highlight-ln">27</span>            <span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">sleep</span><span class="highlight-p">(</span><span class="highlight-mf">0.5</span><span class="highlight-p">)</span>
+<span class="highlight-ln">28</span>            <span class="highlight-c1"># 判断是不是同一个人</span>
+<span class="highlight-ln">29</span>            <span class="highlight-k">if</span> <span class="highlight-n">if_same_person</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">):</span>
+<span class="highlight-ln">30</span>                <span class="highlight-n">same_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">31</span>            <span class="highlight-c1"># 当相同的人脸超过6个是就做为主图片</span>
+<span class="highlight-ln">32</span>            <span class="highlight-k">if</span> <span class="highlight-n">same_sum</span> <span class="highlight-o">&gt;=</span> <span class="highlight-mi">6</span><span class="highlight-p">:</span>
+<span class="highlight-ln">33</span>                <span class="highlight-k">if</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">main_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln">34</span>                    <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">main_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">35</span>                <span class="highlight-n">shutil</span><span class="highlight-o">.</span><span class="highlight-n">copyfile</span><span class="highlight-p">(</span><span class="highlight-n">main_image</span><span class="highlight-p">,</span> <span class="highlight-n">main_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">36</span>                <span class="highlight-k">break</span>
+<span class="highlight-ln">37</span>        <span class="highlight-k">if</span> <span class="highlight-n">same_sum</span> <span class="highlight-o">&gt;</span> <span class="highlight-mi">6</span><span class="highlight-p">:</span>
+<span class="highlight-ln">38</span>            <span class="highlight-k">break</span>
+</code></pre>
+<p>然后删除与主图片不是同一个人的图片，这个功能主要在<code>delete_not_same_person.py</code>中实现，以下是删除不是同一个人脸的图片核心代码片段。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span>        <span class="highlight-k">for</span> <span class="highlight-n">name_path</span> <span class="highlight-ow">in</span> <span class="highlight-n">tqdm</span><span class="highlight-p">(</span><span class="highlight-n">name_paths</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 2</span>            <span class="highlight-n">image_paths</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">,</span> <span class="highlight-n">name_path</span><span class="highlight-p">))</span>
+<span class="highlight-ln"> 3</span>            <span class="highlight-k">for</span> <span class="highlight-n">image_path</span> <span class="highlight-ow">in</span> <span class="highlight-n">image_paths</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 4</span>                <span class="highlight-c1"># 正确图片的路径</span>
+<span class="highlight-ln"> 5</span>                <span class="highlight-n">main_image</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">,</span> <span class="highlight-n">name_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'0.jpg'</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 6</span>                <span class="highlight-c1"># 要对比的图片</span>
+<span class="highlight-ln"> 7</span>                <span class="highlight-n">img_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">,</span> <span class="highlight-n">name_path</span><span class="highlight-p">,</span> <span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 8</span>                <span class="highlight-c1"># 获取图片的base64</span>
+<span class="highlight-ln"> 9</span>                <span class="highlight-n">main_img</span> <span class="highlight-o">=</span> <span class="highlight-n">get_file_content</span><span class="highlight-p">(</span><span class="highlight-n">main_image</span><span class="highlight-p">)</span>
+<span class="highlight-ln">10</span>                <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">get_file_content</span><span class="highlight-p">(</span><span class="highlight-n">img_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">11</span>                <span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">sleep</span><span class="highlight-p">(</span><span class="highlight-mf">0.5</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>                <span class="highlight-c1"># 预测图片并进行处理</span>
+<span class="highlight-ln">13</span>                <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">match_image</span><span class="highlight-p">(</span><span class="highlight-n">main_img</span><span class="highlight-p">,</span> <span class="highlight-n">img</span><span class="highlight-p">)</span>
+<span class="highlight-ln">14</span>                <span class="highlight-n">delete_image</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-n">img_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">15</span>            <span class="highlight-n">shutil</span><span class="highlight-o">.</span><span class="highlight-n">move</span><span class="highlight-p">(</span><span class="highlight-n">src</span><span class="highlight-o">=</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">,</span> <span class="highlight-n">name_path</span><span class="highlight-p">),</span> <span class="highlight-n">dst</span><span class="highlight-o">=</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-s1">'star_image'</span><span class="highlight-p">,</span> <span class="highlight-n">name_path</span><span class="highlight-p">))</span>
+</code></pre>
+<p>然后执行<code>delete_surplus_url.py</code>程序，从<code>image_url_list.txt</code>中删除本地不存在图片对应的URL。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1"># 删除图片过少的文件夹</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-n">delete_too_few</span><span class="highlight-p">()</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-n">list_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'image_url_list.txt'</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">get_txt_list</span><span class="highlight-p">(</span><span class="highlight-n">list_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 重新改写这个文件</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">list_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 7</span>        <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 8</span>            <span class="highlight-n">exist</span> <span class="highlight-o">=</span> <span class="highlight-n">file_if_exist</span><span class="highlight-p">(</span><span class="highlight-n">line</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 9</span>            <span class="highlight-c1"># 把存在的文件的list保留</span>
+<span class="highlight-ln">10</span>            <span class="highlight-k">if</span> <span class="highlight-n">exist</span><span class="highlight-p">:</span>
+<span class="highlight-ln">11</span>                <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">line</span><span class="highlight-p">)</span>
+</code></pre>
+<p>最后执行<code>annotate_image.py</code>程序，利用百度人脸检测接口标注人脸图片，以下是标注人脸的核心代码片段。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 把预测结果和图片的URL写入到标注文件中</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">annotate_image</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">image_url</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 获取文件夹名字，并得到已经记录多少人</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">father_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">dirname</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-n">image_name</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">basename</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 获取明星的名字</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-n">father_path</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'/'</span><span class="highlight-p">)[</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 把这些名字转换成数字标号</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-n">names</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-p">)</span>
+<span class="highlight-ln">10</span>    <span class="highlight-n">num_name</span> <span class="highlight-o">=</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">names</span><span class="highlight-p">)</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<span class="highlight-ln">11</span>    <span class="highlight-n">annotation_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-s1">'annotations'</span><span class="highlight-p">,</span> <span class="highlight-n">num_name</span><span class="highlight-p">)</span>
+<span class="highlight-ln">12</span>    <span class="highlight-n">dict_names_list</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">name</span><span class="highlight-p">,</span> <span class="highlight-n">num_name</span><span class="highlight-p">))</span>
+<span class="highlight-ln">13</span>    <span class="highlight-n">annotation_file_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">annotation_path</span><span class="highlight-p">,</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">image_name</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-s1">'.json'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">14</span>    <span class="highlight-c1"># 创建存放标注文件的文件夹</span>
+<span class="highlight-ln">15</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">annotation_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln">16</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">annotation_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">17</span>
+<span class="highlight-ln">18</span>    <span class="highlight-k">try</span><span class="highlight-p">:</span>
+<span class="highlight-ln">19</span>        <span class="highlight-c1"># 名字</span>
+<span class="highlight-ln">20</span>        <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-n">name</span>
+<span class="highlight-ln">21</span>        <span class="highlight-c1"># 年龄</span>
+<span class="highlight-ln">22</span>        <span class="highlight-n">age</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'age'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">23</span>        <span class="highlight-c1"># 性别，male:男性 female:女性</span>
+<span class="highlight-ln">24</span>        <span class="highlight-n">gender</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'gender'</span><span class="highlight-p">][</span><span class="highlight-s1">'type'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">25</span>        <span class="highlight-c1"># 脸型，square: 正方形 triangle:三角形 oval: 椭圆 heart: 心形 round: 圆形</span>
+<span class="highlight-ln">26</span>        <span class="highlight-n">face_shape</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'face_shape'</span><span class="highlight-p">][</span><span class="highlight-s1">'type'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">27</span>        <span class="highlight-c1"># 是否带眼镜，none:无眼镜，common:普通眼镜，sun:墨镜</span>
+<span class="highlight-ln">28</span>        <span class="highlight-n">glasses</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'glasses'</span><span class="highlight-p">][</span><span class="highlight-s1">'type'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">29</span>        <span class="highlight-c1"># 表情，none:不笑；smile:微笑；laugh:大笑</span>
+<span class="highlight-ln">30</span>        <span class="highlight-n">expression</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'expression'</span><span class="highlight-p">][</span><span class="highlight-s1">'type'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">31</span>        <span class="highlight-c1"># 颜值，范围0-100</span>
+<span class="highlight-ln">32</span>        <span class="highlight-n">beauty</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'beauty'</span><span class="highlight-p">]</span>
+<span class="highlight-ln">33</span>        <span class="highlight-c1"># 人脸在图片中的位置</span>
+<span class="highlight-ln">34</span>        <span class="highlight-n">location</span> <span class="highlight-o">=</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'location'</span><span class="highlight-p">])</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s2">"'"</span><span class="highlight-p">,</span> <span class="highlight-s1">'"'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">35</span>        <span class="highlight-c1"># 人脸旋转角度参数</span>
+<span class="highlight-ln">36</span>        <span class="highlight-n">angle</span> <span class="highlight-o">=</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'angle'</span><span class="highlight-p">])</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s2">"'"</span><span class="highlight-p">,</span> <span class="highlight-s1">'"'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">37</span>        <span class="highlight-c1"># 72个特征点位置</span>
+<span class="highlight-ln">38</span>        <span class="highlight-n">landmark72</span> <span class="highlight-o">=</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'landmark72'</span><span class="highlight-p">])</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s2">"'"</span><span class="highlight-p">,</span> <span class="highlight-s1">'"'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">39</span>        <span class="highlight-c1"># 4个关键点位置，左眼中心、右眼中心、鼻尖、嘴中心</span>
+<span class="highlight-ln">40</span>        <span class="highlight-n">landmark</span> <span class="highlight-o">=</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-s1">'result'</span><span class="highlight-p">][</span><span class="highlight-s1">'face_list'</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-s1">'landmark'</span><span class="highlight-p">])</span><span class="highlight-o">.</span><span class="highlight-n">replace</span><span class="highlight-p">(</span><span class="highlight-s2">"'"</span><span class="highlight-p">,</span> <span class="highlight-s1">'"'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">41</span>        <span class="highlight-c1"># 拼接成符合json格式的字符串</span>
+<span class="highlight-ln">42</span>        <span class="highlight-n">txt</span> <span class="highlight-o">=</span> <span class="highlight-s1">'{"name":"</span><span class="highlight-si">%s</span><span class="highlight-s1">", "image_url":"</span><span class="highlight-si">%s</span><span class="highlight-s1">","age":</span><span class="highlight-si">%f</span><span class="highlight-s1">, "gender":"</span><span class="highlight-si">%s</span><span class="highlight-s1">", "glasses":"</span><span class="highlight-si">%s</span><span class="highlight-s1">", "expression":"</span><span class="highlight-si">%s</span><span class="highlight-s1">", "beauty":</span><span class="highlight-si">%f</span><span class="highlight-s1">, "face_shape":"</span><span class="highlight-si">%s</span><span class="highlight-s1">", "location":</span><span class="highlight-si">%s</span><span class="highlight-s1">, "angle":</span><span class="highlight-si">%s</span><span class="highlight-s1">, "landmark72":</span><span class="highlight-si">%s</span><span class="highlight-s1">, "landmark":</span><span class="highlight-si">%s</span><span class="highlight-s1">}'</span> \
+<span class="highlight-ln">43</span>              <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-p">,</span> <span class="highlight-n">image_url</span><span class="highlight-p">,</span> <span class="highlight-n">age</span><span class="highlight-p">,</span> <span class="highlight-n">gender</span><span class="highlight-p">,</span> <span class="highlight-n">glasses</span><span class="highlight-p">,</span> <span class="highlight-n">expression</span><span class="highlight-p">,</span> <span class="highlight-n">beauty</span><span class="highlight-p">,</span> <span class="highlight-n">face_shape</span><span class="highlight-p">,</span> <span class="highlight-n">location</span><span class="highlight-p">,</span> <span class="highlight-n">angle</span><span class="highlight-p">,</span> <span class="highlight-n">landmark72</span><span class="highlight-p">,</span>
+<span class="highlight-ln">44</span>                 <span class="highlight-n">landmark</span><span class="highlight-p">)</span>
+<span class="highlight-ln">45</span>        <span class="highlight-c1"># 转换成json数据并格式化</span>
+<span class="highlight-ln">46</span>        <span class="highlight-n">json_dicts</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">loads</span><span class="highlight-p">(</span><span class="highlight-n">txt</span><span class="highlight-p">)</span>
+<span class="highlight-ln">47</span>        <span class="highlight-n">json_format</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">dumps</span><span class="highlight-p">(</span><span class="highlight-n">json_dicts</span><span class="highlight-p">,</span> <span class="highlight-n">sort_keys</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">indent</span><span class="highlight-o">=</span><span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-n">separators</span><span class="highlight-o">=</span><span class="highlight-p">(</span><span class="highlight-s1">','</span><span class="highlight-p">,</span> <span class="highlight-s1">':'</span><span class="highlight-p">))</span>
+<span class="highlight-ln">48</span>        <span class="highlight-c1"># 写入标注文件</span>
+<span class="highlight-ln">49</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">annotation_file_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">,</span> <span class="highlight-n">encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_a</span><span class="highlight-p">:</span>
+<span class="highlight-ln">50</span>            <span class="highlight-n">f_a</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">json_format</span><span class="highlight-p">)</span>
+<span class="highlight-ln">51</span>    <span class="highlight-k">except</span> <span class="highlight-ne">Exception</span> <span class="highlight-k">as</span> <span class="highlight-n">e</span><span class="highlight-p">:</span>
+<span class="highlight-ln">52</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">53</span>        <span class="highlight-k">pass</span>
+</code></pre>
+<p>整个项目完成的时间的非常久的，特别是使用到百度AI服务的程序，为了不出现每秒访问次数超过2次（免费的版本是每秒自动访问2次），所在做了休眠处理，所以这样浪费了不少时间。</p>
+<p>项目GitHub地址： <a href="https://github.com/yeyupiaoling/FaceDataset" target="_blank">https://github.com/yeyupiaoling/FaceDataset</a></p>
+<h1 id="参考资料">参考资料</h1>
+<ol>
+<li>http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html</li>
+<li>http://mmlab.ie.cuhk.edu.hk/archive/CNN_FacePoint.htm</li>
+<li>http://mmlab.ie.cuhk.edu.hk/projects/WIDERFace/</li>
+<li><a href="http://ai.baidu.com/docs#/Face-Detect-V3/top" target="_blank">http://ai.baidu.com/docs#/Face-Detect-V3/top</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：PaddlePaddle实现人脸识别系统一——人脸数据集的获取<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973821313.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; PaddlePaddle实现手写藏文识别&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973948630.html">
+                            <span>PaddlePaddle实现人脸识别系统二——使用MTCNN实现人脸检测&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="PaddlePaddle实现人脸识别系统一——人脸数据集的获取"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466417204"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466417204",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 65ms, 2020/04/07 11:38:46 -->

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android使用Fragment仿微信底部导航栏 - 夜雨飘零</title><meta name="description" content="这是一个使用Fragment做的一个底部导航栏的小demo MainActivity的代码 package com.example.dell.myapplication; import android.app.FragmentManager; import android.app.FragmentTransaction; import android.os.Bundle; import android.support.v7.app.AppCompatActivity; import android.view.View; import android.widget.ImageButton; public class MainActivity extends AppCompatActivity implements View.OnClickListener{ private ImageButton weixin; private ImageButton contact; private ImageButton find; private ImageButton me; private Co...."/><meta property="og:description" content="这是一个使用Fragment做的一个底部导航栏的小demo MainActivity的代码 package com.example.dell.myapplication; import android.app.FragmentManager; import android.app.FragmentTransaction; import android.os.Bundle; import android.support.v7.app.AppCompatActivity; import android.view.View; import android.widget.ImageButton; public class MainActivity extends AppCompatActivity implements View.OnClickListener{ private ImageButton weixin; private ImageButton contact; private ImageButton find; private ImageButton me; private Co...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android使用Fragment仿微信底部导航栏 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android使用Fragment仿微信底部导航栏 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="Android的各种通知Notification、Dialog、Toast、Snackbar" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875240912.html">
+            <link rel="next" title="Android开机启动" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875803137.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h3">
+            <a href="#效果图">效果图</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html">
+                    Android使用Fragment仿微信底部导航栏
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Android">
+                        Android</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466398855">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180608.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<p>这是一个使用Fragment做的一个底部导航栏的小demo</p>
+<p>MainActivity的代码</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.dell.myapplication</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.FragmentManager</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.FragmentTransaction</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v7.app.AppCompatActivity</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.ImageButton</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MainActivity</span> <span class="highlight-kd">extends</span> <span class="highlight-n">AppCompatActivity</span> <span class="highlight-kd">implements</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">{</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ImageButton</span> <span class="highlight-n">weixin</span><span class="highlight-o">;</span>
+<span class="highlight-ln">13</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ImageButton</span> <span class="highlight-n">contact</span><span class="highlight-o">;</span>
+<span class="highlight-ln">14</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ImageButton</span> <span class="highlight-n">find</span><span class="highlight-o">;</span>
+<span class="highlight-ln">15</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ImageButton</span> <span class="highlight-n">me</span><span class="highlight-o">;</span>
+<span class="highlight-ln">16</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ContactFragment</span> <span class="highlight-n">contactFragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln">17</span>    <span class="highlight-kd">private</span> <span class="highlight-n">WeiXinFragment</span> <span class="highlight-n">weiXinFragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln">18</span>    <span class="highlight-kd">private</span> <span class="highlight-n">FindFragment</span> <span class="highlight-n">findFragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln">19</span>    <span class="highlight-kd">private</span> <span class="highlight-n">MeFragment</span> <span class="highlight-n">meFragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln">20</span>
+<span class="highlight-ln">21</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">22</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">23</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">savedInstanceState</span><span class="highlight-o">);</span>
+<span class="highlight-ln">24</span>        <span class="highlight-n">setContentView</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">activity_main</span><span class="highlight-o">);</span>
+<span class="highlight-ln">25</span>
+<span class="highlight-ln">26</span>        <span class="highlight-n">weixin</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">ImageButton</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin1</span><span class="highlight-o">);</span>
+<span class="highlight-ln">27</span>        <span class="highlight-n">contact</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">ImageButton</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin2</span><span class="highlight-o">);</span>
+<span class="highlight-ln">28</span>        <span class="highlight-n">find</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">ImageButton</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin3</span><span class="highlight-o">);</span>
+<span class="highlight-ln">29</span>        <span class="highlight-n">me</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">ImageButton</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin4</span><span class="highlight-o">);</span>
+<span class="highlight-ln">30</span>
+<span class="highlight-ln">31</span>        <span class="highlight-n">weixin</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">);</span>
+<span class="highlight-ln">32</span>        <span class="highlight-n">contact</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">);</span>
+<span class="highlight-ln">33</span>        <span class="highlight-n">find</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">);</span>
+<span class="highlight-ln">34</span>        <span class="highlight-n">me</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">);</span>
+<span class="highlight-ln">35</span>
+<span class="highlight-ln">36</span>        <span class="highlight-c1">//该按钮点击一次
+</span><span class="highlight-ln">37</span><span class="highlight-c1"></span>        <span class="highlight-n">weixin</span><span class="highlight-o">.</span><span class="highlight-na">performClick</span><span class="highlight-o">();</span>
+<span class="highlight-ln">38</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">39</span>
+<span class="highlight-ln">40</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">41</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">42</span>        <span class="highlight-n">cleanIcn</span><span class="highlight-o">();</span>
+<span class="highlight-ln">43</span>        <span class="highlight-n">FragmentManager</span> <span class="highlight-n">fragmentManager</span> <span class="highlight-o">=</span> <span class="highlight-n">getFragmentManager</span><span class="highlight-o">();</span>
+<span class="highlight-ln">44</span>        <span class="highlight-n">FragmentTransaction</span> <span class="highlight-n">transaction</span> <span class="highlight-o">=</span> <span class="highlight-n">fragmentManager</span><span class="highlight-o">.</span><span class="highlight-na">beginTransaction</span><span class="highlight-o">();</span>
+<span class="highlight-ln">45</span>        <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">v</span><span class="highlight-o">.</span><span class="highlight-na">getId</span><span class="highlight-o">()){</span>
+<span class="highlight-ln">46</span>            <span class="highlight-k">case</span> <span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin1</span><span class="highlight-o">:</span>
+<span class="highlight-ln">47</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">weiXinFragment</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">48</span>                    <span class="highlight-n">weiXinFragment</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">WeiXinFragment</span><span class="highlight-o">();</span>
+<span class="highlight-ln">49</span>                <span class="highlight-o">}</span>
+<span class="highlight-ln">50</span>                <span class="highlight-n">transaction</span><span class="highlight-o">.</span><span class="highlight-na">replace</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">fragment_container</span><span class="highlight-o">,</span><span class="highlight-n">weiXinFragment</span><span class="highlight-o">);</span>
+<span class="highlight-ln">51</span>                <span class="highlight-n">weixin</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin2</span><span class="highlight-o">);</span>
+<span class="highlight-ln">52</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
+<span class="highlight-ln">53</span>            <span class="highlight-k">case</span> <span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin2</span><span class="highlight-o">:</span>
+<span class="highlight-ln">54</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">contactFragment</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">55</span>                    <span class="highlight-n">contactFragment</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ContactFragment</span><span class="highlight-o">();</span>
+<span class="highlight-ln">56</span>                <span class="highlight-o">}</span>
+<span class="highlight-ln">57</span>                <span class="highlight-n">transaction</span><span class="highlight-o">.</span><span class="highlight-na">replace</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">fragment_container</span><span class="highlight-o">,</span><span class="highlight-n">contactFragment</span><span class="highlight-o">);</span>
+<span class="highlight-ln">58</span>                <span class="highlight-n">contact</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin2</span><span class="highlight-o">);</span>
+<span class="highlight-ln">59</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
+<span class="highlight-ln">60</span>            <span class="highlight-k">case</span> <span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin3</span><span class="highlight-o">:</span>
+<span class="highlight-ln">61</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">findFragment</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">62</span>                    <span class="highlight-n">findFragment</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FindFragment</span><span class="highlight-o">();</span>
+<span class="highlight-ln">63</span>                <span class="highlight-o">}</span>
+<span class="highlight-ln">64</span>                <span class="highlight-n">transaction</span><span class="highlight-o">.</span><span class="highlight-na">replace</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">fragment_container</span><span class="highlight-o">,</span><span class="highlight-n">findFragment</span><span class="highlight-o">);</span>
+<span class="highlight-ln">65</span>                <span class="highlight-n">find</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin2</span><span class="highlight-o">);</span>
+<span class="highlight-ln">66</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
+<span class="highlight-ln">67</span>            <span class="highlight-k">case</span> <span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">weixin4</span><span class="highlight-o">:</span>
+<span class="highlight-ln">68</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">meFragment</span><span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">){</span>
+<span class="highlight-ln">69</span>                    <span class="highlight-n">meFragment</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">MeFragment</span><span class="highlight-o">();</span>
+<span class="highlight-ln">70</span>                <span class="highlight-o">}</span>
+<span class="highlight-ln">71</span>                <span class="highlight-n">transaction</span><span class="highlight-o">.</span><span class="highlight-na">replace</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">fragment_container</span><span class="highlight-o">,</span><span class="highlight-n">meFragment</span><span class="highlight-o">);</span>
+<span class="highlight-ln">72</span>                <span class="highlight-n">me</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin2</span><span class="highlight-o">);</span>
+<span class="highlight-ln">73</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
+<span class="highlight-ln">74</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">75</span>        <span class="highlight-n">transaction</span><span class="highlight-o">.</span><span class="highlight-na">commit</span><span class="highlight-o">();</span>
+<span class="highlight-ln">76</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">77</span>
+<span class="highlight-ln">78</span>
+<span class="highlight-ln">79</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">cleanIcn</span><span class="highlight-o">(){</span>
+<span class="highlight-ln">80</span>        <span class="highlight-n">weixin</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin</span><span class="highlight-o">);</span>
+<span class="highlight-ln">81</span>        <span class="highlight-n">contact</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin</span><span class="highlight-o">);</span>
+<span class="highlight-ln">82</span>        <span class="highlight-n">find</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin</span><span class="highlight-o">);</span>
+<span class="highlight-ln">83</span>        <span class="highlight-n">me</span><span class="highlight-o">.</span><span class="highlight-na">setImageResource</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">drawable</span><span class="highlight-o">.</span><span class="highlight-na">weixin</span><span class="highlight-o">);</span>
+<span class="highlight-ln">84</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">85</span><span class="highlight-o">}</span>
+</code></pre>
+<p>对于的<code>activity_main.xml</code>代码</p>
+<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="highlight-ln"> 2</span><span class="highlight-nt">&lt;RelativeLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/activity_main"</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">"com.example.dell.myapplication.MainActivity"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-nt">&lt;LinearLayout</span>
+<span class="highlight-ln">10</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/ll_button"</span>
+<span class="highlight-ln">11</span>        <span class="highlight-na">android:gravity=</span><span class="highlight-s">"center_vertical"</span>
+<span class="highlight-ln">12</span>        <span class="highlight-na">android:layout_alignParentBottom=</span><span class="highlight-s">"true"</span>
+<span class="highlight-ln">13</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln">14</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span>        <span class="highlight-nt">&lt;ImageButton</span>
+<span class="highlight-ln">17</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
+<span class="highlight-ln">18</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/weixin1"</span>
+<span class="highlight-ln">19</span>            <span class="highlight-na">android:background=</span><span class="highlight-s">"@null"</span>
+<span class="highlight-ln">20</span>            <span class="highlight-na">android:src=</span><span class="highlight-s">"@drawable/weixin"</span>
+<span class="highlight-ln">21</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
+<span class="highlight-ln">22</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">23</span>        <span class="highlight-nt">&lt;ImageButton</span>
+<span class="highlight-ln">24</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
+<span class="highlight-ln">25</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/weixin2"</span>
+<span class="highlight-ln">26</span>            <span class="highlight-na">android:background=</span><span class="highlight-s">"@null"</span>
+<span class="highlight-ln">27</span>            <span class="highlight-na">android:src=</span><span class="highlight-s">"@drawable/weixin"</span>
+<span class="highlight-ln">28</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
+<span class="highlight-ln">29</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">30</span>        <span class="highlight-nt">&lt;ImageButton</span>
+<span class="highlight-ln">31</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
+<span class="highlight-ln">32</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/weixin3"</span>
+<span class="highlight-ln">33</span>            <span class="highlight-na">android:background=</span><span class="highlight-s">"@null"</span>
+<span class="highlight-ln">34</span>            <span class="highlight-na">android:src=</span><span class="highlight-s">"@drawable/weixin"</span>
+<span class="highlight-ln">35</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
+<span class="highlight-ln">36</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">37</span>        <span class="highlight-nt">&lt;ImageButton</span>
+<span class="highlight-ln">38</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
+<span class="highlight-ln">39</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/weixin4"</span>
+<span class="highlight-ln">40</span>            <span class="highlight-na">android:background=</span><span class="highlight-s">"@null"</span>
+<span class="highlight-ln">41</span>            <span class="highlight-na">android:src=</span><span class="highlight-s">"@drawable/weixin"</span>
+<span class="highlight-ln">42</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
+<span class="highlight-ln">43</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">44</span>
+<span class="highlight-ln">45</span>    <span class="highlight-nt">&lt;/LinearLayout&gt;</span>
+<span class="highlight-ln">46</span>
+<span class="highlight-ln">47</span>    <span class="highlight-nt">&lt;LinearLayout</span>
+<span class="highlight-ln">48</span>        <span class="highlight-na">android:orientation=</span><span class="highlight-s">"vertical"</span>
+<span class="highlight-ln">49</span>        <span class="highlight-na">android:layout_above=</span><span class="highlight-s">"@id/ll_button"</span>
+<span class="highlight-ln">50</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/fragment_container"</span>
+<span class="highlight-ln">51</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln">52</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln">53</span>
+<span class="highlight-ln">54</span>    <span class="highlight-nt">&lt;/LinearLayout&gt;</span>
+<span class="highlight-ln">55</span><span class="highlight-nt">&lt;/RelativeLayout&gt;</span>
+</code></pre>
+<p>接下来是Fragment的代码</p>
+<p>下面是fragment的Java代码，每个Java代码都对应这一个布局</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.dell.myapplication</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Fragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.LayoutInflater</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.ViewGroup</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Button</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
+<span class="highlight-ln">10</span>
+<span class="highlight-ln">11</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">WeiXinFragment</span> <span class="highlight-kd">extends</span> <span class="highlight-n">Fragment</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">12</span>    
+<span class="highlight-ln">13</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">14</span>    <span class="highlight-kd">public</span> <span class="highlight-n">View</span> <span class="highlight-nf">onCreateView</span><span class="highlight-o">(</span><span class="highlight-n">LayoutInflater</span> <span class="highlight-n">inflater</span><span class="highlight-o">,</span> <span class="highlight-n">ViewGroup</span> <span class="highlight-n">container</span><span class="highlight-o">,</span>
+<span class="highlight-ln">15</span>                             <span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">16</span>        <span class="highlight-n">View</span> <span class="highlight-n">view</span> <span class="highlight-o">=</span> <span class="highlight-n">inflater</span><span class="highlight-o">.</span><span class="highlight-na">inflate</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">fragment_wei_xin</span><span class="highlight-o">,</span> <span class="highlight-n">container</span><span class="highlight-o">,</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">Button</span> <span class="highlight-n">button</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">view</span><span class="highlight-o">.</span><span class="highlight-na">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">btn_weixin</span><span class="highlight-o">);</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">button</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">19</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">20</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">21</span>                <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getActivity</span><span class="highlight-o">(),</span><span class="highlight-s">"微信"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">22</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">23</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">24</span>        <span class="highlight-k">return</span> <span class="highlight-n">view</span><span class="highlight-o">;</span>
+<span class="highlight-ln">25</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">26</span>
+<span class="highlight-ln">27</span><span class="highlight-o">}</span>
+</code></pre>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.dell.myapplication</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Fragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.LayoutInflater</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.ViewGroup</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Button</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
+<span class="highlight-ln">10</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">ContactFragment</span> <span class="highlight-kd">extends</span> <span class="highlight-n">Fragment</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">15</span>    <span class="highlight-kd">public</span> <span class="highlight-n">View</span> <span class="highlight-nf">onCreateView</span><span class="highlight-o">(</span><span class="highlight-n">LayoutInflater</span> <span class="highlight-n">inflater</span><span class="highlight-o">,</span> <span class="highlight-n">ViewGroup</span> <span class="highlight-n">container</span><span class="highlight-o">,</span>
+<span class="highlight-ln">16</span>                             <span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">View</span> <span class="highlight-n">view</span> <span class="highlight-o">=</span> <span class="highlight-n">inflater</span><span class="highlight-o">.</span><span class="highlight-na">inflate</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">fragment_contact</span><span class="highlight-o">,</span> <span class="highlight-n">container</span><span class="highlight-o">,</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">Button</span> <span class="highlight-n">button</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">view</span><span class="highlight-o">.</span><span class="highlight-na">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">btn_contact</span><span class="highlight-o">);</span>
+<span class="highlight-ln">19</span>        <span class="highlight-n">button</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">20</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">21</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">22</span>                <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getActivity</span><span class="highlight-o">(),</span><span class="highlight-s">"联系人"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">23</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">24</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">25</span>        <span class="highlight-k">return</span> <span class="highlight-n">view</span><span class="highlight-o">;</span>
+<span class="highlight-ln">26</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">27</span>
+<span class="highlight-ln">28</span><span class="highlight-o">}</span>
+</code></pre>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.dell.myapplication</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Fragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.annotation.Nullable</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.LayoutInflater</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.ViewGroup</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Button</span><span class="highlight-o">;</span>
+<span class="highlight-ln">10</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span><span class="highlight-cm">/**
+</span><span class="highlight-ln">13</span><span class="highlight-cm"> * Created by dell on 2017/8/3.
+</span><span class="highlight-ln">14</span><span class="highlight-cm"> */</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">FindFragment</span> <span class="highlight-kd">extends</span> <span class="highlight-n">Fragment</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">17</span>
+<span class="highlight-ln">18</span>    <span class="highlight-nd">@Nullable</span>
+<span class="highlight-ln">19</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">20</span>    <span class="highlight-kd">public</span> <span class="highlight-n">View</span> <span class="highlight-nf">onCreateView</span><span class="highlight-o">(</span><span class="highlight-n">LayoutInflater</span> <span class="highlight-n">inflater</span><span class="highlight-o">,</span> <span class="highlight-n">ViewGroup</span> <span class="highlight-n">container</span><span class="highlight-o">,</span> <span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">21</span>        <span class="highlight-n">View</span> <span class="highlight-n">view</span> <span class="highlight-o">=</span> <span class="highlight-n">inflater</span><span class="highlight-o">.</span><span class="highlight-na">inflate</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">fragment_find</span><span class="highlight-o">,</span> <span class="highlight-n">container</span><span class="highlight-o">,</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
+<span class="highlight-ln">22</span>        <span class="highlight-n">Button</span> <span class="highlight-n">button</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">view</span><span class="highlight-o">.</span><span class="highlight-na">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">btn_find</span><span class="highlight-o">);</span>
+<span class="highlight-ln">23</span>        <span class="highlight-n">button</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">24</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">25</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">26</span>                <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getActivity</span><span class="highlight-o">(),</span><span class="highlight-s">"发现"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">27</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">28</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">29</span>        <span class="highlight-k">return</span> <span class="highlight-n">view</span><span class="highlight-o">;</span>
+<span class="highlight-ln">30</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">31</span><span class="highlight-o">}</span>
+</code></pre>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.dell.myapplication</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Fragment</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.LayoutInflater</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.ViewGroup</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Button</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
+<span class="highlight-ln">10</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MeFragment</span> <span class="highlight-kd">extends</span> <span class="highlight-n">Fragment</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span>
+<span class="highlight-ln">15</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">16</span>    <span class="highlight-kd">public</span> <span class="highlight-n">View</span> <span class="highlight-nf">onCreateView</span><span class="highlight-o">(</span><span class="highlight-n">LayoutInflater</span> <span class="highlight-n">inflater</span><span class="highlight-o">,</span> <span class="highlight-n">ViewGroup</span> <span class="highlight-n">container</span><span class="highlight-o">,</span>
+<span class="highlight-ln">17</span>                             <span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">View</span> <span class="highlight-n">view</span> <span class="highlight-o">=</span> <span class="highlight-n">inflater</span><span class="highlight-o">.</span><span class="highlight-na">inflate</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">fragment_me</span><span class="highlight-o">,</span> <span class="highlight-n">container</span><span class="highlight-o">,</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
+<span class="highlight-ln">19</span>        <span class="highlight-n">Button</span> <span class="highlight-n">button</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">view</span><span class="highlight-o">.</span><span class="highlight-na">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">btn_me</span><span class="highlight-o">);</span>
+<span class="highlight-ln">20</span>        <span class="highlight-n">button</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">21</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">22</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">23</span>                <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getActivity</span><span class="highlight-o">(),</span><span class="highlight-s">"我的"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">24</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">25</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">26</span>        <span class="highlight-k">return</span> <span class="highlight-n">view</span><span class="highlight-o">;</span>
+<span class="highlight-ln">27</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">28</span>
+<span class="highlight-ln">29</span><span class="highlight-o">}</span>
+</code></pre>
+<p>下面就是Java代码相应的布局代码</p>
+<p>fragment_wei_xin.xml</p>
+<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nt">&lt;FrameLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">"com.example.dell.myapplication.WeiXinFragment"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-nt">&lt;Button</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/btn_weixin"</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">10</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_gravity=</span><span class="highlight-s">"center"</span>
+<span class="highlight-ln">12</span>        <span class="highlight-na">android:text=</span><span class="highlight-s">"微信"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span><span class="highlight-nt">&lt;/FrameLayout&gt;</span>
+</code></pre>
+<p>fragment_contact.xml</p>
+<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nt">&lt;FrameLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">"com.example.dell.myapplication.WeiXinFragment"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-nt">&lt;Button</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/btn_contact"</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-na">android:layout_gravity=</span><span class="highlight-s">"center"</span>
+<span class="highlight-ln">10</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">12</span>        <span class="highlight-na">android:text=</span><span class="highlight-s">"联系人"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span><span class="highlight-nt">&lt;/FrameLayout&gt;</span>
+</code></pre>
+<p>fragment_find.xml</p>
+<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nt">&lt;FrameLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">"com.example.dell.myapplication.WeiXinFragment"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-nt">&lt;Button</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/btn_find"</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">10</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_gravity=</span><span class="highlight-s">"center"</span>
+<span class="highlight-ln">12</span>        <span class="highlight-na">android:text=</span><span class="highlight-s">"发现"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span><span class="highlight-nt">&lt;/FrameLayout&gt;</span>
+</code></pre>
+<p>fragment_me.xml</p>
+<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nt">&lt;FrameLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">"com.example.dell.myapplication.WeiXinFragment"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-nt">&lt;Button</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/btn_me"</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">10</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
+<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_gravity=</span><span class="highlight-s">"center"</span>
+<span class="highlight-ln">12</span>        <span class="highlight-na">android:text=</span><span class="highlight-s">"我的"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span><span class="highlight-nt">&lt;/FrameLayout&gt;</span>
+</code></pre>
+<p>下面是给每个Fragment添加按钮的点击事件，值得注意的是，在Fragment的点击事件跟Activity不一完全相同，在获取空间是不是直接findViewById，<br>
+而是要通过获得的view，而获取context不能直接this了，要是用getActivity()</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nd">@Override</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-kd">public</span> <span class="highlight-n">View</span> <span class="highlight-nf">onCreateView</span><span class="highlight-o">(</span><span class="highlight-n">LayoutInflater</span> <span class="highlight-n">inflater</span><span class="highlight-o">,</span> <span class="highlight-n">ViewGroup</span> <span class="highlight-n">container</span><span class="highlight-o">,</span>
+<span class="highlight-ln"> 3</span>                             <span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 4</span>        <span class="highlight-n">View</span> <span class="highlight-n">view</span> <span class="highlight-o">=</span> <span class="highlight-n">inflater</span><span class="highlight-o">.</span><span class="highlight-na">inflate</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">fragment_me</span><span class="highlight-o">,</span> <span class="highlight-n">container</span><span class="highlight-o">,</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-c1">//需要通过上面获得的View来findViewById
+</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>        <span class="highlight-n">Button</span> <span class="highlight-n">button</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">view</span><span class="highlight-o">.</span><span class="highlight-na">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">btn_me</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 7</span>        <span class="highlight-n">button</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 8</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln"> 9</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">10</span>                <span class="highlight-c1">//在这里不能使用this关键字了，要使用getActivity()代替
+</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>                <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getActivity</span><span class="highlight-o">(),</span><span class="highlight-s">"我的"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">12</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">13</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">14</span>        <span class="highlight-k">return</span> <span class="highlight-n">view</span><span class="highlight-o">;</span>
+<span class="highlight-ln">15</span>    <span class="highlight-o">}</span>
+</code></pre>
+<h3 id="效果图">效果图</h3>
+<p><img src="https://s1.ax1x.com/2020/03/31/GMRLut.gif" alt=""></p>
+<p>项目源代码：<a href="http://download.csdn.net/download/qq_33200967/9929375" target="_blank">http://download.csdn.net/download/qq_33200967/9929375</a></p>
+                <div>
+                    <hr>
+
+标题：Android使用Fragment仿微信底部导航栏<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875240912.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; Android的各种通知Notification、Dialog、Toast、Snackbar&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875803137.html">
+                            <span>Android开机启动&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="Android使用Fragment仿微信底部导航栏"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/22/1584875620149.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466398855"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466398855",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 59ms, 2020/04/07 11:38:50 -->

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>MySQL数据库实现主从复制 - 夜雨飘零</title><meta name="description" content="前言 我们用的在这篇文章《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》使用的只有一个MySQL数据库。 从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。 从性能上来说，我们在《CentOS下安装和使用Mycat实现分布式数据库》这篇文章中介绍了分布式数据库，性能虽然比单个数据库的性能要好。但是当使用分布式数据库时，数据量还是很大，在查询数据时，可能会变得非常慢，导致锁表，一旦锁表就无法写入数据，就会影响其他用户的写入数据的操做。所以就需要读写分离，主（master）数据库负责写入数据，从（slave）数据库负责查询数据，就算从（slave）数据库在查询数据时出现了锁表，也不会影响到主（master）数据库的的写入操作，最多也是从（slave）数据库的数据更新的慢一些。基于这种情况，就出现了主从复制这个技术。 **主从复制：**就是有两个数据库服务器，一个是主（master）数据库服务器...."/><meta property="og:description" content="前言 我们用的在这篇文章《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》使用的只有一个MySQL数据库。 从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。 从性能上来说，我们在《CentOS下安装和使用Mycat实现分布式数据库》这篇文章中介绍了分布式数据库，性能虽然比单个数据库的性能要好。但是当使用分布式数据库时，数据量还是很大，在查询数据时，可能会变得非常慢，导致锁表，一旦锁表就无法写入数据，就会影响其他用户的写入数据的操做。所以就需要读写分离，主（master）数据库负责写入数据，从（slave）数据库负责查询数据，就算从（slave）数据库在查询数据时出现了锁表，也不会影响到主（master）数据库的的写入操作，最多也是从（slave）数据库的数据更新的慢一些。基于这种情况，就出现了主从复制这个技术。 **主从复制：**就是有两个数据库服务器，一个是主（master）数据库服务器...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="MySQL数据库实现主从复制 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="MySQL数据库实现主从复制 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="CentOS下安装和使用Mycat实现分布式数据库" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972765438.html">
+            <link rel="next" title="Mycat中间件实现一主一从和双主双从的读写分离" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#前言">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#安装MySQL">安装MySQL</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#配置主从复制">配置主从复制</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#测试配置">测试配置</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#参考资料">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html">
+                    MySQL数据库实现主从复制
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8">
+                        服务器</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466399194">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180612.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="前言">前言</h1>
+<p>我们用的在这篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80707616" target="_blank">《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》</a>使用的只有一个MySQL数据库。</p>
+<ul>
+<li>从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。</li>
+<li>从性能上来说，我们在<a href="https://blog.csdn.net/qq_33200967/article/details/80863305" target="_blank">《CentOS下安装和使用Mycat实现分布式数据库》</a>这篇文章中介绍了分布式数据库，性能虽然比单个数据库的性能要好。但是当使用分布式数据库时，数据量还是很大，在查询数据时，可能会变得非常慢，导致锁表，一旦锁表就无法写入数据，就会影响其他用户的写入数据的操做。所以就需要读写分离，主（master）数据库负责写入数据，从（slave）数据库负责查询数据，就算从（slave）数据库在查询数据时出现了锁表，也不会影响到主（master）数据库的的写入操作，最多也是从（slave）数据库的数据更新的慢一些。基于这种情况，就出现了主从复制这个技术。</li>
+</ul>
+<p>**主从复制：**就是有两个数据库服务器，一个是主（master）数据库服务器，另一个是从（slave）数据库服务器。当主（master）数据库有数据写入，包括插入、删除、修改，都会在从（slave）数据库上操作一次。这样的操作下，主从（slave）数据库的数据都是一样的，就相当于时刻在做数据备份，就算主（master）数据库的数据全部丢失了，还有从（slave）数据库的数据，我们就可以把从（slave）数据库的数据导出来进行数据恢复。</p>
+<p><strong>主从复制原理</strong>主要有三个线程不断在工作：</p>
+<ol>
+<li>主（master）数据库启动bin二进制日志，这样会有一个Dump线程，这个线程是把主（master）数据库的写入操作都会记录到这个bin的二进制文件中。</li>
+<li>然后从（slave）数据库会启动一个I/O线程，这个线程主要是把主（master）数据库的bin二进制文件读取到本地，并写入到中继日志（Relay log）文件中。</li>
+<li>最后从（slave）数据库其他SQL线程，把中继日志（Relay log）文件中的事件再执行一遍，更新从（slave）数据库的数据，保持主从数据一致。</li>
+</ol>
+<p><img src="https://s1.ax1x.com/2020/04/02/GG1HW8.jpg" alt="这里写图片描述"></p>
+<h1 id="安装MySQL">安装MySQL</h1>
+<p>要实现主从复制就需要两台数据库服务器，可以参考这篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80707616" target="_blank">《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》</a>安装两个CentOS虚拟机。它们的信息如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">主机名</th>
+<th align="center">IP地址</th>
+<th align="center">任务角色</th>
+<th align="center">数据库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">node2</td>
+<td align="center">192.168.204.122</td>
+<td align="center">master</td>
+<td align="center">MySQL</td>
+</tr>
+<tr>
+<td align="center">node3</td>
+<td align="center">192.168.204.123</td>
+<td align="center">slave</td>
+<td align="center">MySQL</td>
+</tr>
+</tbody>
+</table>
+<p>然后我们在node2和node3机器上安装MySQL数据库。操作如下：</p>
+<p>首先关闭防火墙，方便之后的操作。</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+</code></pre>
+<p>我们可以使用以下命令查看MySQL是否安装了：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rpm -qa | grep mysql
+</code></pre>
+<p>应该会输出一下日志：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>[root@localhost ~]# rpm -qa | grep mysql
+<span class="highlight-ln">2</span>mysql-libs-5.1.71-1.el6.x86_64
+</code></pre>
+<p>然后我们可以先移除这个MySQL，重新安装一个：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y remove mysql-libs-5.1.71-1.el6.x86_64
+</code></pre>
+<p>移除之前的MySQL之后，可以重新安装MySQL：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install mysql-server mysql mysql-devel
+</code></pre>
+<p>最后再查看安装情况：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rpm -qa | grep mysql
+</code></pre>
+<p>正常的应该会输出以下信息：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql-5.1.73-8.el6_8.x86_64
+<span class="highlight-ln">2</span>mysql-libs-5.1.73-8.el6_8.x86_64
+<span class="highlight-ln">3</span>mysql-server-5.1.73-8.el6_8.x86_64
+<span class="highlight-ln">4</span>mysql-devel-5.1.73-8.el6_8.x86_64
+</code></pre>
+<p>安装完成之后，我们可以对MySQL数据库进行一些配置：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim /etc/my.cnf
+</code></pre>
+<p>主要也是在<code>[mysqld]</code>下加上下面两行代码，主要是设置编码方式和不区分字母大小写。</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>default-character-set=utf8    # 设置编码方式
+<span class="highlight-ln">2</span>lower_case_table_names=1      # 不区分字母大小写
+</code></pre>
+<p>修改之后的配置文件如下：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
+<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
+<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
+<span class="highlight-ln"> 4</span>user=mysql
+<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
+<span class="highlight-ln"> 6</span>symbolic-links=0
+<span class="highlight-ln"> 7</span>
+<span class="highlight-ln"> 8</span>default-character-set=utf8    # 设置编码方式
+<span class="highlight-ln"> 9</span>lower_case_table_names=1      # 不区分字母大小写
+<span class="highlight-ln">10</span>
+<span class="highlight-ln">11</span>[mysqld_safe]
+<span class="highlight-ln">12</span>log-error=/var/log/mysqld.log
+<span class="highlight-ln">13</span>pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>配置完成之后，我们直接启动MySQL：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld start
+</code></pre>
+<p>然后我们可以把MySQL服务添加到开机自动启，这样就不用每次都启动了。</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig mysqld on
+</code></pre>
+<p>我们可以使用以下的命令查看是否成功添加到开机服务中了。</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig --list | grep mysqld
+</code></pre>
+<p>设置MySQL数据库的密码：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysqladmin -u root password 'root'
+</code></pre>
+<p>登录数据库，输入该命令之后还有输入数据库的密码，这个密码就是上面设置的root：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql -u root -p
+</code></pre>
+<p>为了让Mycat可以连接MySQL数据库，我们还要设置数据库支持远程连接，在登录数据库之后输入以下两条命令：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+<span class="highlight-ln">2</span>mysql&gt; FLUSH PRIVILEGES;
+</code></pre>
+<h1 id="配置主从复制">配置主从复制</h1>
+<p><strong>主（master）数据库</strong>主要做以下几件事情：</p>
+<ul>
+<li>开启bin二进制日志；</li>
+<li>配置唯一的server-id；</li>
+<li>获得主（master）数据库二进制日志文件名及位置；</li>
+<li>创建一个用于slave和master通信的用户账号，这个可以使用我们已经设置了的远程访问账号。</li>
+</ul>
+<p>开启bin二进制日志和配置server-id都是在配置文件<code>/etc/my.cnf</code>中进行设置。在<code>[mysqld]</code>下加上下面两行代码，完成这两个配置：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>log-bin=mysql-bin  # 开启二进制日志
+<span class="highlight-ln">2</span>server-id=1        # 设置server-id
+</code></pre>
+<p>除了配置这些重要的信息，我们还可以配置其他的信息，比如不要复制哪些数据库，或者是只是复制哪些数据库。配置如下：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span># 不同步哪些数据库  
+<span class="highlight-ln">2</span>binlog-ignore-db = mysql
+<span class="highlight-ln">3</span>binlog-ignore-db = test
+<span class="highlight-ln">4</span>binlog-ignore-db = information_schema
+<span class="highlight-ln">5</span>
+<span class="highlight-ln">6</span># 只同步哪些数据库，除此之外，其他不同步  
+<span class="highlight-ln">7</span># binlog-do-db = game 
+</code></pre>
+<p>整个配置完成之后是以下这个样子的：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
+<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
+<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
+<span class="highlight-ln"> 4</span>user=mysql
+<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
+<span class="highlight-ln"> 6</span>symbolic-links=0
+<span class="highlight-ln"> 7</span>
+<span class="highlight-ln"> 8</span>default-character-set=utf8   # 设置编码方式
+<span class="highlight-ln"> 9</span>lower_case_table_names=1     # 不区分字母大小写
+<span class="highlight-ln">10</span>
+<span class="highlight-ln">11</span>log-bin=mysql-bin  # 开启二进制日志
+<span class="highlight-ln">12</span>server-id=1        # 设置server-id
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span># 不同步哪些数据库  
+<span class="highlight-ln">15</span>binlog-ignore-db = mysql
+<span class="highlight-ln">16</span>binlog-ignore-db = test
+<span class="highlight-ln">17</span>binlog-ignore-db = information_schema
+<span class="highlight-ln">18</span>
+<span class="highlight-ln">19</span># 只同步哪些数据库，除此之外，其他不同步  
+<span class="highlight-ln">20</span># binlog-do-db = game  
+<span class="highlight-ln">21</span>
+<span class="highlight-ln">22</span>
+<span class="highlight-ln">23</span>[mysqld_safe]
+<span class="highlight-ln">24</span>log-error=/var/log/mysqld.log
+<span class="highlight-ln">25</span>pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>配置完成之后，还要重启一下数据库：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld restart
+</code></pre>
+<p>现在执行第三步， 获得主（master）数据库二进制日志文件名及位置，首先登陆数据库：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>[root@node2 ~]# mysql -u root -p
+</code></pre>
+<p>然后输入以下命令获取这些信息：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
+</code></pre>
+<p>正常情况下是输出以下信息，其中File和Position都是我们在设置从（slave）数据库的时候用到的：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>+------------------+----------+--------------+-------------------------------+
+<span class="highlight-ln">2</span>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
+<span class="highlight-ln">3</span>+------------------+----------+--------------+-------------------------------+
+<span class="highlight-ln">4</span>| mysql-bin.000003 |      106 |              | mysql,test,information_schema |
+<span class="highlight-ln">5</span>+------------------+----------+--------------+-------------------------------+
+<span class="highlight-ln">6</span>1 row in set (0.00 sec)
+</code></pre>
+<p><strong>从（slave）数据库</strong>配置：</p>
+<ul>
+<li>配置唯一的server-id；</li>
+<li>使用主（master）数据库设置的用户账号读取主（master）数据库的bin二进制日志；</li>
+<li>启用slave服务；</li>
+</ul>
+<p>首先配置server-id，编辑<code>/etc/my.cnf</code>文件。在<code>[mysqld]</code>下加上下面一行代码，这个server-id不要跟之前的主（master）数据库服务器获取其他数据库一样，要唯一的：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>server-id=2   # 设置server-id，必须唯一
+</code></pre>
+<p>同样要重启一下数据库：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld restart
+</code></pre>
+<p>然后登录到数据库，进行以下配置。首先是配置主（master）数据库的IP地址，用户命，登录密码，刚才在主（master）数据库中查到的bin二进制文件的名称和所在的位置。</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; change master to 
+<span class="highlight-ln">2</span>    -&gt; master_host='192.168.204.122',
+<span class="highlight-ln">3</span>    -&gt; master_user='root',
+<span class="highlight-ln">4</span>    -&gt; master_password='root',
+<span class="highlight-ln">5</span>    -&gt; master_log_file='mysql-bin.000003',
+<span class="highlight-ln">6</span>    -&gt; master_log_pos=106;
+</code></pre>
+<p>配置完成之后就启动slave，命令如下：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; start slave;
+</code></pre>
+<p>然后可以查看配置结果，使用以下命令查看：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show slave status\G;
+</code></pre>
+<p>正常情况下是输出以下内容的：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>mysql&gt; show slave status\G;
+<span class="highlight-ln"> 2</span>*************************** 1. row ***************************
+<span class="highlight-ln"> 3</span>               Slave_IO_State: Waiting for master to send event
+<span class="highlight-ln"> 4</span>                  Master_Host: 192.168.204.122
+<span class="highlight-ln"> 5</span>                  Master_User: root
+<span class="highlight-ln"> 6</span>                  Master_Port: 3306
+<span class="highlight-ln"> 7</span>                Connect_Retry: 60
+<span class="highlight-ln"> 8</span>              Master_Log_File: mysql-bin.000003
+<span class="highlight-ln"> 9</span>          Read_Master_Log_Pos: 106
+<span class="highlight-ln">10</span>               Relay_Log_File: mysqld-relay-bin.000002
+<span class="highlight-ln">11</span>                Relay_Log_Pos: 251
+<span class="highlight-ln">12</span>        Relay_Master_Log_File: mysql-bin.000003
+<span class="highlight-ln">13</span>             Slave_IO_Running: Yes
+<span class="highlight-ln">14</span>            Slave_SQL_Running: Yes
+<span class="highlight-ln">15</span>              Replicate_Do_DB: 
+<span class="highlight-ln">16</span>          Replicate_Ignore_DB: 
+<span class="highlight-ln">17</span>           Replicate_Do_Table: 
+<span class="highlight-ln">18</span>       Replicate_Ignore_Table: 
+<span class="highlight-ln">19</span>      Replicate_Wild_Do_Table: 
+<span class="highlight-ln">20</span>  Replicate_Wild_Ignore_Table: 
+<span class="highlight-ln">21</span>                   Last_Errno: 0
+<span class="highlight-ln">22</span>                   Last_Error: 
+<span class="highlight-ln">23</span>                 Skip_Counter: 0
+<span class="highlight-ln">24</span>          Exec_Master_Log_Pos: 106
+<span class="highlight-ln">25</span>              Relay_Log_Space: 407
+<span class="highlight-ln">26</span>              Until_Condition: None
+<span class="highlight-ln">27</span>               Until_Log_File: 
+<span class="highlight-ln">28</span>                Until_Log_Pos: 0
+<span class="highlight-ln">29</span>           Master_SSL_Allowed: No
+<span class="highlight-ln">30</span>           Master_SSL_CA_File: 
+<span class="highlight-ln">31</span>           Master_SSL_CA_Path: 
+<span class="highlight-ln">32</span>              Master_SSL_Cert: 
+<span class="highlight-ln">33</span>            Master_SSL_Cipher: 
+<span class="highlight-ln">34</span>               Master_SSL_Key: 
+<span class="highlight-ln">35</span>        Seconds_Behind_Master: 0
+<span class="highlight-ln">36</span>Master_SSL_Verify_Server_Cert: No
+<span class="highlight-ln">37</span>                Last_IO_Errno: 0
+<span class="highlight-ln">38</span>                Last_IO_Error: 
+<span class="highlight-ln">39</span>               Last_SQL_Errno: 0
+<span class="highlight-ln">40</span>               Last_SQL_Error: 
+<span class="highlight-ln">41</span>1 row in set (0.00 sec)
+<span class="highlight-ln">42</span>
+<span class="highlight-ln">43</span>ERROR: 
+<span class="highlight-ln">44</span>No query specified
+</code></pre>
+<p>可以通过这些输出信息查看配置信息是否正确，其中最重要的是以下这两条信息，必须两个都是<code>Yse</code>才可以使用，这两个就是从（slave）数据库的两个读取和执行SQL语句的线程。</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>Slave_IO_Running: Yes
+<span class="highlight-ln">2</span>Slave_SQL_Running: Yes
+</code></pre>
+<p>到这里就已经配置完成了，我们接下来可以测试一下配置效果了。</p>
+<h1 id="测试配置">测试配置</h1>
+<p>为了方便测试，笔者使用NavicatForMySQL连接数据库，读者可以使用自己熟悉的连接工具，或者是直接在命令行上直接操作。</p>
+<p>首先是连接主（master）数据库：<br>
+<img src="https://s1.ax1x.com/2020/03/30/GmcD0J.png" alt="这里写图片描述"></p>
+<p>在主（master）数据库中创建一个<code>yeyupiaoling</code>数据库：<br>
+<img src="https://s1.ax1x.com/2020/04/03/GaAeq1.png" alt="这里写图片描述"></p>
+<p>并在这个数据库中创建一张<code>user</code>表：<br>
+<img src="https://s1.ax1x.com/2020/04/04/GdW7VK.png" alt="这里写图片描述"></p>
+<p>然后我们在这张表中添加以下数据：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQXxk4.png" alt="这里写图片描述"></p>
+<p>然后连接从（slave）数据库：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQj1nf.png" alt="这里写图片描述"></p>
+<p>可以发现从（slave）数据库中已经创建了一个<code>yeyupiaoling</code>数据库，同时也有了一张<code>user</code>表，该表的数据库都是一样的。<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYwFC4.png" alt="这里写图片描述"></p>
+<p>从上面的测试来看，我们的数据是已经保证了主从数据一致了。也表命令了我门只要对主（master）数据库进行写入操作，从（slave）数据库就会作相应的操作，保证主从（slave）数据库数据一致。但我们对从（slave）数据库进行写入操作时，是不会对主（master）数据库进行改动的，在实际的情况下也不应该对从（slave）数据库进行写入操作。笔者就不在这里进行展示了，有兴趣的读者可以尝试一下。</p>
+<h1 id="参考资料">参考资料</h1>
+<ol>
+<li><a href="https://www.cnblogs.com/gl-developer/p/6170423.html" target="_blank">https://www.cnblogs.com/gl-developer/p/6170423.html</a></li>
+<li><a href="https://blog.csdn.net/daicooper/article/details/79905660" target="_blank">https://blog.csdn.net/daicooper/article/details/79905660</a></li>
+<li><a href="https://blog.csdn.net/darkangel1228/article/details/80004222" target="_blank">https://blog.csdn.net/darkangel1228/article/details/80004222</a></li>
+<li><a href="https://blog.csdn.net/darkangel1228/article/details/80003967" target="_blank">https://blog.csdn.net/darkangel1228/article/details/80003967</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：MySQL数据库实现主从复制<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972765438.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; CentOS下安装和使用Mycat实现分布式数据库&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html">
+                            <span>Mycat中间件实现一主一从和双主双从的读写分离&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="MySQL数据库实现主从复制"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466399194"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466399194",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 577ms, 2020/04/07 11:38:45 -->

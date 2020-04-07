@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《深度学习》学习笔记二——概率论 - 夜雨飘零</title><meta name="description" content="随机变量 随机变量(random variable)是可以随机地取不同值的变量.随机变量是可以离散的或者连续的,离散随机变量拥有有限或可数无限多的状态,连续随机变量伴随这实数值的. 概率分布 概率分布(probability distribution)用来描述随机变量或一簇随机变量在每一个可能取到的状态的可能性大小. 概率质量函数(probability mass function,PMF):离散型变量的概率分布可以用概率质量函数来描述,通常使用P表示概率质量函数 概率质量函数可以同时作用于多个随机变量.这种多个变量的概率分布被称为联合概率分布(joint probability distribution).P({\bf x}=x,{\bf y}=y)表示{\bf x}=x和{\bf y}=y同时发生的概率 一个函数P是随机变量x的PMF,必须满足以下条件: P的定义域必须是x所有可能状态的集合 \forall x \in {\bf x},0 \leq P(x) \leq 1 不可能发生的事件概率为0,一定发生的事件概率为1 $\sum _{x...."/><meta property="og:description" content="随机变量 随机变量(random variable)是可以随机地取不同值的变量.随机变量是可以离散的或者连续的,离散随机变量拥有有限或可数无限多的状态,连续随机变量伴随这实数值的. 概率分布 概率分布(probability distribution)用来描述随机变量或一簇随机变量在每一个可能取到的状态的可能性大小. 概率质量函数(probability mass function,PMF):离散型变量的概率分布可以用概率质量函数来描述,通常使用P表示概率质量函数 概率质量函数可以同时作用于多个随机变量.这种多个变量的概率分布被称为联合概率分布(joint probability distribution).P({\bf x}=x,{\bf y}=y)表示{\bf x}=x和{\bf y}=y同时发生的概率 一个函数P是随机变量x的PMF,必须满足以下条件: P的定义域必须是x所有可能状态的集合 \forall x \in {\bf x},0 \leq P(x) \leq 1 不可能发生的事件概率为0,一定发生的事件概率为1 $\sum _{x...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《深度学习》学习笔记二——概率论 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《深度学习》学习笔记二——概率论 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="《深度学习》学习笔记一——线性代数" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970104343.html">
+            <link rel="next" title="《深度学习》学习笔记三——数值计算" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970319143.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#随机变量">随机变量</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#概率分布">概率分布</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#边缘概率">边缘概率</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#条件概率">条件概率</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#独立性和条件独立性">独立性和条件独立性</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#数学期望">数学期望</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#方差">方差</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#协方差">协方差</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#协方差矩阵">协方差矩阵</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#常用的概率分布">常用的概率分布</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#Bernoulli-分布">Bernoulli 分布</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#Multinoulli-分布">Multinoulli 分布</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#高斯分布">高斯分布</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#常用函数">常用函数</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#logistic-sigmoid函数">logistic sigmoid函数</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#softplus-函数">softplus 函数</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#参考资料">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html">
+                    《深度学习》学习笔记二——概率论
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466409075">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180504.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="随机变量">随机变量</h1>
+<p><strong>随机变量</strong>(random variable)是可以随机地取不同值的变量.随机变量是可以离散的或者连续的,离散随机变量拥有有限或可数无限多的状态,连续随机变量伴随这实数值的.</p>
+<hr>
+<h2 id="概率分布">概率分布</h2>
+<p><strong>概率分布</strong>(probability distribution)用来描述随机变量或一簇随机变量在每一个可能取到的状态的可能性大小.<br>
+<strong>概率质量函数</strong>(probability mass function,PMF):离散型变量的概率分布可以用概率质量函数来描述,通常使用<span class="vditor-math">P</span>表示概率质量函数<br>
+概率质量函数可以同时作用于多个随机变量.这种多个变量的概率分布被称为<strong>联合概率分布</strong>(joint probability distribution).<span class="vditor-math">P({\bf x}=x,{\bf y}=y)</span>表示<span class="vditor-math">{\bf x}=x</span>和<span class="vditor-math">{\bf y}=y</span>同时发生的概率</p>
+<blockquote>
+<p>一个函数<span class="vditor-math">P</span>是随机变量<span class="vditor-math">x</span>的PMF,必须满足以下条件:</p>
+<ol>
+<li><span class="vditor-math">P</span>的定义域必须是<span class="vditor-math">x</span>所有可能状态的集合</li>
+<li><span class="vditor-math">\forall x \in {\bf x},0 \leq P(x) \leq 1</span> 不可能发生的事件概率为0,一定发生的事件概率为1</li>
+<li><span class="vditor-math">\sum _{x \in {\bf x}}P(x) = 1</span>这条性质称为<strong>归一化</strong>(normalized)</li>
+</ol>
+</blockquote>
+<p>如果一个离散型随机变量<span class="vditor-math">{\bf x}</span>有<span class="vditor-math">k</span>不同的状态,如果每个每个状态的可能性都是相同的(<strong>均匀分布</strong>(uniform distribution)),那它的PMF为:</p>
+<div class="vditor-math">P({\bf x}=x_i) = \frac{1}{k}\tag{1}</div>
+<p>因为<span class="vditor-math">k</span>是一个正整数,所以<span class="vditor-math">\frac {1}{k}</span>也是正的,通过下列计算:</p>
+<div class="vditor-math">\sum _i P({\bf x}=x_i) = \sum _i \frac{1}{k} = \frac{k}{k} = 1\tag{2}</div>
+<p>所以均匀分布也是满足归一化条件的</p>
+<hr>
+<h1 id="边缘概率">边缘概率</h1>
+<p><strong>边缘概率分布</strong>(marginal probability distribution):如果我们知道了一组变量的联合概率分布,但想要了解其中一个子集的概率分布,这个子集的概率分布称为边缘概率分布</p>
+<hr>
+<h1 id="条件概率">条件概率</h1>
+<p><strong>条件概率</strong>:在其他事件发生的条件想该事件发生的概率.计算公式如下<span class="vditor-math">P({\rm x}=x) &gt; 0</span>:</p>
+<div class="vditor-math">P({\rm x}=x | {\rm y}=y) = \frac{P({\rm x}=x,{\rm y}=y)}{P({\rm x}=x)}\tag{3}</div>
+<p><strong>例题</strong><br>
+在一汽车工厂中，一辆汽车有两道工序是由机器人完成的，其一是紧固3只螺栓，其二是焊接2处焊点。以<span class="vditor-math">X</span>表示由机器人紧固的螺栓紧固得不良的数目，以<span class="vditor-math">Y</span>表示由机器人焊接的不良焊点数目。据积累的资料知<span class="vditor-math">(X,Y)</span>具有分布律：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Y\X</th>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">P{Y=j}</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">0.840</td>
+<td align="center">0.030</td>
+<td align="center">0.020</td>
+<td align="center">0.010</td>
+<td align="center">0.900</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">0.060</td>
+<td align="center">0.010</td>
+<td align="center">0.008</td>
+<td align="center">0.002</td>
+<td align="center">0.080</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">0.010</td>
+<td align="center">0.005</td>
+<td align="center">0.004</td>
+<td align="center">0.001</td>
+<td align="center">0.020</td>
+</tr>
+<tr>
+<td align="center">P{X=i}</td>
+<td align="center">0.910</td>
+<td align="center">0.045</td>
+<td align="center">0.032</td>
+<td align="center">0.013</td>
+<td align="center">1.000</td>
+</tr>
+</tbody>
+</table>
+<p>求在<span class="vditor-math">X=1</span>的条件下，<span class="vditor-math">Y</span>的条件分布律</p>
+<div class="vditor-math">P\{Y=0|X=1\}=\frac{P\{X=1,Y=0\}}{P\{X=1\}}=\frac{0.030}{0.045}</div>
+<div class="vditor-math">P\{Y=1|X=1\}=\frac{P\{X=1,Y=1\}}{P\{X=1\}}=\frac{0.010}{0.045}\tag{4}</div>
+<div class="vditor-math">P\{Y=2|X=1\}=\frac{P\{X=1,Y=2\}}{P\{X=1\}}=\frac{0.005}{0.045}</div>
+<hr>
+<h1 id="独立性和条件独立性">独立性和条件独立性</h1>
+<p><strong>相互独立</strong>(independent):两个随机变量x和y,如果他们的概率分布可以表示成两个因子的乘积形式,并且一个因子只包含x,另一个因子只包含y,我们就能称这两随机变量是相互独立的.计算如下:</p>
+<div class="vditor-math">\forall x \in {\rm x},y \in {\rm y},p({\rm x} = x,{\rm y} = y)=p({\rm x} = x)p({\rm y} = y\tag{5})</div>
+<p><strong>例题</strong><br>
+实验<span class="vditor-math">E</span>为“抛甲、乙两枚硬币，观察正（H）反（T）面出现的情况”。设事件<span class="vditor-math">A</span>为“甲币出现H”，事件B为“乙币出现H”。<span class="vditor-math">E</span>的样本空间：</p>
+<div class="vditor-math">S=\{HH，HT，TH，TT\}\tag{6}</div>
+<p>即：</p>
+<div class="vditor-math">P(A)=\frac{2}{4}=\frac{1}{2}，P(B)=\frac{2}{4}=\frac{1}{2} \\
+P(B|A)=\frac{1}{2}，P(AB)=\frac{1}{4}\tag{7}</div>
+<p>由上可得<span class="vditor-math">P(B|A)=P(B)</span>，而<span class="vditor-math">P(AB)=P(A)P(B)</span>。所以我们知道甲币是否出现正面与乙币是否出现正面是互不影响的。</p>
+<p><strong>条件独立</strong>(conditionally independent):如果关于x和y的条件概率分布对于<span class="vditor-math">z</span>的每一个值都可以写成乘积的形式那么这两个随机变量x和y子在给定随机变量<span class="vditor-math">z</span>时是条件独立的,计算如下:</p>
+<div class="vditor-math">\forall x \in {\rm x},y \in {\rm y},z \in {\rm z},p({\rm x} = x,{\rm y} = y | {\rm z} = z)=p({\rm x } = x | {\rm z} = z)p({\rm y} = y | {\rm z} = z)\tag{8}</div>
+<hr>
+<h1 id="数学期望">数学期望</h1>
+<p>设离散型随机变量<span class="vditor-math">X</span>的分布律如下:</p>
+<div class="vditor-math">P\{X=x_k\}=p_x,k=1,2,3,\ldots\tag{9}</div>
+<p>若是级数绝对收敛,则称级数<span class="vditor-math">\sum_{k=1}^\infty x_k p_k</span>的和为随机变量<span class="vditor-math">X</span>的数学期望,记作<span class="vditor-math">E(X)</span>,公式如下:</p>
+<div class="vditor-math">E(X)=\sum_{k=1}^\infty x_k p_k\tag{10}</div>
+<p>设连续型随机变量<span class="vditor-math">X</span>的概率密度为<span class="vditor-math">f(x)</span>,若为积分绝对收敛,则称积分<span class="vditor-math">\int_{-\infty}^\infty xf(x)dx</span>的值为随机变量<span class="vditor-math">X</span>的数学期望,记作<span class="vditor-math">E(X)</span>,公式如下:</p>
+<div class="vditor-math">E(X)=\int_{-\infty}^\infty xf(x)dx\tag{11}</div>
+<p>数学期望简称期望,又称均值.<br>
+数学期望<span class="vditor-math">E(X)</span>完全由随机变量<span class="vditor-math">X</span>的概率分布所确定的,若<span class="vditor-math">X</span>从某一分布,也称为<span class="vditor-math">E(X)</span>是这一分布的数学期望<br>
+<strong>离散型例题</strong><br>
+某医院当新生儿诞生时，医生要根据婴儿的皮肤颜色、肌肉弹性、反应的敏感性、心脏的搏动等方面的情况进行评分，新生儿的得分<span class="vditor-math">X</span>是一个随机变量，根据以往资料表明<span class="vditor-math">X</span>的分布律为：</p>
+<table>
+<thead>
+<tr>
+<th align="center">X</th>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+<th align="center">7</th>
+<th align="center">8</th>
+<th align="center">9</th>
+<th align="center">10</th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><span class="vditor-math">p_k</span></td>
+<td align="center">0.002</td>
+<td align="center">0.001</td>
+<td align="center">0.002</td>
+<td align="center">0.005</td>
+<td align="center">0.02</td>
+<td align="center">0.04</td>
+<td align="center">0.18</td>
+<td align="center">0.37</td>
+<td align="center">0.25</td>
+<td align="center">0.12</td>
+<td align="center">0.01</td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>求<span class="vditor-math">X</span>的数学期望<span class="vditor-math">E(X)</span></p>
+<div class="vditor-math">E(X)=0\times0.002+1\times0.001+2\times0.002+3\times0.005+4\times0.02+\\ 5\times0.04+6\times0.18+7\times0.37+8\times0.25+9\times0.12+10\times0.01=7.15</div>
+<p><strong>连续型例题</strong><br>
+有两个相互独立工作的电子装置，它们的寿命（以小时计）<span class="vditor-math">X_k=(k=1,2)</span>服从同一指数分布，其概率密度为：</p>
+<div class="vditor-math">f(x)=\left\{\begin{matrix}\frac{1}{\theta}e^{-x/\theta}，&amp; x &gt; 0 \\ 0，&amp; x \leq0\end{matrix}\right., \quad \theta &gt; 0\tag{12}</div>
+<p>若将这两个电子装置串联连接组成整机，求整机寿命（以小时计）<span class="vditor-math">N</span>的数学期望。<br>
+<strong>解：</strong><span class="vditor-math">X_k(k=1,2)</span>的分布函数为：</p>
+<div class="vditor-math">F(x)=\left\{\begin{matrix}1-e^{-x/\theta}，&amp; x &gt; 0 \\ 0，&amp; x \leq0\end{matrix}\right.\tag{12}</div>
+<p>由<span class="vditor-math">N=\min\{X_1,X_2\}</span>的分布函数</p>
+<div class="vditor-math">F_{\min}(x)=1-[1-F(x)]^2=\left\{\begin{matrix}1-e^{-2x/\theta}，&amp; x &gt; 0 \\ 0，&amp; x \leq0\end{matrix}\right.\tag{13}</div>
+<p>因而<span class="vditor-math">N</span>的概率密度为：</p>
+<div class="vditor-math">f_{\min}(x)=\left\{\begin{matrix}\frac{2}{\theta}e^{-2x/\theta}，&amp; x &gt; 0 \\ 0，&amp; x \leq0\end{matrix}\right.\tag{14}</div>
+<p>于是<span class="vditor-math">N</span>的数学期望为：</p>
+<div class="vditor-math">E(N)=\int_{-\infty} ^\infty xf_{\min}(x)dx=\int_0^\infty\frac{2x}{\theta}e^{-2x/\theta}dx=\frac{\theta}{2}\tag{15}</div>
+<hr>
+<h1 id="方差">方差</h1>
+<p><strong>方差</strong>(variance)设<span class="vditor-math">X</span>是一个随机变量,若<span class="vditor-math">E\{[X-E(X)]^2\}</span>存在,则称<span class="vditor-math">E\{[X-E(X)]^2\}</span>为<span class="vditor-math">X</span>的方差,记为<span class="vditor-math">D(X)</span>或<span class="vditor-math">Var(X)</span>,即:</p>
+<div class="vditor-math">D(X)=Var(X)=E\{[X-E(X)]^2\}\tag{16}</div>
+<p>如果方差很小是,<span class="vditor-math">X</span>的值形成的簇比较接近它们的数学期望.方差的平方根<span class="vditor-math">\sqrt{D(X)}</span>称为<strong>标准差</strong>(standard deviation)或<strong>均方差</strong>(mean square deviation)<br>
+当<span class="vditor-math">X</span>为离散型随机变量时:</p>
+<div class="vditor-math">D(X)=\sum_{k=1}^\infty[x_k-E(X)]^2p_k\tag{17}</div>
+<p>当<span class="vditor-math">X</span>为连续型随机变量时:</p>
+<div class="vditor-math">D(X)=\int_{-\infty}^\infty[x-E(X)]^2f(x)dx\tag{18}</div>
+<hr>
+<h1 id="协方差">协方差</h1>
+<p>量<span class="vditor-math">E\{[X-E(X)][Y-E(Y)]\}</span>称为随机变量X与Y的<strong>协方差</strong>(covariance),记作<span class="vditor-math">Cov(X,Y)</span>,公式如下:</p>
+<div class="vditor-math">Cov(X,Y)=E\{[X-E(X)][Y-E(Y)]\}\tag{19}</div>
+<p>而</p>
+<div class="vditor-math">\rho_{xy}=\frac{Cov(X,Y)}{\sqrt{D(X)}\sqrt{D(Y)}}\tag{20}</div>
+<p>称为随机变量<span class="vditor-math">X</span>和<span class="vditor-math">Y</span>的<strong>相关系数</strong>(correlation)</p>
+<hr>
+<h2 id="协方差矩阵">协方差矩阵</h2>
+<p>二维随机变量<span class="vditor-math">(X_1,X_2)</span>有四个二阶中心矩(设它们都存在),分别记为:</p>
+<div class="vditor-math">c_{11} = E\{[X_1-E(X_1)]^2\} \\
+c_{12} = E\{[X_1-E(X_1)][X_2-E(X_2)]\} \\
+c_{21} = E\{[X_2-E(X_2)][X_1-E(X_1)]\} \\
+c_{22} = E\{[X_2-E(X_2)]^2\} \tag{21}</div>
+<p>将它们排列成矩阵的形式:</p>
+<div class="vditor-math">\left(
+ \begin{matrix}
+  c_{11} &amp; c_{12} \\
+  c_{21} &amp; c_{22}
+  \end{matrix}
+  \right) \tag{22}</div>
+<p>这个矩阵称为随机变量<span class="vditor-math">(X_1,X_2)</span>的<strong>协方差矩阵</strong>(covariance matrix)</p>
+<hr>
+<h1 id="常用的概率分布">常用的概率分布</h1>
+<h2 id="Bernoulli-分布">Bernoulli 分布</h2>
+<p><strong>Bernoulli 分布</strong>(Bernoulli distribution)是单个二值随机变量的分布,它由单个参<span class="vditor-math">\phi \in [0,1]</span>控制,<span class="vditor-math">\phi</span>给出了随机变量等于1的概率.</p>
+<h2 id="Multinoulli-分布">Multinoulli 分布</h2>
+<p><strong>Multinoulli 分布</strong>(multinoulli distribution)或者<strong>范畴分布</strong>(categorical distribution)是指在具有<span class="vditor-math">k</span>个不同状态的单个离散随机变量上的分布,其中<span class="vditor-math">k</span>是一个有限值.</p>
+<h2 id="高斯分布">高斯分布</h2>
+<p><strong>高斯分布</strong>(Gaussian distribution)也叫<strong>正态分布</strong>(normal distribution):</p>
+<div class="vditor-math">{\ N}(x;\mu,\sigma^2)=\sqrt{\frac{1}{2\pi \sigma^2}}{\rm exp}(-\frac{1}{2\sigma^2}(x-\mu)^2)\tag{23}</div>
+<p>当<span class="vditor-math">\mu=0,\sigma=1</span>是,这个我们称为<strong>标准正态分布</strong>(standard normal distribution)</p>
+<hr>
+<h1 id="常用函数">常用函数</h1>
+<h2 id="logistic-sigmoid函数">logistic sigmoid函数</h2>
+<p>公式:</p>
+<div class="vditor-math">\sigma(x)=\frac{1}{1+{\rm exp}(-x)}\tag{24}</div>
+<p>logistic sigmoid函数图</p>
+<p><img src="https://s1.ax1x.com/2020/04/03/Gak7Uf.png" alt="这里写图片描述"><br>
+*图片来自网络</p>
+<h2 id="softplus-函数">softplus 函数</h2>
+<p>公式:</p>
+<div class="vditor-math">\varsigma(x)=\log(1+\exp(x))\tag{25}</div>
+<p>softplus函数名来源于它是另一个函数的平滑(或"软化")形式,这个函数是:</p>
+<div class="vditor-math">x^+=\max(0,x)</div>
+<p>softplus函数的图<br>
+<img src="https://s1.ax1x.com/2020/04/03/Gdpfyt.png" alt="softplus函数图 "><br>
+*图片来自网络</p>
+<hr>
+<h1 id="参考资料">参考资料</h1>
+<ol>
+<li>lan Goodfellow,Yoshua Bengio,Aaron Courville.深度学习(中文版).赵申剑,黎彧君,符天凡,李凯,译.北京:人民邮电出版社</li>
+<li>浙江大学,盛骤,谢式千,潘承毅.工程数学-概率论与数理统计(第四版).北京:高等教育出版社</li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《深度学习》学习笔记二——概率论<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970104343.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《深度学习》学习笔记一——线性代数&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970319143.html">
+                            <span>《深度学习》学习笔记三——数值计算&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《深度学习》学习笔记二——概率论"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584970224843.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466409075"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466409075",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 49ms, 2020/04/07 11:38:51 -->

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零</title><meta name="description" content="目录 @[toc] 深度学介绍 AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如： 汽车行业，农业和供应链。 深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。 关于迭代不同ML思想的图： 这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法； 可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。 寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。 ReLU激活函数的图表如下： 猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。 为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序...."/><meta property="og:description" content="目录 @[toc] 深度学介绍 AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如： 汽车行业，农业和供应链。 深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。 关于迭代不同ML思想的图： 这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法； 可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。 寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。 ReLU激活函数的图表如下： 猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。 为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">
+            <link rel="next" title="使用Logistic回归实现猫的二分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#目录">目录</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#深度学介绍">深度学介绍</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#神经网络基础">神经网络基础</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#浅层神经网络">浅层神经网络</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#深度神经网络">深度神经网络</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">
+                    《Neural Networks and Deep Learning》的理论知识点
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466401544">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180311.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="目录">目录</h1>
+<p>@[toc]</p>
+<h1 id="深度学介绍">深度学介绍</h1>
+<ol>
+<li>AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如：    汽车行业，农业和供应链。</li>
+<li>深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。</li>
+<li>关于迭代不同ML思想的图：<br>
+<img src="https://s1.ax1x.com/2020/04/03/GdpXyq.jpg" alt="image"></li>
+</ol>
+<ul>
+<li>这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法；</li>
+<li>可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。</li>
+</ul>
+<ol start="4">
+<li>寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。</li>
+<li>ReLU激活函数的图表如下：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQmib4.jpg" alt="image"></li>
+<li>猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。</li>
+<li>为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序列。</li>
+<li>这张手工绘制的图像，x轴是指数据量，y轴是指算法的性能<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQjmhd.jpg" alt="image">
+<ul>
+<li>同时在图像中可以看出增加训练数据是不会影响算法的性能的，引入更多的数据对模型总是有益的；</li>
+<li>有知道增加神经网络的大小通常不会影响算法的性能，大型的网络通常比小网络表现要好。</li>
+</ul>
+</li>
+</ol>
+<h1 id="神经网络基础">神经网络基础</h1>
+<ol>
+<li>神经元计算一个线性函数(z = Wx + b),后跟一个激活函数（sigmoid，tanh，ReLU，...）</li>
+<li>使用numpy直接计算矩阵，这跟np.dot(a,b)不同，直接运算时按照广播的方式运算的，使员工np.dot(a,b)是按照平时矩阵的计算方式的。</li>
+<li>假设img是一个(32,32,3)的数组，代表具有3个颜色通道红色，绿色和蓝色的32<em>32的图像，重塑这个成为列向量应该为：x = img.reshape((32</em>32*3,1))</li>
+<li>"Logistic Loss"函数应该是：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQjQjP.jpg" alt="image"></li>
+<li>以下图像的计算过程<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYOb8S.jpg" alt="image"><br>
+应该是：</li>
+</ol>
+<div class="vditor-math">J = u + v - w = (a*b)+(a*c)-(b+c)
+= a*(b+c)-(b+c) = (a-1)*(b+c)</div>
+<h1 id="浅层神经网络">浅层神经网络</h1>
+<ol>
+<li><span class="vditor-math">a^{[12](2)}</span>表示激活向量的第2层的第12个的训练样本。</li>
+<li><span class="vditor-math">X</span>每列都是一个训练样本的矩阵</li>
+<li><span class="vditor-math">a_4^{[2]}</span>表示第2层的第4个的激活输出</li>
+<li><span class="vditor-math">a^{[2]}</span>表示第2层激活向量</li>
+<li>tanh激活函数通常比隐层单元的sigmoid激活函数效果要好，因为tanh的输出范围在(-1,1)，其平均值更接近零，因此它能把数据更集中传到下一层，使学习变得更简单。</li>
+<li>Sigmoid函数的输出在0和1之间，这使得它是二分类的非常好的一个选择，当输出低于0.5时，可以归类为0；当输出高于0.5时，可以归类为1。使用tanh函数也可以，但是tanh的函数在-1和1之间，操作不太方便。</li>
+<li>Logistic回归因为没有隐层，如果将权重初始化为零，则Logistic回归中的第一个样本输出将是零，但是Logistic回归的导数取决于不是零，而是输入的x(因为没有隐层)。因此在第二次迭代中，如果x不是常量向量，则权重值遵循x的分布且彼此不同。</li>
+<li>当tanh激活函数的输入远离零时，其梯度就非常接近于零，因为此时的tanh斜率接近零。</li>
+<li>一个隐藏层的神经网络：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYdLCQ.png" alt="image"><br>
+<span class="vditor-math">b^{[1]}</span>的形状应该是(4,1)；<span class="vditor-math">b^{[2]}</span>的形状应该是(1,1)；<span class="vditor-math">W^{[1]}</span>的形状应该是(4,2)；<span class="vditor-math">W^{[2]}</span>形状应该是(1,4)</li>
+<li>在<span class="vditor-math">l</span>层中，其中$1&lt;=l&lt;=L<span class="vditor-math">，对</span>l$层前向传播正确矢量化的公式是：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQeyjO.png" alt="image"></li>
+</ol>
+<h1 id="深度神经网络">深度神经网络</h1>
+<ol>
+<li>在前向传播和反向传播中使用“cache”，是为了记录前向传播单元计算的值，然后传送给反向传播的单元，因为在使用链式法则计算导数时使用到。</li>
+<li>属于超参数的是：迭代次数，学习率，神经网络<span class="vditor-math">L</span>的层数，隐层的数量。</li>
+<li>深层神经网络比浅层神经网络计算更加复杂的输入特征。</li>
+<li>以下这个网络是4层的神经网络，有3个隐层<br>
+<img src="https://s1.ax1x.com/2020/03/31/GlnDr8.png" alt="image"><br>
+计算层数的方式：层数=隐层+1，输入层和输出层不属于隐层。</li>
+<li>在前向传播中，前向函数需要知道使用的是什么激活函数（Sigmoid，tanh，ReLU，等等），因为在反向传播中需要知道是使用了什么激活函数才能正确计算导数。</li>
+<li>使用浅层网络电路进行计算，需要一个大型的网络（我们通过网络的逻辑门数来测量大小），但是计算深层的电路的话，只需要一个指数规模比较小的网络。</li>
+<li>以下是一个2层隐层的神经网络结构图：<br>
+[外链图片转存失败(img-ggjHJvwx-1563949655959)(<a href="https://note.youdao.com/yws/api/personal/file/AE2D93A09BC54E4AB3A986056C2B4DDB?method=download&amp;shareKey=2e6f6ed04ebd0c5c7e5e3fa21d71b3f2)" target="_blank">https://note.youdao.com/yws/api/personal/file/AE2D93A09BC54E4AB3A986056C2B4DDB?method=download&amp;shareKey=2e6f6ed04ebd0c5c7e5e3fa21d71b3f2)</a>]<br>
+它具有：(i)、<span class="vditor-math">W^{[1]}</span>的形状是(4,4)（计算方式是：<span class="vditor-math">W^{[l]} = (n^{[l]},n^{[l-1]})</span>），同样<span class="vditor-math">W^{[2]}</span>的形状是(3,4)，<span class="vditor-math">W^{[3]}</span>的形状是(1,3)；(ii)、<span class="vditor-math">b^{[1]}</span>的形状是(4,1)（计算方式是：<span class="vditor-math">b^{[l]} = (n^{[l]},1)</span>），同样<span class="vditor-math">b^{[2]}</span>的形状是(3,1)，<span class="vditor-math">b^{[3]}</span>的形状是(1,1)</li>
+<li>假设我们存储的值<span class="vditor-math">n^{[l]}</span>在一个名为layers的数组中，如下所示：layer_dims = [<span class="vditor-math">n_x</span>，4,3,2,1]。因此，第1层有四个隐藏单元，第2层有三个隐藏单元，依此类推。则使用下面的for循环初始化模型的参数：</li>
+</ol>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">for</span><span class="highlight-p">(</span><span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">layer_dims</span><span class="highlight-p">))):</span>
+<span class="highlight-ln">2</span>  <span class="highlight-n">parameter</span><span class="highlight-p">[</span><span class="highlight-err">‘</span><span class="highlight-n">W</span><span class="highlight-err">’</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">i</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">layers</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-n">layers</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]))</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
+<span class="highlight-ln">3</span>  <span class="highlight-n">parameter</span><span class="highlight-p">[</span><span class="highlight-err">‘</span><span class="highlight-n">b</span><span class="highlight-err">’</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">i</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">layers</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
+</code></pre>
+<p><br><br></p>
+<blockquote>
+<p>该笔记是学习吴恩达老师的课程写的。初学者入门，如有理解有误的，欢迎批评指正！</p>
+</blockquote>
+                <div>
+                    <hr>
+
+标题：《Neural Networks and Deep Learning》的理论知识点<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html">
+                            <span>使用Logistic回归实现猫的二分类&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《Neural Networks and Deep Learning》的理论知识点"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466401544"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466401544",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 51ms, 2020/04/07 11:38:48 -->

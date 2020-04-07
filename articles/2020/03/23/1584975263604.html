@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上 - 夜雨飘零</title><meta name="description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15 前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。所以本章我们就来学如何包我们训练的PaddlePaddle预测模型部署到Android手机上。 编译paddle-mobile库 想要把PaddlePaddle训练好的预测库部署到Android手机上，还需要借助paddle-mobile框架。paddle-mobile框架主要是为了方便PaddlePaddle训练好的模型部署到移动设备上，比如Android手机，苹果手机，树莓派等等这些移动设备，有了paddle-mobile框架大大方便了...."/><meta property="og:description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15 前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。所以本章我们就来学如何包我们训练的PaddlePaddle预测模型部署到Android手机上。 编译paddle-mobile库 想要把PaddlePaddle训练好的预测库部署到Android手机上，还需要借助paddle-mobile框架。paddle-mobile框架主要是为了方便PaddlePaddle训练好的模型部署到移动设备上，比如Android手机，苹果手机，树莓派等等这些移动设备，有了paddle-mobile框架大大方便了...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975208040.html">
+            <link rel="next" title="Python的Numpy实现深度学习常用的函数" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584976095161.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#前言">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#编译paddle-mobile库">编译paddle-mobile库</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#使用Docker编译">使用Docker编译</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#使用Ubuntu编译">使用Ubuntu编译</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#创建Android项目">创建Android项目</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#参考资料">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html">
+                    《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466398393">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180509.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<p>GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15</a></p>
+<h1 id="前言">前言</h1>
+<p>现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。所以本章我们就来学如何包我们训练的PaddlePaddle预测模型部署到Android手机上。</p>
+<h1 id="编译paddle-mobile库">编译paddle-mobile库</h1>
+<p>想要把PaddlePaddle训练好的预测库部署到Android手机上，还需要借助paddle-mobile框架。paddle-mobile框架主要是为了方便PaddlePaddle训练好的模型部署到移动设备上，比如Android手机，苹果手机，树莓派等等这些移动设备，有了paddle-mobile框架大大方便了把PaddlePaddle的预测库部署到移动设备上，而且paddle-mobile框架针对移动设备做了大量的优化，使用这些预测库在移动设备上有了更好的预测性能。</p>
+<p>想要在Android手机上使用paddle-mobile，就要编译Android能够使用的CPP库，在这一部分中，我们介绍两种编译Android的paddle-mobile库，分别是使用Docker编译paddle-mobile库、使用Ubuntu交叉编译paddle-mobile库。</p>
+<h2 id="使用Docker编译">使用Docker编译</h2>
+<p>为了方便操作，以下的操作都是在root用户的执行的：</p>
+<ol>
+<li>安装Docker，以下是在Ubuntu下安装的的方式，只要一条命令就可以了：</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>apt-get install docker.io
+</code></pre>
+<ol start="2">
+<li>克隆paddle-mobile源码：</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/PaddlePaddle/paddle-mobile.git
+</code></pre>
+<ol start="3">
+<li>进入到paddle-mobile根目录下编译docker镜像：</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd paddle-mobile
+<span class="highlight-ln">2</span># 编译生成进行，编译时间可能要很长
+<span class="highlight-ln">3</span>docker build -t paddle-mobile:dev - &lt; Dockerfile
+</code></pre>
+<p>编译完成可以使用 <code>docker images</code>命令查看是否已经生成进行：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test# docker images
+<span class="highlight-ln">2</span>REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+<span class="highlight-ln">3</span>paddle-mobile                       dev                 fffbd8779c68        20 hours ago        3.76 GB
+</code></pre>
+<ol start="4">
+<li>运行镜像并进入到容器里面，当前目录还是在paddle-mobile根目录下：</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>docker run -it -v $PWD:/paddle-mobile paddle-mobile:dev
+</code></pre>
+<ol start="5">
+<li>在容器里面执行以下两条命令：</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@fc6f7e9ebdf1:/# cd paddle-mobile/
+<span class="highlight-ln">2</span>root@fc6f7e9ebdf1:/paddle-mobile# cmake -DCMAKE_TOOLCHAIN_FILE=tools/toolchains/arm-android-neon.cmake
+</code></pre>
+<ol start="6">
+<li>（可选）可以使用命令 <code>ccmake .</code>配置一些信息，比如可以设置 <code>NET</code>仅支持 <code>googlenet</code>，这样便于得到的paddle-mobile库会更小一些，修改完成之后，使用 <code>c</code>命令保存，使用 <code>g</code>退出。笔者一般跳过这个步骤。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>                                                    Page 1 of 1
+<span class="highlight-ln"> 2</span> CMAKE_ASM_FLAGS                                                                                                                                                                              
+<span class="highlight-ln"> 3</span> CMAKE_ASM_FLAGS_DEBUG                                                                                                                                                                        
+<span class="highlight-ln"> 4</span> CMAKE_ASM_FLAGS_RELEASE                                                                                                                                                                      
+<span class="highlight-ln"> 5</span> CMAKE_BUILD_TYPE                                                                                                                                                                             
+<span class="highlight-ln"> 6</span> CMAKE_INSTALL_PREFIX             /usr/local                                                                                                                                                  
+<span class="highlight-ln"> 7</span> CMAKE_TOOLCHAIN_FILE             /paddle-mobile/tools/toolchains/arm-android-neon.cmake                                                                                                      
+<span class="highlight-ln"> 8</span> CPU                              ON                                                                                                                                                          
+<span class="highlight-ln"> 9</span> DEBUGING                         ON                                                                                                                                                          
+<span class="highlight-ln">10</span> FPGA                             OFF                                                                                                                                                         
+<span class="highlight-ln">11</span> LOG_PROFILE                      ON                                                                                                                                                          
+<span class="highlight-ln">12</span> MALI_GPU                         OFF                                                                                                                                                         
+<span class="highlight-ln">13</span> NET                              defult                                                                                                                                                      
+<span class="highlight-ln">14</span> USE_EXCEPTION                    ON                                                                                                                                                          
+<span class="highlight-ln">15</span> USE_OPENMP                       ON                                                     
+</code></pre>
+<ol start="7">
+<li>最后执行一下 <code>make</code>就可以了，到这一步就完成了paddle-mobile的编译。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@fc6f7e9ebdf1:/paddle-mobile# make
+</code></pre>
+<ol start="8">
+<li>使用 <code>exit</code>命令退出容器，回到Ubuntu本地上。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@fc6f7e9ebdf1:/paddle-mobile# exit
+</code></pre>
+<ol start="9">
+<li>在paddle-mobile根目录下，有一个build目录，我们编译好的paddle-mobile库就在这里。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddle-mobile/build# ls
+<span class="highlight-ln">2</span>libpaddle-mobile.so
+</code></pre>
+<p><code>libpaddle-mobile.so</code>就是我们在开发Android项目的时候使用到的paddle-mobile库。</p>
+<h2 id="使用Ubuntu编译">使用Ubuntu编译</h2>
+<ol>
+<li>首先要下载和解压NDK。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
+<span class="highlight-ln">2</span>unzip android-ndk-r17b-linux-x86_64.zip
+</code></pre>
+<ol start="2">
+<li>设置NDK环境变量，目录是NDK的解压目录。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>export NDK_ROOT="/home/test/android-ndk-r17b"
+</code></pre>
+<p>设置好之后，可以使用以下的命令查看配置情况。</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test# echo $NDK_ROOT
+<span class="highlight-ln">2</span>/home/test/android-ndk-r17b
+</code></pre>
+<ol start="3">
+<li>安装cmake，需要安装较高版本的，笔者的cmake版本是3.11.2。</li>
+</ol>
+<ul>
+<li>下载cmake源码</li>
+</ul>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>wget https://cmake.org/files/v3.11/cmake-3.11.2.tar.gz
+</code></pre>
+<ul>
+<li>解压cmake源码</li>
+</ul>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>tar -zxvf cmake-3.11.2.tar.gz
+</code></pre>
+<ul>
+<li>进入到cmake源码根目录，并执行 <code>bootstrap</code>。</li>
+</ul>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd cmake-3.11.2
+<span class="highlight-ln">2</span>./bootstrap
+</code></pre>
+<ul>
+<li>最后执行以下两条命令开始安装cmake。</li>
+</ul>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>make
+<span class="highlight-ln">2</span>make install
+</code></pre>
+<ul>
+<li>安装完成之后，可以使用 <code>cmake --version</code>是否安装成功.</li>
+</ul>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddlepaddle# cmake --version
+<span class="highlight-ln">2</span>cmake version 3.11.2
+<span class="highlight-ln">3</span>
+<span class="highlight-ln">4</span>CMake suite maintained and supported by Kitware (kitware.com/cmake).
+</code></pre>
+<ol start="4">
+<li>克隆paddle-mobile源码。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/PaddlePaddle/paddle-mobile.git
+</code></pre>
+<ol start="5">
+<li>进入到paddle-mobile目录下，执行编译。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd paddle-mobile/
+<span class="highlight-ln">2</span>cmake -DCMAKE_TOOLCHAIN_FILE=tools/toolchains/arm-android-neon.cmake
+<span class="highlight-ln">3</span>make
+</code></pre>
+<ol start="6">
+<li>最后会在 <code>paddle-mobile/build</code>目录下生产paddle-mobile库。</li>
+</ol>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddle-mobile/build# ls
+<span class="highlight-ln">2</span>libpaddle-mobile.so
+</code></pre>
+<p><code>libpaddle-mobile.so</code>就是我们在开发Android项目的时候使用到的paddle-mobile库。</p>
+<h1 id="创建Android项目">创建Android项目</h1>
+<p>首先使用Android Studio创建一个普通的Android项目，我们可以不用选择CPP的支持，因为我们已经编译好了CPP。之后按照以下的步骤开始执行：</p>
+<ol>
+<li>在 <code>main</code>目录下创建两个 <code>assets/infer_model</code>文件夹，这个文件夹我们将会使用它来存放PaddlePaddle训练好的预测模型，本章我们使用的预测模型是<a href="https://blog.csdn.net/qq_33200967/article/details/87895105" target="_blank">《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别</a>训练得到的预测模型，我们训练好的模型复制到这个文件夹下。</li>
+<li>在 <code>main</code>目录下创建一个 <code>jniLibs</code>文件夹，这个文件夹是存放CPP编译库的，就是<strong>编译paddle-mobile库</strong>部分编译的 <code>libpaddle-mobile.so</code></li>
+<li>在Android项目的配置文件夹中加上权限声明，因为我们要使用到读取相册和使用相机，所以加上以下的权限声明：</li>
+</ol>
+<pre><code class="language-xml highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nt">&lt;uses-permission</span> <span class="highlight-na">android:name=</span><span class="highlight-s">"android.permission.WRITE_EXTERNAL_STORAGE"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">2</span><span class="highlight-nt">&lt;uses-permission</span> <span class="highlight-na">android:name=</span><span class="highlight-s">"android.permission.READ_EXTERNAL_STORAGE"</span> <span class="highlight-nt">/&gt;</span>
+</code></pre>
+<ol start="4">
+<li>修改 <code>activity_main.xml</code>界面，修改成如下：</li>
+</ol>
+<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="highlight-ln"> 2</span><span class="highlight-nt">&lt;RelativeLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-na">xmlns:app=</span><span class="highlight-s">"http://schemas.android.com/apk/res-auto"</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">".MainActivity"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-nt">&lt;LinearLayout</span>
+<span class="highlight-ln">10</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/ll"</span>
+<span class="highlight-ln">11</span>        <span class="highlight-na">android:orientation=</span><span class="highlight-s">"horizontal"</span>
+<span class="highlight-ln">12</span>        <span class="highlight-na">android:layout_alignParentBottom=</span><span class="highlight-s">"true"</span>
+<span class="highlight-ln">13</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln">14</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"50dp"</span><span class="highlight-nt">&gt;</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span>        <span class="highlight-nt">&lt;Button</span>
+<span class="highlight-ln">17</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
+<span class="highlight-ln">18</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/load"</span>
+<span class="highlight-ln">19</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"加载模型"</span>
+<span class="highlight-ln">20</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
+<span class="highlight-ln">21</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">22</span>
+<span class="highlight-ln">23</span>        <span class="highlight-nt">&lt;Button</span>
+<span class="highlight-ln">24</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/clear"</span>
+<span class="highlight-ln">25</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
+<span class="highlight-ln">26</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"清空模型"</span>
+<span class="highlight-ln">27</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
+<span class="highlight-ln">28</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">29</span>
+<span class="highlight-ln">30</span>        <span class="highlight-nt">&lt;Button</span>
+<span class="highlight-ln">31</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/infer"</span>
+<span class="highlight-ln">32</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
+<span class="highlight-ln">33</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"预测图片"</span>
+<span class="highlight-ln">34</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
+<span class="highlight-ln">35</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">36</span>    <span class="highlight-nt">&lt;/LinearLayout&gt;</span>
+<span class="highlight-ln">37</span>
+<span class="highlight-ln">38</span>    <span class="highlight-nt">&lt;TextView</span>
+<span class="highlight-ln">39</span>        <span class="highlight-na">android:layout_above=</span><span class="highlight-s">"@id/ll"</span>
+<span class="highlight-ln">40</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/show"</span>
+<span class="highlight-ln">41</span>        <span class="highlight-na">android:hint=</span><span class="highlight-s">"这里显示预测结果"</span>
+<span class="highlight-ln">42</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln">43</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"100dp"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">44</span>
+<span class="highlight-ln">45</span>    <span class="highlight-nt">&lt;ImageView</span>
+<span class="highlight-ln">46</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/image_view"</span>
+<span class="highlight-ln">47</span>        <span class="highlight-na">android:layout_above=</span><span class="highlight-s">"@id/show"</span>
+<span class="highlight-ln">48</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
+<span class="highlight-ln">49</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span> <span class="highlight-nt">/&gt;</span>
+<span class="highlight-ln">50</span><span class="highlight-nt">&lt;/RelativeLayout&gt;</span>
+</code></pre>
+<ol start="5">
+<li>创建一个 <code>com.baidu.paddle</code>包，在这个包下创建的Java程序，这个Java程序就是用于调用paddle-mobile的CPP动态库的。它提供了多种方法给我们使用，我们主要使用到加载模型的方法 <code>load(String modelDir)</code>，清空已加载的方法 <code>clear()</code>，还有最最重要的预测方法 <code>predictImage(float[] buf, int[]ddims)</code>。</li>
+</ol>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.baidu.paddle</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 2</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">PML</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-c1">// set thread num
+</span><span class="highlight-ln"> 5</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">void</span> <span class="highlight-nf">setThread</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">threadCount</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-c1">//Load seperated parameters
+</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">load</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelDir</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span>    <span class="highlight-c1">// load qualified model
+</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">loadQualified</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelDir</span><span class="highlight-o">);</span>
+<span class="highlight-ln">12</span>
+<span class="highlight-ln">13</span>    <span class="highlight-c1">// Load combined parameters
+</span><span class="highlight-ln">14</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">loadCombined</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelPath</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">paramPath</span><span class="highlight-o">);</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span>    <span class="highlight-c1">// load qualified model
+</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">loadCombinedQualified</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelPath</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">paramPath</span><span class="highlight-o">);</span>
+<span class="highlight-ln">18</span>
+<span class="highlight-ln">19</span>    <span class="highlight-c1">// object detection
+</span><span class="highlight-ln">20</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">predictImage</span><span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">buf</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span><span class="highlight-n">ddims</span><span class="highlight-o">);</span>
+<span class="highlight-ln">21</span>
+<span class="highlight-ln">22</span>    <span class="highlight-c1">// predict yuv image
+</span><span class="highlight-ln">23</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">predictYuv</span><span class="highlight-o">(</span><span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buf</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">imgWidth</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">imgHeight</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">ddims</span><span class="highlight-o">,</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span><span class="highlight-n">meanValues</span><span class="highlight-o">);</span>
+<span class="highlight-ln">24</span>
+<span class="highlight-ln">25</span>    <span class="highlight-c1">// clear model
+</span><span class="highlight-ln">26</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">void</span> <span class="highlight-nf">clear</span><span class="highlight-o">();</span>
+<span class="highlight-ln">27</span><span class="highlight-o">}</span>
+</code></pre>
+<ol start="6">
+<li>然后在项目的主要包下创建一个 <code>Utils.java</code>的工具类。这个工具类主要编写一些图像的处理方法，和一些模型复制方法等，我们下面将一一介绍这些方法。</li>
+</ol>
+<p>该方法是用于获取预测结果中概率最大的标签，参数是执行预测的结果，这个结果是对应没有类别的概率，这个方法就判断哪个类别的概率最大，然后就返回概率最大的标签。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">// 获取预测值中最大概率的标签
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kt">int</span> <span class="highlight-nf">getMaxResult</span><span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">result</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-kt">float</span> <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">0</span><span class="highlight-o">];</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-kt">int</span> <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">probability</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">])</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 7</span>            <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
+<span class="highlight-ln"> 8</span>            <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">10</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">11</span>    <span class="highlight-k">return</span> <span class="highlight-n">r</span><span class="highlight-o">;</span>
+<span class="highlight-ln">12</span><span class="highlight-o">}</span>
+</code></pre>
+<p>该方法是把图片转换成预测需要用的数据格式浮点数组。在转换的过程中也对图像做了预处理，这个预处理需要跟训练的预处理的方式一样，否则无法正确预测。还有指定了处理后图片的大小，根据参数输入的宽度和高度，把图片压缩到这些自定的大小。还有把图片的通道顺序改为RGB，同时每个像素除以255，这个操作跟训练的时候一样。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">// 对将要预测的图片进行预处理
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">getScaledMatrix</span><span class="highlight-o">(</span><span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">desHeight</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">dataBuf</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">float</span><span class="highlight-o">[</span><span class="highlight-n">3</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span> <span class="highlight-o">*</span> <span class="highlight-n">desHeight</span><span class="highlight-o">];</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-kt">int</span> <span class="highlight-n">rIndex</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-kt">int</span> <span class="highlight-n">gIndex</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-kt">int</span> <span class="highlight-n">bIndex</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">pixels</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">int</span><span class="highlight-o">[</span><span class="highlight-n">desWidth</span> <span class="highlight-o">*</span> <span class="highlight-n">desHeight</span><span class="highlight-o">];</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-n">Bitmap</span> <span class="highlight-n">bm</span> <span class="highlight-o">=</span> <span class="highlight-n">Bitmap</span><span class="highlight-o">.</span><span class="highlight-na">createScaledBitmap</span><span class="highlight-o">(</span><span class="highlight-n">bitmap</span><span class="highlight-o">,</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span> <span class="highlight-n">desHeight</span><span class="highlight-o">,</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-n">bm</span><span class="highlight-o">.</span><span class="highlight-na">getPixels</span><span class="highlight-o">(</span><span class="highlight-n">pixels</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span> <span class="highlight-n">desHeight</span><span class="highlight-o">);</span>
+<span class="highlight-ln">10</span>    <span class="highlight-kt">int</span> <span class="highlight-n">j</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
+<span class="highlight-ln">11</span>    <span class="highlight-kt">int</span> <span class="highlight-n">k</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
+<span class="highlight-ln">12</span>    <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">pixels</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">13</span>        <span class="highlight-kt">int</span> <span class="highlight-n">clr</span> <span class="highlight-o">=</span> <span class="highlight-n">pixels</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
+<span class="highlight-ln">14</span>        <span class="highlight-n">j</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span> <span class="highlight-o">/</span> <span class="highlight-n">desHeight</span><span class="highlight-o">;</span>
+<span class="highlight-ln">15</span>        <span class="highlight-n">k</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-n">desWidth</span><span class="highlight-o">;</span>
+<span class="highlight-ln">16</span>        <span class="highlight-n">rIndex</span> <span class="highlight-o">=</span> <span class="highlight-n">j</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span> <span class="highlight-o">+</span> <span class="highlight-n">k</span><span class="highlight-o">;</span>
+<span class="highlight-ln">17</span>        <span class="highlight-n">gIndex</span> <span class="highlight-o">=</span> <span class="highlight-n">rIndex</span> <span class="highlight-o">+</span> <span class="highlight-n">desHeight</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span><span class="highlight-o">;</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">bIndex</span> <span class="highlight-o">=</span> <span class="highlight-n">gIndex</span> <span class="highlight-o">+</span> <span class="highlight-n">desHeight</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span><span class="highlight-o">;</span>
+<span class="highlight-ln">19</span>        <span class="highlight-c1">// 转成RGB通道顺序，并除以255，跟训练的预处理一样
+</span><span class="highlight-ln">20</span><span class="highlight-c1"></span>        <span class="highlight-n">dataBuf</span><span class="highlight-o">[</span><span class="highlight-n">rIndex</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">)</span> <span class="highlight-o">(((</span><span class="highlight-n">clr</span> <span class="highlight-o">&amp;</span> <span class="highlight-n">0x00ff0000</span><span class="highlight-o">)</span> <span class="highlight-o">&gt;&gt;</span> <span class="highlight-n">16</span><span class="highlight-o">)</span> <span class="highlight-o">/</span> <span class="highlight-n">255</span><span class="highlight-o">.</span><span class="highlight-na">0</span><span class="highlight-o">);</span>
+<span class="highlight-ln">21</span>        <span class="highlight-n">dataBuf</span><span class="highlight-o">[</span><span class="highlight-n">gIndex</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">)</span> <span class="highlight-o">(((</span><span class="highlight-n">clr</span> <span class="highlight-o">&amp;</span> <span class="highlight-n">0x0000ff00</span><span class="highlight-o">)</span> <span class="highlight-o">&gt;&gt;</span> <span class="highlight-n">8</span><span class="highlight-o">)</span> <span class="highlight-o">/</span> <span class="highlight-n">255</span><span class="highlight-o">.</span><span class="highlight-na">0</span><span class="highlight-o">);</span>
+<span class="highlight-ln">22</span>        <span class="highlight-n">dataBuf</span><span class="highlight-o">[</span><span class="highlight-n">bIndex</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">)</span> <span class="highlight-o">(((</span><span class="highlight-n">clr</span> <span class="highlight-o">&amp;</span> <span class="highlight-n">0x000000ff</span><span class="highlight-o">))</span> <span class="highlight-o">/</span> <span class="highlight-n">255</span><span class="highlight-o">.</span><span class="highlight-na">0</span><span class="highlight-o">);</span>
+<span class="highlight-ln">23</span>
+<span class="highlight-ln">24</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">25</span>    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">bm</span><span class="highlight-o">.</span><span class="highlight-na">isRecycled</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">26</span>        <span class="highlight-n">bm</span><span class="highlight-o">.</span><span class="highlight-na">recycle</span><span class="highlight-o">();</span>
+<span class="highlight-ln">27</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">28</span>    <span class="highlight-k">return</span> <span class="highlight-n">dataBuf</span><span class="highlight-o">;</span>
+<span class="highlight-ln">29</span><span class="highlight-o">}</span>
+</code></pre>
+<p>该方法是对图片进行压缩，避免图片过大，超过内存支出。把图片的最大长度压缩到500以内。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">// 压缩图片，避免图片过大
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">Bitmap</span> <span class="highlight-nf">getScaleBitmap</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">filePath</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span> <span class="highlight-n">opt</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span><span class="highlight-o">();</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">true</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeFile</span><span class="highlight-o">(</span><span class="highlight-n">filePath</span><span class="highlight-o">,</span> <span class="highlight-n">opt</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-kt">int</span> <span class="highlight-n">bmpWidth</span> <span class="highlight-o">=</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">outWidth</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-kt">int</span> <span class="highlight-n">bmpHeight</span> <span class="highlight-o">=</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">outHeight</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span>    <span class="highlight-kt">int</span> <span class="highlight-n">maxSize</span> <span class="highlight-o">=</span> <span class="highlight-n">500</span><span class="highlight-o">;</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span>    <span class="highlight-c1">// compress picture with inSampleSize
+</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>    <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
+<span class="highlight-ln">14</span>    <span class="highlight-k">while</span> <span class="highlight-o">(</span><span class="highlight-kc">true</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">15</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">bmpWidth</span> <span class="highlight-o">/</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">maxSize</span> <span class="highlight-o">||</span> <span class="highlight-n">bmpHeight</span> <span class="highlight-o">/</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">maxSize</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">16</span>            <span class="highlight-k">break</span><span class="highlight-o">;</span>
+<span class="highlight-ln">17</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">18</span>        <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">*=</span> <span class="highlight-n">2</span><span class="highlight-o">;</span>
+<span class="highlight-ln">19</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">20</span>    <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
+<span class="highlight-ln">21</span>    <span class="highlight-k">return</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeFile</span><span class="highlight-o">(</span><span class="highlight-n">filePath</span><span class="highlight-o">,</span> <span class="highlight-n">opt</span><span class="highlight-o">);</span>
+<span class="highlight-ln">22</span><span class="highlight-o">}</span>
+</code></pre>
+<p>该方法是根据相册返回的URI转换为图片的绝对路径，用于之后使用这个路径获取图片内容。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">// 根据相册返回的URI返回图片的绝对路径
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">String</span> <span class="highlight-nf">getPathFromURI</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">Uri</span> <span class="highlight-n">uri</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-n">String</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">Cursor</span> <span class="highlight-n">cursor</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getContentResolver</span><span class="highlight-o">().</span><span class="highlight-na">query</span><span class="highlight-o">(</span><span class="highlight-n">uri</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">cursor</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">uri</span><span class="highlight-o">.</span><span class="highlight-na">getPath</span><span class="highlight-o">();</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">moveToFirst</span><span class="highlight-o">();</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-kt">int</span> <span class="highlight-n">idx</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getColumnIndex</span><span class="highlight-o">(</span><span class="highlight-n">MediaStore</span><span class="highlight-o">.</span><span class="highlight-na">Images</span><span class="highlight-o">.</span><span class="highlight-na">ImageColumns</span><span class="highlight-o">.</span><span class="highlight-na">DATA</span><span class="highlight-o">);</span>
+<span class="highlight-ln">10</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-n">idx</span><span class="highlight-o">);</span>
+<span class="highlight-ln">11</span>        <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
+<span class="highlight-ln">12</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">13</span>    <span class="highlight-k">return</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
+<span class="highlight-ln">14</span><span class="highlight-o">}</span>
+</code></pre>
+<p>该方法是把 <code>assets</code>资源文件下的预测文件复制到缓存目录，用于之后加载模型文件。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">// 复制莫模型文件到缓存目录
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kt">void</span> <span class="highlight-nf">copyFileFromAsset</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">oldPath</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">newPath</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-k">try</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 4</span>        <span class="highlight-c1">// 预测模型文件在assets中的位置
+</span><span class="highlight-ln"> 5</span><span class="highlight-c1"></span>        <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">fileNames</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getAssets</span><span class="highlight-o">().</span><span class="highlight-na">list</span><span class="highlight-o">(</span><span class="highlight-n">oldPath</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">fileNames</span><span class="highlight-o">.</span><span class="highlight-na">length</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 7</span>            <span class="highlight-c1">// directory
+</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>            <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">newPath</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 9</span>            <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">exists</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">10</span>                <span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">mkdirs</span><span class="highlight-o">();</span>
+<span class="highlight-ln">11</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">12</span>            <span class="highlight-c1">// copy recursivelyC
+</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>            <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">fileName</span> <span class="highlight-o">:</span> <span class="highlight-n">fileNames</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">14</span>                <span class="highlight-n">copyFileFromAsset</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">oldPath</span> <span class="highlight-o">+</span> <span class="highlight-s">"/"</span> <span class="highlight-o">+</span> <span class="highlight-n">fileName</span><span class="highlight-o">,</span> <span class="highlight-n">newPath</span> <span class="highlight-o">+</span> <span class="highlight-s">"/"</span> <span class="highlight-o">+</span> <span class="highlight-n">fileName</span><span class="highlight-o">);</span>
+<span class="highlight-ln">15</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">16</span>        <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">17</span>            <span class="highlight-c1">// file
+</span><span class="highlight-ln">18</span><span class="highlight-c1"></span>            <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">newPath</span><span class="highlight-o">);</span>
+<span class="highlight-ln">19</span>            <span class="highlight-c1">// if file exists will never copy
+</span><span class="highlight-ln">20</span><span class="highlight-c1"></span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">exists</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">21</span>                <span class="highlight-k">return</span><span class="highlight-o">;</span>
+<span class="highlight-ln">22</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">23</span>
+<span class="highlight-ln">24</span>            <span class="highlight-c1">// copy file to new path
+</span><span class="highlight-ln">25</span><span class="highlight-c1"></span>            <span class="highlight-n">InputStream</span> <span class="highlight-n">is</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getAssets</span><span class="highlight-o">().</span><span class="highlight-na">open</span><span class="highlight-o">(</span><span class="highlight-n">oldPath</span><span class="highlight-o">);</span>
+<span class="highlight-ln">26</span>            <span class="highlight-n">FileOutputStream</span> <span class="highlight-n">fos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FileOutputStream</span><span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">);</span>
+<span class="highlight-ln">27</span>            <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
+<span class="highlight-ln">28</span>            <span class="highlight-kt">int</span> <span class="highlight-n">byteCount</span><span class="highlight-o">;</span>
+<span class="highlight-ln">29</span>            <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">byteCount</span> <span class="highlight-o">=</span> <span class="highlight-n">is</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">!=</span> <span class="highlight-o">-</span><span class="highlight-n">1</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">30</span>                <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">byteCount</span><span class="highlight-o">);</span>
+<span class="highlight-ln">31</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">32</span>            <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">flush</span><span class="highlight-o">();</span>
+<span class="highlight-ln">33</span>            <span class="highlight-n">is</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
+<span class="highlight-ln">34</span>            <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
+<span class="highlight-ln">35</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">36</span>    <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">Exception</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">37</span>        <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
+<span class="highlight-ln">38</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">39</span><span class="highlight-o">}</span>
+</code></pre>
+<ol start="7">
+<li>最后修改 <code>MainActivity.java</code>，修改如下：</li>
+</ol>
+<p>这里做一些初始化操作，如加载PaddleMobile的动态库，指定图片的形状。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">model_path</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-c1">// 模型文件夹
+</span><span class="highlight-ln"> 3</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">assets_path</span> <span class="highlight-o">=</span> <span class="highlight-s">"infer_model"</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">load_result</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-c1">// 输入图片的形状，分别是：batch size、通道数、宽度、高度
+</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">ddims</span> <span class="highlight-o">=</span> <span class="highlight-o">{</span><span class="highlight-n">1</span><span class="highlight-o">,</span> <span class="highlight-n">3</span><span class="highlight-o">,</span> <span class="highlight-n">224</span><span class="highlight-o">,</span> <span class="highlight-n">224</span><span class="highlight-o">};</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ImageView</span> <span class="highlight-n">imageView</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-kd">private</span> <span class="highlight-n">TextView</span> <span class="highlight-n">showTv</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span>    <span class="highlight-c1">// 加载PaddleMobile的动态库
+</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>    <span class="highlight-kd">static</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">12</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">13</span>            <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">loadLibrary</span><span class="highlight-o">(</span><span class="highlight-s">"paddle-mobile"</span><span class="highlight-o">);</span>
+<span class="highlight-ln">14</span>
+<span class="highlight-ln">15</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">Exception</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">16</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
+<span class="highlight-ln">17</span>
+<span class="highlight-ln">18</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">19</span>    <span class="highlight-o">}</span>
+</code></pre>
+<p>该方法是初始化控件，和定义按钮的点击事件，如加载模型点击事件，清空模型点击事件，打开相册预测图片点击事件。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">// 初始化控件
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">initView</span><span class="highlight-o">(){</span>
+<span class="highlight-ln"> 3</span>        <span class="highlight-n">Button</span> <span class="highlight-n">loadBtn</span> <span class="highlight-o">=</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">load</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 4</span>        <span class="highlight-n">Button</span> <span class="highlight-n">clearBtn</span> <span class="highlight-o">=</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">clear</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-n">Button</span> <span class="highlight-n">inferBtn</span> <span class="highlight-o">=</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">infer</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-n">showTv</span> <span class="highlight-o">=</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">show</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 7</span>        <span class="highlight-n">imageView</span> <span class="highlight-o">=</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">image_view</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 8</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-c1">// 加载模型点击事件
+</span><span class="highlight-ln">10</span><span class="highlight-c1"></span>        <span class="highlight-n">loadBtn</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">11</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">12</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">13</span>                <span class="highlight-n">load_result</span> <span class="highlight-o">=</span> <span class="highlight-n">PML</span><span class="highlight-o">.</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">model_path</span><span class="highlight-o">);</span>
+<span class="highlight-ln">14</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">load_result</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">15</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-s">"模型加载成功"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">16</span>                <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">17</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-s">"模型加载失败"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">18</span>                <span class="highlight-o">}</span>
+<span class="highlight-ln">19</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">20</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">21</span>
+<span class="highlight-ln">22</span>        <span class="highlight-c1">// 清空模型点击事件
+</span><span class="highlight-ln">23</span><span class="highlight-c1"></span>        <span class="highlight-n">clearBtn</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">24</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">25</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">26</span>                <span class="highlight-n">PML</span><span class="highlight-o">.</span><span class="highlight-na">clear</span><span class="highlight-o">();</span>
+<span class="highlight-ln">27</span>                <span class="highlight-n">load_result</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
+<span class="highlight-ln">28</span>                <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-s">"模型已清空"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">29</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">30</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">31</span>
+<span class="highlight-ln">32</span>        <span class="highlight-c1">// 打开相册选择图片预测点击事件
+</span><span class="highlight-ln">33</span><span class="highlight-c1"></span>        <span class="highlight-n">inferBtn</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">34</span>            <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">35</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">36</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">load_result</span><span class="highlight-o">){</span>
+<span class="highlight-ln">37</span>                    <span class="highlight-n">Intent</span> <span class="highlight-n">intent</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Intent</span><span class="highlight-o">(</span><span class="highlight-n">Intent</span><span class="highlight-o">.</span><span class="highlight-na">ACTION_PICK</span><span class="highlight-o">);</span>
+<span class="highlight-ln">38</span>                    <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">setType</span><span class="highlight-o">(</span><span class="highlight-s">"image/*"</span><span class="highlight-o">);</span>
+<span class="highlight-ln">39</span>                    <span class="highlight-n">startActivityForResult</span><span class="highlight-o">(</span><span class="highlight-n">intent</span><span class="highlight-o">,</span> <span class="highlight-n">1</span><span class="highlight-o">);</span>
+<span class="highlight-ln">40</span>                <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">41</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-s">"模型未加载"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">42</span>                <span class="highlight-o">}</span>
+<span class="highlight-ln">43</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">44</span>        <span class="highlight-o">});</span>
+<span class="highlight-ln">45</span>
+<span class="highlight-ln">46</span>    <span class="highlight-o">}</span>
+</code></pre>
+<p>该方法是一个回调方法，主要是打开相册后的回调预测操作。使用返回的URI转换为绝对路径，然后使用这个图片路径转换成Bitmap用于显示，同时也使用这个路径执行预测操作。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">// 回调事件
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onActivityResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">resultCode</span><span class="highlight-o">,</span> <span class="highlight-nd">@Nullable</span> <span class="highlight-n">Intent</span> <span class="highlight-n">data</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 4</span>        <span class="highlight-n">String</span> <span class="highlight-n">image_path</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">resultCode</span> <span class="highlight-o">==</span> <span class="highlight-n">Activity</span><span class="highlight-o">.</span><span class="highlight-na">RESULT_OK</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 6</span>            <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 7</span>                <span class="highlight-k">case</span> <span class="highlight-n">1</span><span class="highlight-o">:</span>
+<span class="highlight-ln"> 8</span>                    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">data</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 9</span>                        <span class="highlight-k">return</span><span class="highlight-o">;</span>
+<span class="highlight-ln">10</span>                    <span class="highlight-o">}</span>
+<span class="highlight-ln">11</span>                    <span class="highlight-c1">// 获取相册返回的URI
+</span><span class="highlight-ln">12</span><span class="highlight-c1"></span>                    <span class="highlight-n">Uri</span> <span class="highlight-n">image_uri</span> <span class="highlight-o">=</span> <span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-na">getData</span><span class="highlight-o">();</span>
+<span class="highlight-ln">13</span>                    <span class="highlight-c1">// 根据图片的URI获取绝对路径
+</span><span class="highlight-ln">14</span><span class="highlight-c1"></span>                    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-n">Utils</span><span class="highlight-o">.</span><span class="highlight-na">getPathFromURI</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">image_uri</span><span class="highlight-o">);</span>
+<span class="highlight-ln">15</span>                    <span class="highlight-c1">// 压缩图片用于显示
+</span><span class="highlight-ln">16</span><span class="highlight-c1"></span>                    <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">Utils</span><span class="highlight-o">.</span><span class="highlight-na">getScaleBitmap</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
+<span class="highlight-ln">17</span>                    <span class="highlight-n">imageView</span><span class="highlight-o">.</span><span class="highlight-na">setImageBitmap</span><span class="highlight-o">(</span><span class="highlight-n">bitmap</span><span class="highlight-o">);</span>
+<span class="highlight-ln">18</span>                    <span class="highlight-c1">// 开始预测图片
+</span><span class="highlight-ln">19</span><span class="highlight-c1"></span>                    <span class="highlight-n">predictImage</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
+<span class="highlight-ln">20</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
+<span class="highlight-ln">21</span>            <span class="highlight-o">}</span>
+<span class="highlight-ln">22</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">23</span>    <span class="highlight-o">}</span>
+</code></pre>
+<p>该方法是预测操作的方法，参数是图片的绝对路径，首先根据图片获取已经压缩过的Bitmap，然后使用这个Bitmap转换成预处理后的浮点数组，最后执行预测操作。再根据预测结果提取最大概率的标签，并获取该标签的类别名称。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">// 根据图片的路径预测图片
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">predictImage</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">image_path</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>        <span class="highlight-c1">// 把图片进行压缩
+</span><span class="highlight-ln"> 4</span><span class="highlight-c1"></span>        <span class="highlight-n">Bitmap</span> <span class="highlight-n">bmp</span> <span class="highlight-o">=</span> <span class="highlight-n">Utils</span><span class="highlight-o">.</span><span class="highlight-na">getScaleBitmap</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 5</span>        <span class="highlight-c1">// 把图片转换成浮点数组，用于预测
+</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>        <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">inputData</span> <span class="highlight-o">=</span> <span class="highlight-n">Utils</span><span class="highlight-o">.</span><span class="highlight-na">getScaledMatrix</span><span class="highlight-o">(</span><span class="highlight-n">bmp</span><span class="highlight-o">,</span> <span class="highlight-n">ddims</span><span class="highlight-o">[</span><span class="highlight-n">2</span><span class="highlight-o">],</span> <span class="highlight-n">ddims</span><span class="highlight-o">[</span><span class="highlight-n">3</span><span class="highlight-o">]);</span>
+<span class="highlight-ln"> 7</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 8</span>            <span class="highlight-kt">long</span> <span class="highlight-n">start</span> <span class="highlight-o">=</span> <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">currentTimeMillis</span><span class="highlight-o">();</span>
+<span class="highlight-ln"> 9</span>            <span class="highlight-c1">// 执行预测，获取预测结果
+</span><span class="highlight-ln">10</span><span class="highlight-c1"></span>            <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">PML</span><span class="highlight-o">.</span><span class="highlight-na">predictImage</span><span class="highlight-o">(</span><span class="highlight-n">inputData</span><span class="highlight-o">,</span> <span class="highlight-n">ddims</span><span class="highlight-o">);</span>
+<span class="highlight-ln">11</span>            <span class="highlight-kt">long</span> <span class="highlight-n">end</span> <span class="highlight-o">=</span> <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">currentTimeMillis</span><span class="highlight-o">();</span>
+<span class="highlight-ln">12</span>            <span class="highlight-c1">// 获取概率最大的标签
+</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>            <span class="highlight-kt">int</span> <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">Utils</span><span class="highlight-o">.</span><span class="highlight-na">getMaxResult</span><span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">);</span>
+<span class="highlight-ln">14</span>            <span class="highlight-c1">// 获取标签对应的类别名称
+</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>            <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">names</span> <span class="highlight-o">=</span> <span class="highlight-o">{</span><span class="highlight-s">"苹果"</span><span class="highlight-o">,</span> <span class="highlight-s">"哈密瓜"</span><span class="highlight-o">,</span> <span class="highlight-s">"胡萝卜"</span><span class="highlight-o">,</span> <span class="highlight-s">"樱桃"</span><span class="highlight-o">,</span> <span class="highlight-s">"黄瓜"</span><span class="highlight-o">,</span> <span class="highlight-s">"西瓜"</span><span class="highlight-o">};</span>
+<span class="highlight-ln">16</span>            <span class="highlight-n">String</span> <span class="highlight-n">show_text</span> <span class="highlight-o">=</span> <span class="highlight-s">"标签："</span> <span class="highlight-o">+</span> <span class="highlight-n">r</span> <span class="highlight-o">+</span> <span class="highlight-s">"\n名称："</span> <span class="highlight-o">+</span> <span class="highlight-n">names</span><span class="highlight-o">[</span><span class="highlight-n">r</span><span class="highlight-o">]</span> <span class="highlight-o">+</span> <span class="highlight-s">"\n概率："</span> <span class="highlight-o">+</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">r</span><span class="highlight-o">]</span> <span class="highlight-o">+</span> <span class="highlight-s">"\n时间："</span> <span class="highlight-o">+</span> <span class="highlight-o">(</span><span class="highlight-n">end</span> <span class="highlight-o">-</span> <span class="highlight-n">start</span><span class="highlight-o">)</span> <span class="highlight-o">+</span> <span class="highlight-s">"ms"</span><span class="highlight-o">;</span>
+<span class="highlight-ln">17</span>            <span class="highlight-c1">// 显示预测结果
+</span><span class="highlight-ln">18</span><span class="highlight-c1"></span>            <span class="highlight-n">showTv</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">show_text</span><span class="highlight-o">);</span>
+<span class="highlight-ln">19</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">Exception</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">20</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
+<span class="highlight-ln">21</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">22</span>    <span class="highlight-o">}</span>
+</code></pre>
+<p>这主要是用于动态获取权限，因为读取外部文件需要读取外部文件的权限，又因为读取外部文件权限是属于危险权限，需要动态获取。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">// 多权限动态申请
+</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">requestPermissions</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>        <span class="highlight-n">List</span><span class="highlight-o">&lt;</span><span class="highlight-n">String</span><span class="highlight-o">&gt;</span> <span class="highlight-n">permissionList</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ArrayList</span><span class="highlight-o">&lt;&gt;();</span>
+<span class="highlight-ln"> 4</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">WRITE_EXTERNAL_STORAGE</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 5</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">WRITE_EXTERNAL_STORAGE</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln"> 7</span>
+<span class="highlight-ln"> 8</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 9</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">);</span>
+<span class="highlight-ln">10</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span>        <span class="highlight-c1">// if list is not empty will request permissions
+</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">isEmpty</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">14</span>            <span class="highlight-n">ActivityCompat</span><span class="highlight-o">.</span><span class="highlight-na">requestPermissions</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">toArray</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">String</span><span class="highlight-o">[</span><span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">size</span><span class="highlight-o">()]),</span> <span class="highlight-n">1</span><span class="highlight-o">);</span>
+<span class="highlight-ln">15</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">16</span>    <span class="highlight-o">}</span>
+<span class="highlight-ln">17</span>
+<span class="highlight-ln">18</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln">19</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onRequestPermissionsResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-nd">@NonNull</span> <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">permissions</span><span class="highlight-o">,</span> <span class="highlight-nd">@NonNull</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">grantResults</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">20</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onRequestPermissionsResult</span><span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-n">permissions</span><span class="highlight-o">,</span> <span class="highlight-n">grantResults</span><span class="highlight-o">);</span>
+<span class="highlight-ln">21</span>        <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">22</span>            <span class="highlight-k">case</span> <span class="highlight-n">1</span><span class="highlight-o">:</span>
+<span class="highlight-ln">23</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">grantResults</span><span class="highlight-o">.</span><span class="highlight-na">length</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">24</span>                    <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">grantResults</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">25</span>
+<span class="highlight-ln">26</span>                        <span class="highlight-kt">int</span> <span class="highlight-n">grantResult</span> <span class="highlight-o">=</span> <span class="highlight-n">grantResults</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
+<span class="highlight-ln">27</span>                        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">grantResult</span> <span class="highlight-o">==</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_DENIED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln">28</span>                            <span class="highlight-n">String</span> <span class="highlight-n">s</span> <span class="highlight-o">=</span> <span class="highlight-n">permissions</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
+<span class="highlight-ln">29</span>                            <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">s</span> <span class="highlight-o">+</span> <span class="highlight-s">" permission was denied"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
+<span class="highlight-ln">30</span>                        <span class="highlight-o">}</span>
+<span class="highlight-ln">31</span>                    <span class="highlight-o">}</span>
+<span class="highlight-ln">32</span>                <span class="highlight-o">}</span>
+<span class="highlight-ln">33</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
+<span class="highlight-ln">34</span>        <span class="highlight-o">}</span>
+<span class="highlight-ln">35</span>    <span class="highlight-o">}</span>
+</code></pre>
+<p>然后修改 <code>onCreate</code>，首先获取缓存文件路径，然后初始化视图控件和动态获取权限，最后把预测模型文件复制到缓存路径下。</p>
+<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-nd">@Override</span>
+<span class="highlight-ln"> 2</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
+<span class="highlight-ln"> 3</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">savedInstanceState</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 4</span>        <span class="highlight-n">setContentView</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">activity_main</span><span class="highlight-o">);</span>
+<span class="highlight-ln"> 5</span>
+<span class="highlight-ln"> 6</span>        <span class="highlight-n">model_path</span> <span class="highlight-o">=</span> <span class="highlight-n">getCacheDir</span><span class="highlight-o">().</span><span class="highlight-na">getAbsolutePath</span><span class="highlight-o">()</span> <span class="highlight-o">+</span> <span class="highlight-n">File</span><span class="highlight-o">.</span><span class="highlight-na">separator</span> <span class="highlight-o">+</span> <span class="highlight-s">"infer_model"</span><span class="highlight-o">;</span>
+<span class="highlight-ln"> 7</span>        <span class="highlight-c1">// 初始化控件
+</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>        <span class="highlight-n">initView</span><span class="highlight-o">();</span>
+<span class="highlight-ln"> 9</span>        <span class="highlight-c1">// 动态请求权限
+</span><span class="highlight-ln">10</span><span class="highlight-c1"></span>        <span class="highlight-n">requestPermissions</span><span class="highlight-o">();</span>
+<span class="highlight-ln">11</span>        <span class="highlight-c1">// 从assets中复制模型文件到缓存目录下
+</span><span class="highlight-ln">12</span><span class="highlight-c1"></span>        <span class="highlight-n">Utils</span><span class="highlight-o">.</span><span class="highlight-na">copyFileFromAsset</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">assets_path</span><span class="highlight-o">,</span> <span class="highlight-n">model_path</span><span class="highlight-o">);</span>
+<span class="highlight-ln">13</span>    <span class="highlight-o">}</span>
+</code></pre>
+<ol start="8">
+<li>最后运行项目，选择图片预测会得到以下的效果：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GG3nFx.jpg" alt="在这里插入图片描述"></li>
+</ol>
+<h1 id="参考资料">参考资料</h1>
+<ol>
+<li><a href="https://github.com/PaddlePaddle/paddle-mobile" target="_blank">https://github.com/PaddlePaddle/paddle-mobile</a></li>
+<li><a href="https://blog.csdn.net/qq_33200967/article/details/81066970" target="_blank">https://blog.csdn.net/qq_33200967/article/details/81066970</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975208040.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584976095161.html">
+                            <span>Python的Numpy实现深度学习常用的函数&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466398393"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466398393",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 391ms, 2020/04/07 11:38:41 -->

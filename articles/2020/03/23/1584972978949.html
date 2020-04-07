@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>TensorFlow的安装 - 夜雨飘零</title><meta name="description" content="前言 在本篇文章中，我们将会介绍TensorFlow的安装，TensorFlow是Google公司在2015年11月9日开源的一个深度学习框架。 官网文档地址为：https://www.tensorflow.org/ 官方GitHub仓库：https://github.com/tensorflow/tensorflow TensorFlow目前支持4种开发语言，分别是Python（包括Python2和Python3）、Java、Go、C。笔者使用的环境如下： 开发语言：Python 3.6 使用操作系统：Ubuntu 16.04、Windows 10 硬件环境：CPU 基于这些环境，我们来安装TensorFlow吧，笔者将会通过两种操作系统来安装，分别是Ubuntu 16.04和Windows 10。 Ubuntu下安装TensorFlow 在Ubuntu上我们准备两种安装方式，分别是原生pip、Virtualenv 环境 和 Docker容器，下面我们就在三个环境下安装。 原生pip安装TensorFlow 使用原生的pip安装时最简单的，直接安装使用一条命令就可以安装完成了...."/><meta property="og:description" content="前言 在本篇文章中，我们将会介绍TensorFlow的安装，TensorFlow是Google公司在2015年11月9日开源的一个深度学习框架。 官网文档地址为：https://www.tensorflow.org/ 官方GitHub仓库：https://github.com/tensorflow/tensorflow TensorFlow目前支持4种开发语言，分别是Python（包括Python2和Python3）、Java、Go、C。笔者使用的环境如下： 开发语言：Python 3.6 使用操作系统：Ubuntu 16.04、Windows 10 硬件环境：CPU 基于这些环境，我们来安装TensorFlow吧，笔者将会通过两种操作系统来安装，分别是Ubuntu 16.04和Windows 10。 Ubuntu下安装TensorFlow 在Ubuntu上我们准备两种安装方式，分别是原生pip、Virtualenv 环境 和 Docker容器，下面我们就在三个环境下安装。 原生pip安装TensorFlow 使用原生的pip安装时最简单的，直接安装使用一条命令就可以安装完成了...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="TensorFlow的安装 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="TensorFlow的安装 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+            <link rel="prev" title="Mycat中间件实现一主一从和双主双从的读写分离" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html">
+            <link rel="next" title="Android的单个或多个权限动态申请" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973117561.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+</head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">文章目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/04/1585978647203.html" target="_blank">PaddlePaddle从入门到炼丹</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doiduoyi.com/articles/2020/04/02/1585833337570.html" target="_blank">我的PaddlePaddle学习之路</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js --></div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#前言">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#Ubuntu下安装TensorFlow">Ubuntu下安装TensorFlow</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#原生pip安装TensorFlow">原生pip安装TensorFlow</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#Virtualenv安装TensorFlow">Virtualenv安装TensorFlow</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#Docker下安装TensorFlow">Docker下安装TensorFlow</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#Windows下安装TensorFlow">Windows下安装TensorFlow</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#原生pip安装TensorFlow">原生pip安装TensorFlow</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#Docker容器安装TensorFlow">Docker容器安装TensorFlow</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#Linux子系统安装TensorFlow">Linux子系统安装TensorFlow</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#源码编译安装">源码编译安装</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#测试">测试</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#使用模型预测图片">使用模型预测图片</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#参考资料">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html">
+                    TensorFlow的安装
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2020-03-23</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Tensorflow">
+                        Tensorflow</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E5%A4%9C%E9%9B%A8%E9%A3%98%E9%9B%B6">
+                        夜雨飘零</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1585466406319">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1585465676311" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20190829.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="前言">前言</h1>
+<p>在本篇文章中，我们将会介绍TensorFlow的安装，TensorFlow是Google公司在2015年11月9日开源的一个深度学习框架。</p>
+<ul>
+<li>官网文档地址为：<a href="https://www.tensorflow.org/" target="_blank">https://www.tensorflow.org/</a></li>
+<li>官方GitHub仓库：<a href="https://github.com/tensorflow/tensorflow" target="_blank">https://github.com/tensorflow/tensorflow</a></li>
+</ul>
+<p>TensorFlow目前支持4种开发语言，分别是Python（包括Python2和Python3）、Java、Go、C。笔者使用的环境如下：</p>
+<ul>
+<li>开发语言：Python 3.6</li>
+<li>使用操作系统：Ubuntu 16.04、Windows 10</li>
+<li>硬件环境：CPU</li>
+</ul>
+<p>基于这些环境，我们来安装TensorFlow吧，笔者将会通过两种操作系统来安装，分别是Ubuntu 16.04和Windows 10。</p>
+<h1 id="Ubuntu下安装TensorFlow">Ubuntu下安装TensorFlow</h1>
+<p>在Ubuntu上我们准备两种安装方式，分别是原生pip、Virtualenv 环境 和 Docker容器，下面我们就在三个环境下安装。</p>
+<h2 id="原生pip安装TensorFlow">原生pip安装TensorFlow</h2>
+<p>使用原生的pip安装时最简单的，直接安装使用一条命令就可以安装完成了。</p>
+<p>首先确认Python环境，Ubuntu会自带Python环境的，不用我们自己安装，使用<code>python3 -V</code>可以查询安装的Python环境，输出如下：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>Python 3.5.2
+</code></pre>
+<p>安装TensorFlow需要使用<code>pip</code>命令，默认是没有安装的，所以我们需要安装<code>pip</code>命令：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt-get install python3-pip python3-dev
+</code></pre>
+<p>这里笔者要说一下，默认的镜像源太慢了，笔者修改成阿里镜像源了，修改方式如下：</p>
+<ul>
+<li>备份源列表文件：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+</code></pre>
+<ul>
+<li>编辑源列表文件：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo vi /etc/apt/sources.list
+</code></pre>
+<ul>
+<li>清空里面的内容，添加以下的的信息：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>deb http://mirrors.aliyun.com/ubuntu/ xenial main
+<span class="highlight-ln"> 2</span>deb-src http://mirrors.aliyun.com/ubuntu/ xenial main
+<span class="highlight-ln"> 3</span>
+<span class="highlight-ln"> 4</span>deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+<span class="highlight-ln"> 5</span>deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+<span class="highlight-ln"> 8</span>deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe
+<span class="highlight-ln"> 9</span>deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+<span class="highlight-ln">10</span>deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span>deb http://mirrors.aliyun.com/ubuntu/ xenial-security main
+<span class="highlight-ln">13</span>deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main
+<span class="highlight-ln">14</span>deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+<span class="highlight-ln">15</span>deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+</code></pre>
+<ul>
+<li>最后执行更新列表命令：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt update
+</code></pre>
+<p>安装完成<code>pip</code>命令之后，可以使用<code>pip3 -V</code>查看是否已经安装成功及安装的版本，输出如下，官方要求pip的版本要不小于8.1：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip 8.1.1 from /usr/lib/python3/dist-packages (python 3.5)
+</code></pre>
+<ul>
+<li>如果觉得版本太低，也可以升级，先要下载一个升级文件，命令如下：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>wget https://bootstrap.pypa.io/get-pip.py
+</code></pre>
+<ul>
+<li>下载完成之后，可以使用这个文件安装最新的pip了：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo python3 get-pip.py
+</code></pre>
+<p>一切多准备完成，那就可以开始安装TensorFlow了，只要使用以下一条命令就可以：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo pip3 install tensorflow
+</code></pre>
+<ul>
+<li>如果使用上面安装比较慢的话，我们还可指定使用的镜像源，比如这里笔者使用的是阿里的镜像源，之后使用到<code>pip</code>安装的同样的操作：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo pip3 install -i https://mirrors.aliyun.com/pypi/simple/ tensorflow
+</code></pre>
+<p>安装完成之后，可以使用以下命令查看是否完成及安装的版本：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip3 list
+</code></pre>
+<p>**注意：**如果在运行报以下错误，多数是电脑的CPU不支持AVX指令集：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>非法指令 (核心已转储)
+</code></pre>
+<p>如何知道自己的电脑是不是支持AVX指令集呢，可以通用以下的命令查看，输出<code>Yes</code>就是支持，<code>No</code>就是不支持：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>if cat /proc/cpuinfo | grep -i avx; then echo Yes; else echo No; fi
+</code></pre>
+<p>TensorFlow在1.6版本之后都会使用AVX指令集，如果读者的电脑不支持AVX指令集，就要安装低版本的，如下是安装1.5版本的：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip3 install tensorflow==1.5
+</code></pre>
+<p>安装完成之后，可以进行测试，测试情阅读最后的测试部分。</p>
+<h2 id="Virtualenv安装TensorFlow">Virtualenv安装TensorFlow</h2>
+<p>首先通过以下的命令来安装 pip 和 Virtualenv：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt-get install python3-pip python3-dev python-virtualenv
+</code></pre>
+<p>然后通过下面的命令来创建 Virtualenv 环境：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>virtualenv --system-site-packages -p python3 ~/tensorflow
+</code></pre>
+<p>最后通过下面的命令激活 Virtualenv 环境：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>source ~/tensorflow/bin/activate
+</code></pre>
+<p>这时会发现控制台已经发生了变化，变成如下状态，这表明已经进入了 Virtualenv 环境：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>(tensorflow) yeyupiaoling@tensorflow:~$
+</code></pre>
+<p>接下来的操作都是在这个Virtualenv 环境下操作，比我们的pip命令也是在这里的，可以使用<code>pip3 -V</code>查看：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip 10.0.1 from /home/yeyupiaoling/tensorflow/lib/python3.5/site-packages/pip (python 3.5)
+</code></pre>
+<p>我们在Virtualenv 环境里通过以下的命令即可完成安装TensorFlow：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip3 install tensorflow
+</code></pre>
+<p>不支持AVX的请安装1.5版本：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip3 install tensorflow==1.5
+</code></pre>
+<p>使用完成之后，可以通过以下命令退出Virtualenv 环境：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>deactivate
+</code></pre>
+<h2 id="Docker下安装TensorFlow">Docker下安装TensorFlow</h2>
+<p>要使用Docker，就要先安装Docker，以下命令就是安装Docker的命令：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt-get install docker.io
+</code></pre>
+<p>安装完成之后，可以使用<code>docker --version</code>查看Docker的版本，如果有显示，就证明安装成功了。</p>
+<p>然后我们可以通过以下的命令拉取TensorFlow的镜像，我们也可以通过<a href="https://hub.docker.com/r/tensorflow/tensorflow/tags/" target="_blank">dockerhub</a>获取更多Docker镜像：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker pull tensorflow/tensorflow:1.8.0-py3
+</code></pre>
+<p>如果电脑不支持AVX指令集的，请安装低版本的TensorFlow镜像：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker pull tensorflow/tensorflow:1.5.1-py3
+</code></pre>
+<p>拉取完成镜像，就可以使用<code>docker images</code>查看已经安装的镜像：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+<span class="highlight-ln">2</span>tensorflow/tensorflow               1.8.0-py3           a83a3dd79ff9        2 months ago        1.33 GB
+</code></pre>
+<p>使用TensorFlow的Docker镜像有个好处就是自带了jupyter notebook，启动镜像之后可以直接使用jupyter。</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>sudo docker run -it -p 80:8888 tensorflow/tensorflow:1.8.0-py3
+</code></pre>
+<p>然后终端会输出以下信息，要注意输出的token：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[I 07:08:38.160 NotebookApp] Writing notebook server cookie secret to /root/.local/share/jupyter/runtime/notebook_cookie_secret
+<span class="highlight-ln"> 2</span>[W 07:08:38.177 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+<span class="highlight-ln"> 3</span>[I 07:08:38.186 NotebookApp] Serving notebooks from local directory: /notebooks
+<span class="highlight-ln"> 4</span>[I 07:08:38.186 NotebookApp] 0 active kernels
+<span class="highlight-ln"> 5</span>[I 07:08:38.187 NotebookApp] The Jupyter Notebook is running at:
+<span class="highlight-ln"> 6</span>[I 07:08:38.187 NotebookApp] http://[all ip addresses on your system]:8888/?token=ab489f0445846cb7f9d5c9613edcf7b9537cd245dbecf2a6
+<span class="highlight-ln"> 7</span>[I 07:08:38.187 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+<span class="highlight-ln"> 8</span>[C 07:08:38.187 NotebookApp] 
+<span class="highlight-ln"> 9</span>    
+<span class="highlight-ln">10</span>    Copy/paste this URL into your browser when you connect for the first time,
+<span class="highlight-ln">11</span>    to login with a token:
+<span class="highlight-ln">12</span>        http://localhost:8888/?token=ab489f0445846cb7f9d5c9613edcf7b9537cd245dbecf2a6
+</code></pre>
+<p>然后我们在浏览器上输入IP地址，如何是在本地，那就就输入localhost，得到的页面如下，输入终端输出的token和新密码就可以登录使用jupyter了：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQjetH.png" alt="这里写图片描述"></p>
+<p>得到的jupyter网页如下：<br>
+<img src="https://s1.ax1x.com/2020/03/30/Gmccfx.png" alt="这里写图片描述"></p>
+<p>如果停止运行镜像了，可以使用以下的命令找到之前使用这个进行run生成的一个容器：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo docker ps -a
+</code></pre>
+<p>会得到以下信息，其中最重要的是CONTAINER ID：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS                      PORTS               NAMES
+<span class="highlight-ln">2</span>44aa680ac51f        tensorflow/tensorflow:1.8.0-py3   "/run_jupyter.sh -..."   14 minutes ago      Exited (0) 21 seconds ago                       cranky_elion
+</code></pre>
+<p>通过这个CONTAINER ID可以再次启动这个容器，这样就不用每次都run一个容器出来，占用磁盘容量，同时也可以保存原来的环境，可以使用以下的命令启动容器：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo docker start 44aa680ac51f
+</code></pre>
+<p>启动之后是在后台运行的，那么如何让容器有信息输入的同时会输出到控制台呢，可以用使用以下的命令实现：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo docker attach 44aa680ac51f
+</code></pre>
+<p>如果要以终端的方式进入到容器中，可以使用以下的命令：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo docker exec -it 44aa680ac51f /bin/bash
+</code></pre>
+<p>安装完成之后，可以进行测试，测试情阅读最后的测试部分。</p>
+<h1 id="Windows下安装TensorFlow">Windows下安装TensorFlow</h1>
+<p>在Windows上，笔者同样介绍三种安装方式，分别是原生pip、Docker容器、Windows的Linux子系统。</p>
+<h2 id="原生pip安装TensorFlow">原生pip安装TensorFlow</h2>
+<p>在Windows上默认是没有安装Python的，所以要先安装Python，这里笔者安装<a href="https://www.python.org/ftp/python/3.6.5/python-3.6.5-amd64.exe" target="_blank">Python 3.6.5</a>，首先到<a href="https://www.python.org/downloads/" target="_blank">Python官网</a>上下载对应的版本，必须是64位的Python。然后安装Python，安装过程笔者就不介绍了，主要安装完成之后，还有配置一下环境变量。在默认的安装路径为：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>C:\Python36
+</code></pre>
+<p>首页我们要在环境变量的Path上添加以下l两条环境变量：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>C:\Python36
+<span class="highlight-ln">2</span>C:\Python36\Scripts
+</code></pre>
+<p>如果读者同时还安装了Python2，笔者建议修改一下Python3的文件，首先把<code>C:\Python36\Scripts</code>里面的<code>pip.exe</code>删除，避免与Python2的冲突，然后把<code>C:\Python36</code>的<code>python.exe</code>和<code>pythonw.exe</code>修改成<code>python.exe</code>和<code>pythonw3.exe</code>。以后在使用Python3的时候，分别是使用<code>pip3</code>和<code>python3</code>命令。</p>
+<p>现在就开始安装TensorFlow，命令如下：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip3 install tensorflow
+</code></pre>
+<p>如果在使用<code>pip3</code>报以下错误：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>Fatal error in launcher: Unable to create process using '"'
+</code></pre>
+<p>可以使用以下命令修复：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>python3 -m pip install --upgrade pip
+</code></pre>
+<p>**注意：**如果以下错误，是因为缺少DLL动态库，可以看到最后提供下载动态库的链接：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>Traceback (most recent call last):
+<span class="highlight-ln"> 2</span>  File "C:\Python36\lib\site-packages\tensorflow\python\platform\self_check.py", line 47, in preload_check
+<span class="highlight-ln"> 3</span>    ctypes.WinDLL(build_info.msvcp_dll_name)
+<span class="highlight-ln"> 4</span>  File "C:\Python36\lib\ctypes\__init__.py", line 348, in __init__
+<span class="highlight-ln"> 5</span>    self._handle = _dlopen(self._name, mode)
+<span class="highlight-ln"> 6</span>OSError: [WinError 126] 找不到指定的模块。
+<span class="highlight-ln"> 7</span>
+<span class="highlight-ln"> 8</span>During handling of the above exception, another exception occurred:
+<span class="highlight-ln"> 9</span>
+<span class="highlight-ln">10</span>Traceback (most recent call last):
+<span class="highlight-ln">11</span>  File "test.py", line 1, in &lt;module&gt;
+<span class="highlight-ln">12</span>    import tensorflow as tf
+<span class="highlight-ln">13</span>  File "C:\Python36\lib\site-packages\tensorflow\__init__.py", line 24, in &lt;module&gt;
+<span class="highlight-ln">14</span>    from tensorflow.python import *
+<span class="highlight-ln">15</span>  File "C:\Python36\lib\site-packages\tensorflow\python\__init__.py", line 49, in &lt;module&gt;
+<span class="highlight-ln">16</span>    from tensorflow.python import pywrap_tensorflow
+<span class="highlight-ln">17</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow.py", line 30, in &lt;module&gt;
+<span class="highlight-ln">18</span>    self_check.preload_check()
+<span class="highlight-ln">19</span>  File "C:\Python36\lib\site-packages\tensorflow\python\platform\self_check.py", line 55, in preload_check
+<span class="highlight-ln">20</span>    % build_info.msvcp_dll_name)
+<span class="highlight-ln">21</span>ImportError: Could not find 'msvcp140.dll'. TensorFlow requires that this DLL be installed in a directory that is named in your %PATH% environment variable. You may install this DLL by downloading Visual C++ 2015 Redistributable Update 3 from this URL: https://www.microsoft.com/en-us/download/details.aspx?id=53587
+</code></pre>
+<p>我们通过这个链接去下载并安装这个动态库即可：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>https://www.microsoft.com/en-us/download/details.aspx?id=53587
+</code></pre>
+<p>如果在执行TensorFlow程度的是报以下错误，多数是CPU不支持AVX指令集：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>Traceback (most recent call last):
+<span class="highlight-ln"> 2</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow_internal.py", line 14, in swig_import_helper
+<span class="highlight-ln"> 3</span>    return importlib.import_module(mname)
+<span class="highlight-ln"> 4</span>  File "C:\Python36\lib\importlib\__init__.py", line 126, in import_module
+<span class="highlight-ln"> 5</span>    return _bootstrap._gcd_import(name[level:], package, level)
+<span class="highlight-ln"> 6</span>  File "&lt;frozen importlib._bootstrap&gt;", line 994, in _gcd_import
+<span class="highlight-ln"> 7</span>  File "&lt;frozen importlib._bootstrap&gt;", line 971, in _find_and_load
+<span class="highlight-ln"> 8</span>  File "&lt;frozen importlib._bootstrap&gt;", line 955, in _find_and_load_unlocked
+<span class="highlight-ln"> 9</span>  File "&lt;frozen importlib._bootstrap&gt;", line 658, in _load_unlocked
+<span class="highlight-ln">10</span>  File "&lt;frozen importlib._bootstrap&gt;", line 571, in module_from_spec
+<span class="highlight-ln">11</span>  File "&lt;frozen importlib._bootstrap_external&gt;", line 922, in create_module
+<span class="highlight-ln">12</span>  File "&lt;frozen importlib._bootstrap&gt;", line 219, in _call_with_frames_removed
+<span class="highlight-ln">13</span>ImportError: DLL load failed: 动态链接库(DLL)初始化例程失败。
+<span class="highlight-ln">14</span>
+<span class="highlight-ln">15</span>During handling of the above exception, another exception occurred:
+<span class="highlight-ln">16</span>
+<span class="highlight-ln">17</span>Traceback (most recent call last):
+<span class="highlight-ln">18</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow.py", line 58, in &lt;module&gt;
+<span class="highlight-ln">19</span>    from tensorflow.python.pywrap_tensorflow_internal import *
+<span class="highlight-ln">20</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow_internal.py", line 17, in &lt;module&gt;
+<span class="highlight-ln">21</span>    _pywrap_tensorflow_internal = swig_import_helper()
+<span class="highlight-ln">22</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow_internal.py", line 16, in swig_import_helper
+<span class="highlight-ln">23</span>    return importlib.import_module('_pywrap_tensorflow_internal')
+<span class="highlight-ln">24</span>  File "C:\Python36\lib\importlib\__init__.py", line 126, in import_module
+<span class="highlight-ln">25</span>    return _bootstrap._gcd_import(name[level:], package, level)
+<span class="highlight-ln">26</span>ModuleNotFoundError: No module named '_pywrap_tensorflow_internal'
+<span class="highlight-ln">27</span>
+<span class="highlight-ln">28</span>During handling of the above exception, another exception occurred:
+<span class="highlight-ln">29</span>
+<span class="highlight-ln">30</span>Traceback (most recent call last):
+<span class="highlight-ln">31</span>  File "test.py", line 1, in &lt;module&gt;
+<span class="highlight-ln">32</span>    import tensorflow as tf
+<span class="highlight-ln">33</span>  File "C:\Python36\lib\site-packages\tensorflow\__init__.py", line 24, in &lt;module&gt;
+<span class="highlight-ln">34</span>    from tensorflow.python import pywrap_tensorflow  # pylint: disable=unused-import
+<span class="highlight-ln">35</span>  File "C:\Python36\lib\site-packages\tensorflow\python\__init__.py", line 49, in &lt;module&gt;
+<span class="highlight-ln">36</span>    from tensorflow.python import pywrap_tensorflow
+<span class="highlight-ln">37</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow.py", line 74, in &lt;module&gt;
+<span class="highlight-ln">38</span>    raise ImportError(msg)
+<span class="highlight-ln">39</span>ImportError: Traceback (most recent call last):
+<span class="highlight-ln">40</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow_internal.py", line 14, in swig_import_helper
+<span class="highlight-ln">41</span>    return importlib.import_module(mname)
+<span class="highlight-ln">42</span>  File "C:\Python36\lib\importlib\__init__.py", line 126, in import_module
+<span class="highlight-ln">43</span>    return _bootstrap._gcd_import(name[level:], package, level)
+<span class="highlight-ln">44</span>  File "&lt;frozen importlib._bootstrap&gt;", line 994, in _gcd_import
+<span class="highlight-ln">45</span>  File "&lt;frozen importlib._bootstrap&gt;", line 971, in _find_and_load
+<span class="highlight-ln">46</span>  File "&lt;frozen importlib._bootstrap&gt;", line 955, in _find_and_load_unlocked
+<span class="highlight-ln">47</span>  File "&lt;frozen importlib._bootstrap&gt;", line 658, in _load_unlocked
+<span class="highlight-ln">48</span>  File "&lt;frozen importlib._bootstrap&gt;", line 571, in module_from_spec
+<span class="highlight-ln">49</span>  File "&lt;frozen importlib._bootstrap_external&gt;", line 922, in create_module
+<span class="highlight-ln">50</span>  File "&lt;frozen importlib._bootstrap&gt;", line 219, in _call_with_frames_removed
+<span class="highlight-ln">51</span>ImportError: DLL load failed: 动态链接库(DLL)初始化例程失败。
+<span class="highlight-ln">52</span>
+<span class="highlight-ln">53</span>During handling of the above exception, another exception occurred:
+<span class="highlight-ln">54</span>
+<span class="highlight-ln">55</span>Traceback (most recent call last):
+<span class="highlight-ln">56</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow.py", line 58, in &lt;module&gt;
+<span class="highlight-ln">57</span>    from tensorflow.python.pywrap_tensorflow_internal import *
+<span class="highlight-ln">58</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow_internal.py", line 17, in &lt;module&gt;
+<span class="highlight-ln">59</span>    _pywrap_tensorflow_internal = swig_import_helper()
+<span class="highlight-ln">60</span>  File "C:\Python36\lib\site-packages\tensorflow\python\pywrap_tensorflow_internal.py", line 16, in swig_import_helper
+<span class="highlight-ln">61</span>    return importlib.import_module('_pywrap_tensorflow_internal')
+<span class="highlight-ln">62</span>  File "C:\Python36\lib\importlib\__init__.py", line 126, in import_module
+<span class="highlight-ln">63</span>    return _bootstrap._gcd_import(name[level:], package, level)
+<span class="highlight-ln">64</span>ModuleNotFoundError: No module named '_pywrap_tensorflow_internal'
+<span class="highlight-ln">65</span>
+<span class="highlight-ln">66</span>
+<span class="highlight-ln">67</span>Failed to load the native TensorFlow runtime.
+<span class="highlight-ln">68</span>
+<span class="highlight-ln">69</span>See https://www.tensorflow.org/install/install_sources#common_installation_problems
+<span class="highlight-ln">70</span>
+<span class="highlight-ln">71</span>for some common reasons and solutions.  Include the entire stack trace
+<span class="highlight-ln">72</span>above this error message when asking for help.
+</code></pre>
+<p>那就要安装低版本的TensorFlow：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>pip3 install tensorflow==1.5
+</code></pre>
+<h2 id="Docker容器安装TensorFlow">Docker容器安装TensorFlow</h2>
+<p>关于如果在Windows上安装Docker容器，可以参考笔者的<a href="https://blog.csdn.net/qq_33200967/article/details/79071926#%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%85docker%E5%AE%B9%E5%99%A8" target="_blank">《我的PaddlePaddle学习之路》笔记一——PaddlePaddle的安装》的在Windows上安装Docker容器</a>部分，这里就不在展开介绍了。</p>
+<p>启动容器之后，就可以拉取TensorFlow的镜像了：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker pull tensorflow/tensorflow:1.8.0-py3
+</code></pre>
+<p>同样可以使用<code>docker images</code>查看已经安装的镜像：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+<span class="highlight-ln">2</span>tensorflow/tensorflow               1.8.0-py3           a83a3dd79ff9        2 months ago        1.33 GB
+</code></pre>
+<h2 id="Linux子系统安装TensorFlow">Linux子系统安装TensorFlow</h2>
+<p>关于如果在Windows上安装Linux子系统，可以参考笔者之前的文章<a href="https://blog.csdn.net/qq_33200967/article/details/71950921" target="_blank">《Windows10安装Linux子系统Ubuntu》</a></p>
+<p>安装完成Linux子系统之后，就可以在PowerShell上输入<code>bash</code>命令进入到Linux子系统，在这个子系统上安装TensorFlow请参考Ubuntu使用原生pip安装TensorFlow的方法，这个笔者就不在重复介绍了。</p>
+<h1 id="源码编译安装">源码编译安装</h1>
+<p>在这一部分，我们介绍如何在Ubuntu上使用TensorFlow的源码编译安装。</p>
+<ul>
+<li>克隆 TensorFlow 代码库</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/tensorflow/tensorflow
+</code></pre>
+<ul>
+<li>安装 TensorFlow Python 依赖项</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel
+</code></pre>
+<ul>
+<li>安装 Bazel</li>
+</ul>
+<p>1、安装依赖库</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt-get install pkg-config zip g++ zlib1g-dev unzip python
+</code></pre>
+<p>2、下载<code>bazel-0.15.0-installer-linux-x86_64.sh</code>文件，下载地址如下：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>https://github.com/bazelbuild/bazel/releases
+</code></pre>
+<p>3、运行安装Bazel</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>chmod +x bazel-0.15.0-installer-linux-x86_64.sh
+<span class="highlight-ln">2</span>./bazel-0.15.0-installer-linux-x86_64.sh --user
+</code></pre>
+<p>4、添加到环境变量，编写<code>vim ~/.bashrc</code>，在最后的加上以下信息：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>export PATH="$PATH:$HOME/bin"
+</code></pre>
+<ul>
+<li>进入到源码中：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cd tensorflow
+</code></pre>
+<ul>
+<li>如果想编译其他版本的TensorFlow可以切换到对应的版本，首先可以查看有哪些版本：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>git branch -a
+</code></pre>
+<p>输出的版本信息：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>root@tensorflow:/home/yeyupiaoling/test/tensorflow# git branch -a
+<span class="highlight-ln"> 2</span>* master
+<span class="highlight-ln"> 3</span>  remotes/origin/0.6.0
+<span class="highlight-ln"> 4</span>  remotes/origin/HEAD -&gt; origin/master
+<span class="highlight-ln"> 5</span>  remotes/origin/achowdhery-patch-1
+<span class="highlight-ln"> 6</span>  remotes/origin/andrewharp-patch-1
+<span class="highlight-ln"> 7</span>  remotes/origin/martinwicke-patch-1
+<span class="highlight-ln"> 8</span>  remotes/origin/martinwicke-patch-2
+<span class="highlight-ln"> 9</span>  remotes/origin/master
+<span class="highlight-ln">10</span>  remotes/origin/r0.10
+<span class="highlight-ln">11</span>  remotes/origin/r0.11
+<span class="highlight-ln">12</span>  remotes/origin/r0.12
+<span class="highlight-ln">13</span>  remotes/origin/r0.7
+<span class="highlight-ln">14</span>  remotes/origin/r0.8
+<span class="highlight-ln">15</span>  remotes/origin/r0.9
+<span class="highlight-ln">16</span>  remotes/origin/r1.0
+<span class="highlight-ln">17</span>  remotes/origin/r1.1
+<span class="highlight-ln">18</span>  remotes/origin/r1.2
+<span class="highlight-ln">19</span>  remotes/origin/r1.3
+<span class="highlight-ln">20</span>  remotes/origin/r1.4
+<span class="highlight-ln">21</span>  remotes/origin/r1.5
+<span class="highlight-ln">22</span>  remotes/origin/r1.6
+<span class="highlight-ln">23</span>  remotes/origin/r1.7
+<span class="highlight-ln">24</span>  remotes/origin/r1.8
+<span class="highlight-ln">25</span>  remotes/origin/r1.9
+<span class="highlight-ln">26</span>  remotes/origin/release-notes-1.9-tfdbg
+<span class="highlight-ln">27</span>  remotes/origin/yifeif-patch-1
+<span class="highlight-ln">28</span>  remotes/origin/yifeif-patch-2
+<span class="highlight-ln">29</span>  remotes/origin/yifeif-patch-3
+</code></pre>
+<p>比如笔者想切换到1.5版本，使用以下命令即可切换：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>git checkout origin/r1.5
+</code></pre>
+<ul>
+<li>执行配置信息文件：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>./configure
+</code></pre>
+<ul>
+<li>然后会输出以下信息，这些注意是配置信息，比如我们指定Python的环境路径<code>/usr/bin/python3.5</code>，也可以指定是否要编译GPU版本的，具体读者可以查看笔者的配置信息，笔者多数是默认的。</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>Extracting Bazel installation...
+<span class="highlight-ln"> 2</span>WARNING: --batch mode is deprecated. Please instead explicitly shut down your Bazel server using the command "bazel shutdown".
+<span class="highlight-ln"> 3</span>You have bazel 0.15.0 installed.
+<span class="highlight-ln"> 4</span>Please specify the location of python. [Default is /usr/bin/python]: /usr/bin/python3.5
+<span class="highlight-ln"> 5</span>
+<span class="highlight-ln"> 6</span>
+<span class="highlight-ln"> 7</span>Found possible Python library paths:
+<span class="highlight-ln"> 8</span>  /usr/local/lib/python3.5/dist-packages
+<span class="highlight-ln"> 9</span>  /usr/lib/python3/dist-packages
+<span class="highlight-ln">10</span>Please input the desired Python library path to use.  Default is [/usr/local/lib/python3.5/dist-packages]
+<span class="highlight-ln">11</span>
+<span class="highlight-ln">12</span>Do you wish to build TensorFlow with jemalloc as malloc support? [Y/n]: 
+<span class="highlight-ln">13</span>jemalloc as malloc support will be enabled for TensorFlow.
+<span class="highlight-ln">14</span>
+<span class="highlight-ln">15</span>Do you wish to build TensorFlow with Google Cloud Platform support? [Y/n]: n
+<span class="highlight-ln">16</span>No Google Cloud Platform support will be enabled for TensorFlow.
+<span class="highlight-ln">17</span>
+<span class="highlight-ln">18</span>Do you wish to build TensorFlow with Hadoop File System support? [Y/n]: 
+<span class="highlight-ln">19</span>Hadoop File System support will be enabled for TensorFlow.
+<span class="highlight-ln">20</span>
+<span class="highlight-ln">21</span>Do you wish to build TensorFlow with Amazon AWS Platform support? [Y/n]: 
+<span class="highlight-ln">22</span>Amazon AWS Platform support will be enabled for TensorFlow.
+<span class="highlight-ln">23</span>
+<span class="highlight-ln">24</span>Do you wish to build TensorFlow with Apache Kafka Platform support? [Y/n]: 
+<span class="highlight-ln">25</span>Apache Kafka Platform support will be enabled for TensorFlow.
+<span class="highlight-ln">26</span>
+<span class="highlight-ln">27</span>Do you wish to build TensorFlow with XLA JIT support? [y/N]: 
+<span class="highlight-ln">28</span>No XLA JIT support will be enabled for TensorFlow.
+<span class="highlight-ln">29</span>
+<span class="highlight-ln">30</span>Do you wish to build TensorFlow with GDR support? [y/N]: 
+<span class="highlight-ln">31</span>No GDR support will be enabled for TensorFlow.
+<span class="highlight-ln">32</span>
+<span class="highlight-ln">33</span>Do you wish to build TensorFlow with VERBS support? [y/N]: 
+<span class="highlight-ln">34</span>No VERBS support will be enabled for TensorFlow.
+<span class="highlight-ln">35</span>
+<span class="highlight-ln">36</span>Do you wish to build TensorFlow with OpenCL SYCL support? [y/N]: 
+<span class="highlight-ln">37</span>No OpenCL SYCL support will be enabled for TensorFlow.
+<span class="highlight-ln">38</span>
+<span class="highlight-ln">39</span>Do you wish to build TensorFlow with CUDA support? [y/N]: N
+<span class="highlight-ln">40</span>No CUDA support will be enabled for TensorFlow.
+<span class="highlight-ln">41</span>
+<span class="highlight-ln">42</span>Do you wish to download a fresh release of clang? (Experimental) [y/N]: 
+<span class="highlight-ln">43</span>Clang will not be downloaded.
+<span class="highlight-ln">44</span>
+<span class="highlight-ln">45</span>Do you wish to build TensorFlow with MPI support? [y/N]: 
+<span class="highlight-ln">46</span>No MPI support will be enabled for TensorFlow.
+<span class="highlight-ln">47</span>
+<span class="highlight-ln">48</span>Please specify optimization flags to use during compilation when bazel option "--config=opt" is specified [Default is -march=native]: 
+<span class="highlight-ln">49</span>
+<span class="highlight-ln">50</span>
+<span class="highlight-ln">51</span>Would you like to interactively configure ./WORKSPACE for Android builds? [y/N]: 
+<span class="highlight-ln">52</span>Not configuring the WORKSPACE for Android builds.
+<span class="highlight-ln">53</span>
+<span class="highlight-ln">54</span>Preconfigured Bazel build configs. You can use any of the below by adding "--config=&lt;&gt;" to your build command. See tools/bazel.rc for more details.
+<span class="highlight-ln">55</span>	--config=mkl         	# Build with MKL support.
+<span class="highlight-ln">56</span>	--config=monolithic  	# Config for mostly static monolithic build.
+<span class="highlight-ln">57</span>Configuration finished
+</code></pre>
+<ul>
+<li>配置好之后，就要编译 pip 软件包：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package
+</code></pre>
+<ul>
+<li>然后在执行这一条命令生成pip软件包：·</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+</code></pre>
+<ul>
+<li>通过上一步编译获得的pip软件包，我们就可以安装这个 pip 软件包，它的路径在<code>/tmp/tensorflow_pkg/tensorflow-1.5.1-cp35-cp35m-linux_x86_64.whl</code>，可能读者的版本会跟笔者的不一样，根据实际的版本信息安装：</li>
+</ul>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo pip install /tmp/tensorflow_pkg/tensorflow-1.5.1-cp35-cp35m-linux_x86_64.whl
+</code></pre>
+<p>到这里就完成了TensorFlow的编译安装，安装完成之后，可以参考文章的最后一部分进行测试环境。</p>
+<h1 id="测试">测试</h1>
+<p>安装完成之后，我们要测试一下环境是不是已经成功安装并且可以正常使用了。</p>
+<p>首先编译一个测试<code>test1.py</code>文件：</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">tensorflow</span> <span class="highlight-kn">as</span> <span class="highlight-nn">tf</span>
+<span class="highlight-ln">2</span><span class="highlight-n">hello</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">constant</span><span class="highlight-p">(</span><span class="highlight-s1">'Hello, TensorFlow!'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">3</span><span class="highlight-n">sess</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span>
+<span class="highlight-ln">4</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">hello</span><span class="highlight-p">))</span>
+</code></pre>
+<p>然后我们执行这个文件<code>python3 test1.py</code>就可以运行它了，正常情况下会输出以下内容：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>2018-07-08 15:11:05.240607: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+<span class="highlight-ln">2</span>b'Hello, TensorFlow!'
+</code></pre>
+<p>我们也可以编写一个稍微有训练效果的程序<code>test2.py</code>：</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">tensorflow</span> <span class="highlight-kn">as</span> <span class="highlight-nn">tf</span>
+<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln"> 3</span>
+<span class="highlight-ln"> 4</span><span class="highlight-c1"># 使用 NumPy 生成假数据(phony data), 总共 100 个点.</span>
+<span class="highlight-ln"> 5</span><span class="highlight-n">x_data</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">rand</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">100</span><span class="highlight-p">))</span> <span class="highlight-c1"># 随机输入</span>
+<span class="highlight-ln"> 6</span><span class="highlight-n">y_data</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">([</span><span class="highlight-mf">0.100</span><span class="highlight-p">,</span> <span class="highlight-mf">0.200</span><span class="highlight-p">],</span> <span class="highlight-n">x_data</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-mf">0.300</span>
+<span class="highlight-ln"> 7</span>
+<span class="highlight-ln"> 8</span><span class="highlight-c1"># 构造一个线性模型</span>
+<span class="highlight-ln"> 9</span><span class="highlight-c1"># </span>
+<span class="highlight-ln">10</span><span class="highlight-n">b</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Variable</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">([</span><span class="highlight-mi">1</span><span class="highlight-p">]))</span>
+<span class="highlight-ln">11</span><span class="highlight-n">W</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Variable</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">random_uniform</span><span class="highlight-p">([</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">],</span> <span class="highlight-o">-</span><span class="highlight-mf">1.0</span><span class="highlight-p">,</span> <span class="highlight-mf">1.0</span><span class="highlight-p">))</span>
+<span class="highlight-ln">12</span><span class="highlight-n">y</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">matmul</span><span class="highlight-p">(</span><span class="highlight-n">W</span><span class="highlight-p">,</span> <span class="highlight-n">x_data</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b</span>
+<span class="highlight-ln">13</span>
+<span class="highlight-ln">14</span><span class="highlight-c1"># 最小化方差</span>
+<span class="highlight-ln">15</span><span class="highlight-n">loss</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">reduce_mean</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">square</span><span class="highlight-p">(</span><span class="highlight-n">y</span> <span class="highlight-o">-</span> <span class="highlight-n">y_data</span><span class="highlight-p">))</span>
+<span class="highlight-ln">16</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-o">.</span><span class="highlight-n">GradientDescentOptimizer</span><span class="highlight-p">(</span><span class="highlight-mf">0.5</span><span class="highlight-p">)</span>
+<span class="highlight-ln">17</span><span class="highlight-n">train</span> <span class="highlight-o">=</span> <span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">loss</span><span class="highlight-p">)</span>
+<span class="highlight-ln">18</span>
+<span class="highlight-ln">19</span><span class="highlight-c1"># 初始化变量</span>
+<span class="highlight-ln">20</span><span class="highlight-n">init</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">initialize_all_variables</span><span class="highlight-p">()</span>
+<span class="highlight-ln">21</span>
+<span class="highlight-ln">22</span><span class="highlight-c1"># 启动图 (graph)</span>
+<span class="highlight-ln">23</span><span class="highlight-n">sess</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span>
+<span class="highlight-ln">24</span><span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">init</span><span class="highlight-p">)</span>
+<span class="highlight-ln">25</span>
+<span class="highlight-ln">26</span><span class="highlight-c1"># 拟合平面</span>
+<span class="highlight-ln">27</span><span class="highlight-k">for</span> <span class="highlight-n">step</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">201</span><span class="highlight-p">):</span>
+<span class="highlight-ln">28</span>    <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">train</span><span class="highlight-p">)</span>
+<span class="highlight-ln">29</span>    <span class="highlight-k">if</span> <span class="highlight-n">step</span> <span class="highlight-o">%</span> <span class="highlight-mi">20</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
+<span class="highlight-ln">30</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-n">step</span><span class="highlight-p">,</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">W</span><span class="highlight-p">),</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">b</span><span class="highlight-p">))</span>
+<span class="highlight-ln">31</span>
+<span class="highlight-ln">32</span><span class="highlight-c1"># 得到最佳拟合结果 W: [[0.100  0.200]], b: [0.300]</span>
+</code></pre>
+<p>同样我们执行它<code>python3 test1.py</code>可以得到以下信息：</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-n">WARNING</span><span class="highlight-p">:</span><span class="highlight-n">tensorflow</span><span class="highlight-p">:</span><span class="highlight-n">From</span> <span class="highlight-o">/</span><span class="highlight-n">usr</span><span class="highlight-o">/</span><span class="highlight-n">local</span><span class="highlight-o">/</span><span class="highlight-n">lib</span><span class="highlight-o">/</span><span class="highlight-n">python3</span><span class="highlight-o">.</span><span class="highlight-mi">5</span><span class="highlight-o">/</span><span class="highlight-n">dist</span><span class="highlight-o">-</span><span class="highlight-n">packages</span><span class="highlight-o">/</span><span class="highlight-n">tensorflow</span><span class="highlight-o">/</span><span class="highlight-n">python</span><span class="highlight-o">/</span><span class="highlight-n">util</span><span class="highlight-o">/</span><span class="highlight-n">tf_should_use</span><span class="highlight-o">.</span><span class="highlight-n">py</span><span class="highlight-p">:</span><span class="highlight-mi">118</span><span class="highlight-p">:</span> <span class="highlight-n">initialize_all_variables</span> <span class="highlight-p">(</span><span class="highlight-kn">from</span> <span class="highlight-nn">tensorflow.python.ops.variables</span><span class="highlight-p">)</span> <span class="highlight-ow">is</span> <span class="highlight-n">deprecated</span> <span class="highlight-ow">and</span> <span class="highlight-n">will</span> <span class="highlight-n">be</span> <span class="highlight-n">removed</span> <span class="highlight-n">after</span> <span class="highlight-mi">2017</span><span class="highlight-o">-</span><span class="highlight-mo">03</span><span class="highlight-o">-</span><span class="highlight-mf">02.</span>
+<span class="highlight-ln"> 2</span><span class="highlight-n">Instructions</span> <span class="highlight-k">for</span> <span class="highlight-n">updating</span><span class="highlight-p">:</span>
+<span class="highlight-ln"> 3</span><span class="highlight-n">Use</span> <span class="highlight-sb">`tf.global_variables_initializer`</span> <span class="highlight-n">instead</span><span class="highlight-o">.</span>
+<span class="highlight-ln"> 4</span><span class="highlight-mi">2018</span><span class="highlight-o">-</span><span class="highlight-mo">07</span><span class="highlight-o">-</span><span class="highlight-mi">08</span> <span class="highlight-mi">15</span><span class="highlight-p">:</span><span class="highlight-mi">14</span><span class="highlight-p">:</span><span class="highlight-mf">15.455774</span><span class="highlight-p">:</span> <span class="highlight-n">I</span> <span class="highlight-n">tensorflow</span><span class="highlight-o">/</span><span class="highlight-n">core</span><span class="highlight-o">/</span><span class="highlight-n">platform</span><span class="highlight-o">/</span><span class="highlight-n">cpu_feature_guard</span><span class="highlight-o">.</span><span class="highlight-n">cc</span><span class="highlight-p">:</span><span class="highlight-mi">140</span><span class="highlight-p">]</span> <span class="highlight-n">Your</span> <span class="highlight-n">CPU</span> <span class="highlight-n">supports</span> <span class="highlight-n">instructions</span> <span class="highlight-n">that</span> <span class="highlight-n">this</span> <span class="highlight-n">TensorFlow</span> <span class="highlight-n">binary</span> <span class="highlight-n">was</span> <span class="highlight-ow">not</span> <span class="highlight-n">compiled</span> <span class="highlight-n">to</span> <span class="highlight-n">use</span><span class="highlight-p">:</span> <span class="highlight-n">AVX2</span> <span class="highlight-n">FMA</span>
+<span class="highlight-ln"> 5</span><span class="highlight-mi">0</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.260745</span> <span class="highlight-mf">0.56325</span> <span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-o">-</span><span class="highlight-mf">0.00149411</span><span class="highlight-p">]</span>
+<span class="highlight-ln"> 6</span><span class="highlight-mi">20</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.15775657</span> <span class="highlight-mf">0.30871654</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.20844586</span><span class="highlight-p">]</span>
+<span class="highlight-ln"> 7</span><span class="highlight-mi">40</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.11969341</span> <span class="highlight-mf">0.23245212</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.27153042</span><span class="highlight-p">]</span>
+<span class="highlight-ln"> 8</span><span class="highlight-mi">60</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.10656733</span> <span class="highlight-mf">0.20975856</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.29113895</span><span class="highlight-p">]</span>
+<span class="highlight-ln"> 9</span><span class="highlight-mi">80</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.10215606</span> <span class="highlight-mf">0.2029533</span> <span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.29723996</span><span class="highlight-p">]</span>
+<span class="highlight-ln">10</span><span class="highlight-mi">100</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.10069981</span> <span class="highlight-mf">0.20089868</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.2991398</span><span class="highlight-p">]</span>
+<span class="highlight-ln">11</span><span class="highlight-mi">120</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.10022521</span> <span class="highlight-mf">0.20027474</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.2997318</span><span class="highlight-p">]</span>
+<span class="highlight-ln">12</span><span class="highlight-mi">140</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.10007201</span> <span class="highlight-mf">0.20008431</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.29991636</span><span class="highlight-p">]</span>
+<span class="highlight-ln">13</span><span class="highlight-mi">160</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.10002291</span> <span class="highlight-mf">0.20002596</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.2999739</span><span class="highlight-p">]</span>
+<span class="highlight-ln">14</span><span class="highlight-mi">180</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.10000726</span> <span class="highlight-mf">0.20000802</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.29999185</span><span class="highlight-p">]</span>
+<span class="highlight-ln">15</span><span class="highlight-mi">200</span> <span class="highlight-p">[[</span><span class="highlight-mf">0.1000023</span>  <span class="highlight-mf">0.20000248</span><span class="highlight-p">]]</span> <span class="highlight-p">[</span><span class="highlight-mf">0.29999745</span><span class="highlight-p">]</span>
+</code></pre>
+<p>以上是在终端上操作的，那么使用Docker应该如何执行这些文件呢。有两种方法，一种就是以命令终端的方式进入到TensorFlow镜像中，之后的操作就跟在Ubuntu操作差不多了：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker run -it -v $PWD:/work tensorflow/tensorflow:1.8.0-py3 /bin/bash
+</code></pre>
+<p>另一种就是挂载目录到镜像上，然后直接通过命令执行代码文件：</p>
+<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker run -it -v $PWD:/work -w /work tensorflow/tensorflow:1.8.0-py3 python3 /work/test1.py
+</code></pre>
+<h1 id="使用模型预测图片">使用模型预测图片</h1>
+<p>这里笔者使用官方提供的模型，<a href="https://github.com/tensorflow/models/tree/master/research/slim#pre-trained-models" target="_blank">这里</a>官方提供的丰富的模型。这次笔者使用的是<a href="http://download.tensorflow.org/models/mobilenet_v1_2018_02_22/mobilenet_v1_1.0_224.tgz" target="_blank">mobilenet_v1_1.0_224.tgz</a>模型，我们下载这个模型之后解压可以以下文件：<br>
+<img src="https://s1.ax1x.com/2020/04/03/GdpzwT.png" alt="这里写图片描述"></p>
+<p>我们使用到的模型文件是<code>mobilenet_v1_1.0_224_frozen.pb</code>，其中<code>mobilenet_v1_1.0_224_info.txt</code>是说明网络输入输出的字段，该文件的内容如下：</p>
+<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>Model: mobilenet_v1_1.0_224
+<span class="highlight-ln">2</span>Input: input
+<span class="highlight-ln">3</span>Output: MobilenetV1/Predictions/Reshape_1
+</code></pre>
+<p>有了上面的模型，我们就来编写预测代码，全部的代码如下：</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">tensorflow</span> <span class="highlight-kn">as</span> <span class="highlight-nn">tf</span>
+<span class="highlight-ln"> 3</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
+<span class="highlight-ln"> 4</span>
+<span class="highlight-ln"> 5</span><span class="highlight-c1"># 数据预处理</span>
+<span class="highlight-ln"> 6</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">224</span><span class="highlight-p">,</span> <span class="highlight-mi">224</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span>
+<span class="highlight-ln">10</span>    <span class="highlight-c1"># 减去均值</span>
+<span class="highlight-ln">11</span>    <span class="highlight-n">im</span> <span class="highlight-o">-=</span> <span class="highlight-mf">128.0</span>
+<span class="highlight-ln">12</span>    <span class="highlight-n">im</span> <span class="highlight-o">/=</span> <span class="highlight-mf">128.0</span>
+<span class="highlight-ln">13</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">expand_dims</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
+<span class="highlight-ln">14</span>    <span class="highlight-k">return</span> <span class="highlight-n">im</span>
+<span class="highlight-ln">15</span>
+<span class="highlight-ln">16</span><span class="highlight-k">def</span> <span class="highlight-nf">infer</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">pd_path</span><span class="highlight-p">):</span>
+<span class="highlight-ln">17</span>    <span class="highlight-c1"># 将（frozen）TensorFlow模型载入内存</span>
+<span class="highlight-ln">18</span>    <span class="highlight-n">detection_graph</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Graph</span><span class="highlight-p">()</span>
+<span class="highlight-ln">19</span>    <span class="highlight-k">with</span> <span class="highlight-n">detection_graph</span><span class="highlight-o">.</span><span class="highlight-n">as_default</span><span class="highlight-p">():</span>
+<span class="highlight-ln">20</span>        <span class="highlight-n">od_graph_def</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">GraphDef</span><span class="highlight-p">()</span>
+<span class="highlight-ln">21</span>        <span class="highlight-k">with</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">gfile</span><span class="highlight-o">.</span><span class="highlight-n">GFile</span><span class="highlight-p">(</span><span class="highlight-n">pd_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'rb'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">fid</span><span class="highlight-p">:</span>
+<span class="highlight-ln">22</span>            <span class="highlight-n">serialized_graph</span> <span class="highlight-o">=</span> <span class="highlight-n">fid</span><span class="highlight-o">.</span><span class="highlight-n">read</span><span class="highlight-p">()</span>
+<span class="highlight-ln">23</span>            <span class="highlight-n">od_graph_def</span><span class="highlight-o">.</span><span class="highlight-n">ParseFromString</span><span class="highlight-p">(</span><span class="highlight-n">serialized_graph</span><span class="highlight-p">)</span>
+<span class="highlight-ln">24</span>            <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">import_graph_def</span><span class="highlight-p">(</span><span class="highlight-n">od_graph_def</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">''</span><span class="highlight-p">)</span>
+<span class="highlight-ln">25</span>
+<span class="highlight-ln">26</span>    <span class="highlight-k">with</span> <span class="highlight-n">detection_graph</span><span class="highlight-o">.</span><span class="highlight-n">as_default</span><span class="highlight-p">():</span>
+<span class="highlight-ln">27</span>        <span class="highlight-k">with</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">(</span><span class="highlight-n">graph</span><span class="highlight-o">=</span><span class="highlight-n">detection_graph</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">sess</span><span class="highlight-p">:</span>
+<span class="highlight-ln">28</span>            <span class="highlight-c1"># 设置探测图的输入和输出张量</span>
+<span class="highlight-ln">29</span>            <span class="highlight-n">image_tensor</span> <span class="highlight-o">=</span> <span class="highlight-n">detection_graph</span><span class="highlight-o">.</span><span class="highlight-n">get_tensor_by_name</span><span class="highlight-p">(</span><span class="highlight-s1">'input:0'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">30</span>            <span class="highlight-n">detection_classes</span> <span class="highlight-o">=</span> <span class="highlight-n">detection_graph</span><span class="highlight-o">.</span><span class="highlight-n">get_tensor_by_name</span><span class="highlight-p">(</span><span class="highlight-s1">'MobilenetV1/Predictions/Reshape_1:0'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">31</span>            
+<span class="highlight-ln">32</span>            <span class="highlight-c1"># infer image</span>
+<span class="highlight-ln">33</span>            <span class="highlight-n">image_np</span> <span class="highlight-o">=</span> <span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">34</span>            <span class="highlight-c1"># Actual detection.</span>
+<span class="highlight-ln">35</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">([</span><span class="highlight-n">detection_classes</span><span class="highlight-p">],</span> <span class="highlight-n">feed_dict</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">image_tensor</span><span class="highlight-p">:</span> <span class="highlight-n">image_np</span><span class="highlight-p">})</span>
+<span class="highlight-ln">36</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">squeeze</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">)</span>
+<span class="highlight-ln">37</span>            <span class="highlight-n">idx</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">result</span><span class="highlight-p">)</span>
+<span class="highlight-ln">38</span>            <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">idx</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span>
+<span class="highlight-ln">39</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"result label is :"</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">)</span>
+<span class="highlight-ln">40</span>
+<span class="highlight-ln">41</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
+<span class="highlight-ln">42</span>    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"0b77aba2-9557-11e8-a47a-c8ff285a4317.jpg"</span>
+<span class="highlight-ln">43</span>    <span class="highlight-n">pd_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'models/mobilenet_v1_1.0_224_frozen.pb'</span>
+<span class="highlight-ln">44</span>    <span class="highlight-n">infer</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">pd_path</span><span class="highlight-p">)</span>
+</code></pre>
+<p>其中以下这个函数是数据预处理，处理方式要跟训练的时候一样：</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 数据预处理</span>
+<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">):</span>
+<span class="highlight-ln"> 3</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 4</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">224</span><span class="highlight-p">,</span> <span class="highlight-mi">224</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 5</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span>
+<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 减去均值</span>
+<span class="highlight-ln"> 7</span>    <span class="highlight-n">im</span> <span class="highlight-o">-=</span> <span class="highlight-mf">128.0</span>
+<span class="highlight-ln"> 8</span>    <span class="highlight-n">im</span> <span class="highlight-o">/=</span> <span class="highlight-mf">128.0</span>
+<span class="highlight-ln"> 9</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">expand_dims</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
+<span class="highlight-ln">10</span>    <span class="highlight-k">return</span> <span class="highlight-n">im</span>
+</code></pre>
+<p>以下的代码片段是把模型加载到内存中，这个模型就是我们使用的<code>mobilenet_v1_1.0_224_frozen.pb</code>模型。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span>    <span class="highlight-n">detection_graph</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Graph</span><span class="highlight-p">()</span>
+<span class="highlight-ln">2</span>    <span class="highlight-k">with</span> <span class="highlight-n">detection_graph</span><span class="highlight-o">.</span><span class="highlight-n">as_default</span><span class="highlight-p">():</span>
+<span class="highlight-ln">3</span>        <span class="highlight-n">od_graph_def</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">GraphDef</span><span class="highlight-p">()</span>
+<span class="highlight-ln">4</span>        <span class="highlight-k">with</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">gfile</span><span class="highlight-o">.</span><span class="highlight-n">GFile</span><span class="highlight-p">(</span><span class="highlight-n">pd_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'rb'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">fid</span><span class="highlight-p">:</span>
+<span class="highlight-ln">5</span>            <span class="highlight-n">serialized_graph</span> <span class="highlight-o">=</span> <span class="highlight-n">fid</span><span class="highlight-o">.</span><span class="highlight-n">read</span><span class="highlight-p">()</span>
+<span class="highlight-ln">6</span>            <span class="highlight-n">od_graph_def</span><span class="highlight-o">.</span><span class="highlight-n">ParseFromString</span><span class="highlight-p">(</span><span class="highlight-n">serialized_graph</span><span class="highlight-p">)</span>
+<span class="highlight-ln">7</span>            <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">import_graph_def</span><span class="highlight-p">(</span><span class="highlight-n">od_graph_def</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">''</span><span class="highlight-p">)</span>
+</code></pre>
+<p>设置模型的输出输出，这字段就是来自刚才的<code>mobilenet_v1_1.0_224_info.txt</code>文件中。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span>            <span class="highlight-n">image_tensor</span> <span class="highlight-o">=</span> <span class="highlight-n">detection_graph</span><span class="highlight-o">.</span><span class="highlight-n">get_tensor_by_name</span><span class="highlight-p">(</span><span class="highlight-s1">'input:0'</span><span class="highlight-p">)</span>
+<span class="highlight-ln">2</span>            <span class="highlight-n">detection_classes</span> <span class="highlight-o">=</span> <span class="highlight-n">detection_graph</span><span class="highlight-o">.</span><span class="highlight-n">get_tensor_by_name</span><span class="highlight-p">(</span><span class="highlight-s1">'MobilenetV1/Predictions/Reshape_1:0'</span><span class="highlight-p">)</span>
+</code></pre>
+<p>以下的代码片段就是输入图片得到预测结果的，如果需要预测多张图片，可以把该代码片段放在循环中。要注意的是，输出的大小是1001，包括的第一个label是background。</p>
+<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span>            <span class="highlight-n">image_np</span> <span class="highlight-o">=</span> <span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)</span>
+<span class="highlight-ln">2</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">([</span><span class="highlight-n">detection_classes</span><span class="highlight-p">],</span> <span class="highlight-n">feed_dict</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">image_tensor</span><span class="highlight-p">:</span> <span class="highlight-n">image_np</span><span class="highlight-p">})</span>
+<span class="highlight-ln">3</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">squeeze</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">)</span>
+<span class="highlight-ln">4</span>            <span class="highlight-n">idx</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">result</span><span class="highlight-p">)</span>
+<span class="highlight-ln">5</span>            <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">idx</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
+<span class="highlight-ln">6</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"result label is :"</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">)</span>
+</code></pre>
+<h1 id="参考资料">参考资料</h1>
+<ol>
+<li><a href="https://opsx.alibaba.com/mirror" target="_blank">https://opsx.alibaba.com/mirror</a></li>
+<li><a href="https://www.tensorflow.org/install/install_linux" target="_blank">https://www.tensorflow.org/install/install_linux</a></li>
+<li><a href="https://www.tensorflow.org/install/install_windows" target="_blank">https://www.tensorflow.org/install/install_windows</a></li>
+<li><a href="https://www.tensorflow.org/install/install_sources" target="_blank">https://www.tensorflow.org/install/install_sources</a></li>
+<li><a href="https://blog.csdn.net/u014132659/article/details/51544754" target="_blank">https://blog.csdn.net/u014132659/article/details/51544754</a></li>
+<li><a href="http://www.tensorfly.cn/tfdoc/get_started/introduction.html" target="_blank">http://www.tensorfly.cn/tfdoc/get_started/introduction.html</a></li>
+<li><a href="https://blog.csdn.net/u010099080/article/details/53418159" target="_blank">https://blog.csdn.net/u010099080/article/details/53418159</a></li>
+<li><a href="https://blog.csdn.net/u010397369/article/details/41045251" target="_blank">https://blog.csdn.net/u010397369/article/details/41045251</a></li>
+<li><a href="https://github.com/tensorflow/models/tree/master/research/slim#pre-trained-models" target="_blank">https://github.com/tensorflow/models/tree/master/research/slim#pre-trained-models</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：TensorFlow的安装<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html" target="_blank">https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; Mycat中间件实现一主一从和双主双从的读写分离&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973117561.html">
+                            <span>Android的单个或多个权限动态申请&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="TensorFlow的安装"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html"
+     data-avatar="https://img.hacpai.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+        <br>
+    </article>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1585466406319"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        <span class="fn-right">
+            浏览次数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+            &nbsp;
+            文章总数：83
+        </span>
+    </div>
+    <div class="fn-clear">
+        &copy; 2020
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+        <span class="fn-right">
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+        </span>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: true,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.0.0",
+    staticSite: true,
+    showCodeBlockLn: true,
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
+        "oId": "1585466406319",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 206ms, 2020/04/07 11:38:44 -->
