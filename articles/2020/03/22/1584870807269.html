@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Ubuntu server搭建Java web服务器 - 夜雨飘零</title><meta name="description" content="在这里为大家介绍如何在Ubuntu server搭建Java web服务器，输入命令时请留意作者的Ubuntu路径的变化。 1、在Ubuntu server中安装ssh，如果是购买服务器的话，这已经是安装的了，包括vim 获取超级权限 先更新安装包 开始安装ssh ssh已经启动了 2、 安装Xshell并创建连接 安装Xshell 建立连接 单击确定 3、 Xshell实现Windows上传/下载文件到Ubuntu 3.1上传文件 获取超级权限 安装rz/sz工具 切到相应目录，在输入rz 3.2下载文件 切入到相应文件夹，输入sz 文件名 4、 用root权限安装MySQL，需要安装以下三个 apt-get install mysql-server apt-get install mysql-client apt-get install libmysqlclient-dev 测试登陆mysql数据库可以通过如下命令： mysql -u root -p -u 表示用户名， -p 表示用户密码 5、 安装jdk 上传文件，我是放在/usr/local/ ...."/><meta property="og:description" content="在这里为大家介绍如何在Ubuntu server搭建Java web服务器，输入命令时请留意作者的Ubuntu路径的变化。 1、在Ubuntu server中安装ssh，如果是购买服务器的话，这已经是安装的了，包括vim 获取超级权限 先更新安装包 开始安装ssh ssh已经启动了 2、 安装Xshell并创建连接 安装Xshell 建立连接 单击确定 3、 Xshell实现Windows上传/下载文件到Ubuntu 3.1上传文件 获取超级权限 安装rz/sz工具 切到相应目录，在输入rz 3.2下载文件 切入到相应文件夹，输入sz 文件名 4、 用root权限安装MySQL，需要安装以下三个 apt-get install mysql-server apt-get install mysql-client apt-get install libmysqlclient-dev 测试登陆mysql数据库可以通过如下命令： mysql -u root -p -u 表示用户名， -p 表示用户密码 5、 安装jdk 上传文件，我是放在/usr/local/ ...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Ubuntu server搭建Java web服务器 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584870807269.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Ubuntu server搭建Java web服务器 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584870807269.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Ubuntu server搭建Java web服务器 - 夜雨飘零</title><meta name="description" content="在这里为大家介绍如何在Ubuntu server搭建Java web服务器，输入命令时请留意作者的Ubuntu路径的变化。 1、在Ubuntu server中安装ssh，如果是购买服务器的话，这已经是安装的了，包括vim 获取超级权限 先更新安装包 开始安装ssh ssh已经启动了 2、 安装Xshell并创建连接 安装Xshell 建立连接 单击确定 3、 Xshell实现Windows上传/下载文件到Ubuntu 3.1上传文件 获取超级权限 安装rz/sz工具 切到相应目录，在输入rz 3.2下载文件 切入到相应文件夹，输入sz 文件名 4、 用root权限安装MySQL，需要安装以下三个 apt-get install mysql-server apt-get install mysql-client apt-get install libmysqlclient-dev 测试登陆mysql数据库可以通过如下命令： mysql -u root -p -u 表示用户名， -p 表示用户密码 5、 安装jdk 上传文件，我是放在/usr/local/ ...."/><meta property="og:description" content="在这里为大家介绍如何在Ubuntu server搭建Java web服务器，输入命令时请留意作者的Ubuntu路径的变化。 1、在Ubuntu server中安装ssh，如果是购买服务器的话，这已经是安装的了，包括vim 获取超级权限 先更新安装包 开始安装ssh ssh已经启动了 2、 安装Xshell并创建连接 安装Xshell 建立连接 单击确定 3、 Xshell实现Windows上传/下载文件到Ubuntu 3.1上传文件 获取超级权限 安装rz/sz工具 切到相应目录，在输入rz 3.2下载文件 切入到相应文件夹，输入sz 文件名 4、 用root权限安装MySQL，需要安装以下三个 apt-get install mysql-server apt-get install mysql-client apt-get install libmysqlclient-dev 测试登陆mysql数据库可以通过如下命令： mysql -u root -p -u 表示用户名， -p 表示用户密码 5、 安装jdk 上传文件，我是放在/usr/local/ ...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Ubuntu server搭建Java web服务器 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584870807269.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Ubuntu server搭建Java web服务器 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584870807269.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="把项目上传到码云" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584869730945.html">
             <link rel="next" title="Android的cookie的接收和发送" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871123099.html">
     <!-- 百度统计 -->
@@ -150,12 +150,12 @@ var _hmt = _hmt || [];
 <img src="https://s1.ax1x.com/2020/03/31/GMKJts.png" alt=""></p>
 <p><img src="https://s1.ax1x.com/2020/04/02/GYdsHK.png" alt=""></p>
 <p>4、 用root权限安装MySQL，需要安装以下三个</p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>apt-get install mysql-server
-<span class="highlight-ln">2</span>apt-get install mysql-client
-<span class="highlight-ln">3</span>apt-get install libmysqlclient-dev
+<pre><code class="language-shell">apt-get install mysql-server
+apt-get install mysql-client
+apt-get install libmysqlclient-dev
 </code></pre>
 <p>测试登陆mysql数据库可以通过如下命令：</p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>mysql -u root -p
+<pre><code class="language-shell">mysql -u root -p
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/02/GYdR9H.png" alt=""></p>
 <p>-u 表示用户名， -p 表示用户密码</p>
@@ -173,12 +173,12 @@ var _hmt = _hmt || [];
 <img src="https://s1.ax1x.com/2020/04/02/GGfETA.png" alt=""></p>
 <p>编写<br>
 <img src="https://s1.ax1x.com/2020/03/30/Gmc7tI.png" alt=""></p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nv">JAVA_HOME</span><span class="highlight-o">=</span>/usr/local/jdk
-<span class="highlight-ln">2</span><span class="highlight-nv">PATH</span><span class="highlight-o">=</span><span class="highlight-nv">$JAVA_HOME</span>/bin:<span class="highlight-nv">$PATH</span>:.
-<span class="highlight-ln">3</span><span class="highlight-nv">CLASSPATH</span><span class="highlight-o">=</span><span class="highlight-nv">$JAVA_HOME</span>/lib/dt.jar:<span class="highlight-nv">$JAVA_HOME</span>/lib/tools.jar:.
-<span class="highlight-ln">4</span><span class="highlight-nb">export</span> JAVA_HOME
-<span class="highlight-ln">5</span><span class="highlight-nb">export</span> PATH
-<span class="highlight-ln">6</span><span class="highlight-nb">export</span> CLASSPATH
+<pre><code class="language-shell">JAVA_HOME=/usr/local/jdk
+PATH=$JAVA_HOME/bin:$PATH:.
+CLASSPATH=$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:.
+export JAVA_HOME
+export PATH
+export CLASSPATH
 </code></pre>
 <p>使用vim编写方法，关于vim的使用更详细的教程，可以自行百度，Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<code>wq</code>保存并退出</p>
 <p>使其生效<br>
@@ -218,7 +218,7 @@ Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<co
 <img src="https://s1.ax1x.com/2020/04/02/GGfQOg.png" alt=""></p>
 <p>8、 设置网站文件路径，使其能有默认路径<br>
 <img src="https://s1.ax1x.com/2020/03/30/GecjMD.png" alt=""></p>
-<pre><code class="language-html highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-p">&lt;</span><span class="highlight-nt">Context</span> <span class="highlight-na">path</span><span class="highlight-o">=</span><span class="highlight-s">""</span> <span class="highlight-na">docBase</span><span class="highlight-o">=</span><span class="highlight-s">"/usr/local/tomcat/webapps/fristweb"</span> <span class="highlight-na">debug</span><span class="highlight-o">=</span><span class="highlight-s">"0"</span> <span class="highlight-na">reloadable</span><span class="highlight-o">=</span><span class="highlight-s">"true"</span><span class="highlight-p">/&gt;</span>
+<pre><code class="language-html">&lt;Context path="" docBase="/usr/local/tomcat/webapps/fristweb" debug="0" reloadable="true"/&gt;
 </code></pre>
 <p>关闭tomcat再开启</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GMKATH.png" alt=""></p>
@@ -235,13 +235,13 @@ Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<co
 <img src="https://s1.ax1x.com/2020/04/02/GJs7wt.png" alt=""></p>
 <p>关联<br>
 <img src="https://s1.ax1x.com/2020/03/30/Gn9beU.png" alt=""></p>
-<p>在浏览器输入http://localhost:8022/phpmyadmin/ ，就可以看到我们的MySQL 的数据了，我这是在本地的服务器，你的要根据你的IP</p>
+<p>在浏览器输入<a href="http://localhost:8022/phpmyadmin/">http://localhost:8022/phpmyadmin/</a> ，就可以看到我们的MySQL 的数据了，我这是在本地的服务器，你的要根据你的IP</p>
 <p><img src="https://s1.ax1x.com/2020/04/04/GdWW8J.png" alt=""></p>
 <p>10、 其他配置，你会发现Tomcat启动非常慢，以下方法可以加快Tomcat的启动在tomcat/bin/catalina.sh文件，在代码开头加入，可以使用vim编写:<br>
 <img src="https://s1.ax1x.com/2020/04/02/GG316e.png" alt=""></p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>export JAVA_HOME="/usr/local/jdk"
-<span class="highlight-ln">2</span>export JRE_HOME="/usr/local/jdk/jre"
-<span class="highlight-ln">3</span>export CATALINA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+<pre><code class="language-plain">export JAVA_HOME="/usr/local/jdk"
+export JRE_HOME="/usr/local/jdk/jre"
+export CATALINA_OPTS="-Djava.security.egd=file:/dev/./urandom"
 </code></pre>
 <p><br><br></p>
 <p><strong>MySQL中文乱码问题</strong></p>
@@ -249,13 +249,13 @@ Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<co
 <p>在Ubuntu中配置文件的路径有点不一样，配置文件的内容也不一样，以下是路径</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GM2lW9.png?x-oss-process=image/format,png" alt=""></p>
 <p>用vim编写配置文件在最后加上以下代码</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>[client]
-<span class="highlight-ln">2</span>default_character_set = utf8
-<span class="highlight-ln">3</span>[mysqld]
-<span class="highlight-ln">4</span>character-set-server = utf8
-<span class="highlight-ln">5</span>collation-server = utf8_general_ci
-<span class="highlight-ln">6</span>[mysql]
-<span class="highlight-ln">7</span>default_character_set = utf8
+<pre><code class="language-plain">[client]
+default_character_set = utf8
+[mysqld]
+character-set-server = utf8
+collation-server = utf8_general_ci
+[mysql]
+default_character_set = utf8
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/03/GdpisP.png?x-oss-process=image/format,png" alt=""></p>
 <p>最后重启MySQL，命令是：<code>/etc/init.d/mysql start</code></p>
@@ -334,7 +334,7 @@ Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<co
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -343,7 +343,7 @@ Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<co
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -351,11 +351,11 @@ Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<co
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466397820",
@@ -373,4 +373,4 @@ Insert键插入；Esc进入命令环境，输入分号<code>:</code>，输入<co
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 50ms, 2020/04/07 11:38:51 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

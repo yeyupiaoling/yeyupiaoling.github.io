@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>PaddlePaddle实现手写藏文识别 - 夜雨飘零</title><meta name="description" content="前言 中央民族大学创业团队巨神人工智能科技在科赛网公开了一个TibetanMNIST正是形体藏文中的数字数据集，TibetanMNIST数据集的原图片中，图片的大小是350*350的黑白图片，图片文件名称的第一个数字就是图片的标签，如0_10_398.jpg这张图片代表的就是藏文的数字0。在本项目中我们结合第四章所学的卷积神经网络，来完成TibetanMNIST数据集的分类识别。 导入所需的包 主要是使用到PaddlePaddle的fluid和paddle依赖库，cpu_count库是获取当前CPU的数量的，matplotlib用于展示图片。 import paddle.fluid as fluid import paddle import numpy as np from PIL import Image import os from multiprocessing import cpu_count import matplotlib.pyplot as plt 生成图像列表 因为TibetanMNIST数据集已经在科赛网发布了，所以我们创建项目之前还需要在科赛网中把数据集下载下来...."/><meta property="og:description" content="前言 中央民族大学创业团队巨神人工智能科技在科赛网公开了一个TibetanMNIST正是形体藏文中的数字数据集，TibetanMNIST数据集的原图片中，图片的大小是350*350的黑白图片，图片文件名称的第一个数字就是图片的标签，如0_10_398.jpg这张图片代表的就是藏文的数字0。在本项目中我们结合第四章所学的卷积神经网络，来完成TibetanMNIST数据集的分类识别。 导入所需的包 主要是使用到PaddlePaddle的fluid和paddle依赖库，cpu_count库是获取当前CPU的数量的，matplotlib用于展示图片。 import paddle.fluid as fluid import paddle import numpy as np from PIL import Image import os from multiprocessing import cpu_count import matplotlib.pyplot as plt 生成图像列表 因为TibetanMNIST数据集已经在科赛网发布了，所以我们创建项目之前还需要在科赛网中把数据集下载下来...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="PaddlePaddle实现手写藏文识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973821313.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="PaddlePaddle实现手写藏文识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973821313.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>PaddlePaddle实现手写藏文识别 - 夜雨飘零</title><meta name="description" content="前言 中央民族大学创业团队巨神人工智能科技在科赛网公开了一个TibetanMNIST正是形体藏文中的数字数据集，TibetanMNIST数据集的原图片中，图片的大小是350*350的黑白图片，图片文件名称的第一个数字就是图片的标签，如0_10_398.jpg这张图片代表的就是藏文的数字0。在本项目中我们结合第四章所学的卷积神经网络，来完成TibetanMNIST数据集的分类识别。 导入所需的包 主要是使用到PaddlePaddle的fluid和paddle依赖库，cpu_count库是获取当前CPU的数量的，matplotlib用于展示图片。 import paddle.fluid as fluid import paddle import numpy as np from PIL import Image import os from multiprocessing import cpu_count import matplotlib.pyplot as plt 生成图像列表 因为TibetanMNIST数据集已经在科赛网发布了，所以我们创建项目之前还需要在科赛网中把数据集下载下来...."/><meta property="og:description" content="前言 中央民族大学创业团队巨神人工智能科技在科赛网公开了一个TibetanMNIST正是形体藏文中的数字数据集，TibetanMNIST数据集的原图片中，图片的大小是350*350的黑白图片，图片文件名称的第一个数字就是图片的标签，如0_10_398.jpg这张图片代表的就是藏文的数字0。在本项目中我们结合第四章所学的卷积神经网络，来完成TibetanMNIST数据集的分类识别。 导入所需的包 主要是使用到PaddlePaddle的fluid和paddle依赖库，cpu_count库是获取当前CPU的数量的，matplotlib用于展示图片。 import paddle.fluid as fluid import paddle import numpy as np from PIL import Image import os from multiprocessing import cpu_count import matplotlib.pyplot as plt 生成图像列表 因为TibetanMNIST数据集已经在科赛网发布了，所以我们创建项目之前还需要在科赛网中把数据集下载下来...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="PaddlePaddle实现手写藏文识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973821313.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="PaddlePaddle实现手写藏文识别 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973821313.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="使用TensorFlow Lite在Android手机上实现图像分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973744126.html">
             <link rel="next" title="PaddlePaddle实现人脸识别系统一——人脸数据集的获取" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973882516.html">
     <!-- 百度统计 -->
@@ -78,61 +78,61 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#导入所需的包">导入所需的包</a>
+            <a href="#toc_h1_1">导入所需的包</a>
         </li>
         <li class="toc__h1">
-            <a href="#生成图像列表">生成图像列表</a>
+            <a href="#toc_h1_2">生成图像列表</a>
         </li>
         <li class="toc__h1">
-            <a href="#定义读取数据">定义读取数据</a>
+            <a href="#toc_h1_3">定义读取数据</a>
         </li>
         <li class="toc__h1">
-            <a href="#定义卷积神经网络">定义卷积神经网络</a>
+            <a href="#toc_h1_4">定义卷积神经网络</a>
         </li>
         <li class="toc__h1">
-            <a href="#获取网络">获取网络</a>
+            <a href="#toc_h1_5">获取网络</a>
         </li>
         <li class="toc__h1">
-            <a href="#定义损失函数">定义损失函数</a>
+            <a href="#toc_h1_6">定义损失函数</a>
         </li>
         <li class="toc__h1">
-            <a href="#克隆测试程序">克隆测试程序</a>
+            <a href="#toc_h1_7">克隆测试程序</a>
         </li>
         <li class="toc__h1">
-            <a href="#定义优化方法">定义优化方法</a>
+            <a href="#toc_h1_8">定义优化方法</a>
         </li>
         <li class="toc__h1">
-            <a href="#创建执行器">创建执行器</a>
+            <a href="#toc_h1_9">创建执行器</a>
         </li>
         <li class="toc__h1">
-            <a href="#把图片数据生成reader">把图片数据生成reader</a>
+            <a href="#toc_h1_10">把图片数据生成reader</a>
         </li>
         <li class="toc__h1">
-            <a href="#定义输入数据的维度">定义输入数据的维度</a>
+            <a href="#toc_h1_11">定义输入数据的维度</a>
         </li>
         <li class="toc__h1">
-            <a href="#开始训练">开始训练</a>
+            <a href="#toc_h1_12">开始训练</a>
         </li>
         <li class="toc__h1">
-            <a href="#获取预测程序">获取预测程序</a>
+            <a href="#toc_h1_13">获取预测程序</a>
         </li>
         <li class="toc__h1">
-            <a href="#进行数据预处理">进行数据预处理</a>
+            <a href="#toc_h1_14">进行数据预处理</a>
         </li>
         <li class="toc__h1">
-            <a href="#获取预测图片">获取预测图片</a>
+            <a href="#toc_h1_15">获取预测图片</a>
         </li>
         <li class="toc__h1">
-            <a href="#执行预测">执行预测</a>
+            <a href="#toc_h1_16">执行预测</a>
         </li>
         <li class="toc__h1">
-            <a href="#解析结果-获取概率最大的label">解析结果，获取概率最大的label</a>
+            <a href="#toc_h1_17">解析结果，获取概率最大的label</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_18">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -180,280 +180,280 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20180809.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>中央民族大学创业团队巨神人工智能科技在科赛网公开了一个TibetanMNIST正是形体藏文中的数字数据集，TibetanMNIST数据集的原图片中，图片的大小是<code>350*350</code>的黑白图片，图片文件名称的第一个数字就是图片的标签，如<code>0_10_398.jpg</code>这张图片代表的就是藏文的数字0。在本项目中我们结合第四章所学的卷积神经网络，来完成TibetanMNIST数据集的分类识别。</p>
-<h1 id="导入所需的包">导入所需的包</h1>
+<h1 id="toc_h1_1">导入所需的包</h1>
 <p>主要是使用到PaddlePaddle的fluid和paddle依赖库，cpu_count库是获取当前CPU的数量的，matplotlib用于展示图片。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
-<span class="highlight-ln">5</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln">6</span><span class="highlight-kn">from</span> <span class="highlight-nn">multiprocessing</span> <span class="highlight-kn">import</span> <span class="highlight-n">cpu_count</span>
-<span class="highlight-ln">7</span><span class="highlight-kn">import</span> <span class="highlight-nn">matplotlib.pyplot</span> <span class="highlight-kn">as</span> <span class="highlight-nn">plt</span>
+<pre><code class="language-python">import paddle.fluid as fluid
+import paddle
+import numpy as np
+from PIL import Image
+import os
+from multiprocessing import cpu_count
+import matplotlib.pyplot as plt
 </code></pre>
-<h1 id="生成图像列表">生成图像列表</h1>
+<h1 id="toc_h1_2">生成图像列表</h1>
 <p>因为TibetanMNIST数据集已经在科赛网发布了，所以我们创建项目之前还需要在科赛网中把数据集下载下来，数据集标题为<code>【首发活动】TibetanMNIST藏文手写数字数据集</code>，下载之后解答会得到一个<code>TibetanMnist（350x350）</code>文件夹，这个文件就是存放原图像文件的，我们把这个文件压缩为zip格式并上传到AI Studio平台作为个人数据集，然后在创建项目的时候挂载这个数据集就可以了。</p>
 <p>挂载数据集之后，执行解压命令，就可以得到一个目录TibetanMnist（350x350），原图像文件存放在这个目录，我们可以在这个目录读取全部的图片文件。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-err">!</span><span class="highlight-n">unzip</span> <span class="highlight-o">-</span><span class="highlight-n">q</span> <span class="highlight-o">/</span><span class="highlight-n">home</span><span class="highlight-o">/</span><span class="highlight-n">aistudio</span><span class="highlight-o">/</span><span class="highlight-n">data</span><span class="highlight-o">/</span><span class="highlight-n">data2134</span><span class="highlight-o">/</span><span class="highlight-n">TibetanMnist</span><span class="highlight-err">（</span><span class="highlight-mi">350</span><span class="highlight-n">x350</span><span class="highlight-err">）</span><span class="highlight-o">.</span><span class="highlight-n">zip</span>
+<pre><code class="language-python">!unzip -q /home/aistudio/data/data2134/TibetanMnist（350x350）.zip
 </code></pre>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">data_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'./TibetanMnist（350x350）'</span>
-<span class="highlight-ln">2</span><span class="highlight-n">data_imgs</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">)</span>
+<pre><code class="language-python">data_path = './TibetanMnist（350x350）'
+data_imgs = os.listdir(data_path)
 </code></pre>
 <p>获取全部的图片路径之后，我们就生成一个图像列表，这个列表文件包括图片的绝对路径和图片对于的label，中间用制表符分开。格式如下，其中有一个<code>lable.txt</code>的文本文件，我们要忽略它，否则在读取的时候就报错。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/8_2_1.jpg	8
-<span class="highlight-ln">2</span>/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/0_11_264.jpg	0
-<span class="highlight-ln">3</span>/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/0_13_320.jpg	0
-<span class="highlight-ln">4</span>/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/3_16_193.jpg	3
+<pre><code>/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/8_2_1.jpg	8
+/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/0_11_264.jpg	0
+/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/0_13_320.jpg	0
+/home/kesci/input/TibetanMNIST5610/TibetanMNIST/TibetanMNIST/3_16_193.jpg	3
 </code></pre>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-s1">'./train_data.list'</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_train</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-s1">'./test_data.list'</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f_test</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">data_imgs</span><span class="highlight-p">)):</span>
-<span class="highlight-ln"> 4</span>            <span class="highlight-k">if</span> <span class="highlight-n">data_imgs</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">]</span> <span class="highlight-o">==</span> <span class="highlight-s1">'lable.txt'</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 5</span>                <span class="highlight-k">continue</span>
-<span class="highlight-ln"> 6</span>            <span class="highlight-k">if</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-mi">10</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 7</span>                <span class="highlight-n">f_test</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-n">data_imgs</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">])</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\t</span><span class="highlight-s2">"</span> <span class="highlight-o">+</span> <span class="highlight-n">data_imgs</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">:</span><span class="highlight-mi">1</span><span class="highlight-p">]</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 9</span>                <span class="highlight-n">f_train</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-n">data_imgs</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">])</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\t</span><span class="highlight-s2">"</span> <span class="highlight-o">+</span> <span class="highlight-n">data_imgs</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">:</span><span class="highlight-mi">1</span><span class="highlight-p">]</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>        <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'图像列表已生成。'</span><span class="highlight-p">)</span>
+<pre><code class="language-python">with open('./train_data.list', 'w') as f_train:
+    with open('./test_data.list', 'w') as f_test:
+        for i in range(len(data_imgs)):
+            if data_imgs[i] == 'lable.txt':
+                continue
+            if i % 10 == 0:
+                f_test.write(os.path.join(data_path, data_imgs[i]) + "\t" + data_imgs[i][0:1] + '\n')
+            else:
+                f_train.write(os.path.join(data_path, data_imgs[i]) + "\t" + data_imgs[i][0:1] + '\n')
+        print('图像列表已生成。')
 </code></pre>
-<h1 id="定义读取数据">定义读取数据</h1>
+<h1 id="toc_h1_3">定义读取数据</h1>
 <p>PaddlePaddle读取训练和测试数据都是通过reader来读取的，所以我们要自定义一个reader。首先我们定义一个<code>train_mapper()</code>函数，这个函数是对图片进行预处理的，比如通过<code>paddle.dataset.image.simple_transform</code>接口对图片进行压缩然后裁剪，和灰度化，当参数<code>is_train</code>为True时就会随机裁剪，否则为中心裁剪，一般测试和预测都是中心裁剪。<code>train_r()</code>函数是从上一部分生成的图像列表中读取图片路径和标签，然后把图片路径传递给<code>train_mapper()</code>函数进行预处理。同样的测试数据也是相同的操作。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">train_mapper</span><span class="highlight-p">(</span><span class="highlight-n">sample</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">sample</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-o">=</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">simple_transform</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-o">=</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">resize_size</span><span class="highlight-o">=</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-n">crop_size</span><span class="highlight-o">=</span><span class="highlight-mi">28</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_train</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-mf">255.0</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-k">return</span> <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span>
-<span class="highlight-ln"> 7</span>    
-<span class="highlight-ln"> 8</span><span class="highlight-k">def</span> <span class="highlight-nf">train_r</span><span class="highlight-p">(</span><span class="highlight-n">train_list_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
-<span class="highlight-ln">10</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">train_list_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">11</span>            <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()</span>
-<span class="highlight-ln">12</span>            <span class="highlight-k">del</span> <span class="highlight-n">lines</span><span class="highlight-p">[</span><span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">lines</span><span class="highlight-p">)</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">13</span>            <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
-<span class="highlight-ln">14</span>                <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>                <span class="highlight-k">yield</span> <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>    <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">xmap_readers</span><span class="highlight-p">(</span><span class="highlight-n">train_mapper</span><span class="highlight-p">,</span> <span class="highlight-n">reader</span><span class="highlight-p">,</span> <span class="highlight-n">cpu_count</span><span class="highlight-p">(),</span> <span class="highlight-mi">1024</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span><span class="highlight-k">def</span> <span class="highlight-nf">test_mapper</span><span class="highlight-p">(</span><span class="highlight-n">sample</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">sample</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-o">=</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">simple_transform</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-o">=</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">resize_size</span><span class="highlight-o">=</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-n">crop_size</span><span class="highlight-o">=</span><span class="highlight-mi">28</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_train</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-mf">255.0</span>
-<span class="highlight-ln">23</span>    <span class="highlight-k">return</span> <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span>
-<span class="highlight-ln">24</span>    
-<span class="highlight-ln">25</span><span class="highlight-k">def</span> <span class="highlight-nf">test_r</span><span class="highlight-p">(</span><span class="highlight-n">test_list_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">26</span>    <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
-<span class="highlight-ln">27</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">test_list_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">28</span>            <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()</span>
-<span class="highlight-ln">29</span>            <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
-<span class="highlight-ln">30</span>                <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">31</span>                <span class="highlight-k">yield</span> <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>    <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">xmap_readers</span><span class="highlight-p">(</span><span class="highlight-n">test_mapper</span><span class="highlight-p">,</span> <span class="highlight-n">reader</span><span class="highlight-p">,</span> <span class="highlight-n">cpu_count</span><span class="highlight-p">(),</span> <span class="highlight-mi">1024</span><span class="highlight-p">)</span>
+<pre><code class="language-python">def train_mapper(sample):
+    img, label = sample
+    img = paddle.dataset.image.load_image(file=img, is_color=False)
+    img = paddle.dataset.image.simple_transform(im=img, resize_size=32, crop_size=28, is_color=False, is_train=True)
+    img = img.flatten().astype('float32') / 255.0
+    return img, label
+    
+def train_r(train_list_path):
+    def reader():
+        with open(train_list_path, 'r') as f:
+            lines = f.readlines()
+            del lines[len(lines)-1]
+            for line in lines:
+                img, label = line.split('\t')
+                yield img, int(label)
+    return paddle.reader.xmap_readers(train_mapper, reader, cpu_count(), 1024)
+
+def test_mapper(sample):
+    img, label = sample
+    img = paddle.dataset.image.load_image(file=img, is_color=False)
+    img = paddle.dataset.image.simple_transform(im=img, resize_size=32, crop_size=28, is_color=False, is_train=False)
+    img = img.flatten().astype('float32') / 255.0
+    return img, label
+    
+def test_r(test_list_path):
+    def reader():
+        with open(test_list_path, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                img, label = line.split('\t')
+                yield img, int(label)
+    return paddle.reader.xmap_readers(test_mapper, reader, cpu_count(), 1024)
 </code></pre>
-<h1 id="定义卷积神经网络">定义卷积神经网络</h1>
+<h1 id="toc_h1_4">定义卷积神经网络</h1>
 <p>这里定义了一个卷积神经网络，读者可用根据自己的情况修改或更换其他卷积神经网络。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">cnn</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-n">conv1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">conv2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> 
-<span class="highlight-ln"> 3</span>                                <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> 
-<span class="highlight-ln"> 4</span>                                <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span> 
-<span class="highlight-ln"> 5</span>                                <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> 
-<span class="highlight-ln"> 6</span>                                <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> 
-<span class="highlight-ln"> 7</span>                                <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'conv1'</span><span class="highlight-p">,</span> 
-<span class="highlight-ln"> 8</span>                                <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>    
-<span class="highlight-ln">10</span>    <span class="highlight-n">pool1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">pool2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv1</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">11</span>                                <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">12</span>                                <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">13</span>                                <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-s1">'max'</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">14</span>                                <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'pool1'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>    
-<span class="highlight-ln">16</span>    <span class="highlight-n">bn1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">batch_norm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">pool1</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'bn1'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>    
-<span class="highlight-ln">18</span>    <span class="highlight-n">conv2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">conv2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">bn1</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">19</span>                                <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-mi">64</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">20</span>                                <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">21</span>                                <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">22</span>                                <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">23</span>                                <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'conv2'</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">24</span>                                <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">25</span>    
-<span class="highlight-ln">26</span>    <span class="highlight-n">pool2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">pool2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv2</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">27</span>                                <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">28</span>                                <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">29</span>                                <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-s1">'max'</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">30</span>                                <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'pool2'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">31</span>    
-<span class="highlight-ln">32</span>    <span class="highlight-n">bn2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">batch_norm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">pool2</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'bn2'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">33</span>    
-<span class="highlight-ln">34</span>    <span class="highlight-n">fc1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">bn2</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'fc1'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">35</span>    
-<span class="highlight-ln">36</span>    <span class="highlight-n">fc2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc1</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'softmax'</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'fc2'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">37</span>    
-<span class="highlight-ln">38</span>    <span class="highlight-k">return</span> <span class="highlight-n">fc2</span>
+<pre><code class="language-python">def cnn(ipt):
+    conv1 = fluid.layers.conv2d(input=ipt, 
+                                num_filters=32, 
+                                filter_size=3, 
+                                padding=1, 
+                                stride=1, 
+                                name='conv1', 
+                                act='relu')
+    
+    pool1 = fluid.layers.pool2d(input=conv1, 
+                                pool_size=2, 
+                                pool_stride=2, 
+                                pool_type='max', 
+                                name='pool1')
+    
+    bn1 = fluid.layers.batch_norm(input=pool1, name='bn1')
+    
+    conv2 = fluid.layers.conv2d(input=bn1, 
+                                num_filters=64, 
+                                filter_size=3, 
+                                padding=1, 
+                                stride=1, 
+                                name='conv2', 
+                                act='relu')
+    
+    pool2 = fluid.layers.pool2d(input=conv2, 
+                                pool_size=2, 
+                                pool_stride=2,
+                                pool_type='max', 
+                                name='pool2')
+    
+    bn2 = fluid.layers.batch_norm(input=pool2, name='bn2')
+    
+    fc1 = fluid.layers.fc(input=bn2, size=1024, act='relu', name='fc1')
+    
+    fc2 = fluid.layers.fc(input=fc1, size=10, act='softmax', name='fc2')
+    
+    return fc2
 </code></pre>
-<h1 id="获取网络">获取网络</h1>
+<h1 id="toc_h1_5">获取网络</h1>
 <p>通过上面定义的卷积神经网络获取一个分类器，网络的输入层是通过<code>fluid.layers.data</code>接口定义的，输入的形状为<code>[1, 28, 28]</code>，表示为单通道，宽度和高度都是28的灰度图。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'image'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">28</span><span class="highlight-p">,</span> <span class="highlight-mi">28</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">net</span> <span class="highlight-o">=</span> <span class="highlight-n">cnn</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">)</span>
+<pre><code class="language-python">image = fluid.layers.data(name='image', shape=[1, 28, 28], dtype='float32')
+net = cnn(image)
 </code></pre>
-<h1 id="定义损失函数">定义损失函数</h1>
+<h1 id="toc_h1_6">定义损失函数</h1>
 <p>这里使用了交叉熵损失函数<code>fluid.layers.cross_entropy</code>，还使用了<code>fluid.layers.accuracy</code>接口，方便在训练和测试的是输出平均值。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'label'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">cross_entropy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">net</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">avg_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">mean</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-o">=</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">acc</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">accuracy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">net</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">,</span> <span class="highlight-n">k</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<pre><code class="language-python">label = fluid.layers.data(name='label', shape=[1], dtype='int64')
+cost = fluid.layers.cross_entropy(input=net, label=label)
+avg_cost = fluid.layers.mean(x=cost)
+acc = fluid.layers.accuracy(input=net, label=label, k=1)
 </code></pre>
-<h1 id="克隆测试程序">克隆测试程序</h1>
+<h1 id="toc_h1_7">克隆测试程序</h1>
 <p>在定义损失之后和定义优化方法之前从主程序中克隆一个测试程序。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">test_program</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">clone</span><span class="highlight-p">(</span><span class="highlight-n">for_test</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<pre><code class="language-python">test_program = fluid.default_main_program().clone(for_test=True)
 </code></pre>
-<h1 id="定义优化方法">定义优化方法</h1>
+<h1 id="toc_h1_8">定义优化方法</h1>
 <p>接着是定义优化方法，这里使用的是Adam优化方法，读取也可用使用其他的优化方法。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">AdamOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.001</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">opt</span> <span class="highlight-o">=</span> <span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">avg_cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python">optimizer = fluid.optimizer.AdamOptimizer(learning_rate=0.001)
+opt = optimizer.minimize(avg_cost)
 </code></pre>
-<h1 id="创建执行器">创建执行器</h1>
+<h1 id="toc_h1_9">创建执行器</h1>
 <p>这里是创建执行器，并指定使用CPU执行训练。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">2</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-o">=</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+<pre><code class="language-python">place = fluid.CPUPlace()
+exe = fluid.Executor(place=place)
+exe.run(program=fluid.default_startup_program())
 </code></pre>
-<h1 id="把图片数据生成reader">把图片数据生成reader</h1>
+<h1 id="toc_h1_10">把图片数据生成reader</h1>
 <p>把上面定义的reader按照设置的大小得到每一个batch的reader。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">train_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">train_r</span><span class="highlight-p">(</span><span class="highlight-s1">'./train_data.list'</span><span class="highlight-p">),</span> <span class="highlight-n">buf_size</span><span class="highlight-o">=</span><span class="highlight-mi">3000</span><span class="highlight-p">),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">test_r</span><span class="highlight-p">(</span><span class="highlight-s1">'./test_data.list'</span><span class="highlight-p">),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
+<pre><code class="language-python">train_reader = paddle.batch(reader=paddle.reader.shuffle(reader=train_r('./train_data.list'), buf_size=3000), batch_size=128)
+test_reader = paddle.batch(reader=test_r('./test_data.list'), batch_size=128)
 </code></pre>
-<h1 id="定义输入数据的维度">定义输入数据的维度</h1>
+<h1 id="toc_h1_11">定义输入数据的维度</h1>
 <p>定义输入数据的维度，第一个是图片数据，第二个是图片对应的标签。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">feeder</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">DataFeeder</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-o">=</span><span class="highlight-n">place</span><span class="highlight-p">,</span> <span class="highlight-n">feed_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">])</span>
+<pre><code class="language-python">feeder = fluid.DataFeeder(place=place, feed_list=[image, label])
 </code></pre>
-<h1 id="开始训练">开始训练</h1>
+<h1 id="toc_h1_12">开始训练</h1>
 <p>开始执行训练，这里只是训练10个Pass，读者可以随意设置。我们在每一个Pass训练完成之后，都进行使用测试数据集测试模型的准确率和报错一次预测模型。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">for</span> <span class="highlight-n">pass_id</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">train_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-n">train_cost</span><span class="highlight-p">,</span> <span class="highlight-n">train_acc</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span> 
-<span class="highlight-ln"> 4</span>                                        <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span> 
-<span class="highlight-ln"> 5</span>                                        <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">,</span> <span class="highlight-n">acc</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-k">if</span> <span class="highlight-n">batch_id</span> <span class="highlight-o">%</span> <span class="highlight-mi">100</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">Pass：</span><span class="highlight-si">%d</span><span class="highlight-s1">, Batch：</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost：</span><span class="highlight-si">%f</span><span class="highlight-s1">, Accuracy：</span><span class="highlight-si">%f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">train_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">train_acc</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]))</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">,</span> <span class="highlight-n">end</span><span class="highlight-o">=</span><span class="highlight-s2">""</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    
-<span class="highlight-ln">11</span>    <span class="highlight-n">test_costs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">test_accs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">test_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">test_program</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">15</span>                                      <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
-<span class="highlight-ln">16</span>                                      <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">,</span> <span class="highlight-n">acc</span><span class="highlight-p">])</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">test_costs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">18</span>        <span class="highlight-n">test_accs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_acc</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">test_cost</span> <span class="highlight-o">=</span> <span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">Test：</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost：</span><span class="highlight-si">%f</span><span class="highlight-s1">, Accuracy：</span><span class="highlight-si">%f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span><span class="highlight-p">))</span>
-<span class="highlight-ln">22</span>    
-<span class="highlight-ln">23</span>    <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">io</span><span class="highlight-o">.</span><span class="highlight-n">save_inference_model</span><span class="highlight-p">(</span><span class="highlight-n">dirname</span><span class="highlight-o">=</span><span class="highlight-s1">'./model'</span><span class="highlight-p">,</span> <span class="highlight-n">feeded_var_names</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-s1">'image'</span><span class="highlight-p">],</span> <span class="highlight-n">target_vars</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">net</span><span class="highlight-p">],</span> <span class="highlight-n">executor</span><span class="highlight-o">=</span><span class="highlight-n">exe</span><span class="highlight-p">)</span>
+<pre><code class="language-python">for pass_id in range(2):
+    for batch_id, data in enumerate(train_reader()):
+        train_cost, train_acc = exe.run(program=fluid.default_main_program(), 
+                                        feed=feeder.feed(data), 
+                                        fetch_list=[avg_cost, acc])
+        if batch_id % 100 == 0:
+            print('\nPass：%d, Batch：%d, Cost：%f, Accuracy：%f' % (pass_id, batch_id, train_cost[0], train_acc[0]))
+        else:
+            print('.', end="")
+    
+    test_costs = []
+    test_accs = []
+    for batch_id, data in enumerate(test_reader()):
+        test_cost, test_acc = exe.run(program=test_program, 
+                                      feed=feeder.feed(data),
+                                      fetch_list=[avg_cost, acc])
+        test_costs.append(test_cost[0])
+        test_accs.append(test_acc[0])
+    test_cost = sum(test_costs) / len(test_costs)
+    test_acc = sum(test_accs) / len(test_accs)
+    print('\nTest：%d, Cost：%f, Accuracy：%f' % (pass_id, test_cost, test_acc))
+    
+    fluid.io.save_inference_model(dirname='./model', feeded_var_names=['image'], target_vars=[net], executor=exe)
 </code></pre>
 <p>输出的信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>Pass：0, Batch：0, Cost：2.971555, Accuracy：0.101562
-<span class="highlight-ln"> 2</span>...................................................................................................
-<span class="highlight-ln"> 3</span>Pass：0, Batch：100, Cost：0.509201, Accuracy：0.859375
-<span class="highlight-ln"> 4</span>........................
-<span class="highlight-ln"> 5</span>Test：0, Cost：0.255964, Accuracy：0.928092
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span>Pass：1, Batch：0, Cost：0.383406, Accuracy：0.882812
-<span class="highlight-ln"> 8</span>...................................................................................................
-<span class="highlight-ln"> 9</span>Pass：1, Batch：100, Cost：0.262583, Accuracy：0.906250
-<span class="highlight-ln">10</span>........................
-<span class="highlight-ln">11</span>Test：1, Cost：0.210227, Accuracy：0.942152
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>Pass：2, Batch：0, Cost：0.248821, Accuracy：0.921875
-<span class="highlight-ln">14</span>...................................................................................................
-<span class="highlight-ln">15</span>Pass：2, Batch：100, Cost：0.121569, Accuracy：0.953125
-<span class="highlight-ln">16</span>........................
-<span class="highlight-ln">17</span>Test：2, Cost：0.147000, Accuracy：0.959041
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>Pass：3, Batch：0, Cost：0.219034, Accuracy：0.914062
-<span class="highlight-ln">20</span>...................................................................................................
-<span class="highlight-ln">21</span>Pass：3, Batch：100, Cost：0.149375, Accuracy：0.929688
-<span class="highlight-ln">22</span>........................
-<span class="highlight-ln">23</span>Test：3, Cost：0.135075, Accuracy：0.967970
-<span class="highlight-ln">24</span>
-<span class="highlight-ln">25</span>Pass：4, Batch：0, Cost：0.097395, Accuracy：0.960938
-<span class="highlight-ln">26</span>...................................................................................................
-<span class="highlight-ln">27</span>Pass：4, Batch：100, Cost：0.088472, Accuracy：0.976562
-<span class="highlight-ln">28</span>........................
-<span class="highlight-ln">29</span>Test：4, Cost：0.130905, Accuracy：0.965254
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>Pass：5, Batch：0, Cost：0.115069, Accuracy：0.960938
-<span class="highlight-ln">32</span>...................................................................................................
-<span class="highlight-ln">33</span>Pass：5, Batch：100, Cost：0.132130, Accuracy：0.953125
-<span class="highlight-ln">34</span>........................
-<span class="highlight-ln">35</span>Test：5, Cost：0.123031, Accuracy：0.969086
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>Pass：6, Batch：0, Cost：0.083716, Accuracy：0.984375
-<span class="highlight-ln">38</span>...................................................................................................
-<span class="highlight-ln">39</span>Pass：6, Batch：100, Cost：0.093365, Accuracy：0.968750
-<span class="highlight-ln">40</span>........................
-<span class="highlight-ln">41</span>Test：6, Cost：0.113957, Accuracy：0.970686
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>Pass：7, Batch：0, Cost：0.062250, Accuracy：0.976562
-<span class="highlight-ln">44</span>...................................................................................................
-<span class="highlight-ln">45</span>Pass：7, Batch：100, Cost：0.095572, Accuracy：0.968750
-<span class="highlight-ln">46</span>........................
-<span class="highlight-ln">47</span>Test：7, Cost：0.097893, Accuracy：0.974182
-<span class="highlight-ln">48</span>
-<span class="highlight-ln">49</span>Pass：8, Batch：0, Cost：0.122696, Accuracy：0.960938
-<span class="highlight-ln">50</span>...................................................................................................
-<span class="highlight-ln">51</span>Pass：8, Batch：100, Cost：0.154212, Accuracy：0.976562
-<span class="highlight-ln">52</span>........................
-<span class="highlight-ln">53</span>Test：8, Cost：0.095770, Accuracy：0.969570
-<span class="highlight-ln">54</span>
-<span class="highlight-ln">55</span>Pass：9, Batch：0, Cost：0.105826, Accuracy：0.960938
-<span class="highlight-ln">56</span>...................................................................................................
-<span class="highlight-ln">57</span>Pass：9, Batch：100, Cost：0.125963, Accuracy：0.976562
-<span class="highlight-ln">58</span>........................
-<span class="highlight-ln">59</span>Test：9, Cost：0.078607, Accuracy：0.973550
+<pre><code>Pass：0, Batch：0, Cost：2.971555, Accuracy：0.101562
+...................................................................................................
+Pass：0, Batch：100, Cost：0.509201, Accuracy：0.859375
+........................
+Test：0, Cost：0.255964, Accuracy：0.928092
+
+Pass：1, Batch：0, Cost：0.383406, Accuracy：0.882812
+...................................................................................................
+Pass：1, Batch：100, Cost：0.262583, Accuracy：0.906250
+........................
+Test：1, Cost：0.210227, Accuracy：0.942152
+
+Pass：2, Batch：0, Cost：0.248821, Accuracy：0.921875
+...................................................................................................
+Pass：2, Batch：100, Cost：0.121569, Accuracy：0.953125
+........................
+Test：2, Cost：0.147000, Accuracy：0.959041
+
+Pass：3, Batch：0, Cost：0.219034, Accuracy：0.914062
+...................................................................................................
+Pass：3, Batch：100, Cost：0.149375, Accuracy：0.929688
+........................
+Test：3, Cost：0.135075, Accuracy：0.967970
+
+Pass：4, Batch：0, Cost：0.097395, Accuracy：0.960938
+...................................................................................................
+Pass：4, Batch：100, Cost：0.088472, Accuracy：0.976562
+........................
+Test：4, Cost：0.130905, Accuracy：0.965254
+
+Pass：5, Batch：0, Cost：0.115069, Accuracy：0.960938
+...................................................................................................
+Pass：5, Batch：100, Cost：0.132130, Accuracy：0.953125
+........................
+Test：5, Cost：0.123031, Accuracy：0.969086
+
+Pass：6, Batch：0, Cost：0.083716, Accuracy：0.984375
+...................................................................................................
+Pass：6, Batch：100, Cost：0.093365, Accuracy：0.968750
+........................
+Test：6, Cost：0.113957, Accuracy：0.970686
+
+Pass：7, Batch：0, Cost：0.062250, Accuracy：0.976562
+...................................................................................................
+Pass：7, Batch：100, Cost：0.095572, Accuracy：0.968750
+........................
+Test：7, Cost：0.097893, Accuracy：0.974182
+
+Pass：8, Batch：0, Cost：0.122696, Accuracy：0.960938
+...................................................................................................
+Pass：8, Batch：100, Cost：0.154212, Accuracy：0.976562
+........................
+Test：8, Cost：0.095770, Accuracy：0.969570
+
+Pass：9, Batch：0, Cost：0.105826, Accuracy：0.960938
+...................................................................................................
+Pass：9, Batch：100, Cost：0.125963, Accuracy：0.976562
+........................
+Test：9, Cost：0.078607, Accuracy：0.973550
 </code></pre>
-<h1 id="获取预测程序">获取预测程序</h1>
+<h1 id="toc_h1_13">获取预测程序</h1>
 <p>通过上面保存的预测模型，我们可用生成预测程序，并用于图片预测。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-p">[</span><span class="highlight-n">infer_program</span><span class="highlight-p">,</span> <span class="highlight-n">feeded_var_names</span><span class="highlight-p">,</span> <span class="highlight-n">target_vars</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">io</span><span class="highlight-o">.</span><span class="highlight-n">load_inference_model</span><span class="highlight-p">(</span><span class="highlight-n">dirname</span><span class="highlight-o">=</span><span class="highlight-s1">'./model'</span><span class="highlight-p">,</span> <span class="highlight-n">executor</span><span class="highlight-o">=</span><span class="highlight-n">exe</span><span class="highlight-p">)</span>
+<pre><code class="language-python">[infer_program, feeded_var_names, target_vars] = fluid.io.load_inference_model(dirname='./model', executor=exe)
 </code></pre>
-<h1 id="进行数据预处理">进行数据预处理</h1>
+<h1 id="toc_h1_14">进行数据预处理</h1>
 <p>在对图片进行预测之前，还需要对图片进行预处理。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-o">=</span><span class="highlight-n">path</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">simple_transform</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-o">=</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">resize_size</span><span class="highlight-o">=</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-n">crop_size</span><span class="highlight-o">=</span><span class="highlight-mi">28</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_train</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-p">[</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">newaxis</span><span class="highlight-p">,</span> <span class="highlight-p">]</span> <span class="highlight-o">/</span> <span class="highlight-mf">255.0</span>
-<span class="highlight-ln">6</span>    <span class="highlight-k">return</span> <span class="highlight-n">img</span>
+<pre><code class="language-python">def load_image(path):
+    img = paddle.dataset.image.load_image(file=path, is_color=False)
+    img = paddle.dataset.image.simple_transform(im=img, resize_size=32, crop_size=28, is_color=False, is_train=False)
+    img = img.astype('float32')
+    img = img[np.newaxis, ] / 255.0
+    return img
 </code></pre>
-<h1 id="获取预测图片">获取预测图片</h1>
+<h1 id="toc_h1_15">获取预测图片</h1>
 <p>然后把与处理后的图片加入到列表中，可用多张图片一起预测的。然后转换成numpy的类型。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">infer_imgs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">2</span><span class="highlight-n">infer_imgs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-s1">'./TibetanMnist（350x350）/0_10_398.jpg'</span><span class="highlight-p">))</span>
-<span class="highlight-ln">3</span><span class="highlight-n">infer_imgs</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">infer_imgs</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">infer_imgs</span><span class="highlight-o">.</span><span class="highlight-n">shape</span>
+<pre><code class="language-python">infer_imgs = []
+infer_imgs.append(load_image('./TibetanMnist（350x350）/0_10_398.jpg'))
+infer_imgs = np.array(infer_imgs)
+infer_imgs.shape
 </code></pre>
-<h1 id="执行预测">执行预测</h1>
+<h1 id="toc_h1_16">执行预测</h1>
 <p>最后执行预测，输入的数据通过<code>feed</code>参数传入，得到一个预测结果，这个结果是每个类别的概率。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">infer_program</span><span class="highlight-p">,</span> 
-<span class="highlight-ln">2</span>                 <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">feeded_var_names</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]:</span><span class="highlight-n">infer_imgs</span><span class="highlight-p">},</span> 
-<span class="highlight-ln">3</span>                 <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-n">target_vars</span><span class="highlight-p">)</span>
+<pre><code class="language-python">result = exe.run(program=infer_program, 
+                 feed={feeded_var_names[0]:infer_imgs}, 
+                 fetch_list=target_vars)
 </code></pre>
-<h1 id="解析结果-获取概率最大的label">解析结果，获取概率最大的label</h1>
+<h1 id="toc_h1_17">解析结果，获取概率最大的label</h1>
 <p>我们对输出的结果转换一下，把概率最大的label输出，同时输出当前预测的图片。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">)</span>
+<pre><code class="language-python">lab = np.argsort(result)
 </code></pre>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-s1">'./TibetanMnist（350x350）/0_10_398.jpg'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">imshow</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">show</span><span class="highlight-p">()</span>
-<span class="highlight-ln">4</span>
-<span class="highlight-ln">5</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'预测结果为：</span><span class="highlight-si">%d</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">])</span>
+<pre><code class="language-python">im = Image.open('./TibetanMnist（350x350）/0_10_398.jpg')
+plt.imshow(im)
+plt.show()
+
+print('预测结果为：%d' % lab[0][0][-1])
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/30/GegpdA.png" alt="在这里插入图片描述"></p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_18">参考资料</h1>
 <ol>
 <li><a href="https://www.kesci.com/home/dataset/5bfe734a954d6e0010683839" target="_blank">https://www.kesci.com/home/dataset/5bfe734a954d6e0010683839</a></li>
 <li><a href="https://blog.csdn.net/qq_33200967/article/details/83506694" target="_blank">https://blog.csdn.net/qq_33200967/article/details/83506694</a></li>
@@ -533,7 +533,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -542,7 +542,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -550,11 +550,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466405902",
@@ -572,4 +572,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 51ms, 2020/04/07 11:38:46 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 21ms, 2020/04/07 14:57:08 -->

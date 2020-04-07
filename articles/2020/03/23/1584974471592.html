@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》三——线性回归 - 夜雨飘零</title><meta name="description" content="前言 在第二章，我们已经学习了如何使用PaddlePaddle来进行加法计算，从这个小小的例子中，我们掌握了PaddlePaddle的使用方式。在本章中，我们将介绍使用PaddlePaddle完成一个深度学习非常常见的入门例子——线性回归，我们将分别使用自定义数据集和使用PaddlePaddle提供的数据集接口来训练一个线性回归模型。 使用自定义数据 在这一部分，我们将介绍整个线性回归从定义网络到使用自定义的数据进行训练，最后验证我们网络的预测能力。 首先导入PaddlePaddle库和一些工具类库。 import paddle.fluid as fluid import paddle import numpy as np 定义一个简单的线性网络，这个网络非常简单，结构是：输出层--&gt;&gt;隐层--&gt;&gt;输出层，这个网络一共有2层，因为输入层不算网络的层数。更具体的就是一个大小为100，激活函数是ReLU的全连接层和一个输出大小为1的全连接层，就这样构建了一个非常简单的网络。这里使用输入fluid.layers.data()定义的输入层类似fluid.layers....."/><meta property="og:description" content="前言 在第二章，我们已经学习了如何使用PaddlePaddle来进行加法计算，从这个小小的例子中，我们掌握了PaddlePaddle的使用方式。在本章中，我们将介绍使用PaddlePaddle完成一个深度学习非常常见的入门例子——线性回归，我们将分别使用自定义数据集和使用PaddlePaddle提供的数据集接口来训练一个线性回归模型。 使用自定义数据 在这一部分，我们将介绍整个线性回归从定义网络到使用自定义的数据进行训练，最后验证我们网络的预测能力。 首先导入PaddlePaddle库和一些工具类库。 import paddle.fluid as fluid import paddle import numpy as np 定义一个简单的线性网络，这个网络非常简单，结构是：输出层--&gt;&gt;隐层--&gt;&gt;输出层，这个网络一共有2层，因为输入层不算网络的层数。更具体的就是一个大小为100，激活函数是ReLU的全连接层和一个输出大小为1的全连接层，就这样构建了一个非常简单的网络。这里使用输入fluid.layers.data()定义的输入层类似fluid.layers....."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》三——线性回归 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974471592.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》三——线性回归 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974471592.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》三——线性回归 - 夜雨飘零</title><meta name="description" content="前言 在第二章，我们已经学习了如何使用PaddlePaddle来进行加法计算，从这个小小的例子中，我们掌握了PaddlePaddle的使用方式。在本章中，我们将介绍使用PaddlePaddle完成一个深度学习非常常见的入门例子——线性回归，我们将分别使用自定义数据集和使用PaddlePaddle提供的数据集接口来训练一个线性回归模型。 使用自定义数据 在这一部分，我们将介绍整个线性回归从定义网络到使用自定义的数据进行训练，最后验证我们网络的预测能力。 首先导入PaddlePaddle库和一些工具类库。 import paddle.fluid as fluid import paddle import numpy as np 定义一个简单的线性网络，这个网络非常简单，结构是：输出层--&gt;&gt;隐层--&gt;&gt;输出层，这个网络一共有2层，因为输入层不算网络的层数。更具体的就是一个大小为100，激活函数是ReLU的全连接层和一个输出大小为1的全连接层，就这样构建了一个非常简单的网络。这里使用输入fluid.layers.data()定义的输入层类似fluid.layers....."/><meta property="og:description" content="前言 在第二章，我们已经学习了如何使用PaddlePaddle来进行加法计算，从这个小小的例子中，我们掌握了PaddlePaddle的使用方式。在本章中，我们将介绍使用PaddlePaddle完成一个深度学习非常常见的入门例子——线性回归，我们将分别使用自定义数据集和使用PaddlePaddle提供的数据集接口来训练一个线性回归模型。 使用自定义数据 在这一部分，我们将介绍整个线性回归从定义网络到使用自定义的数据进行训练，最后验证我们网络的预测能力。 首先导入PaddlePaddle库和一些工具类库。 import paddle.fluid as fluid import paddle import numpy as np 定义一个简单的线性网络，这个网络非常简单，结构是：输出层--&gt;&gt;隐层--&gt;&gt;输出层，这个网络一共有2层，因为输入层不算网络的层数。更具体的就是一个大小为100，激活函数是ReLU的全连接层和一个输出大小为1的全连接层，就这样构建了一个非常简单的网络。这里使用输入fluid.layers.data()定义的输入层类似fluid.layers....."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》三——线性回归 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974471592.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》三——线性回归 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974471592.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《PaddlePaddle从入门到炼丹》二——计算1+1" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974387872.html">
             <link rel="next" title="《PaddlePaddle从入门到炼丹》四——卷积神经网络" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974540988.html">
     <!-- 百度统计 -->
@@ -78,16 +78,16 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#使用自定义数据">使用自定义数据</a>
+            <a href="#toc_h1_1">使用自定义数据</a>
         </li>
         <li class="toc__h1">
-            <a href="#使用房价数据集训练">使用房价数据集训练</a>
+            <a href="#toc_h1_2">使用房价数据集训练</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_3">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -135,146 +135,146 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20180825.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>在第二章，我们已经学习了如何使用PaddlePaddle来进行加法计算，从这个小小的例子中，我们掌握了PaddlePaddle的使用方式。在本章中，我们将介绍使用PaddlePaddle完成一个深度学习非常常见的入门例子——线性回归，我们将分别使用自定义数据集和使用PaddlePaddle提供的数据集接口来训练一个线性回归模型。</p>
-<h1 id="使用自定义数据">使用自定义数据</h1>
+<h1 id="toc_h1_1">使用自定义数据</h1>
 <p>在这一部分，我们将介绍整个线性回归从定义网络到使用自定义的数据进行训练，最后验证我们网络的预测能力。</p>
 <p>首先导入PaddlePaddle库和一些工具类库。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<pre><code class="language-python">import paddle.fluid as fluid
+import paddle
+import numpy as np
 </code></pre>
 <p>定义一个简单的线性网络，这个网络非常简单，结构是：<code>输出层--&gt;&gt;隐层--&gt;&gt;输出层</code>，这个网络一共有2层，因为输入层不算网络的层数。更具体的就是一个大小为100，激活函数是ReLU的全连接层和一个输出大小为1的全连接层，就这样构建了一个非常简单的网络。这里使用输入<code>fluid.layers.data()</code>定义的输入层类似<code>fluid.layers.create_tensor()</code>，也是有<code>name</code>属性，之后也是根据这个属性来填充数据的。这里定义输入层的形状为13，这是因为波士顿房价数据集的每条数据有13个属性，我们之后自定义的数据集也是为了符合这一个维度。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义一个简单的线性网络</span>
-<span class="highlight-ln">2</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'x'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">13</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">hidden</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">100</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">net</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">hidden</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义一个简单的线性网络
+x = fluid.layers.data(name='x', shape=[13], dtype='float32')
+hidden = fluid.layers.fc(input=x, size=100, act='relu')
+net = fluid.layers.fc(input=hidden, size=1, act=None)
 </code></pre>
 <p>接着定义神经网络的损失函数，这里同样使用了<code>fluid.layers.data()</code>这个接口，这个可以理解为数据对应的结果，上面<code>name</code>为<code>x</code>的<code>fluid.layers.data()</code>为属性数据。这里使用了平方差损失函数(square_error_cost)，PaddlePaddle提供了很多的损失函数的接口，比如交叉熵损失函数(cross_entropy)。因为本项目是一个线性回归任务，所以我们使用的是平方差损失函数。因为<code>fluid.layers.square_error_cost()</code>求的是一个Batch的损失值，所以我们还要对他求一个平均值。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义损失函数</span>
-<span class="highlight-ln">2</span><span class="highlight-n">y</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'y'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">square_error_cost</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">net</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">avg_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">mean</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义损失函数
+y = fluid.layers.data(name='y', shape=[1], dtype='float32')
+cost = fluid.layers.square_error_cost(input=net, label=y)
+avg_cost = fluid.layers.mean(cost)
 </code></pre>
 <p>定义损失函数之后，可以在主程序（fluid.default_main_program）中克隆一个程序作为预测程序，用于训练完成之后使用这个预测程序进行预测数据。这个定义的顺序不能错，因为我们定义的网络结构，损失函数等等都是更加顺序记录到PaddlePaddle的主程序中的。主程序定义了神经网络模型，前向反向计算，以及优化算法对网络中可学习参数的更新，是我们整个程序的核心，这个是PaddlePaddle已经帮我们实现的了，我们只需注重网络的构建和训练即可。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 复制一个主程序，方便之后使用</span>
-<span class="highlight-ln">2</span><span class="highlight-n">test_program</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">clone</span><span class="highlight-p">(</span><span class="highlight-n">for_test</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 复制一个主程序，方便之后使用
+test_program = fluid.default_main_program().clone(for_test=True)
 </code></pre>
 <p>接着是定义训练使用的优化方法，这里使用的是随机梯度下降优化方法。PaddlePaddle提供了大量的优化函数接口，除了本项目使用的随机梯度下降法（SGD），还有Momentum、Adagrad、Adagrad等等，读者可以更加自己项目的需求使用不同的优化方法。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义优化方法</span>
-<span class="highlight-ln">2</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">SGDOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.01</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">opts</span> <span class="highlight-o">=</span> <span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">avg_cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义优化方法
+optimizer = fluid.optimizer.SGDOptimizer(learning_rate=0.01)
+opts = optimizer.minimize(avg_cost)
 </code></pre>
 <p>然后是创建一个解析器，我们同样是使用CPU来进行训练。创建解析器之后，使用解析器来执行<code>fluid.default_startup_program()</code>初始化参数。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 创建一个使用CPU的执行器</span>
-<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 进行参数初始化</span>
-<span class="highlight-ln">5</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+<pre><code class="language-python"># 创建一个使用CPU的执行器
+place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+# 进行参数初始化
+exe.run(fluid.default_startup_program())
 </code></pre>
 <p>我们使用numpy定义一组数据，这组数据的每一条数据有13个，这是因为我们在定义网络的输入层时，<code>shape</code>是13，但是每条数据的后面12个数据是没意义的，因为笔者全部都是使用0来填充，纯粹是为了符合数据的格式而已。这组数据是符合<code>y = 2 * x + 1</code>，但是程序是不知道的，我们之后使用这组数据进行训练，看看强大的神经网络是否能够训练出一个拟合这个函数的模型。最后定义了一个预测数据，是在训练完成，使用这个数据作为<code>x</code>输入，看是否能够预测于正确值相近结果。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义训练和测试数据</span>
-<span class="highlight-ln">2</span><span class="highlight-n">x_data</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([[</span><span class="highlight-mf">1.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">],</span> 
-<span class="highlight-ln">3</span>                   <span class="highlight-p">[</span><span class="highlight-mf">2.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">],</span> 
-<span class="highlight-ln">4</span>                   <span class="highlight-p">[</span><span class="highlight-mf">3.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">],</span> 
-<span class="highlight-ln">5</span>                   <span class="highlight-p">[</span><span class="highlight-mf">4.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">],</span> 
-<span class="highlight-ln">6</span>                   <span class="highlight-p">[</span><span class="highlight-mf">5.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">]])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">7</span><span class="highlight-n">y_data</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([[</span><span class="highlight-mf">3.0</span><span class="highlight-p">],</span> <span class="highlight-p">[</span><span class="highlight-mf">5.0</span><span class="highlight-p">],</span> <span class="highlight-p">[</span><span class="highlight-mf">7.0</span><span class="highlight-p">],</span> <span class="highlight-p">[</span><span class="highlight-mf">9.0</span><span class="highlight-p">],</span> <span class="highlight-p">[</span><span class="highlight-mf">11.0</span><span class="highlight-p">]])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">8</span><span class="highlight-n">test_data</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([[</span><span class="highlight-mf">6.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">,</span> <span class="highlight-mf">0.0</span><span class="highlight-p">]])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义训练和测试数据
+x_data = np.array([[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                   [2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                   [3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                   [4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+                   [5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]).astype('float32')
+y_data = np.array([[3.0], [5.0], [7.0], [9.0], [11.0]]).astype('float32')
+test_data = np.array([[6.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]).astype('float32')
 </code></pre>
 <p>定义数据之后，我们就可以使用数据进行训练了。我们这次训练了10个pass，读者可根据情况设置更多的训练轮数，通常来说训练的次数越多，模型收敛的越好。同样我们使用的时<code>program</code>是<code>fluid.default_main_program()</code>，<code>feed</code>中是在训练时把数据传入<code>fluid.layers.data()</code>定义的变量中，及那个键值对的<code>key</code>对用的就是<code>fluid.layers.data()</code>中的<code>name</code>的值。我们让训练过程中输出avg_cost的值。</p>
 <p>在训练过程中，我们可以看到输出的损失值在不断减小，证明我们的模型在不断收敛。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 开始训练100个pass</span>
-<span class="highlight-ln">2</span><span class="highlight-k">for</span> <span class="highlight-n">pass_id</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">10</span><span class="highlight-p">):</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">train_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">4</span>                         <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-s1">'x'</span><span class="highlight-p">:</span> <span class="highlight-n">x_data</span><span class="highlight-p">,</span> <span class="highlight-s1">'y'</span><span class="highlight-p">:</span> <span class="highlight-n">y_data</span><span class="highlight-p">},</span>
-<span class="highlight-ln">5</span>                         <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">])</span>
-<span class="highlight-ln">6</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"Pass:</span><span class="highlight-si">%d</span><span class="highlight-s2">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">train_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]))</span>
+<pre><code class="language-python"># 开始训练100个pass
+for pass_id in range(10):
+    train_cost = exe.run(program=fluid.default_main_program(),
+                         feed={'x': x_data, 'y': y_data},
+                         fetch_list=[avg_cost])
+    print("Pass:%d, Cost:%0.5f" % (pass_id, train_cost[0]))
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>Pass:0, Cost:65.61024
-<span class="highlight-ln"> 2</span>Pass:1, Cost:26.62285
-<span class="highlight-ln"> 3</span>Pass:2, Cost:7.78299
-<span class="highlight-ln"> 4</span>Pass:3, Cost:0.59838
-<span class="highlight-ln"> 5</span>Pass:4, Cost:0.02781
-<span class="highlight-ln"> 6</span>Pass:5, Cost:0.02600
-<span class="highlight-ln"> 7</span>Pass:6, Cost:0.02548
-<span class="highlight-ln"> 8</span>Pass:7, Cost:0.02496
-<span class="highlight-ln"> 9</span>Pass:8, Cost:0.02446
-<span class="highlight-ln">10</span>Pass:9, Cost:0.02396
+<pre><code>Pass:0, Cost:65.61024
+Pass:1, Cost:26.62285
+Pass:2, Cost:7.78299
+Pass:3, Cost:0.59838
+Pass:4, Cost:0.02781
+Pass:5, Cost:0.02600
+Pass:6, Cost:0.02548
+Pass:7, Cost:0.02496
+Pass:8, Cost:0.02446
+Pass:9, Cost:0.02396
 </code></pre>
 <p>训练完成之后，我们使用上面克隆主程序得到的预测程序了预测我们刚才定义的预测数据。预测数据同样作为<code>x</code>在<code>feed</code>输入，在预测时，理论上是不用输入<code>y</code>的，但是要符合输入格式，我们模拟一个<code>y</code>的数据值，这个值并不会影响我们的预测结果。<code>fetch_list</code>的值，也就是我们执行预测之后要输出的结果，这是网络的最后一层，而不是平均损失函数（avg_cost），因为我们是想要预测程序输出预测结果。根据我们上面定义数据时，满足规律<code>y = 2 * x + 1</code>，所以当x为6时，y应该时13，最后输出的结果也是应该接近13的。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 开始预测</span>
-<span class="highlight-ln">2</span><span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">test_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">3</span>                 <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-s1">'x'</span><span class="highlight-p">:</span> <span class="highlight-n">test_data</span><span class="highlight-p">,</span> <span class="highlight-s1">'y'</span><span class="highlight-p">:</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([[</span><span class="highlight-mf">0.0</span><span class="highlight-p">]])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)},</span>
-<span class="highlight-ln">4</span>                 <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">net</span><span class="highlight-p">])</span>
-<span class="highlight-ln">5</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"当x为6.0时，y为：</span><span class="highlight-si">%0.5f</span><span class="highlight-s2">:"</span> <span class="highlight-o">%</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 开始预测
+result = exe.run(program=test_program,
+                 feed={'x': test_data, 'y': np.array([[0.0]]).astype('float32')},
+                 fetch_list=[net])
+print("当x为6.0时，y为：%0.5f:" % result[0][0][0])
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>当x为6.0时，y为：13.23651:
+<pre><code>当x为6.0时，y为：13.23651:
 </code></pre>
-<h1 id="使用房价数据集训练">使用房价数据集训练</h1>
+<h1 id="toc_h1_2">使用房价数据集训练</h1>
 <p>在这一部分，我们还是使用上面定义的网络结构，使用波士顿房价数据集进行训练。</p>
 <p>在此之前，我们已经完整训练深度学习模型，并使用这个模型来进行预测。而上面使用的是我们自己定义的数据，而且这个数据非常小。PaddlePaddle提供了大量的数据集API，我们可使用这些API来使用一些比较常用的数据集，比如在深度学习中，线性回归最常用的是波士顿房价数据集（UCI Housing Data Set），<code>uci_housing</code>就是PaddlePaddle提供的一个波士顿房价数据集。</p>
 <p>而且这次我们的数据集不是一下子全部都丢入到训练中，而已把它们分成一个个Batch的小数据集，而每个Batch的大小我们都可以通过<code>batch_size</code>进行设置，这个大小一般是2的N次方。这里定义了训练和测试两个数据集。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.dataset.uci_housing</span> <span class="highlight-kn">as</span> <span class="highlight-nn">uci_housing</span>
-<span class="highlight-ln">2</span><span class="highlight-c1"># 使用房价数据进行训练和测试</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 从paddle接口中获取房价数据集</span>
-<span class="highlight-ln">4</span><span class="highlight-n">train_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">uci_housing</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-p">(),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span><span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">uci_housing</span><span class="highlight-o">.</span><span class="highlight-n">test</span><span class="highlight-p">(),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
+<pre><code class="language-python">import paddle.dataset.uci_housing as uci_housing
+# 使用房价数据进行训练和测试
+# 从paddle接口中获取房价数据集
+train_reader = paddle.batch(reader=uci_housing.train(), batch_size=128)
+test_reader = paddle.batch(reader=uci_housing.test(), batch_size=128)
 </code></pre>
 <p>接着定义数据的维度，在使用自定义数据的时候，我们是使用键值对的方式添加数据的，但是我们调用API来获取数据集时，已经是将属性数据和结果放在一个Batch中，如果再对数据拆分在训练进行填充，那就更麻烦了，所以PaddlePaddle提供了一个<code>fluid.DataFeeder()</code>这个接口，这里可以定义输入数据每个维度是属于哪一个<code>fluid.layers.data()</code>.</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义输入数据维度</span>
-<span class="highlight-ln">2</span><span class="highlight-n">feeder</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">DataFeeder</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-o">=</span><span class="highlight-n">place</span><span class="highlight-p">,</span> <span class="highlight-n">feed_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 定义输入数据维度
+feeder = fluid.DataFeeder(place=place, feed_list=[x, y])
 </code></pre>
 <p>接下来我们是使用波士顿房价数据集来进行训练，在训练时，我们是通过一个循环迭代器把reader中的数据按照一个个Batch提取出来加入到训练中。加入训练时使用上面定义的数据维度feeder.feed()添加的。</p>
 <p>当每一个Pass训练完成之后，都执行一次测试，测试与预测的作用不同，测试是为了使用于测试数据集预测并与真实结果对比，评估当前模型的好坏。因为测试集不属于训练集，所以测试集的预测结果的好坏能狗体现模型的泛化能力。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 开始训练和测试</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">for</span> <span class="highlight-n">pass_id</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">10</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 开始训练并输出最后一个batch的损失值</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">train_cost</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">train_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-n">train_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln"> 7</span>                             <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 8</span>                             <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"Pass:</span><span class="highlight-si">%d</span><span class="highlight-s2">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">train_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">]))</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-c1"># 开始测试并输出最后一个batch的损失值</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">test_cost</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">test_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">test_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">15</span>                            <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
-<span class="highlight-ln">16</span>                            <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">])</span>
-<span class="highlight-ln">17</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Test:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">test_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">]))</span>
+<pre><code class="language-python"># 开始训练和测试
+for pass_id in range(10):
+    # 开始训练并输出最后一个batch的损失值
+    train_cost = 0
+    for batch_id, data in enumerate(train_reader()):
+        train_cost = exe.run(program=fluid.default_main_program(),
+                             feed=feeder.feed(data),
+                             fetch_list=[avg_cost])
+    print("Pass:%d, Cost:%0.5f" % (pass_id, train_cost[0][0]))
+
+    # 开始测试并输出最后一个batch的损失值
+    test_cost = 0
+    for batch_id, data in enumerate(test_reader()):
+        test_cost = exe.run(program=fluid.default_main_program(),
+                            feed=feeder.feed(data),
+                            fetch_list=[avg_cost])
+    print('Test:%d, Cost:%0.5f' % (pass_id, test_cost[0][0]))
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>Pass:0, Cost:35.61119
-<span class="highlight-ln"> 2</span>Test:0, Cost:92.18690
-<span class="highlight-ln"> 3</span>Pass:1, Cost:121.56089
-<span class="highlight-ln"> 4</span>Test:1, Cost:51.94175
-<span class="highlight-ln"> 5</span>Pass:2, Cost:44.66270
-<span class="highlight-ln"> 6</span>Test:2, Cost:34.46148
-<span class="highlight-ln"> 7</span>Pass:3, Cost:33.25787
-<span class="highlight-ln"> 8</span>Test:3, Cost:30.89449
-<span class="highlight-ln"> 9</span>Pass:4, Cost:29.12044
-<span class="highlight-ln">10</span>Test:4, Cost:28.29573
-<span class="highlight-ln">11</span>Pass:5, Cost:26.75469
-<span class="highlight-ln">12</span>Test:5, Cost:26.66773
-<span class="highlight-ln">13</span>Pass:6, Cost:24.98260
-<span class="highlight-ln">14</span>Test:6, Cost:25.11611
-<span class="highlight-ln">15</span>Pass:7, Cost:23.55230
-<span class="highlight-ln">16</span>Test:7, Cost:23.84240
-<span class="highlight-ln">17</span>Pass:8, Cost:22.41704
-<span class="highlight-ln">18</span>Test:8, Cost:22.65791
-<span class="highlight-ln">19</span>Pass:9, Cost:21.51291
-<span class="highlight-ln">20</span>Test:9, Cost:21.71775
+<pre><code>Pass:0, Cost:35.61119
+Test:0, Cost:92.18690
+Pass:1, Cost:121.56089
+Test:1, Cost:51.94175
+Pass:2, Cost:44.66270
+Test:2, Cost:34.46148
+Pass:3, Cost:33.25787
+Test:3, Cost:30.89449
+Pass:4, Cost:29.12044
+Test:4, Cost:28.29573
+Pass:5, Cost:26.75469
+Test:5, Cost:26.66773
+Pass:6, Cost:24.98260
+Test:6, Cost:25.11611
+Pass:7, Cost:23.55230
+Test:7, Cost:23.84240
+Pass:8, Cost:22.41704
+Test:8, Cost:22.65791
+Pass:9, Cost:21.51291
+Test:9, Cost:21.71775
 </code></pre>
 <p>到此为止，本章知识已经学完。本章我们学会了如何使用PaddlePaddle完成了深度学习入门的常见例子，相信读者经过学习本章之后，对深度学习和PaddlePaddle的使用有了非常深刻的了解，也恭喜读者正式加入到人工智能行列中，希望读者能够坚定信心，在自己喜欢的领域一直走下去。在下一章，我们将会介绍使用卷积神经网络进行训练MNIST图像数据集，相信下一章你更加喜欢深度学习的，准备学习下一章了吗。</p>
 <p>同步到百度AI Studio平台：<a href="http://aistudio.baidu.com/projectdetail/29342" target="_blank">http://aistudio.baidu.com/projectdetail/29342</a><br>
 同步到科赛网K-Lab平台：<a href="https://www.kesci.com/home/project/5bf8c7a6954d6e001066d72c" target="_blank">https://www.kesci.com/home/project/5bf8c7a6954d6e001066d72c</a><br>
 项目代码GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note3" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note3</a></p>
 <p><strong>注意：</strong> 最新代码以GitHub上的为准</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_3">参考资料</h1>
 <ol>
 <li><a href="http://www.paddlepaddle.org/documentation/docs/zh/1.0/beginners_guide/quick_start/fit_a_line/README.cn.html" target="_blank">http://www.paddlepaddle.org/documentation/docs/zh/1.0/beginners_guide/quick_start/fit_a_line/README.cn.html</a></li>
 </ol>
@@ -353,7 +353,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -362,7 +362,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -370,11 +370,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466396531",
@@ -392,4 +392,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 50ms, 2020/04/07 11:38:41 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 22ms, 2020/04/07 14:57:07 -->

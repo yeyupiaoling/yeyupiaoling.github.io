@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>初步了解TensorFlow - 夜雨飘零</title><meta name="description" content="前言 在本章中，我们一起来学习下TensorFlow。我们将会学习到TensorFlow的一些基本库。通过计算一个线性函数来熟悉这些库。最后还学习使用TensorFlow搭建一个神经网络来识别手势。本章用到的一些库在这里下载。 TensorFlow的基本库 首先是导入所需的库，其中最重要的库就是tensorflow的，我们给它一个别名tf。 import math import numpy as np import h5py import tensorflow as tf from tensorflow.python.framework import ops from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict 下面我们使用TensorFlow计算一个损失函数，损失函数公式如下： loss = \mathcal{L}(\hat{y}, y) = (\hat y^{(i)} - y^{(i)})^2 \tag{1} 首先定义两个变量，对应是公式的y帽和y，如下，...."/><meta property="og:description" content="前言 在本章中，我们一起来学习下TensorFlow。我们将会学习到TensorFlow的一些基本库。通过计算一个线性函数来熟悉这些库。最后还学习使用TensorFlow搭建一个神经网络来识别手势。本章用到的一些库在这里下载。 TensorFlow的基本库 首先是导入所需的库，其中最重要的库就是tensorflow的，我们给它一个别名tf。 import math import numpy as np import h5py import tensorflow as tf from tensorflow.python.framework import ops from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict 下面我们使用TensorFlow计算一个损失函数，损失函数公式如下： loss = \mathcal{L}(\hat{y}, y) = (\hat y^{(i)} - y^{(i)})^2 \tag{1} 首先定义两个变量，对应是公式的y帽和y，如下，...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="初步了解TensorFlow - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972380996.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="初步了解TensorFlow - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972380996.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>初步了解TensorFlow - 夜雨飘零</title><meta name="description" content="前言 在本章中，我们一起来学习下TensorFlow。我们将会学习到TensorFlow的一些基本库。通过计算一个线性函数来熟悉这些库。最后还学习使用TensorFlow搭建一个神经网络来识别手势。本章用到的一些库在这里下载。 TensorFlow的基本库 首先是导入所需的库，其中最重要的库就是tensorflow的，我们给它一个别名tf。 import math import numpy as np import h5py import tensorflow as tf from tensorflow.python.framework import ops from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict 下面我们使用TensorFlow计算一个损失函数，损失函数公式如下： $$ loss = \mathcal{L}(\hat{y}, y) = (\hat y^{(i)} - y^{(i)})^2 \tag{1} $$ 首先定义两个变量，对应是公式的y帽和y，如下，...."/><meta property="og:description" content="前言 在本章中，我们一起来学习下TensorFlow。我们将会学习到TensorFlow的一些基本库。通过计算一个线性函数来熟悉这些库。最后还学习使用TensorFlow搭建一个神经网络来识别手势。本章用到的一些库在这里下载。 TensorFlow的基本库 首先是导入所需的库，其中最重要的库就是tensorflow的，我们给它一个别名tf。 import math import numpy as np import h5py import tensorflow as tf from tensorflow.python.framework import ops from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict 下面我们使用TensorFlow计算一个损失函数，损失函数公式如下： $$ loss = \mathcal{L}(\hat{y}, y) = (\hat y^{(i)} - y^{(i)})^2 \tag{1} $$ 首先定义两个变量，对应是公式的y帽和y，如下，...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="初步了解TensorFlow - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972380996.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="初步了解TensorFlow - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972380996.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="深度学习神经网络中的梯度检查" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html">
             <link rel="next" title="CentOS搭建云服务平台" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972545975.html">
     <!-- 百度统计 -->
@@ -78,37 +78,37 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#TensorFlow的基本库">TensorFlow的基本库</a>
+            <a href="#toc_h1_1">TensorFlow的基本库</a>
         </li>
         <li class="toc__h1">
-            <a href="#常用计算">常用计算</a>
+            <a href="#toc_h1_2">常用计算</a>
         </li>
         <li class="toc__h2">
-            <a href="#线性函数">线性函数</a>
+            <a href="#toc_h2_3">线性函数</a>
         </li>
         <li class="toc__h2">
-            <a href="#计算sigmoid函数">计算sigmoid函数</a>
+            <a href="#toc_h2_4">计算sigmoid函数</a>
         </li>
         <li class="toc__h2">
-            <a href="#计算损失函数">计算损失函数</a>
+            <a href="#toc_h2_5">计算损失函数</a>
         </li>
         <li class="toc__h2">
-            <a href="#独热编码">独热编码</a>
+            <a href="#toc_h2_6">独热编码</a>
         </li>
         <li class="toc__h2">
-            <a href="#初始化矩阵">初始化矩阵</a>
+            <a href="#toc_h2_7">初始化矩阵</a>
         </li>
         <li class="toc__h1">
-            <a href="#TensorFlow创建神经网络">TensorFlow创建神经网络</a>
+            <a href="#toc_h1_8">TensorFlow创建神经网络</a>
         </li>
         <li class="toc__h2">
-            <a href="#创建模型">创建模型</a>
+            <a href="#toc_h2_9">创建模型</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_10">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -156,366 +156,372 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20190403.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>在本章中，我们一起来学习下TensorFlow。我们将会学习到TensorFlow的一些基本库。通过计算一个线性函数来熟悉这些库。最后还学习使用TensorFlow搭建一个神经网络来识别手势。本章用到的一些库在<a href="https://download.csdn.net/download/qq_33200967/10434261" target="_blank">这里下载</a>。</p>
-<h1 id="TensorFlow的基本库">TensorFlow的基本库</h1>
+<h1 id="toc_h1_1">TensorFlow的基本库</h1>
 <p>首先是导入所需的库，其中最重要的库就是tensorflow的，我们给它一个别名tf。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">math</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">h5py</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">tensorflow</span> <span class="highlight-kn">as</span> <span class="highlight-nn">tf</span>
-<span class="highlight-ln">5</span><span class="highlight-kn">from</span> <span class="highlight-nn">tensorflow.python.framework</span> <span class="highlight-kn">import</span> <span class="highlight-n">ops</span>
-<span class="highlight-ln">6</span><span class="highlight-kn">from</span> <span class="highlight-nn">tf_utils</span> <span class="highlight-kn">import</span> <span class="highlight-n">load_dataset</span><span class="highlight-p">,</span> <span class="highlight-n">random_mini_batches</span><span class="highlight-p">,</span> <span class="highlight-n">convert_to_one_hot</span><span class="highlight-p">,</span> <span class="highlight-n">predict</span>
+<pre><code class="language-python">import math
+import numpy as np
+import h5py
+import tensorflow as tf
+from tensorflow.python.framework import ops
+from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict
 </code></pre>
-<p>下面我们使用TensorFlow计算一个损失函数，损失函数公式如下：</p>
-<div class="vditor-math">loss = \mathcal{L}(\hat{y}, y) = (\hat y^{(i)} - y^{(i)})^2 \tag{1}</div>
+<p>下面我们使用TensorFlow计算一个损失函数，损失函数公式如下：<br>
+$$<br>
+loss = \mathcal{L}(\hat{y}, y) = (\hat y^{(i)} - y^{(i)})^2 \tag{1}<br>
+$$</p>
 <p>首先定义两个变量，对应是公式的y帽和y，如下，同时赋值y_hat是36，y是39：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">y_hat</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">constant</span><span class="highlight-p">(</span><span class="highlight-mi">36</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'y_hat'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">y</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">constant</span><span class="highlight-p">(</span><span class="highlight-mi">39</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'y'</span><span class="highlight-p">)</span>
+<pre><code class="language-python">y_hat = tf.constant(36, name='y_hat')
+y = tf.constant(39, name='y')
 </code></pre>
 <p>然后根据上面的公式1来定义创建一个计算，其中计算次方非常方便，直接两个星号**：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">loss</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Variable</span><span class="highlight-p">((</span><span class="highlight-n">y</span> <span class="highlight-o">-</span> <span class="highlight-n">y_hat</span><span class="highlight-p">)</span><span class="highlight-o">**</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'loss'</span><span class="highlight-p">)</span>
+<pre><code class="language-python">loss = tf.Variable((y - y_hat)**2, name='loss')
 </code></pre>
 <p>在使用TensorFlow之前，还要先初始化TensorFlow。在执行计算在session中完成。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">init</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">global_variables_initializer</span><span class="highlight-p">()</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-k">with</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span> <span class="highlight-k">as</span> <span class="highlight-n">session</span><span class="highlight-p">:</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">session</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">init</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">session</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">loss</span><span class="highlight-p">))</span> 
+<pre><code class="language-python">init = tf.global_variables_initializer()
+
+with tf.Session() as session:
+    session.run(init)
+    print(session.run(loss)) 
 </code></pre>
 <p>经过上面执行，最后输出计算的结果：9</p>
 <p>我们通过上面可以看到，TensorFlow定义变量和赋值并不是像我们不同编程一样赋值的了，而是经过TensorFlow的封装，同样计算方式也是一样，如下定义常量和计算也是一样：</p>
-<pre><code class="language-pythono highlight-chroma"><span class="highlight-ln">1</span>a = tf.constant(2)
-<span class="highlight-ln">2</span>b = tf.constant(10)
-<span class="highlight-ln">3</span>c = tf.multiply(a,b)
-<span class="highlight-ln">4</span>print(c)
+<pre><code class="language-pythono">a = tf.constant(2)
+b = tf.constant(10)
+c = tf.multiply(a,b)
+print(c)
 </code></pre>
 <p>从上面计算loss可以知道，计算要在session中执行。所以我们这里不会输出结果20，而是输出c的张量：<code>Tensor("Mul:0", shape=(), dtype=int32)</code></p>
 <p>要计算它们的值，还有在session中run才行，如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">sess</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span>
-<span class="highlight-ln">2</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">c</span><span class="highlight-p">))</span>
+<pre><code class="language-python">sess = tf.Session()
+print(sess.run(c))
 </code></pre>
 <p>最后会输出正确的结果：20。</p>
 <p>上面都是一开始就指定变量的值的，但是有些情况下，我们是一开始是不用指定值的，那么我们怎么处理了，这样就用到了占位符，如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">placeholder</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">int64</span><span class="highlight-p">,</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s1">'x'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-mi">2</span> <span class="highlight-o">*</span> <span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">feed_dict</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-n">x</span><span class="highlight-p">:</span> <span class="highlight-mi">3</span><span class="highlight-p">}))</span>
-<span class="highlight-ln">3</span><span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">close</span><span class="highlight-p">()</span>
+<pre><code class="language-python">x = tf.placeholder(tf.int64, name = 'x')
+print(sess.run(2 * x, feed_dict = {x: 3}))
+sess.close()
 </code></pre>
 <p>这里一开始我们没有指定x的值，而是在run的时候，使用一个<code>feed_dict</code>字典的方式给x赋值。</p>
-<h1 id="常用计算">常用计算</h1>
-<h2 id="线性函数">线性函数</h2>
-<p>下面来介绍计算线性函数的方法，下面是线性函数的公式：</p>
-<div class="vditor-math">Y = WX + b\tag{2}</div>
+<h1 id="toc_h1_2">常用计算</h1>
+<h2 id="toc_h2_3">线性函数</h2>
+<p>下面来介绍计算线性函数的方法，下面是线性函数的公式：<br>
+$$<br>
+Y = WX + b\tag{2}<br>
+$$</p>
 <p>使用的的函数如下：</p>
 <ul>
 <li><code>tf.matmul()</code>做一个矩阵乘法</li>
-<li><code> tf.add()</code>做一个加法</li>
+<li><code>tf.add()</code>做一个加法</li>
 <li><code>np.random.randn()</code>随机初始化</li>
 </ul>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">linear_function</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 2</span>	<span class="highlight-c1"># 随机生成一个对应的张量</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">X</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">constant</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-mi">3</span><span class="highlight-p">,</span><span class="highlight-mi">1</span><span class="highlight-p">),</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"X"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">W</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">constant</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-mi">4</span><span class="highlight-p">,</span><span class="highlight-mi">3</span><span class="highlight-p">),</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"W"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">b</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">constant</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-mi">4</span><span class="highlight-p">,</span><span class="highlight-mi">1</span><span class="highlight-p">),</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"b"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 生成线性函数</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">Y</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">matmul</span><span class="highlight-p">(</span><span class="highlight-n">W</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">),</span> <span class="highlight-n">b</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 开始计算线性函数</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">sess</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>    <span class="highlight-c1"># 如果没使用with的话，还要关闭session</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">close</span><span class="highlight-p">()</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">return</span> <span class="highlight-n">result</span>
+<pre><code class="language-python">def linear_function():
+	# 随机生成一个对应的张量
+    X = tf.constant(np.random.randn(3,1), name = "X")
+    W = tf.constant(np.random.randn(4,3), name = "W")
+    b = tf.constant(np.random.randn(4,1), name = "b")
+    # 生成线性函数
+    Y = tf.add(tf.matmul(W, X), b)
+    # 开始计算线性函数
+    sess = tf.Session()
+    result = sess.run(Y)
+    # 如果没使用with的话，还要关闭session
+    sess.close()
+    return result
 </code></pre>
-<h2 id="计算sigmoid函数">计算sigmoid函数</h2>
+<h2 id="toc_h2_4">计算sigmoid函数</h2>
 <p>这是一个计算sigmoid函数，使用TensorFlow自带函数，无需自己定义：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">sigmoid</span><span class="highlight-p">(</span><span class="highlight-n">z</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 给x创建一个占位符，并指定类型</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">placeholder</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">,</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"x"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 使用TensorFlow自带的sigmoid函数</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">sigmoid</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">sigmoid</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-k">with</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span> <span class="highlight-k">as</span> <span class="highlight-n">sess</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-c1"># 使用传进来的值计算</span>
-<span class="highlight-ln">10</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">sigmoid</span><span class="highlight-p">,</span> <span class="highlight-n">feed_dict</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-n">x</span><span class="highlight-p">:</span> <span class="highlight-n">z</span><span class="highlight-p">})</span>
-<span class="highlight-ln">11</span>    
-<span class="highlight-ln">12</span>    <span class="highlight-k">return</span> <span class="highlight-n">result</span>
+<pre><code class="language-python">def sigmoid(z):
+    # 给x创建一个占位符，并指定类型
+    x = tf.placeholder(tf.float32, name = "x")
+
+    # 使用TensorFlow自带的sigmoid函数
+    sigmoid = tf.sigmoid(x)
+
+    with tf.Session() as sess:
+        # 使用传进来的值计算
+        result = sess.run(sigmoid, feed_dict = {x: z})
+    
+    return result
 </code></pre>
-<h2 id="计算损失函数">计算损失函数</h2>
-<p>损失函数的计算公式如下：</p>
-<div class="vditor-math">J = - \frac{1}{m}  \sum_{i = 1}^m  \large ( \small y^{(i)} \log a^{ [2] (i)} + (1-y^{(i)})\log (1-a^{ [2] (i)} )\large )\small\tag{3}</div>
+<h2 id="toc_h2_5">计算损失函数</h2>
+<p>损失函数的计算公式如下：<br>
+$$<br>
+J = - \frac{1}{m}  \sum_{i = 1}^m  \large ( \small y^{(i)} \log a^{ [2] (i)} + (1-y^{(i)})\log (1-a^{ [2] (i)} )\large )\small\tag{3}<br>
+$$</p>
 <p>可以通过直接调用<code>tf.nn.sigmoid_cross_entropy_with_logits()</code>函数定义完成损失函数的计算：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">cost</span><span class="highlight-p">(</span><span class="highlight-n">logits</span><span class="highlight-p">,</span> <span class="highlight-n">labels</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>	<span class="highlight-c1"># 定义两个占位符</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">z</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">placeholder</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">,</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"z"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">y</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">placeholder</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">,</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"y"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>    
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 使用TensorFlow自带函数计算交叉熵损失</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">nn</span><span class="highlight-o">.</span><span class="highlight-n">sigmoid_cross_entropy_with_logits</span><span class="highlight-p">(</span><span class="highlight-n">logits</span> <span class="highlight-o">=</span> <span class="highlight-n">z</span><span class="highlight-p">,</span>  <span class="highlight-n">labels</span> <span class="highlight-o">=</span> <span class="highlight-n">y</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    
-<span class="highlight-ln"> 9</span>    <span class="highlight-c1"># 创建session</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">sess</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span>
-<span class="highlight-ln">11</span>    
-<span class="highlight-ln">12</span>    <span class="highlight-c1"># 开始计算损失值</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-n">feed_dict</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-n">z</span><span class="highlight-p">:</span> <span class="highlight-n">logits</span><span class="highlight-p">,</span> <span class="highlight-n">y</span><span class="highlight-p">:</span> <span class="highlight-n">labels</span><span class="highlight-p">})</span>
-<span class="highlight-ln">14</span>    
-<span class="highlight-ln">15</span>    <span class="highlight-c1"># 关闭session</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">close</span>
-<span class="highlight-ln">17</span>    
-<span class="highlight-ln">18</span>    <span class="highlight-k">return</span> <span class="highlight-n">cost</span>
+<pre><code class="language-python">def cost(logits, labels):
+	# 定义两个占位符
+    z = tf.placeholder(tf.float32, name = "z")
+    y = tf.placeholder(tf.float32, name = "y")
+    
+    # 使用TensorFlow自带函数计算交叉熵损失
+    cost = tf.nn.sigmoid_cross_entropy_with_logits(logits = z,  labels = y)
+    
+    # 创建session
+    sess = tf.Session()
+    
+    # 开始计算损失值
+    cost = sess.run(cost, feed_dict = {z: logits, y: labels})
+    
+    # 关闭session
+    sess.close
+    
+    return cost
 </code></pre>
-<h2 id="独热编码">独热编码</h2>
+<h2 id="toc_h2_6">独热编码</h2>
 <p>独热编码即 One-Hot 编码，又称一位有效编码，其方法是使用N位状态寄存器来对N个状态进行编码，每个状态都由他独立的寄存器位，并且在任意时候，其中只有一位有效。如下图所示：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQez80.png" alt="这里写图片描述"></p>
 <p>在TensorFlow中可以使用<code>tf.one_hot(标签，深度，轴)</code>创建独热编码，使用TensorFlow如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">one_hot_matrix</span><span class="highlight-p">(</span><span class="highlight-n">labels</span><span class="highlight-p">,</span> <span class="highlight-n">C</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 定义深度常量</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">C</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">constant</span><span class="highlight-p">(</span><span class="highlight-n">C</span><span class="highlight-p">,</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"C"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 创建独热编码矩阵</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">one_hot_matrix</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">one_hot</span><span class="highlight-p">(</span><span class="highlight-n">labels</span><span class="highlight-p">,</span> <span class="highlight-n">C</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span>    
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 创建Session</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">sess</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span>
-<span class="highlight-ln">10</span>    
-<span class="highlight-ln">11</span>    <span class="highlight-c1"># 计算独热编码</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">one_hot</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">one_hot_matrix</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    
-<span class="highlight-ln">14</span>    <span class="highlight-c1"># 关闭session</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">close</span>
-<span class="highlight-ln">16</span>    
-<span class="highlight-ln">17</span>    <span class="highlight-k">return</span> <span class="highlight-n">one_hot</span>
+<pre><code class="language-python">def one_hot_matrix(labels, C):
+    # 定义深度常量
+    C = tf.constant(C, name = "C")
+    
+    # 创建独热编码矩阵
+    one_hot_matrix = tf.one_hot(labels, C, axis = 0)
+    
+    # 创建Session
+    sess = tf.Session()
+    
+    # 计算独热编码
+    one_hot = sess.run(one_hot_matrix)
+    
+    # 关闭session
+    sess.close
+    
+    return one_hot
 </code></pre>
 <p>我们测试一下，看看效果：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">labels</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-mi">1</span><span class="highlight-p">,</span><span class="highlight-mi">2</span><span class="highlight-p">,</span><span class="highlight-mi">3</span><span class="highlight-p">,</span><span class="highlight-mi">0</span><span class="highlight-p">,</span><span class="highlight-mi">2</span><span class="highlight-p">,</span><span class="highlight-mi">1</span><span class="highlight-p">])</span>
-<span class="highlight-ln">2</span><span class="highlight-c1"># 4个深度，也就是4个类别</span>
-<span class="highlight-ln">3</span><span class="highlight-n">one_hot</span> <span class="highlight-o">=</span> <span class="highlight-n">one_hot_matrix</span><span class="highlight-p">(</span><span class="highlight-n">labels</span><span class="highlight-p">,</span> <span class="highlight-n">C</span> <span class="highlight-o">=</span> <span class="highlight-mi">4</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"one_hot = "</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">one_hot</span><span class="highlight-p">))</span>
+<pre><code class="language-python">labels = np.array([1,2,3,0,2,1])
+# 4个深度，也就是4个类别
+one_hot = one_hot_matrix(labels, C = 4)
+print ("one_hot = " + str(one_hot))
 </code></pre>
 <p>输出结果如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">one_hot</span> <span class="highlight-o">=</span> <span class="highlight-p">[[</span> <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">1.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span><span class="highlight-p">]</span>
-<span class="highlight-ln">2</span>		   <span class="highlight-p">[</span> <span class="highlight-mf">1.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">1.</span><span class="highlight-p">]</span>
-<span class="highlight-ln">3</span>		   <span class="highlight-p">[</span> <span class="highlight-mf">0.</span>  <span class="highlight-mf">1.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">1.</span>  <span class="highlight-mf">0.</span><span class="highlight-p">]</span>
-<span class="highlight-ln">4</span>		   <span class="highlight-p">[</span> <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">1.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span>  <span class="highlight-mf">0.</span><span class="highlight-p">]]</span>
+<pre><code class="language-python">one_hot = [[ 0.  0.  0.  1.  0.  0.]
+		   [ 1.  0.  0.  0.  0.  1.]
+		   [ 0.  1.  0.  0.  1.  0.]
+		   [ 0.  0.  1.  0.  0.  0.]]
 </code></pre>
-<h2 id="初始化矩阵">初始化矩阵</h2>
+<h2 id="toc_h2_7">初始化矩阵</h2>
 <p>可以使用TensorFlow自带函数创建1矩阵：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">ones</span><span class="highlight-p">(</span><span class="highlight-n">shape</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 根据形状大小传1矩阵</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">ones</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">ones</span><span class="highlight-p">(</span><span class="highlight-n">shape</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 获取Session</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">sess</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 7</span>    
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 在session中运行</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">ones</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">ones</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    
-<span class="highlight-ln">11</span>    <span class="highlight-c1"># 关闭session</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">close</span>
-<span class="highlight-ln">13</span>    
-<span class="highlight-ln">14</span>    <span class="highlight-k">return</span> <span class="highlight-n">ones</span>
+<pre><code class="language-python">def ones(shape):
+    # 根据形状大小传1矩阵
+    ones = tf.ones(shape)
+    
+    # 获取Session
+    sess = tf.Session()
+    
+    # 在session中运行
+    ones = sess.run(ones)
+    
+    # 关闭session
+    sess.close
+    
+    return ones
 </code></pre>
-<h1 id="TensorFlow创建神经网络">TensorFlow创建神经网络</h1>
+<h1 id="toc_h1_8">TensorFlow创建神经网络</h1>
 <p>使用TensorFlow创建一个神经网络，来识别手势。我们可以使用独热编码当做图像的标签。<br>
 <img src="https://s1.ax1x.com/2020/03/31/GlnvM6.png" alt="这里写图片描述"></p>
 <p>首先是加载数据：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">X_train_orig</span><span class="highlight-p">,</span> <span class="highlight-n">Y_train_orig</span><span class="highlight-p">,</span> <span class="highlight-n">X_test_orig</span><span class="highlight-p">,</span> <span class="highlight-n">Y_test_orig</span><span class="highlight-p">,</span> <span class="highlight-n">classes</span> <span class="highlight-o">=</span> <span class="highlight-n">load_dataset</span><span class="highlight-p">()</span>
+<pre><code class="language-python">X_train_orig, Y_train_orig, X_test_orig, Y_test_orig, classes = load_dataset()
 </code></pre>
 <p>对数据进行扁平化和归一化：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 训练和测试图像</span>
-<span class="highlight-ln">2</span><span class="highlight-n">X_train_flatten</span> <span class="highlight-o">=</span> <span class="highlight-n">X_train_orig</span><span class="highlight-o">.</span><span class="highlight-n">reshape</span><span class="highlight-p">(</span><span class="highlight-n">X_train_orig</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">T</span>
-<span class="highlight-ln">3</span><span class="highlight-n">X_test_flatten</span> <span class="highlight-o">=</span> <span class="highlight-n">X_test_orig</span><span class="highlight-o">.</span><span class="highlight-n">reshape</span><span class="highlight-p">(</span><span class="highlight-n">X_test_orig</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">T</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 归一化图像向量</span>
-<span class="highlight-ln">5</span><span class="highlight-n">X_train</span> <span class="highlight-o">=</span> <span class="highlight-n">X_train_flatten</span><span class="highlight-o">/</span><span class="highlight-mf">255.</span>
-<span class="highlight-ln">6</span><span class="highlight-n">X_test</span> <span class="highlight-o">=</span> <span class="highlight-n">X_test_flatten</span><span class="highlight-o">/</span><span class="highlight-mf">255.</span>
-<span class="highlight-ln">7</span><span class="highlight-c1"># 将训练和测试标签转换为独热矩阵</span>
-<span class="highlight-ln">8</span><span class="highlight-n">Y_train</span> <span class="highlight-o">=</span> <span class="highlight-n">convert_to_one_hot</span><span class="highlight-p">(</span><span class="highlight-n">Y_train_orig</span><span class="highlight-p">,</span> <span class="highlight-mi">6</span><span class="highlight-p">)</span>
-<span class="highlight-ln">9</span><span class="highlight-n">Y_test</span> <span class="highlight-o">=</span> <span class="highlight-n">convert_to_one_hot</span><span class="highlight-p">(</span><span class="highlight-n">Y_test_orig</span><span class="highlight-p">,</span> <span class="highlight-mi">6</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 训练和测试图像
+X_train_flatten = X_train_orig.reshape(X_train_orig.shape[0], -1).T
+X_test_flatten = X_test_orig.reshape(X_test_orig.shape[0], -1).T
+# 归一化图像向量
+X_train = X_train_flatten/255.
+X_test = X_test_flatten/255.
+# 将训练和测试标签转换为独热矩阵
+Y_train = convert_to_one_hot(Y_train_orig, 6)
+Y_test = convert_to_one_hot(Y_test_orig, 6)
 </code></pre>
 <p>为输入数据和输出结果定义一个占位符：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">def</span> <span class="highlight-nf">create_placeholders</span><span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">):</span>
-<span class="highlight-ln">2</span>	<span class="highlight-c1"># 输入数据占位符</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">X</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">placeholder</span><span class="highlight-p">(</span><span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">,</span><span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-bp">None</span><span class="highlight-p">),</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"Placeholder_1"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-c1"># 输出数据占位符</span>
-<span class="highlight-ln">5</span>    <span class="highlight-n">Y</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">placeholder</span><span class="highlight-p">(</span><span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">,</span><span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">(</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-bp">None</span><span class="highlight-p">),</span> <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s2">"Placeholder_2"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span>    
-<span class="highlight-ln">7</span>    <span class="highlight-k">return</span> <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span>
+<pre><code class="language-python">def create_placeholders(n_x, n_y):
+	# 输入数据占位符
+    X = tf.placeholder(dtype=tf.float32,shape=(n_x, None), name = "Placeholder_1")
+    # 输出数据占位符
+    Y = tf.placeholder(dtype=tf.float32,shape=(n_y, None), name = "Placeholder_2")
+    
+    return X, Y
 </code></pre>
 <p>初始化参数：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">initialize_parameters</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 2</span>	<span class="highlight-c1"># 初始化权重和偏置值</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">get_variable</span><span class="highlight-p">(</span><span class="highlight-s2">"W1"</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mi">25</span><span class="highlight-p">,</span><span class="highlight-mi">12288</span><span class="highlight-p">],</span> <span class="highlight-n">initializer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">contrib</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">xavier_initializer</span><span class="highlight-p">(</span><span class="highlight-n">seed</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">get_variable</span><span class="highlight-p">(</span><span class="highlight-s2">"b1"</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mi">25</span><span class="highlight-p">,</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">initializer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">zeros_initializer</span><span class="highlight-p">())</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">get_variable</span><span class="highlight-p">(</span><span class="highlight-s2">"W2"</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mi">12</span><span class="highlight-p">,</span><span class="highlight-mi">25</span><span class="highlight-p">],</span> <span class="highlight-n">initializer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">contrib</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">xavier_initializer</span><span class="highlight-p">(</span><span class="highlight-n">seed</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">get_variable</span><span class="highlight-p">(</span><span class="highlight-s2">"b2"</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mi">12</span><span class="highlight-p">,</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">initializer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">zeros_initializer</span><span class="highlight-p">())</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">W3</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">get_variable</span><span class="highlight-p">(</span><span class="highlight-s2">"W3"</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mi">6</span><span class="highlight-p">,</span><span class="highlight-mi">12</span><span class="highlight-p">],</span> <span class="highlight-n">initializer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">contrib</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">xavier_initializer</span><span class="highlight-p">(</span><span class="highlight-n">seed</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">b3</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">get_variable</span><span class="highlight-p">(</span><span class="highlight-s2">"b3"</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mi">6</span><span class="highlight-p">,</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">initializer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">zeros_initializer</span><span class="highlight-p">())</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"W1"</span><span class="highlight-p">:</span> <span class="highlight-n">W1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">11</span>                  <span class="highlight-s2">"b1"</span><span class="highlight-p">:</span> <span class="highlight-n">b1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">12</span>                  <span class="highlight-s2">"W2"</span><span class="highlight-p">:</span> <span class="highlight-n">W2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">13</span>                  <span class="highlight-s2">"b2"</span><span class="highlight-p">:</span> <span class="highlight-n">b2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">14</span>                  <span class="highlight-s2">"W3"</span><span class="highlight-p">:</span> <span class="highlight-n">W3</span><span class="highlight-p">,</span>
-<span class="highlight-ln">15</span>                  <span class="highlight-s2">"b3"</span><span class="highlight-p">:</span> <span class="highlight-n">b3</span><span class="highlight-p">}</span>
-<span class="highlight-ln">16</span>    
-<span class="highlight-ln">17</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<pre><code class="language-python">def initialize_parameters():
+	# 初始化权重和偏置值
+    W1 = tf.get_variable("W1", [25,12288], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
+    b1 = tf.get_variable("b1", [25,1], initializer = tf.zeros_initializer())
+    W2 = tf.get_variable("W2", [12,25], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
+    b2 = tf.get_variable("b2", [12,1], initializer = tf.zeros_initializer())
+    W3 = tf.get_variable("W3", [6,12], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
+    b3 = tf.get_variable("b3", [6,1], initializer = tf.zeros_initializer())
+
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2,
+                  "W3": W3,
+                  "b3": b3}
+    
+    return parameters
 </code></pre>
 <p>计算正向传播：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>	<span class="highlight-c1"># 获取权重和偏差值</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'W1'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'b1'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'W2'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'b2'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">W3</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'W3'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">b3</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'b3'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 9</span>    
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 相当于 Z1 = np.dot(W1, X) + b1</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">Z1</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">matmul</span><span class="highlight-p">(</span><span class="highlight-n">W1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">),</span> <span class="highlight-n">b1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>    
-<span class="highlight-ln">13</span>    <span class="highlight-c1"># 计算RELU A1 = relu(Z1)</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">A1</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">nn</span><span class="highlight-o">.</span><span class="highlight-n">relu</span><span class="highlight-p">(</span><span class="highlight-n">Z1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>    
-<span class="highlight-ln">16</span>    <span class="highlight-c1"># 相当于 Z2 = np.dot(W2, a1) + b2</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">Z2</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">matmul</span><span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-p">),</span> <span class="highlight-n">b2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>    
-<span class="highlight-ln">19</span>    <span class="highlight-c1"># 计算RELU A2 = relu(Z2)</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">A2</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">nn</span><span class="highlight-o">.</span><span class="highlight-n">relu</span><span class="highlight-p">(</span><span class="highlight-n">Z2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>    
-<span class="highlight-ln">22</span>    <span class="highlight-c1"># 相当于 Z3 = np.dot(W3,Z2) + b3</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">Z3</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">matmul</span><span class="highlight-p">(</span><span class="highlight-n">W3</span><span class="highlight-p">,</span> <span class="highlight-n">A2</span><span class="highlight-p">),</span> <span class="highlight-n">b3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">24</span>    
-<span class="highlight-ln">25</span>    <span class="highlight-k">return</span> <span class="highlight-n">Z3</span>
+<pre><code class="language-python">def forward_propagation(X, parameters):
+	# 获取权重和偏差值
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+    W3 = parameters['W3']
+    b3 = parameters['b3']
+    
+    # 相当于 Z1 = np.dot(W1, X) + b1
+    Z1 = tf.add(tf.matmul(W1, X), b1)
+    
+    # 计算RELU A1 = relu(Z1)
+    A1 = tf.nn.relu(Z1)
+    
+    # 相当于 Z2 = np.dot(W2, a1) + b2
+    Z2 = tf.add(tf.matmul(W2, A1), b2)
+    
+    # 计算RELU A2 = relu(Z2)
+    A2 = tf.nn.relu(Z2)
+    
+    # 相当于 Z3 = np.dot(W3,Z2) + b3
+    Z3 = tf.add(tf.matmul(W3, A2), b3)
+    
+    return Z3
 </code></pre>
 <p>计算损失：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">def</span> <span class="highlight-nf">compute_cost</span><span class="highlight-p">(</span><span class="highlight-n">Z3</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">):</span>
-<span class="highlight-ln">2</span>    <span class="highlight-c1"># 转置，为下面计算计算损失做准备</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">logits</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">transpose</span><span class="highlight-p">(</span><span class="highlight-n">Z3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">labels</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">transpose</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    
-<span class="highlight-ln">6</span>    <span class="highlight-c1"># 传入的值是数据和标签</span>
-<span class="highlight-ln">7</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">reduce_mean</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">nn</span><span class="highlight-o">.</span><span class="highlight-n">softmax_cross_entropy_with_logits</span><span class="highlight-p">(</span><span class="highlight-n">logits</span> <span class="highlight-o">=</span> <span class="highlight-n">logits</span><span class="highlight-p">,</span> <span class="highlight-n">labels</span> <span class="highlight-o">=</span> <span class="highlight-n">labels</span><span class="highlight-p">))</span>
-<span class="highlight-ln">8</span>    
-<span class="highlight-ln">9</span>    <span class="highlight-k">return</span> <span class="highlight-n">cost</span>
+<pre><code class="language-python">def compute_cost(Z3, Y):
+    # 转置，为下面计算计算损失做准备
+    logits = tf.transpose(Z3)
+    labels = tf.transpose(Y)
+    
+    # 传入的值是数据和标签
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = labels))
+    
+    return cost
 </code></pre>
 <p>计算反向传播和更新参数，使用框架的话，只要使用下面两行代码就可以了：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-o">.</span><span class="highlight-n">GradientDescentOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span> <span class="highlight-o">=</span> <span class="highlight-n">learning_rate</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-n">_</span> <span class="highlight-p">,</span> <span class="highlight-n">c</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">([</span><span class="highlight-n">optimizer</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-p">],</span> <span class="highlight-n">feed_dict</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">X</span><span class="highlight-p">:</span> <span class="highlight-n">minibatch_X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">:</span> <span class="highlight-n">minibatch_Y</span><span class="highlight-p">})</span>
+<pre><code class="language-python">optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate).minimize(cost)
+
+_ , c = sess.run([optimizer, cost], feed_dict={X: minibatch_X, Y: minibatch_Y})
 </code></pre>
-<h2 id="创建模型">创建模型</h2>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">model</span><span class="highlight-p">(</span><span class="highlight-n">X_train</span><span class="highlight-p">,</span> <span class="highlight-n">Y_train</span><span class="highlight-p">,</span> <span class="highlight-n">X_test</span><span class="highlight-p">,</span> <span class="highlight-n">Y_test</span><span class="highlight-p">,</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">=</span> <span class="highlight-mf">0.0001</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 2</span>          <span class="highlight-n">num_epochs</span> <span class="highlight-o">=</span> <span class="highlight-mi">1500</span><span class="highlight-p">,</span> <span class="highlight-n">minibatch_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-n">print_cost</span> <span class="highlight-o">=</span> <span class="highlight-bp">True</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    3层神经网络: LINEAR-&gt;RELU-&gt;LINEAR-&gt;RELU-&gt;LINEAR-&gt;SOFTMAX.
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    X_train -- 训练数据集，输入大小为12288，输入数量为1080
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    Y_train -- 训练标签，输入大小为6，输入数量为1080
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    X_test -- 训练数据集，输入大小为12288，输入数量为120
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    Y_test -- 训练标签，输入大小为6，输入数量为120
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    learning_rate -- 学习速率的优化
-</span><span class="highlight-ln">12</span><span class="highlight-s2">    num_epochs -- 优化循环的周期数
-</span><span class="highlight-ln">13</span><span class="highlight-s2">    minibatch_size -- minibatch大小
-</span><span class="highlight-ln">14</span><span class="highlight-s2">    print_cost -- 每100个pass就打印成本
-</span><span class="highlight-ln">15</span><span class="highlight-s2">    
-</span><span class="highlight-ln">16</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">17</span><span class="highlight-s2">    parameters -- 由模型学习的参数。他们可以被用来预测。
-</span><span class="highlight-ln">18</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">19</span>    
-<span class="highlight-ln">20</span>    <span class="highlight-n">ops</span><span class="highlight-o">.</span><span class="highlight-n">reset_default_graph</span><span class="highlight-p">()</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">set_random_seed</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">seed</span> <span class="highlight-o">=</span> <span class="highlight-mi">3</span>
-<span class="highlight-ln">23</span>    <span class="highlight-c1"># n_x：输入大小，m：数据集样本</span>
-<span class="highlight-ln">24</span>    <span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">=</span> <span class="highlight-n">X_train</span><span class="highlight-o">.</span><span class="highlight-n">shape</span>
-<span class="highlight-ln">25</span>    <span class="highlight-c1"># 输出大小</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">n_y</span> <span class="highlight-o">=</span> <span class="highlight-n">Y_train</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">27</span>    <span class="highlight-n">costs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">28</span>    
-<span class="highlight-ln">29</span>    <span class="highlight-c1"># 创建输入输出占位符</span>
-<span class="highlight-ln">30</span>    <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span> <span class="highlight-o">=</span> <span class="highlight-n">create_placeholders</span><span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">31</span>
-<span class="highlight-ln">32</span>    <span class="highlight-c1"># 初始化参数</span>
-<span class="highlight-ln">33</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">initialize_parameters</span><span class="highlight-p">()</span>
-<span class="highlight-ln">34</span>    
-<span class="highlight-ln">35</span>    <span class="highlight-c1"># 计算正向传播</span>
-<span class="highlight-ln">36</span>    <span class="highlight-n">Z3</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">37</span>    
-<span class="highlight-ln">38</span>    <span class="highlight-c1"># 计算损失值</span>
-<span class="highlight-ln">39</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">compute_cost</span><span class="highlight-p">(</span><span class="highlight-n">Z3</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">40</span>    
-<span class="highlight-ln">41</span>    <span class="highlight-c1"># 反向传播，定义优化方法吗，使员工Adam作为优化器</span>
-<span class="highlight-ln">42</span>    <span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-o">.</span><span class="highlight-n">GradientDescentOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span> <span class="highlight-o">=</span> <span class="highlight-n">learning_rate</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">43</span>    
-<span class="highlight-ln">44</span>    <span class="highlight-c1"># 初始化所有的变量</span>
-<span class="highlight-ln">45</span>    <span class="highlight-n">init</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">global_variables_initializer</span><span class="highlight-p">()</span>
-<span class="highlight-ln">46</span>
-<span class="highlight-ln">47</span>    <span class="highlight-c1"># 在Session中计算</span>
-<span class="highlight-ln">48</span>    <span class="highlight-k">with</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">Session</span><span class="highlight-p">()</span> <span class="highlight-k">as</span> <span class="highlight-n">sess</span><span class="highlight-p">:</span>
-<span class="highlight-ln">49</span>        
-<span class="highlight-ln">50</span>        <span class="highlight-c1"># 运行初始化</span>
-<span class="highlight-ln">51</span>        <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">init</span><span class="highlight-p">)</span>
-<span class="highlight-ln">52</span>        
-<span class="highlight-ln">53</span>        <span class="highlight-c1"># 在循环中训练</span>
-<span class="highlight-ln">54</span>        <span class="highlight-k">for</span> <span class="highlight-n">epoch</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-n">num_epochs</span><span class="highlight-p">):</span>
-<span class="highlight-ln">55</span>
-<span class="highlight-ln">56</span>            <span class="highlight-n">epoch_cost</span> <span class="highlight-o">=</span> <span class="highlight-mf">0.</span>
-<span class="highlight-ln">57</span>	        <span class="highlight-c1"># 计算小批量的数量</span>
-<span class="highlight-ln">58</span>            <span class="highlight-n">num_minibatches</span> <span class="highlight-o">=</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">m</span> <span class="highlight-o">/</span> <span class="highlight-n">minibatch_size</span><span class="highlight-p">)</span>
-<span class="highlight-ln">59</span>            <span class="highlight-n">seed</span> <span class="highlight-o">=</span> <span class="highlight-n">seed</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">60</span>            <span class="highlight-n">minibatches</span> <span class="highlight-o">=</span> <span class="highlight-n">random_mini_batches</span><span class="highlight-p">(</span><span class="highlight-n">X_train</span><span class="highlight-p">,</span> <span class="highlight-n">Y_train</span><span class="highlight-p">,</span> <span class="highlight-n">minibatch_size</span><span class="highlight-p">,</span> <span class="highlight-n">seed</span><span class="highlight-p">)</span>
-<span class="highlight-ln">61</span>
-<span class="highlight-ln">62</span>            <span class="highlight-k">for</span> <span class="highlight-n">minibatch</span> <span class="highlight-ow">in</span> <span class="highlight-n">minibatches</span><span class="highlight-p">:</span>
-<span class="highlight-ln">63</span>
-<span class="highlight-ln">64</span>                <span class="highlight-c1"># 把每个批量的数据拆分</span>
-<span class="highlight-ln">65</span>                <span class="highlight-p">(</span><span class="highlight-n">minibatch_X</span><span class="highlight-p">,</span> <span class="highlight-n">minibatch_Y</span><span class="highlight-p">)</span> <span class="highlight-o">=</span> <span class="highlight-n">minibatch</span>
-<span class="highlight-ln">66</span>                
-<span class="highlight-ln">67</span>                <span class="highlight-c1"># 在session中运行优化器和Cost</span>
-<span class="highlight-ln">68</span>                <span class="highlight-n">_</span> <span class="highlight-p">,</span> <span class="highlight-n">minibatch_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">([</span><span class="highlight-n">optimizer</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-p">],</span> <span class="highlight-n">feed_dict</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">X</span><span class="highlight-p">:</span> <span class="highlight-n">minibatch_X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">:</span> <span class="highlight-n">minibatch_Y</span><span class="highlight-p">})</span>
-<span class="highlight-ln">69</span>                
-<span class="highlight-ln">70</span>                <span class="highlight-n">epoch_cost</span> <span class="highlight-o">+=</span> <span class="highlight-n">minibatch_cost</span> <span class="highlight-o">/</span> <span class="highlight-n">num_minibatches</span>
-<span class="highlight-ln">71</span>
-<span class="highlight-ln">72</span>            <span class="highlight-c1"># 打印cost</span>
-<span class="highlight-ln">73</span>            <span class="highlight-k">if</span> <span class="highlight-n">print_cost</span> <span class="highlight-o">==</span> <span class="highlight-bp">True</span> <span class="highlight-ow">and</span> <span class="highlight-n">epoch</span> <span class="highlight-o">%</span> <span class="highlight-mi">100</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">74</span>                <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Cost after epoch </span><span class="highlight-si">%i</span><span class="highlight-s2">: </span><span class="highlight-si">%f</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">epoch</span><span class="highlight-p">,</span> <span class="highlight-n">epoch_cost</span><span class="highlight-p">))</span>
-<span class="highlight-ln">75</span>            <span class="highlight-k">if</span> <span class="highlight-n">print_cost</span> <span class="highlight-o">==</span> <span class="highlight-bp">True</span> <span class="highlight-ow">and</span> <span class="highlight-n">epoch</span> <span class="highlight-o">%</span> <span class="highlight-mi">5</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">76</span>                <span class="highlight-n">costs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">epoch_cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">77</span>
-<span class="highlight-ln">78</span>        <span class="highlight-c1"># 参数保存在一个变量中</span>
-<span class="highlight-ln">79</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">sess</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">80</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Parameters have been trained!"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">81</span>
-<span class="highlight-ln">82</span>        <span class="highlight-c1"># 计算正确的预测</span>
-<span class="highlight-ln">83</span>        <span class="highlight-n">correct_prediction</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">equal</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">argmax</span><span class="highlight-p">(</span><span class="highlight-n">Z3</span><span class="highlight-p">),</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">argmax</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-p">))</span>
-<span class="highlight-ln">84</span>
-<span class="highlight-ln">85</span>        <span class="highlight-c1"># 计算测试集的准确性。</span>
-<span class="highlight-ln">86</span>        <span class="highlight-n">accuracy</span> <span class="highlight-o">=</span> <span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">reduce_mean</span><span class="highlight-p">(</span><span class="highlight-n">tf</span><span class="highlight-o">.</span><span class="highlight-n">cast</span><span class="highlight-p">(</span><span class="highlight-n">correct_prediction</span><span class="highlight-p">,</span> <span class="highlight-s2">"float"</span><span class="highlight-p">))</span>
-<span class="highlight-ln">87</span>
-<span class="highlight-ln">88</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Train Accuracy:"</span><span class="highlight-p">,</span> <span class="highlight-n">accuracy</span><span class="highlight-o">.</span><span class="highlight-n">eval</span><span class="highlight-p">({</span><span class="highlight-n">X</span><span class="highlight-p">:</span> <span class="highlight-n">X_train</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">:</span> <span class="highlight-n">Y_train</span><span class="highlight-p">}))</span>
-<span class="highlight-ln">89</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Test Accuracy:"</span><span class="highlight-p">,</span> <span class="highlight-n">accuracy</span><span class="highlight-o">.</span><span class="highlight-n">eval</span><span class="highlight-p">({</span><span class="highlight-n">X</span><span class="highlight-p">:</span> <span class="highlight-n">X_test</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">:</span> <span class="highlight-n">Y_test</span><span class="highlight-p">}))</span>
-<span class="highlight-ln">90</span>        
-<span class="highlight-ln">91</span>        <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<h2 id="toc_h2_9">创建模型</h2>
+<pre><code class="language-python">def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001,
+          num_epochs = 1500, minibatch_size = 32, print_cost = True):
+    """
+    3层神经网络: LINEAR-&gt;RELU-&gt;LINEAR-&gt;RELU-&gt;LINEAR-&gt;SOFTMAX.
+    
+    Arguments:
+    X_train -- 训练数据集，输入大小为12288，输入数量为1080
+    Y_train -- 训练标签，输入大小为6，输入数量为1080
+    X_test -- 训练数据集，输入大小为12288，输入数量为120
+    Y_test -- 训练标签，输入大小为6，输入数量为120
+    learning_rate -- 学习速率的优化
+    num_epochs -- 优化循环的周期数
+    minibatch_size -- minibatch大小
+    print_cost -- 每100个pass就打印成本
+    
+    Returns:
+    parameters -- 由模型学习的参数。他们可以被用来预测。
+    """
+    
+    ops.reset_default_graph()
+    tf.set_random_seed(1)
+    seed = 3
+    # n_x：输入大小，m：数据集样本
+    (n_x, m) = X_train.shape
+    # 输出大小
+    n_y = Y_train.shape[0]
+    costs = []
+    
+    # 创建输入输出占位符
+    X, Y = create_placeholders(n_x, n_y)
+
+    # 初始化参数
+    parameters = initialize_parameters()
+    
+    # 计算正向传播
+    Z3 = forward_propagation(X, parameters)
+    
+    # 计算损失值
+    cost = compute_cost(Z3, Y)
+    
+    # 反向传播，定义优化方法吗，使员工Adam作为优化器
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate).minimize(cost)
+    
+    # 初始化所有的变量
+    init = tf.global_variables_initializer()
+
+    # 在Session中计算
+    with tf.Session() as sess:
+        
+        # 运行初始化
+        sess.run(init)
+        
+        # 在循环中训练
+        for epoch in range(num_epochs):
+
+            epoch_cost = 0.
+	        # 计算小批量的数量
+            num_minibatches = int(m / minibatch_size)
+            seed = seed + 1
+            minibatches = random_mini_batches(X_train, Y_train, minibatch_size, seed)
+
+            for minibatch in minibatches:
+
+                # 把每个批量的数据拆分
+                (minibatch_X, minibatch_Y) = minibatch
+                
+                # 在session中运行优化器和Cost
+                _ , minibatch_cost = sess.run([optimizer, cost], feed_dict={X: minibatch_X, Y: minibatch_Y})
+                
+                epoch_cost += minibatch_cost / num_minibatches
+
+            # 打印cost
+            if print_cost == True and epoch % 100 == 0:
+                print ("Cost after epoch %i: %f" % (epoch, epoch_cost))
+            if print_cost == True and epoch % 5 == 0:
+                costs.append(epoch_cost)
+
+        # 参数保存在一个变量中
+        parameters = sess.run(parameters)
+        print ("Parameters have been trained!")
+
+        # 计算正确的预测
+        correct_prediction = tf.equal(tf.argmax(Z3), tf.argmax(Y))
+
+        # 计算测试集的准确性。
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+
+        print ("Train Accuracy:", accuracy.eval({X: X_train, Y: Y_train}))
+        print ("Test Accuracy:", accuracy.eval({X: X_test, Y: Y_test}))
+        
+        return parameters
 </code></pre>
 <p>最后通过调用该函数即可完成训练：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">model</span><span class="highlight-p">(</span><span class="highlight-n">X_train</span><span class="highlight-p">,</span> <span class="highlight-n">Y_train</span><span class="highlight-p">,</span> <span class="highlight-n">X_test</span><span class="highlight-p">,</span> <span class="highlight-n">Y_test</span><span class="highlight-p">)</span>
+<pre><code class="language-python">parameters = model(X_train, Y_train, X_test, Y_test)
 </code></pre>
 <p>预测，训练好的参数就可以用来预测了，如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">scipy</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">from</span> <span class="highlight-nn">scipy</span> <span class="highlight-kn">import</span> <span class="highlight-n">ndimage</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span><span class="highlight-n">my_image</span> <span class="highlight-o">=</span> <span class="highlight-s2">"thumbs_up.jpg"</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span><span class="highlight-c1"># 预先处理图像以适应的算法</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">fname</span> <span class="highlight-o">=</span> <span class="highlight-s2">"images/"</span> <span class="highlight-o">+</span> <span class="highlight-n">my_image</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">ndimage</span><span class="highlight-o">.</span><span class="highlight-n">imread</span><span class="highlight-p">(</span><span class="highlight-n">fname</span><span class="highlight-p">,</span> <span class="highlight-n">flatten</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">))</span>
-<span class="highlight-ln">10</span><span class="highlight-n">my_image</span> <span class="highlight-o">=</span> <span class="highlight-n">scipy</span><span class="highlight-o">.</span><span class="highlight-n">misc</span><span class="highlight-o">.</span><span class="highlight-n">imresize</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-p">(</span><span class="highlight-mi">64</span><span class="highlight-p">,</span><span class="highlight-mi">64</span><span class="highlight-p">))</span><span class="highlight-o">.</span><span class="highlight-n">reshape</span><span class="highlight-p">((</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">64</span><span class="highlight-o">*</span><span class="highlight-mi">64</span><span class="highlight-o">*</span><span class="highlight-mi">3</span><span class="highlight-p">))</span><span class="highlight-o">.</span><span class="highlight-n">T</span>
-<span class="highlight-ln">11</span><span class="highlight-n">my_image_prediction</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">my_image</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"Your algorithm predicts: y = "</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">squeeze</span><span class="highlight-p">(</span><span class="highlight-n">my_image_prediction</span><span class="highlight-p">)))</span>
+<pre><code class="language-python">import scipy
+from PIL import Image
+from scipy import ndimage
+
+my_image = "thumbs_up.jpg"
+
+# 预先处理图像以适应的算法
+fname = "images/" + my_image
+image = np.array(ndimage.imread(fname, flatten=False))
+my_image = scipy.misc.imresize(image, size=(64,64)).reshape((1, 64*64*3)).T
+my_image_prediction = predict(my_image, parameters)
+
+print("Your algorithm predicts: y = " + str(np.squeeze(my_image_prediction)))
 </code></pre>
-<h1 id="参考资料">参考资料</h1>
-<p>http://deeplearning.ai/</p>
+<h1 id="toc_h1_10">参考资料</h1>
+<p><a href="http://deeplearning.ai/" target="_blank">http://deeplearning.ai/</a></p>
 <p><br><br><br><br></p>
 <blockquote>
 <p>该笔记是学习吴恩达老师的课程写的。初学者入门，如有理解有误的，欢迎批评指正！</p>
@@ -595,7 +601,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -604,7 +610,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -612,11 +618,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466421384",
@@ -634,4 +640,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 60ms, 2020/04/07 11:38:46 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 23ms, 2020/04/07 14:57:08 -->

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android使用Service播放音乐 - 夜雨飘零</title><meta name="description" content="像音乐这种耗时的和适合后台操作的应当放在Service中进行操作，而不是放在Activity，下面就介绍使用Service的音乐播放器 先创建一个MusicService，在Android Studio中，点击包名右键New--&gt;Service--&gt;Service 如果是按照上面的方法创建的Service，配置清单中会自动生成 改Service的声明 在MusicService中的Java代码，里面包含了音乐的相关操作复写了onCreate()用于初始化播放器 public class MusicService extends Service { private String path = &quot;mnt/sdcard/123.mp3&quot;; private MediaPlayer player; @Override public IBinder onBind(Intent intent) { //当执行完了onCreate后，就会执行onBind把操作歌曲的方法返回 return new MyBinder(); } @Override public void onCreate(...."/><meta property="og:description" content="像音乐这种耗时的和适合后台操作的应当放在Service中进行操作，而不是放在Activity，下面就介绍使用Service的音乐播放器 先创建一个MusicService，在Android Studio中，点击包名右键New--&gt;Service--&gt;Service 如果是按照上面的方法创建的Service，配置清单中会自动生成 改Service的声明 在MusicService中的Java代码，里面包含了音乐的相关操作复写了onCreate()用于初始化播放器 public class MusicService extends Service { private String path = &quot;mnt/sdcard/123.mp3&quot;; private MediaPlayer player; @Override public IBinder onBind(Intent intent) { //当执行完了onCreate后，就会执行onBind把操作歌曲的方法返回 return new MyBinder(); } @Override public void onCreate(...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android使用Service播放音乐 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584877051094.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android使用Service播放音乐 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584877051094.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android使用Service播放音乐 - 夜雨飘零</title><meta name="description" content="像音乐这种耗时的和适合后台操作的应当放在Service中进行操作，而不是放在Activity，下面就介绍使用Service的音乐播放器 先创建一个MusicService，在Android Studio中，点击包名右键New--&gt;Service--&gt;Service 如果是按照上面的方法创建的Service，配置清单中会自动生成 改Service的声明 在MusicService中的Java代码，里面包含了音乐的相关操作复写了onCreate()用于初始化播放器 public class MusicService extends Service { private String path = &quot;mnt/sdcard/123.mp3&quot;; private MediaPlayer player; @Override public IBinder onBind(Intent intent) { //当执行完了onCreate后，就会执行onBind把操作歌曲的方法返回 return new MyBinder(); } @Override public void onCreate(...."/><meta property="og:description" content="像音乐这种耗时的和适合后台操作的应当放在Service中进行操作，而不是放在Activity，下面就介绍使用Service的音乐播放器 先创建一个MusicService，在Android Studio中，点击包名右键New--&gt;Service--&gt;Service 如果是按照上面的方法创建的Service，配置清单中会自动生成 改Service的声明 在MusicService中的Java代码，里面包含了音乐的相关操作复写了onCreate()用于初始化播放器 public class MusicService extends Service { private String path = &quot;mnt/sdcard/123.mp3&quot;; private MediaPlayer player; @Override public IBinder onBind(Intent intent) { //当执行完了onCreate后，就会执行onBind把操作歌曲的方法返回 return new MyBinder(); } @Override public void onCreate(...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android使用Service播放音乐 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584877051094.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android使用Service播放音乐 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584877051094.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Android画板的实现" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584876802728.html">
             <link rel="next" title="Android读取短信和联系人" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584877543084.html">
     <!-- 百度统计 -->
@@ -121,243 +121,243 @@ var _hmt = _hmt || [];
 <p>如果是按照上面的方法创建的Service，配置清单中会自动生成 改Service的声明</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GM2Vs0.png" alt=""></p>
 <p>在MusicService中的Java代码，里面包含了音乐的相关操作复写了onCreate()用于初始化播放器</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MusicService</span> <span class="highlight-kd">extends</span> <span class="highlight-n">Service</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">path</span> <span class="highlight-o">=</span> <span class="highlight-s">"mnt/sdcard/123.mp3"</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-kd">private</span> <span class="highlight-n">MediaPlayer</span> <span class="highlight-n">player</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-kd">public</span> <span class="highlight-n">IBinder</span> <span class="highlight-nf">onBind</span><span class="highlight-o">(</span><span class="highlight-n">Intent</span> <span class="highlight-n">intent</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-c1">//当执行完了onCreate后，就会执行onBind把操作歌曲的方法返回
-</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>        <span class="highlight-k">return</span> <span class="highlight-k">new</span> <span class="highlight-n">MyBinder</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">12</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onCreate</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">13</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onCreate</span><span class="highlight-o">();</span>
-<span class="highlight-ln">14</span>        <span class="highlight-c1">//这里只执行一次，用于准备播放器
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>        <span class="highlight-n">player</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">MediaPlayer</span><span class="highlight-o">();</span>
-<span class="highlight-ln">16</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">17</span>            <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">setDataSource</span><span class="highlight-o">(</span><span class="highlight-n">path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">18</span>            <span class="highlight-c1">//准备资源
-</span><span class="highlight-ln">19</span><span class="highlight-c1"></span>            <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">prepare</span><span class="highlight-o">();</span>
-<span class="highlight-ln">20</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">21</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">22</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">23</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"服务"</span><span class="highlight-o">,</span> <span class="highlight-s">"准备播放音乐"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">24</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-c1">//该方法包含关于歌曲的操作
-</span><span class="highlight-ln">27</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MyBinder</span> <span class="highlight-kd">extends</span> <span class="highlight-n">Binder</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>        <span class="highlight-c1">//判断是否处于播放状态
-</span><span class="highlight-ln">30</span><span class="highlight-c1"></span>        <span class="highlight-kd">public</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">isPlaying</span><span class="highlight-o">(){</span>
-<span class="highlight-ln">31</span>            <span class="highlight-k">return</span> <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">isPlaying</span><span class="highlight-o">();</span>
-<span class="highlight-ln">32</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">33</span>
-<span class="highlight-ln">34</span>        <span class="highlight-c1">//播放或暂停歌曲
-</span><span class="highlight-ln">35</span><span class="highlight-c1"></span>        <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">play</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">36</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">isPlaying</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">37</span>                <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">pause</span><span class="highlight-o">();</span>
-<span class="highlight-ln">38</span>            <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">39</span>                <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">40</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">41</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"服务"</span><span class="highlight-o">,</span> <span class="highlight-s">"播放音乐"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">42</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">43</span>
-<span class="highlight-ln">44</span>        <span class="highlight-c1">//返回歌曲的长度，单位为毫秒
-</span><span class="highlight-ln">45</span><span class="highlight-c1"></span>        <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">getDuration</span><span class="highlight-o">(){</span>
-<span class="highlight-ln">46</span>            <span class="highlight-k">return</span> <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">getDuration</span><span class="highlight-o">();</span>
-<span class="highlight-ln">47</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">48</span>
-<span class="highlight-ln">49</span>        <span class="highlight-c1">//返回歌曲目前的进度，单位为毫秒
-</span><span class="highlight-ln">50</span><span class="highlight-c1"></span>        <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">getCurrenPostion</span><span class="highlight-o">(){</span>
-<span class="highlight-ln">51</span>            <span class="highlight-k">return</span> <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">getCurrentPosition</span><span class="highlight-o">();</span>
-<span class="highlight-ln">52</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">53</span>
-<span class="highlight-ln">54</span>        <span class="highlight-c1">//设置歌曲播放的进度，单位为毫秒
-</span><span class="highlight-ln">55</span><span class="highlight-c1"></span>        <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">seekTo</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">mesc</span><span class="highlight-o">){</span>
-<span class="highlight-ln">56</span>            <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">seekTo</span><span class="highlight-o">(</span><span class="highlight-n">mesc</span><span class="highlight-o">);</span>
-<span class="highlight-ln">57</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">58</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">59</span><span class="highlight-o">}</span>
+<pre><code class="language-java">public class MusicService extends Service {
+    private String path = "mnt/sdcard/123.mp3";
+    private MediaPlayer player;
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        //当执行完了onCreate后，就会执行onBind把操作歌曲的方法返回
+        return new MyBinder();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //这里只执行一次，用于准备播放器
+        player = new MediaPlayer();
+        try {
+            player.setDataSource(path);
+            //准备资源
+            player.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.e("服务", "准备播放音乐");
+    }
+
+    //该方法包含关于歌曲的操作
+    public class MyBinder extends Binder {
+
+        //判断是否处于播放状态
+        public boolean isPlaying(){
+            return player.isPlaying();
+        }
+
+        //播放或暂停歌曲
+        public void play() {
+            if (player.isPlaying()) {
+                player.pause();
+            } else {
+                player.start();
+            }
+            Log.e("服务", "播放音乐");
+        }
+
+        //返回歌曲的长度，单位为毫秒
+        public int getDuration(){
+            return player.getDuration();
+        }
+
+        //返回歌曲目前的进度，单位为毫秒
+        public int getCurrenPostion(){
+            return player.getCurrentPosition();
+        }
+
+        //设置歌曲播放的进度，单位为毫秒
+        public void seekTo(int mesc){
+            player.seekTo(mesc);
+        }
+    }
+}
 </code></pre>
 <p>布局中只添加一个按钮和进度条</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>    &lt;Button
-<span class="highlight-ln"> 2</span>        android:id="@+id/play"
-<span class="highlight-ln"> 3</span>        android:layout_width="match_parent"
-<span class="highlight-ln"> 4</span>        android:layout_height="wrap_content"
-<span class="highlight-ln"> 5</span>        android:onClick="play"
-<span class="highlight-ln"> 6</span>        android:text="播放" /&gt;
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>    &lt;SeekBar
-<span class="highlight-ln"> 9</span>        android:id="@+id/sb"
-<span class="highlight-ln">10</span>        android:layout_width="match_parent"
-<span class="highlight-ln">11</span>        android:layout_height="wrap_content" /&gt;
+<pre><code>    &lt;Button
+        android:id="@+id/play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="play"
+        android:text="播放" /&gt;
+
+    &lt;SeekBar
+        android:id="@+id/sb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" /&gt;
 </code></pre>
 <p>在MainActivity中的Java代码</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">  1</span>public class MainActivity extends AppCompatActivity {
-<span class="highlight-ln">  2</span>
-<span class="highlight-ln">  3</span>    private MyConnection conn;
-<span class="highlight-ln">  4</span>    private MusicService.MyBinder musicControl;
-<span class="highlight-ln">  5</span>
-<span class="highlight-ln">  6</span>    private Button playBtn;
-<span class="highlight-ln">  7</span>    private SeekBar seekBar;
-<span class="highlight-ln">  8</span>    private static final int UPDATE_PROGRESS = 0;
-<span class="highlight-ln">  9</span>
-<span class="highlight-ln"> 10</span>    //使用handler定时更新进度条
-<span class="highlight-ln"> 11</span>    private Handler handler = new Handler() {
-<span class="highlight-ln"> 12</span>        @Override
-<span class="highlight-ln"> 13</span>        public void handleMessage(Message msg) {
-<span class="highlight-ln"> 14</span>            switch (msg.what) {
-<span class="highlight-ln"> 15</span>                case UPDATE_PROGRESS:
-<span class="highlight-ln"> 16</span>                    updateProgress();
-<span class="highlight-ln"> 17</span>                    break;
-<span class="highlight-ln"> 18</span>            }
-<span class="highlight-ln"> 19</span>        }
-<span class="highlight-ln"> 20</span>    };
-<span class="highlight-ln"> 21</span>
-<span class="highlight-ln"> 22</span>    @Override
-<span class="highlight-ln"> 23</span>    protected void onCreate(Bundle savedInstanceState) {
-<span class="highlight-ln"> 24</span>        super.onCreate(savedInstanceState);
-<span class="highlight-ln"> 25</span>        setContentView(R.layout.activity_main);
-<span class="highlight-ln"> 26</span>
-<span class="highlight-ln"> 27</span>        playBtn = (Button) findViewById(R.id.play);
-<span class="highlight-ln"> 28</span>        seekBar = (SeekBar) findViewById(R.id.sb);
-<span class="highlight-ln"> 29</span>
-<span class="highlight-ln"> 30</span>        Intent intent3 = new Intent(this, MusicService.class);
-<span class="highlight-ln"> 31</span>        conn = new MyConnection();
-<span class="highlight-ln"> 32</span>        //使用混合的方法开启服务，
-<span class="highlight-ln"> 33</span>        startService(intent3);
-<span class="highlight-ln"> 34</span>        bindService(intent3, conn, BIND_AUTO_CREATE);
-<span class="highlight-ln"> 35</span>
-<span class="highlight-ln"> 36</span>        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-<span class="highlight-ln"> 37</span>            @Override
-<span class="highlight-ln"> 38</span>            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-<span class="highlight-ln"> 39</span>                //进度条改变
-<span class="highlight-ln"> 40</span>                if (fromUser){
-<span class="highlight-ln"> 41</span>                    musicControl.seekTo(progress);
-<span class="highlight-ln"> 42</span>                }
-<span class="highlight-ln"> 43</span>            }
-<span class="highlight-ln"> 44</span>
-<span class="highlight-ln"> 45</span>            @Override
-<span class="highlight-ln"> 46</span>            public void onStartTrackingTouch(SeekBar seekBar) {
-<span class="highlight-ln"> 47</span>                //开始触摸进度条
-<span class="highlight-ln"> 48</span>            }
-<span class="highlight-ln"> 49</span>
-<span class="highlight-ln"> 50</span>            @Override
-<span class="highlight-ln"> 51</span>            public void onStopTrackingTouch(SeekBar seekBar) {
-<span class="highlight-ln"> 52</span>                //停止触摸进度条
-<span class="highlight-ln"> 53</span>            }
-<span class="highlight-ln"> 54</span>        });
-<span class="highlight-ln"> 55</span>    }
-<span class="highlight-ln"> 56</span>
-<span class="highlight-ln"> 57</span>    private class MyConnection implements ServiceConnection {
-<span class="highlight-ln"> 58</span>
-<span class="highlight-ln"> 59</span>        //服务启动完成后会进入到这个方法
-<span class="highlight-ln"> 60</span>        @Override
-<span class="highlight-ln"> 61</span>        public void onServiceConnected(ComponentName name, IBinder service) {
-<span class="highlight-ln"> 62</span>            //获得service中的MyBinder
-<span class="highlight-ln"> 63</span>            musicControl = (MusicService.MyBinder) service;
-<span class="highlight-ln"> 64</span>            //更新按钮的文字
-<span class="highlight-ln"> 65</span>            updatePlayText();
-<span class="highlight-ln"> 66</span>            //设置进度条的最大值
-<span class="highlight-ln"> 67</span>            seekBar.setMax(musicControl.getDuration());
-<span class="highlight-ln"> 68</span>            //设置进度条的进度
-<span class="highlight-ln"> 69</span>            seekBar.setProgress(musicControl.getCurrenPostion());
-<span class="highlight-ln"> 70</span>        }
-<span class="highlight-ln"> 71</span>
-<span class="highlight-ln"> 72</span>        @Override
-<span class="highlight-ln"> 73</span>        public void onServiceDisconnected(ComponentName name) {
-<span class="highlight-ln"> 74</span>
-<span class="highlight-ln"> 75</span>        }
-<span class="highlight-ln"> 76</span>    }
-<span class="highlight-ln"> 77</span>
-<span class="highlight-ln"> 78</span>    @Override
-<span class="highlight-ln"> 79</span>    protected void onResume() {
-<span class="highlight-ln"> 80</span>        super.onResume();
-<span class="highlight-ln"> 81</span>        //进入到界面后开始更新进度条
-<span class="highlight-ln"> 82</span>        if (musicControl != null){
-<span class="highlight-ln"> 83</span>            handler.sendEmptyMessage(UPDATE_PROGRESS);
-<span class="highlight-ln"> 84</span>        }
-<span class="highlight-ln"> 85</span>    }
-<span class="highlight-ln"> 86</span>
-<span class="highlight-ln"> 87</span>    @Override
-<span class="highlight-ln"> 88</span>    protected void onDestroy() {
-<span class="highlight-ln"> 89</span>        super.onDestroy();
-<span class="highlight-ln"> 90</span>        //退出应用后与service解除绑定
-<span class="highlight-ln"> 91</span>        unbindService(conn);
-<span class="highlight-ln"> 92</span>    }
-<span class="highlight-ln"> 93</span>
-<span class="highlight-ln"> 94</span>    @Override
-<span class="highlight-ln"> 95</span>    protected void onStop() {
-<span class="highlight-ln"> 96</span>        super.onStop();
-<span class="highlight-ln"> 97</span>        //停止更新进度条的进度
-<span class="highlight-ln"> 98</span>        handler.removeCallbacksAndMessages(null);
-<span class="highlight-ln"> 99</span>    }
-<span class="highlight-ln">100</span>
-<span class="highlight-ln">101</span>    //更新进度条
-<span class="highlight-ln">102</span>    private void updateProgress() {
-<span class="highlight-ln">103</span>        int currenPostion = musicControl.getCurrenPostion();
-<span class="highlight-ln">104</span>        seekBar.setProgress(currenPostion);
-<span class="highlight-ln">105</span>        //使用Handler每500毫秒更新一次进度条
-<span class="highlight-ln">106</span>        handler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
-<span class="highlight-ln">107</span>    }
-<span class="highlight-ln">108</span>
-<span class="highlight-ln">109</span>
-<span class="highlight-ln">110</span>    //更新按钮的文字
-<span class="highlight-ln">111</span>    public void updatePlayText() {
-<span class="highlight-ln">112</span>        if (musicControl.isPlaying()) {
-<span class="highlight-ln">113</span>            playBtn.setText("暂停");
-<span class="highlight-ln">114</span>            handler.sendEmptyMessage(UPDATE_PROGRESS);
-<span class="highlight-ln">115</span>        } else {
-<span class="highlight-ln">116</span>            playBtn.setText("播放");
-<span class="highlight-ln">117</span>        }
-<span class="highlight-ln">118</span>    }
-<span class="highlight-ln">119</span>
-<span class="highlight-ln">120</span>    //调用MyBinder中的play()方法
-<span class="highlight-ln">121</span>    public void play(View view) {
-<span class="highlight-ln">122</span>        musicControl.play();
-<span class="highlight-ln">123</span>        updatePlayText();
-<span class="highlight-ln">124</span>    }
-<span class="highlight-ln">125</span>}
+<pre><code>public class MainActivity extends AppCompatActivity {
+
+    private MyConnection conn;
+    private MusicService.MyBinder musicControl;
+
+    private Button playBtn;
+    private SeekBar seekBar;
+    private static final int UPDATE_PROGRESS = 0;
+
+    //使用handler定时更新进度条
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UPDATE_PROGRESS:
+                    updateProgress();
+                    break;
+            }
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        playBtn = (Button) findViewById(R.id.play);
+        seekBar = (SeekBar) findViewById(R.id.sb);
+
+        Intent intent3 = new Intent(this, MusicService.class);
+        conn = new MyConnection();
+        //使用混合的方法开启服务，
+        startService(intent3);
+        bindService(intent3, conn, BIND_AUTO_CREATE);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //进度条改变
+                if (fromUser){
+                    musicControl.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //开始触摸进度条
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //停止触摸进度条
+            }
+        });
+    }
+
+    private class MyConnection implements ServiceConnection {
+
+        //服务启动完成后会进入到这个方法
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //获得service中的MyBinder
+            musicControl = (MusicService.MyBinder) service;
+            //更新按钮的文字
+            updatePlayText();
+            //设置进度条的最大值
+            seekBar.setMax(musicControl.getDuration());
+            //设置进度条的进度
+            seekBar.setProgress(musicControl.getCurrenPostion());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //进入到界面后开始更新进度条
+        if (musicControl != null){
+            handler.sendEmptyMessage(UPDATE_PROGRESS);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //退出应用后与service解除绑定
+        unbindService(conn);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //停止更新进度条的进度
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    //更新进度条
+    private void updateProgress() {
+        int currenPostion = musicControl.getCurrenPostion();
+        seekBar.setProgress(currenPostion);
+        //使用Handler每500毫秒更新一次进度条
+        handler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
+    }
+
+
+    //更新按钮的文字
+    public void updatePlayText() {
+        if (musicControl.isPlaying()) {
+            playBtn.setText("暂停");
+            handler.sendEmptyMessage(UPDATE_PROGRESS);
+        } else {
+            playBtn.setText("播放");
+        }
+    }
+
+    //调用MyBinder中的play()方法
+    public void play(View view) {
+        musicControl.play();
+        updatePlayText();
+    }
+}
 </code></pre>
 <p>最后别忘了添加读写内存卡的权限</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /&gt;
+<pre><code>&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /&gt;
 </code></pre>
 <p>效果图</p>
 <p><img src="https://s1.ax1x.com/2020/04/02/GG3ZwR.png" alt=""></p>
 <p>既然说到音乐播放器了，就顺便说说如何播放网络上的音乐，这是个很重要的功能，其实跟播放本地的差不多，只是用了异步准备，使用 <code>setOnPreparedListener()</code>监听是否准备完成才去播放</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kd">private</span> <span class="highlight-n">MediaPlayer</span> <span class="highlight-n">player</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">player</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">){</span>
-<span class="highlight-ln"> 4</span>            <span class="highlight-c1">//如果为空就new我一个
-</span><span class="highlight-ln"> 5</span><span class="highlight-c1"></span>            <span class="highlight-n">player</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">MediaPlayer</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 6</span>            <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>                <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">setDataSource</span><span class="highlight-o">(</span><span class="highlight-s">"http://www.w3school.com.cn/i/horse.mp3"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 8</span>                <span class="highlight-c1">//异步准备
-</span><span class="highlight-ln"> 9</span><span class="highlight-c1"></span>                <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">prepareAsync</span><span class="highlight-o">();</span>
-<span class="highlight-ln">10</span>                <span class="highlight-c1">//添加准备好的监听
-</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>                <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">setOnPreparedListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">MediaPlayer</span><span class="highlight-o">.</span><span class="highlight-na">OnPreparedListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">12</span>                    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">13</span>                    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onPrepared</span><span class="highlight-o">(</span><span class="highlight-n">MediaPlayer</span> <span class="highlight-n">mp</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">14</span>                        <span class="highlight-c1">//如果准备好了，就会进行这个方法
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>                        <span class="highlight-n">mp</span><span class="highlight-o">.</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">16</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">17</span>                <span class="highlight-o">});</span>
-<span class="highlight-ln">18</span>            <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">19</span>                <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">20</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">21</span>        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">22</span>            <span class="highlight-c1">//判断是否处于播放状态
-</span><span class="highlight-ln">23</span><span class="highlight-c1"></span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">isPlaying</span><span class="highlight-o">()){</span>
-<span class="highlight-ln">24</span>                <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">pause</span><span class="highlight-o">();</span>
-<span class="highlight-ln">25</span>            <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">26</span>                <span class="highlight-n">player</span><span class="highlight-o">.</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">27</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">28</span>        <span class="highlight-o">}</span>
+<pre><code class="language-java">private MediaPlayer player;
+
+if (player == null){
+            //如果为空就new我一个
+            player = new MediaPlayer();
+            try {
+                player.setDataSource("http://www.w3school.com.cn/i/horse.mp3");
+                //异步准备
+                player.prepareAsync();
+                //添加准备好的监听
+                player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        //如果准备好了，就会进行这个方法
+                        mp.start();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            //判断是否处于播放状态
+            if (player.isPlaying()){
+                player.pause();
+            }else {
+                player.start();
+            }
+        }
 </code></pre>
 <p>要访问网络，就别忘了加权限</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>&lt;uses-permission android:name="android.permission.INTERNET"/&gt;
+<pre><code>&lt;uses-permission android:name="android.permission.INTERNET"/&gt;
 </code></pre>
 <p><br><br><br>
 项目源代码：<a href="http://download.csdn.net/download/qq_33200967/9929549" target="_blank">http://download.csdn.net/download/qq_33200967/9929549</a></p>
@@ -436,7 +436,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -445,7 +445,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -453,11 +453,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466423857",
@@ -475,4 +475,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 54ms, 2020/04/07 11:38:50 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 23ms, 2020/04/07 14:57:08 -->

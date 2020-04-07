@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零</title><meta name="description" content="目录 @[toc] 深度学介绍 AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如： 汽车行业，农业和供应链。 深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。 关于迭代不同ML思想的图： 这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法； 可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。 寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。 ReLU激活函数的图表如下： 猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。 为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序...."/><meta property="og:description" content="目录 @[toc] 深度学介绍 AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如： 汽车行业，农业和供应链。 深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。 关于迭代不同ML思想的图： 这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法； 可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。 寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。 ReLU激活函数的图表如下： 猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。 为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零</title><meta name="description" content="目录 @[toc] 深度学介绍 AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如： 汽车行业，农业和供应链。 深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。 关于迭代不同ML思想的图： 这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法； 可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。 寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。 ReLU激活函数的图表如下： 猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。 为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序...."/><meta property="og:description" content="目录 @[toc] 深度学介绍 AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如： 汽车行业，农业和供应链。 深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。 关于迭代不同ML思想的图： 这个思维图能够快速尝试想法，可以让深度学习工程师更快速地迭代自己的想法； 可以加快团队迭代一个主意的时间；深度学习算法的新进展使得我们能更好地训练模型，即使不改变CPU或者GPU硬件。 寻找模型的特征是获取良好性能的关键，虽然经验可以提供帮助，但是需要多次迭代来建立一个良好的模型。 ReLU激活函数的图表如下： 猫的识别是一个“非结构化”的数据例子；统计不同城市人口，人均GDP，经济增长的人口统计数据集是反映图像，音频或者文本数据集的“结构化”数据的一个例子。 为什么使用RNN（循环神经网络）作为机器翻译，这是因为RNN是一个可以被训练的监督学习的问题；RNN的输入和输出是一个序列，翻译就是从一种语言序列映射到另一种语言的序...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《Neural Networks and Deep Learning》的理论知识点 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">
             <link rel="next" title="使用Logistic回归实现猫的二分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html">
     <!-- 百度统计 -->
@@ -78,19 +78,19 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#目录">目录</a>
+            <a href="#toc_h1_0">目录</a>
         </li>
         <li class="toc__h1">
-            <a href="#深度学介绍">深度学介绍</a>
+            <a href="#toc_h1_1">深度学介绍</a>
         </li>
         <li class="toc__h1">
-            <a href="#神经网络基础">神经网络基础</a>
+            <a href="#toc_h1_2">神经网络基础</a>
         </li>
         <li class="toc__h1">
-            <a href="#浅层神经网络">浅层神经网络</a>
+            <a href="#toc_h1_3">浅层神经网络</a>
         </li>
         <li class="toc__h1">
-            <a href="#深度神经网络">深度神经网络</a>
+            <a href="#toc_h1_4">深度神经网络</a>
         </li>
 </ul>        </div>
 </div>
@@ -136,9 +136,9 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20180311.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="目录">目录</h1>
+<h1 id="toc_h1_0">目录</h1>
 <p>@[toc]</p>
-<h1 id="深度学介绍">深度学介绍</h1>
+<h1 id="toc_h1_1">深度学介绍</h1>
 <ol>
 <li>AI比喻新电是是因为AI就像大约100年前的电力一样，正在改变多个行业，如：    汽车行业，农业和供应链。</li>
 <li>深度学习最近起飞的原因是：硬件的开发，特别是GPU的计算，是我们获得更多的计算能力；深度学习已在一些重要的领域应用，如广告，语音识别和图像识别等等；目前数字化的时代使得我们拥有更多的数据。</li>
@@ -163,7 +163,7 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ol>
-<h1 id="神经网络基础">神经网络基础</h1>
+<h1 id="toc_h1_2">神经网络基础</h1>
 <ol>
 <li>神经元计算一个线性函数(z = Wx + b),后跟一个激活函数（sigmoid，tanh，ReLU，...）</li>
 <li>使用numpy直接计算矩阵，这跟np.dot(a,b)不同，直接运算时按照广播的方式运算的，使员工np.dot(a,b)是按照平时矩阵的计算方式的。</li>
@@ -172,30 +172,32 @@ var _hmt = _hmt || [];
 <img src="https://s1.ax1x.com/2020/03/31/GQjQjP.jpg" alt="image"></li>
 <li>以下图像的计算过程<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYOb8S.jpg" alt="image"><br>
-应该是：</li>
+应该是：<br>
+$$<br>
+J = u + v - w = (a<em>b)+(a</em>c)-(b+c)<br>
+= a*(b+c)-(b+c) = (a-1)*(b+c)<br>
+$$</li>
 </ol>
-<div class="vditor-math">J = u + v - w = (a*b)+(a*c)-(b+c)
-= a*(b+c)-(b+c) = (a-1)*(b+c)</div>
-<h1 id="浅层神经网络">浅层神经网络</h1>
+<h1 id="toc_h1_3">浅层神经网络</h1>
 <ol>
-<li><span class="vditor-math">a^{[12](2)}</span>表示激活向量的第2层的第12个的训练样本。</li>
-<li><span class="vditor-math">X</span>每列都是一个训练样本的矩阵</li>
-<li><span class="vditor-math">a_4^{[2]}</span>表示第2层的第4个的激活输出</li>
-<li><span class="vditor-math">a^{[2]}</span>表示第2层激活向量</li>
+<li>$a^{<a href="2" target="_blank">12</a>}$表示激活向量的第2层的第12个的训练样本。</li>
+<li>$X$每列都是一个训练样本的矩阵</li>
+<li>$a_4^{[2]}$表示第2层的第4个的激活输出</li>
+<li>$a^{[2]}$表示第2层激活向量</li>
 <li>tanh激活函数通常比隐层单元的sigmoid激活函数效果要好，因为tanh的输出范围在(-1,1)，其平均值更接近零，因此它能把数据更集中传到下一层，使学习变得更简单。</li>
 <li>Sigmoid函数的输出在0和1之间，这使得它是二分类的非常好的一个选择，当输出低于0.5时，可以归类为0；当输出高于0.5时，可以归类为1。使用tanh函数也可以，但是tanh的函数在-1和1之间，操作不太方便。</li>
 <li>Logistic回归因为没有隐层，如果将权重初始化为零，则Logistic回归中的第一个样本输出将是零，但是Logistic回归的导数取决于不是零，而是输入的x(因为没有隐层)。因此在第二次迭代中，如果x不是常量向量，则权重值遵循x的分布且彼此不同。</li>
 <li>当tanh激活函数的输入远离零时，其梯度就非常接近于零，因为此时的tanh斜率接近零。</li>
 <li>一个隐藏层的神经网络：<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYdLCQ.png" alt="image"><br>
-<span class="vditor-math">b^{[1]}</span>的形状应该是(4,1)；<span class="vditor-math">b^{[2]}</span>的形状应该是(1,1)；<span class="vditor-math">W^{[1]}</span>的形状应该是(4,2)；<span class="vditor-math">W^{[2]}</span>形状应该是(1,4)</li>
-<li>在<span class="vditor-math">l</span>层中，其中$1&lt;=l&lt;=L<span class="vditor-math">，对</span>l$层前向传播正确矢量化的公式是：<br>
+$b^{[1]}$的形状应该是(4,1)；$b^{[2]}$的形状应该是(1,1)；$W^{[1]}$的形状应该是(4,2)；$W^{[2]}$形状应该是(1,4)</li>
+<li>在$l$层中，其中$1&lt;=l&lt;=L$，对$l$层前向传播正确矢量化的公式是：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQeyjO.png" alt="image"></li>
 </ol>
-<h1 id="深度神经网络">深度神经网络</h1>
+<h1 id="toc_h1_4">深度神经网络</h1>
 <ol>
 <li>在前向传播和反向传播中使用“cache”，是为了记录前向传播单元计算的值，然后传送给反向传播的单元，因为在使用链式法则计算导数时使用到。</li>
-<li>属于超参数的是：迭代次数，学习率，神经网络<span class="vditor-math">L</span>的层数，隐层的数量。</li>
+<li>属于超参数的是：迭代次数，学习率，神经网络$L$的层数，隐层的数量。</li>
 <li>深层神经网络比浅层神经网络计算更加复杂的输入特征。</li>
 <li>以下这个网络是4层的神经网络，有3个隐层<br>
 <img src="https://s1.ax1x.com/2020/03/31/GlnDr8.png" alt="image"><br>
@@ -203,13 +205,13 @@ var _hmt = _hmt || [];
 <li>在前向传播中，前向函数需要知道使用的是什么激活函数（Sigmoid，tanh，ReLU，等等），因为在反向传播中需要知道是使用了什么激活函数才能正确计算导数。</li>
 <li>使用浅层网络电路进行计算，需要一个大型的网络（我们通过网络的逻辑门数来测量大小），但是计算深层的电路的话，只需要一个指数规模比较小的网络。</li>
 <li>以下是一个2层隐层的神经网络结构图：<br>
-[外链图片转存失败(img-ggjHJvwx-1563949655959)(<a href="https://note.youdao.com/yws/api/personal/file/AE2D93A09BC54E4AB3A986056C2B4DDB?method=download&amp;shareKey=2e6f6ed04ebd0c5c7e5e3fa21d71b3f2)" target="_blank">https://note.youdao.com/yws/api/personal/file/AE2D93A09BC54E4AB3A986056C2B4DDB?method=download&amp;shareKey=2e6f6ed04ebd0c5c7e5e3fa21d71b3f2)</a>]<br>
-它具有：(i)、<span class="vditor-math">W^{[1]}</span>的形状是(4,4)（计算方式是：<span class="vditor-math">W^{[l]} = (n^{[l]},n^{[l-1]})</span>），同样<span class="vditor-math">W^{[2]}</span>的形状是(3,4)，<span class="vditor-math">W^{[3]}</span>的形状是(1,3)；(ii)、<span class="vditor-math">b^{[1]}</span>的形状是(4,1)（计算方式是：<span class="vditor-math">b^{[l]} = (n^{[l]},1)</span>），同样<span class="vditor-math">b^{[2]}</span>的形状是(3,1)，<span class="vditor-math">b^{[3]}</span>的形状是(1,1)</li>
-<li>假设我们存储的值<span class="vditor-math">n^{[l]}</span>在一个名为layers的数组中，如下所示：layer_dims = [<span class="vditor-math">n_x</span>，4,3,2,1]。因此，第1层有四个隐藏单元，第2层有三个隐藏单元，依此类推。则使用下面的for循环初始化模型的参数：</li>
+[外链图片转存失败(img-ggjHJvwx-1563949655959)(https://note.youdao.com/yws/api/personal/file/AE2D93A09BC54E4AB3A986056C2B4DDB?method=download&amp;shareKey=2e6f6ed04ebd0c5c7e5e3fa21d71b3f2)]<br>
+它具有：(i)、$W^{[1]}$的形状是(4,4)（计算方式是：$W^{[l]} = (n^{[l]},n^{[l-1]})$），同样$W^{[2]}$的形状是(3,4)，$W^{[3]}$的形状是(1,3)；(ii)、$b^{[1]}$的形状是(4,1)（计算方式是：$b^{[l]} = (n^{[l]},1)$），同样$b^{[2]}$的形状是(3,1)，$b^{[3]}$的形状是(1,1)</li>
+<li>假设我们存储的值$n^{[l]}$在一个名为layers的数组中，如下所示：layer_dims = [$n_x$，4,3,2,1]。因此，第1层有四个隐藏单元，第2层有三个隐藏单元，依此类推。则使用下面的for循环初始化模型的参数：</li>
 </ol>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">for</span><span class="highlight-p">(</span><span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">layer_dims</span><span class="highlight-p">))):</span>
-<span class="highlight-ln">2</span>  <span class="highlight-n">parameter</span><span class="highlight-p">[</span><span class="highlight-err">‘</span><span class="highlight-n">W</span><span class="highlight-err">’</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">i</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">layers</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-n">layers</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]))</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
-<span class="highlight-ln">3</span>  <span class="highlight-n">parameter</span><span class="highlight-p">[</span><span class="highlight-err">‘</span><span class="highlight-n">b</span><span class="highlight-err">’</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">i</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">layers</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
+<pre><code class="language-python">for(i in range(1, len(layer_dims))):
+  parameter[‘W’ + str(i)] = np.random.randn(layers[i], layers[i-1])) * 0.01
+  parameter[‘b’ + str(i)] = np.random.randn(layers[i], 1) * 0.01
 </code></pre>
 <p><br><br></p>
 <blockquote>
@@ -290,7 +292,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -299,7 +301,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -307,11 +309,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466401544",
@@ -329,4 +331,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 51ms, 2020/04/07 11:38:48 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 33ms, 2020/04/07 14:57:08 -->

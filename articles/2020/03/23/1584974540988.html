@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》四——卷积神经网络 - 夜雨飘零</title><meta name="description" content="前言 上一章我们通过学习线性回归例子入门了深度学习，同时也熟悉了PaddlePaddle的使用方式，那么我们在本章学习更有趣的知识点卷积神经网络。深度学习之所以那么流行，很大程度上是得益于它在计算机视觉上得到非常好的效果，而在深度学习上几乎是使用卷积神经网络来提取图像的特征的。在PaddlePaddle上如何定义一个卷积神经网络，并使用它来完成一个图像识别的任务呢。在本章我们通过学习MNIST图像数据集的分类例子，来掌握卷积神经网络的使用。 训练模型 创建一个mnist_classification.py文件，首先导入所需得包，这次使用到了MNIST数据集接口，也使用了处理图像得工具包。 import numpy as np import paddle as paddle import paddle.dataset.mnist as mnist import paddle.fluid as fluid from PIL import Image import matplotlib.pyplot as plt 在图像识别上，使用得算法也经过了多次的迭代更新，比如多层感知器，在卷积神经网...."/><meta property="og:description" content="前言 上一章我们通过学习线性回归例子入门了深度学习，同时也熟悉了PaddlePaddle的使用方式，那么我们在本章学习更有趣的知识点卷积神经网络。深度学习之所以那么流行，很大程度上是得益于它在计算机视觉上得到非常好的效果，而在深度学习上几乎是使用卷积神经网络来提取图像的特征的。在PaddlePaddle上如何定义一个卷积神经网络，并使用它来完成一个图像识别的任务呢。在本章我们通过学习MNIST图像数据集的分类例子，来掌握卷积神经网络的使用。 训练模型 创建一个mnist_classification.py文件，首先导入所需得包，这次使用到了MNIST数据集接口，也使用了处理图像得工具包。 import numpy as np import paddle as paddle import paddle.dataset.mnist as mnist import paddle.fluid as fluid from PIL import Image import matplotlib.pyplot as plt 在图像识别上，使用得算法也经过了多次的迭代更新，比如多层感知器，在卷积神经网...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》四——卷积神经网络 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974540988.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》四——卷积神经网络 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974540988.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》四——卷积神经网络 - 夜雨飘零</title><meta name="description" content="前言 上一章我们通过学习线性回归例子入门了深度学习，同时也熟悉了PaddlePaddle的使用方式，那么我们在本章学习更有趣的知识点卷积神经网络。深度学习之所以那么流行，很大程度上是得益于它在计算机视觉上得到非常好的效果，而在深度学习上几乎是使用卷积神经网络来提取图像的特征的。在PaddlePaddle上如何定义一个卷积神经网络，并使用它来完成一个图像识别的任务呢。在本章我们通过学习MNIST图像数据集的分类例子，来掌握卷积神经网络的使用。 训练模型 创建一个mnist_classification.py文件，首先导入所需得包，这次使用到了MNIST数据集接口，也使用了处理图像得工具包。 import numpy as np import paddle as paddle import paddle.dataset.mnist as mnist import paddle.fluid as fluid from PIL import Image import matplotlib.pyplot as plt 在图像识别上，使用得算法也经过了多次的迭代更新，比如多层感知器，在卷积神经网...."/><meta property="og:description" content="前言 上一章我们通过学习线性回归例子入门了深度学习，同时也熟悉了PaddlePaddle的使用方式，那么我们在本章学习更有趣的知识点卷积神经网络。深度学习之所以那么流行，很大程度上是得益于它在计算机视觉上得到非常好的效果，而在深度学习上几乎是使用卷积神经网络来提取图像的特征的。在PaddlePaddle上如何定义一个卷积神经网络，并使用它来完成一个图像识别的任务呢。在本章我们通过学习MNIST图像数据集的分类例子，来掌握卷积神经网络的使用。 训练模型 创建一个mnist_classification.py文件，首先导入所需得包，这次使用到了MNIST数据集接口，也使用了处理图像得工具包。 import numpy as np import paddle as paddle import paddle.dataset.mnist as mnist import paddle.fluid as fluid from PIL import Image import matplotlib.pyplot as plt 在图像识别上，使用得算法也经过了多次的迭代更新，比如多层感知器，在卷积神经网...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》四——卷积神经网络 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974540988.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》四——卷积神经网络 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974540988.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《PaddlePaddle从入门到炼丹》三——线性回归" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974471592.html">
             <link rel="next" title="《PaddlePaddle从入门到炼丹》五——循环神经网络" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974601202.html">
     <!-- 百度统计 -->
@@ -78,16 +78,16 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#训练模型">训练模型</a>
+            <a href="#toc_h1_1">训练模型</a>
         </li>
         <li class="toc__h1">
-            <a href="#预测图像">预测图像</a>
+            <a href="#toc_h1_2">预测图像</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_3">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -135,200 +135,200 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20200311.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>上一章我们通过学习线性回归例子入门了深度学习，同时也熟悉了PaddlePaddle的使用方式，那么我们在本章学习更有趣的知识点卷积神经网络。深度学习之所以那么流行，很大程度上是得益于它在计算机视觉上得到非常好的效果，而在深度学习上几乎是使用卷积神经网络来提取图像的特征的。在PaddlePaddle上如何定义一个卷积神经网络，并使用它来完成一个图像识别的任务呢。在本章我们通过学习MNIST图像数据集的分类例子，来掌握卷积神经网络的使用。</p>
-<h1 id="训练模型">训练模型</h1>
+<h1 id="toc_h1_1">训练模型</h1>
 <p>创建一个<code>mnist_classification.py</code>文件，首先导入所需得包，这次使用到了MNIST数据集接口，也使用了处理图像得工具包。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.dataset.mnist</span> <span class="highlight-kn">as</span> <span class="highlight-nn">mnist</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln">5</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
-<span class="highlight-ln">6</span><span class="highlight-kn">import</span> <span class="highlight-nn">matplotlib.pyplot</span> <span class="highlight-kn">as</span> <span class="highlight-nn">plt</span>
+<pre><code class="language-python">import numpy as np
+import paddle as paddle
+import paddle.dataset.mnist as mnist
+import paddle.fluid as fluid
+from PIL import Image
+import matplotlib.pyplot as plt
 </code></pre>
 <p>在图像识别上，使用得算法也经过了多次的迭代更新，比如多层感知器，在卷积神经网络广泛使用之前，多层感知器在图像识别上是非常流行的，从这方面来看，多层感知器在当时也是有一定的优势的。那么如下使用PaddlePaddle来定义一个多层感知器呢，我们可以来学习一下。以下的代码判断就是定义一个简单的多层感知器，一共有三层，两个大小为100的隐层和一个大小为10的输出层，因为MNIST数据集是手写0到9的灰度图像，类别有10个，所以最后的输出大小是10。最后输出层的激活函数是Softmax，所以最后的输出层相当于一个分类器。加上一个输入层的话，多层感知器的结构是：<code>输入层--&gt;&gt;隐层--&gt;&gt;隐层--&gt;&gt;输出层</code>。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义多层感知器</span>
-<span class="highlight-ln">2</span><span class="highlight-k">def</span> <span class="highlight-nf">multilayer_perceptron</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-p">):</span>
-<span class="highlight-ln">3</span>    <span class="highlight-c1"># 第一个全连接层，激活函数为ReLU</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">hidden1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-nb">input</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">100</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-c1"># 第二个全连接层，激活函数为ReLU</span>
-<span class="highlight-ln">6</span>    <span class="highlight-n">hidden2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">hidden1</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">100</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">7</span>    <span class="highlight-c1"># 以softmax为激活函数的全连接输出层，大小为label大小</span>
-<span class="highlight-ln">8</span>    <span class="highlight-n">fc</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">hidden2</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'softmax'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">9</span>    <span class="highlight-k">return</span> <span class="highlight-n">fc</span>
+<pre><code class="language-python"># 定义多层感知器
+def multilayer_perceptron(input):
+    # 第一个全连接层，激活函数为ReLU
+    hidden1 = fluid.layers.fc(input=input, size=100, act='relu')
+    # 第二个全连接层，激活函数为ReLU
+    hidden2 = fluid.layers.fc(input=hidden1, size=100, act='relu')
+    # 以softmax为激活函数的全连接输出层，大小为label大小
+    fc = fluid.layers.fc(input=hidden2, size=10, act='softmax')
+    return fc
 </code></pre>
 <p>卷积神经网络普遍用在图像特征提取上，一些图像分类、目标检测、文字识别几乎都回使用到卷积神经网络作为图像的特征提取方式。卷积神经网络通常由卷积层、池化层和全连接层，有时还有Batch Normalization层和Dropout层。下面我们就创建一个简单卷积神经网络，一共定义了5层，加上输入层的话，它的结构是：<code>输入层--&gt;&gt;卷积层--&gt;&gt;池化层--&gt;&gt;卷积层--&gt;&gt;池化层--&gt;&gt;输出层</code>。我们可以通过调用PaddlePaddle的接口<code>fluid.layers.conv2d()</code>来做一次卷积操作，我们可以通过<code>num_filters</code>参数设置卷积核的数量，通过<code>filter_size</code>设置卷积核的大小，还有通过<code>stride</code>来设置卷积操作时移动的步长。使用<code>fluid.layers.pool2d()</code>接口做一次池化操作，通过参数<code>pool_size</code>可以设置池化的大小，通过参数<code>pool_stride</code>设置池化滑动的步长，通过参数<code>pool_type</code>设置池化的类型，目前有最大池化和平均池化，下面使用的时最大池化，当值为<code>avg</code>时是平均池化。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 卷积神经网络</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">convolutional_neural_network</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 第一个卷积层，卷积核大小为3*3，一共有32个卷积核</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">conv1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">conv2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-nb">input</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 5</span>                                <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-mi">32</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 6</span>                                <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 7</span>                                <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-c1"># 第一个池化层，池化大小为2*2，步长为1，最大池化</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">pool1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">pool2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">11</span>                                <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">12</span>                                <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">13</span>                                <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-s1">'max'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1"># 第二个卷积层，卷积核大小为3*3，一共有64个卷积核</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">conv2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">conv2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">pool1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">17</span>                                <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-mi">64</span><span class="highlight-p">,</span>
-<span class="highlight-ln">18</span>                                <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln">19</span>                                <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-c1"># 第二个池化层，池化大小为2*2，步长为1，最大池化</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">pool2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">pool2d</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">23</span>                                <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">24</span>                                <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">25</span>                                <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-s1">'max'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>    <span class="highlight-c1"># 以softmax为激活函数的全连接输出层，大小为label大小</span>
-<span class="highlight-ln">28</span>    <span class="highlight-n">fc</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">pool2</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'softmax'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">29</span>    <span class="highlight-k">return</span> <span class="highlight-n">fc</span>
+<pre><code class="language-python"># 卷积神经网络
+def convolutional_neural_network(input):
+    # 第一个卷积层，卷积核大小为3*3，一共有32个卷积核
+    conv1 = fluid.layers.conv2d(input=input,
+                                num_filters=32,
+                                filter_size=3,
+                                stride=1)
+
+    # 第一个池化层，池化大小为2*2，步长为1，最大池化
+    pool1 = fluid.layers.pool2d(input=conv1,
+                                pool_size=2,
+                                pool_stride=1,
+                                pool_type='max')
+
+    # 第二个卷积层，卷积核大小为3*3，一共有64个卷积核
+    conv2 = fluid.layers.conv2d(input=pool1,
+                                num_filters=64,
+                                filter_size=3,
+                                stride=1)
+
+    # 第二个池化层，池化大小为2*2，步长为1，最大池化
+    pool2 = fluid.layers.pool2d(input=conv2,
+                                pool_size=2,
+                                pool_stride=1,
+                                pool_type='max')
+
+    # 以softmax为激活函数的全连接输出层，大小为label大小
+    fc = fluid.layers.fc(input=pool2, size=10, act='softmax')
+    return fc
 </code></pre>
 <p>定义输入层，输入的是图像数据。图像是<code>28*28</code>的灰度图，所以输入的形状是<code>[1, 28, 28]</code>，如果图像是<code>32*32</code>的彩色图，那么输入的形状是<code>[3. 32, 32]</code>，因为灰度图只有一个通道，而彩色图有RGB三个通道。理论上它还有一个维度是Batch的，不过这个是PaddlePaddle帮我们默认设置的，我们可以不用理会。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义输入层</span>
-<span class="highlight-ln">2</span><span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'image'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">28</span><span class="highlight-p">,</span> <span class="highlight-mi">28</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'label'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义输入层
+image = fluid.layers.data(name='image', shape=[1, 28, 28], dtype='float32')
+label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 </code></pre>
 <p>上面定义了多层感机器和卷积神经网络，我们可以在这里调用定义好的网络来获取分类器，读者可以尝试这两种不同的网络进行训练，观察一下他们的准确率如何。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取分类器</span>
-<span class="highlight-ln">2</span><span class="highlight-c1"># model = multilayer_perceptron(image)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">model</span> <span class="highlight-o">=</span> <span class="highlight-n">convolutional_neural_network</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取分类器
+# model = multilayer_perceptron(image)
+model = convolutional_neural_network(image)
 </code></pre>
 <p>接着是定义损失函数，这次使用的是交叉熵损失函数，该函数在分类任务上比较常用。定义了一个损失函数之后，还有对它求平均值，因为定义的是一个Batch的损失值。同时我们还可以定义一个准确率函数，这个可以在我们训练的时候输出分类的准确率。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取损失函数和准确率函数</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">cross_entropy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">avg_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">mean</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">acc</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">accuracy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取损失函数和准确率函数
+cost = fluid.layers.cross_entropy(input=model, label=label)
+avg_cost = fluid.layers.mean(cost)
+acc = fluid.layers.accuracy(input=model, label=label)
 </code></pre>
 <p>然后我们从主程序中克隆一个程序作为预测程序，之后可以使用这个预测程序预测测试的准确率和预测自己的图像。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取测试程序</span>
-<span class="highlight-ln">2</span><span class="highlight-n">test_program</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">clone</span><span class="highlight-p">(</span><span class="highlight-n">for_test</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取测试程序
+test_program = fluid.default_main_program().clone(for_test=True)
 </code></pre>
 <p>接着是定义优化方法，这次我们使用的是Adam优化方法，同时指定学习率为0.001。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义优化方法</span>
-<span class="highlight-ln">2</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">AdamOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.001</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">opts</span> <span class="highlight-o">=</span> <span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">avg_cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义优化方法
+optimizer = fluid.optimizer.AdamOptimizer(learning_rate=0.001)
+opts = optimizer.minimize(avg_cost)
 </code></pre>
 <p>定义读取MNIST数据集的reader，指定一个Batch的大小为128，也就是一次训练128张图像。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取MNIST数据</span>
-<span class="highlight-ln">2</span><span class="highlight-n">train_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">mnist</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-p">(),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">mnist</span><span class="highlight-o">.</span><span class="highlight-n">test</span><span class="highlight-p">(),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取MNIST数据
+train_reader = paddle.batch(mnist.train(), batch_size=128)
+test_reader = paddle.batch(mnist.test(), batch_size=128)
 </code></pre>
 <p>接着也是定义一个执行器和初始化参数，Fluid版本使用的流程都差不多。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义一个使用CPU的执行器</span>
-<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 进行参数初始化</span>
-<span class="highlight-ln">5</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+<pre><code class="language-python"># 定义一个使用CPU的执行器
+place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+# 进行参数初始化
+exe.run(fluid.default_startup_program())
 </code></pre>
 <p>输入的数据维度是图像数据和图像对应的标签，每个类别的图像都要对应一个标签，这个标签是从0递增的整型数值。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义输入数据维度</span>
-<span class="highlight-ln">2</span><span class="highlight-n">feeder</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">DataFeeder</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-o">=</span><span class="highlight-n">place</span><span class="highlight-p">,</span> <span class="highlight-n">feed_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 定义输入数据维度
+feeder = fluid.DataFeeder(place=place, feed_list=[image, label])
 </code></pre>
 <p>最后就可以开始训练了，我们这次训练5个Pass，读者可以根据自己的情况自由设置。在上面我们已经定义了一个求准确率的函数，所以我们在训练的时候让它输出当前的准确率，计算准确率的原理很简单，就是把训练是预测的结果和真实的值比较，求出准确率。每一个Pass训练结束之后，再进行一次测试，使用测试集进行测试，并求出当前的Cost和准确率的平均值。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 开始训练和测试</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">for</span> <span class="highlight-n">pass_id</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">5</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 进行训练</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">train_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-n">train_cost</span><span class="highlight-p">,</span> <span class="highlight-n">train_acc</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln"> 6</span>                                        <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 7</span>                                        <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">,</span> <span class="highlight-n">acc</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-c1"># 每100个batch打印一次信息</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-k">if</span> <span class="highlight-n">batch_id</span> <span class="highlight-o">%</span> <span class="highlight-mi">100</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">10</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Pass:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Batch:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">, Accuracy:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span>
-<span class="highlight-ln">11</span>                  <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">train_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">train_acc</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]))</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-c1"># 进行测试</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">test_accs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">test_costs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">16</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">test_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">test_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">18</span>                                      <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
-<span class="highlight-ln">19</span>                                      <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">,</span> <span class="highlight-n">acc</span><span class="highlight-p">])</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">test_accs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_acc</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">21</span>        <span class="highlight-n">test_costs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">22</span>    <span class="highlight-c1"># 求测试结果的平均值</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">test_cost</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">))</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">))</span>
-<span class="highlight-ln">25</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Test:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">, Accuracy:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span><span class="highlight-p">))</span>
+<pre><code class="language-python"># 开始训练和测试
+for pass_id in range(5):
+    # 进行训练
+    for batch_id, data in enumerate(train_reader()):
+        train_cost, train_acc = exe.run(program=fluid.default_main_program(),
+                                        feed=feeder.feed(data),
+                                        fetch_list=[avg_cost, acc])
+        # 每100个batch打印一次信息
+        if batch_id % 100 == 0:
+            print('Pass:%d, Batch:%d, Cost:%0.5f, Accuracy:%0.5f' %
+                  (pass_id, batch_id, train_cost[0], train_acc[0]))
+
+    # 进行测试
+    test_accs = []
+    test_costs = []
+    for batch_id, data in enumerate(test_reader()):
+        test_cost, test_acc = exe.run(program=test_program,
+                                      feed=feeder.feed(data),
+                                      fetch_list=[avg_cost, acc])
+        test_accs.append(test_acc[0])
+        test_costs.append(test_cost[0])
+    # 求测试结果的平均值
+    test_cost = (sum(test_costs) / len(test_costs))
+    test_acc = (sum(test_accs) / len(test_accs))
+    print('Test:%d, Cost:%0.5f, Accuracy:%0.5f' % (pass_id, test_cost, test_acc))
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>Pass:0, Batch:0, Cost:3.50138, Accuracy:0.07812
-<span class="highlight-ln"> 2</span>Pass:0, Batch:100, Cost:0.14832, Accuracy:0.96875
-<span class="highlight-ln"> 3</span>Pass:0, Batch:200, Cost:0.13408, Accuracy:0.96875
-<span class="highlight-ln"> 4</span>Pass:0, Batch:300, Cost:0.11601, Accuracy:0.97656
-<span class="highlight-ln"> 5</span>Pass:0, Batch:400, Cost:0.27977, Accuracy:0.92969
-<span class="highlight-ln"> 6</span>Test:0, Cost:0.08879, Accuracy:0.97379
-<span class="highlight-ln"> 7</span>Pass:1, Batch:0, Cost:0.11175, Accuracy:0.96875
-<span class="highlight-ln"> 8</span>Pass:1, Batch:100, Cost:0.07854, Accuracy:0.97656
-<span class="highlight-ln"> 9</span>Pass:1, Batch:200, Cost:0.04025, Accuracy:0.99219
-<span class="highlight-ln">10</span>Pass:1, Batch:300, Cost:0.09936, Accuracy:0.98438
-<span class="highlight-ln">11</span>Pass:1, Batch:400, Cost:0.19245, Accuracy:0.95312
-<span class="highlight-ln">12</span>Test:1, Cost:0.10123, Accuracy:0.97241
-<span class="highlight-ln">13</span>Pass:2, Batch:0, Cost:0.13749, Accuracy:0.96094
-<span class="highlight-ln">14</span>Pass:2, Batch:100, Cost:0.06074, Accuracy:0.98438
-<span class="highlight-ln">15</span>Pass:2, Batch:200, Cost:0.01982, Accuracy:0.99219
-<span class="highlight-ln">16</span>Pass:2, Batch:300, Cost:0.06725, Accuracy:0.97656
-<span class="highlight-ln">17</span>Pass:2, Batch:400, Cost:0.10043, Accuracy:0.96875
-<span class="highlight-ln">18</span>Test:2, Cost:0.13354, Accuracy:0.96776
-<span class="highlight-ln">19</span>Pass:3, Batch:0, Cost:0.08895, Accuracy:0.98438
-<span class="highlight-ln">20</span>Pass:3, Batch:100, Cost:0.06339, Accuracy:0.96875
-<span class="highlight-ln">21</span>Pass:3, Batch:200, Cost:0.05107, Accuracy:0.98438
-<span class="highlight-ln">22</span>Pass:3, Batch:300, Cost:0.08062, Accuracy:0.97656
-<span class="highlight-ln">23</span>Pass:3, Batch:400, Cost:0.07631, Accuracy:0.96875
-<span class="highlight-ln">24</span>Test:3, Cost:0.11465, Accuracy:0.97449
-<span class="highlight-ln">25</span>Pass:4, Batch:0, Cost:0.01259, Accuracy:1.00000
-<span class="highlight-ln">26</span>Pass:4, Batch:100, Cost:0.01203, Accuracy:1.00000
-<span class="highlight-ln">27</span>Pass:4, Batch:200, Cost:0.08451, Accuracy:0.97656
-<span class="highlight-ln">28</span>Pass:4, Batch:300, Cost:0.16532, Accuracy:0.98438
-<span class="highlight-ln">29</span>Pass:4, Batch:400, Cost:0.09657, Accuracy:0.98438
-<span class="highlight-ln">30</span>Test:4, Cost:0.14624, Accuracy:0.97211
+<pre><code>Pass:0, Batch:0, Cost:3.50138, Accuracy:0.07812
+Pass:0, Batch:100, Cost:0.14832, Accuracy:0.96875
+Pass:0, Batch:200, Cost:0.13408, Accuracy:0.96875
+Pass:0, Batch:300, Cost:0.11601, Accuracy:0.97656
+Pass:0, Batch:400, Cost:0.27977, Accuracy:0.92969
+Test:0, Cost:0.08879, Accuracy:0.97379
+Pass:1, Batch:0, Cost:0.11175, Accuracy:0.96875
+Pass:1, Batch:100, Cost:0.07854, Accuracy:0.97656
+Pass:1, Batch:200, Cost:0.04025, Accuracy:0.99219
+Pass:1, Batch:300, Cost:0.09936, Accuracy:0.98438
+Pass:1, Batch:400, Cost:0.19245, Accuracy:0.95312
+Test:1, Cost:0.10123, Accuracy:0.97241
+Pass:2, Batch:0, Cost:0.13749, Accuracy:0.96094
+Pass:2, Batch:100, Cost:0.06074, Accuracy:0.98438
+Pass:2, Batch:200, Cost:0.01982, Accuracy:0.99219
+Pass:2, Batch:300, Cost:0.06725, Accuracy:0.97656
+Pass:2, Batch:400, Cost:0.10043, Accuracy:0.96875
+Test:2, Cost:0.13354, Accuracy:0.96776
+Pass:3, Batch:0, Cost:0.08895, Accuracy:0.98438
+Pass:3, Batch:100, Cost:0.06339, Accuracy:0.96875
+Pass:3, Batch:200, Cost:0.05107, Accuracy:0.98438
+Pass:3, Batch:300, Cost:0.08062, Accuracy:0.97656
+Pass:3, Batch:400, Cost:0.07631, Accuracy:0.96875
+Test:3, Cost:0.11465, Accuracy:0.97449
+Pass:4, Batch:0, Cost:0.01259, Accuracy:1.00000
+Pass:4, Batch:100, Cost:0.01203, Accuracy:1.00000
+Pass:4, Batch:200, Cost:0.08451, Accuracy:0.97656
+Pass:4, Batch:300, Cost:0.16532, Accuracy:0.98438
+Pass:4, Batch:400, Cost:0.09657, Accuracy:0.98438
+Test:4, Cost:0.14624, Accuracy:0.97211
 </code></pre>
-<h1 id="预测图像">预测图像</h1>
+<h1 id="toc_h1_2">预测图像</h1>
 <p>训练完成之后，我们可以使用从主程序中克隆的<code>test_program</code>来预测我们自己的图像。再预测之前，要对图像进行预处理，处理方式要跟训练的时候一样。首先进行灰度化，然后压缩图像大小为<code>28*28</code>，接着将图像转换成一维向量，最后再对一维向量进行归一化处理。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 对图片进行预处理</span>
-<span class="highlight-ln">2</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">):</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">convert</span><span class="highlight-p">(</span><span class="highlight-s1">'L'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">28</span><span class="highlight-p">,</span> <span class="highlight-mi">28</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">reshape</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">28</span><span class="highlight-p">,</span> <span class="highlight-mi">28</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span> <span class="highlight-o">/</span> <span class="highlight-mf">255.0</span> <span class="highlight-o">*</span> <span class="highlight-mf">2.0</span> <span class="highlight-o">-</span> <span class="highlight-mf">1.0</span>
-<span class="highlight-ln">7</span>    <span class="highlight-k">return</span> <span class="highlight-n">im</span>
+<pre><code class="language-python"># 对图片进行预处理
+def load_image(file):
+    im = Image.open(file).convert('L')
+    im = im.resize((28, 28), Image.ANTIALIAS)
+    im = np.array(im).reshape(1, 1, 28, 28).astype(np.float32)
+    im = im / 255.0 * 2.0 - 1.0
+    return im
 </code></pre>
 <p>我们从网上下载一张图像，并将它命名为<code>infer_3.png</code>。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-err">!</span><span class="highlight-n">wget</span> <span class="highlight-n">https</span><span class="highlight-p">:</span><span class="highlight-o">//</span><span class="highlight-n">github</span><span class="highlight-o">.</span><span class="highlight-n">com</span><span class="highlight-o">/</span><span class="highlight-n">yeyupiaoling</span><span class="highlight-o">/</span><span class="highlight-n">LearnPaddle2</span><span class="highlight-o">/</span><span class="highlight-n">blob</span><span class="highlight-o">/</span><span class="highlight-n">master</span><span class="highlight-o">/</span><span class="highlight-n">note4</span><span class="highlight-o">/</span><span class="highlight-n">infer_3</span><span class="highlight-o">.</span><span class="highlight-n">png</span><span class="highlight-err">?</span><span class="highlight-n">raw</span><span class="highlight-o">=</span><span class="highlight-n">true</span> <span class="highlight-o">-</span><span class="highlight-n">O</span> <span class="highlight-s1">'infer_3.png'</span>
+<pre><code class="language-python">!wget https://github.com/yeyupiaoling/LearnPaddle2/blob/master/note4/infer_3.png?raw=true -O 'infer_3.png'
 </code></pre>
 <p>我们可以使用Matplotlib工具显示这张图像。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-s1">'infer_3.png'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">imshow</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">show</span><span class="highlight-p">()</span>
+<pre><code class="language-python">img = Image.open('infer_3.png')
+plt.imshow(img)
+plt.show()
 </code></pre>
 <p>输出的图片：<br>
 <img src="https://s1.ax1x.com/2020/04/03/Gd9B1s.png" alt="在这里插入图片描述"></p>
 <p>最后把图像转换成一维向量并进行预测，数据从<code>feed</code>中的<code>image</code>传入，<code>label</code>设置一个假的label值传进去。<code>fetch_list</code>的值是网络模型的最后一层分类器，所以输出的结果是10个标签的概率值，这些概率值的总和为1。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 加载数据并开始预测</span>
-<span class="highlight-ln">2</span><span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-s1">'./infer_3.png'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">results</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">test_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">4</span>                  <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-s1">'image'</span><span class="highlight-p">:</span> <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-s2">"label"</span><span class="highlight-p">:</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([[</span><span class="highlight-mi">1</span><span class="highlight-p">]])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s2">"int64"</span><span class="highlight-p">)},</span>
-<span class="highlight-ln">5</span>                  <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">model</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 加载数据并开始预测
+img = load_image('./infer_3.png')
+results = exe.run(program=test_program,
+                  feed={'image': img, "label": np.array([[1]]).astype("int64")},
+                  fetch_list=[model])
 </code></pre>
 <p>拿到每个标签的概率值之后，我们要获取概率最大的标签，并打印出来。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取概率最大的label</span>
-<span class="highlight-ln">2</span><span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-n">results</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"该图片的预测结果的label为: </span><span class="highlight-si">%d</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 获取概率最大的label
+lab = np.argsort(results)
+print("该图片的预测结果的label为: %d" % lab[0][0][-1])
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>该图片的预测结果的label为: 3
+<pre><code>该图片的预测结果的label为: 3
 </code></pre>
 <p>到处为止，本章就结束了。经过学完这一章节，是不是觉得PaddlePaddle非常好用呢，借助PaddlePaddle我们很容易就定义了一个卷积神经网络，并完成了图像分类的训练和预测。卷积神经网络在图像识别上发挥着巨大的作用，而在自然语言处理上，循环神经网络同样起着巨大的作用，我们下一章就学习一下循环神经网络。</p>
 <p>同步到百度AI Studio平台：<a href="http://aistudio.baidu.com/aistudio/projectdetail/29346" target="_blank">http://aistudio.baidu.com/aistudio/projectdetail/29346</a><br>
 同步到科赛网K-Lab平台：<a href="https://www.kesci.com/home/project/5bf8c998954d6e001066d780" target="_blank">https://www.kesci.com/home/project/5bf8c998954d6e001066d780</a><br>
 项目代码GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note4" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note4</a></p>
 <p><strong>注意：</strong> 最新代码以GitHub上的为准</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_3">参考资料</h1>
 <ol>
 <li><a href="https://blog.csdn.net/m_buddy/article/details/80224409" target="_blank">https://blog.csdn.net/m_buddy/article/details/80224409</a></li>
 <li><a href="http://www.paddlepaddle.org/documentation/docs/zh/1.0/beginners_guide/quick_start/recognize_digits/README.cn.html" target="_blank">http://www.paddlepaddle.org/documentation/docs/zh/1.0/beginners_guide/quick_start/recognize_digits/README.cn.html</a></li>
@@ -408,7 +408,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -417,7 +417,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -425,11 +425,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466403215",
@@ -447,4 +447,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 50ms, 2020/04/07 11:38:40 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 28ms, 2020/04/07 14:57:07 -->

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>百度机器学习训练营笔记——数学基础 - 夜雨飘零</title><meta name="description" content="均值（mean，average） 代表一组数据在分布上的集中趋势和总体上的平均水平。 常说的中心化（Zero-Centered）或者零均值化（Mean-subtraction），就是把每个数值都减去均值。 \mu=\frac{1}{N}\sum_{i=1}^Nx_i\left(x:x_1,x_2,...,x_N\right) import numpy as np # 一维数组 x = np.array([-0.02964322, -0.11363636, 0.39417967, -0.06916996, 0.14260276]) print(&#39;数据：&#39;, x) # 求均值 avg = np.mean(x) print(&#39;均值：&#39;, avg) 输出： 数据： [-0.02964322 -0.11363636 0.39417967 -0.06916996 0.14260276] 均值： 0.064866578 标准差（Standard Deviation） 代表一组数据在分布上第离散程度。 方差是标准差的平方。 $$ \sigma=\sqrt{\frac{1}{N}...."/><meta property="og:description" content="均值（mean，average） 代表一组数据在分布上的集中趋势和总体上的平均水平。 常说的中心化（Zero-Centered）或者零均值化（Mean-subtraction），就是把每个数值都减去均值。 \mu=\frac{1}{N}\sum_{i=1}^Nx_i\left(x:x_1,x_2,...,x_N\right) import numpy as np # 一维数组 x = np.array([-0.02964322, -0.11363636, 0.39417967, -0.06916996, 0.14260276]) print(&#39;数据：&#39;, x) # 求均值 avg = np.mean(x) print(&#39;均值：&#39;, avg) 输出： 数据： [-0.02964322 -0.11363636 0.39417967 -0.06916996 0.14260276] 均值： 0.064866578 标准差（Standard Deviation） 代表一组数据在分布上第离散程度。 方差是标准差的平方。 $$ \sigma=\sqrt{\frac{1}{N}...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="百度机器学习训练营笔记——数学基础 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974132836.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="百度机器学习训练营笔记——数学基础 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974132836.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>百度机器学习训练营笔记——数学基础 - 夜雨飘零</title><meta name="description" content="均值（mean，average） 代表一组数据在分布上的集中趋势和总体上的平均水平。 常说的中心化（Zero-Centered）或者零均值化（Mean-subtraction），就是把每个数值都减去均值。 $$ \mu=\frac{1}{N}\sum_{i=1}^Nx_i\left(x:x_1,x_2,...,x_N\right) $$ import numpy as np # 一维数组 x = np.array([-0.02964322, -0.11363636, 0.39417967, -0.06916996, 0.14260276]) print(&#39;数据：&#39;, x) # 求均值 avg = np.mean(x) print(&#39;均值：&#39;, avg) 输出： 数据： [-0.02964322 -0.11363636 0.39417967 -0.06916996 0.14260276] 均值： 0.064866578 标准差（Standard Deviation） 代表一组数据在分布上第离散程度。 方差是标准差的平方。 $$ \sigma=\sqrt{\frac{1}{N}...."/><meta property="og:description" content="均值（mean，average） 代表一组数据在分布上的集中趋势和总体上的平均水平。 常说的中心化（Zero-Centered）或者零均值化（Mean-subtraction），就是把每个数值都减去均值。 $$ \mu=\frac{1}{N}\sum_{i=1}^Nx_i\left(x:x_1,x_2,...,x_N\right) $$ import numpy as np # 一维数组 x = np.array([-0.02964322, -0.11363636, 0.39417967, -0.06916996, 0.14260276]) print(&#39;数据：&#39;, x) # 求均值 avg = np.mean(x) print(&#39;均值：&#39;, avg) 输出： 数据： [-0.02964322 -0.11363636 0.39417967 -0.06916996 0.14260276] 均值： 0.064866578 标准差（Standard Deviation） 代表一组数据在分布上第离散程度。 方差是标准差的平方。 $$ \sigma=\sqrt{\frac{1}{N}...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="百度机器学习训练营笔记——数学基础 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974132836.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="百度机器学习训练营笔记——数学基础 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974132836.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="基于PaddlePaddle语音识别模型" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974063811.html">
             <link rel="next" title="百度机器学习训练营笔记——问题回答" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974223089.html">
     <!-- 百度统计 -->
@@ -78,34 +78,34 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h2">
-            <a href="#均值-mean-average-">均值（mean，average）</a>
+            <a href="#toc_h2_0">均值（mean，average）</a>
         </li>
         <li class="toc__h2">
-            <a href="#标准差-Standard-Deviation-">标准差（Standard Deviation）</a>
+            <a href="#toc_h2_1">标准差（Standard Deviation）</a>
         </li>
         <li class="toc__h2">
-            <a href="#正态分布-Normal-Distribution-">正态分布（Normal Distribution）</a>
+            <a href="#toc_h2_2">正态分布（Normal Distribution）</a>
         </li>
         <li class="toc__h2">
-            <a href="#非标准正态分布的标准化-Normalization-">非标准正态分布的标准化（Normalization）</a>
+            <a href="#toc_h2_3">非标准正态分布的标准化（Normalization）</a>
         </li>
         <li class="toc__h2">
-            <a href="#指数函数-Exponent-">指数函数（Exponent）</a>
+            <a href="#toc_h2_4">指数函数（Exponent）</a>
         </li>
         <li class="toc__h2">
-            <a href="#对数函数-Logarithm-">对数函数（Logarithm）</a>
+            <a href="#toc_h2_5">对数函数（Logarithm）</a>
         </li>
         <li class="toc__h2">
-            <a href="#Softmax函数">Softmax函数</a>
+            <a href="#toc_h2_6">Softmax函数</a>
         </li>
         <li class="toc__h2">
-            <a href="#One-hot-编码">One-hot 编码</a>
+            <a href="#toc_h2_7">One-hot 编码</a>
         </li>
         <li class="toc__h2">
-            <a href="#交叉熵-Cross-Entropy-">交叉熵（Cross Entropy）</a>
+            <a href="#toc_h2_8">交叉熵（Cross Entropy）</a>
         </li>
         <li class="toc__h2">
-            <a href="#激活函数-Activation-Function-">激活函数（Activation Function）</a>
+            <a href="#toc_h2_9">激活函数（Activation Function）</a>
         </li>
 </ul>        </div>
 </div>
@@ -151,183 +151,203 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20190414.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h2 id="均值-mean-average-">均值（mean，average）</h2>
+<h2 id="toc_h2_0">均值（mean，average）</h2>
 <ul>
 <li>代表一组数据在分布上的集中趋势和总体上的平均水平。</li>
 <li>常说的中心化（Zero-Centered）或者零均值化（Mean-subtraction），就是把每个数值都减去均值。</li>
 </ul>
-<div class="vditor-math">\mu=\frac{1}{N}\sum_{i=1}^Nx_i\left(x:x_1,x_2,...,x_N\right)</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 一维数组</span>
-<span class="highlight-ln">4</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-o">-</span><span class="highlight-mf">0.02964322</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.11363636</span><span class="highlight-p">,</span> <span class="highlight-mf">0.39417967</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.06916996</span><span class="highlight-p">,</span> <span class="highlight-mf">0.14260276</span><span class="highlight-p">])</span>
-<span class="highlight-ln">5</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'数据：'</span><span class="highlight-p">,</span> <span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span>
-<span class="highlight-ln">7</span><span class="highlight-c1"># 求均值</span>
-<span class="highlight-ln">8</span><span class="highlight-n">avg</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">mean</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln">9</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'均值：'</span><span class="highlight-p">,</span> <span class="highlight-n">avg</span><span class="highlight-p">)</span>
+<p>$$<br>
+\mu=\frac{1}{N}\sum_{i=1}^Nx_i\left(x:x_1,x_2,...,x_N\right)<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+
+# 一维数组
+x = np.array([-0.02964322, -0.11363636, 0.39417967, -0.06916996, 0.14260276])
+print('数据：', x)
+
+# 求均值
+avg = np.mean(x)
+print('均值：', avg)
 </code></pre>
 <p>输出：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>数据： [-0.02964322 -0.11363636  0.39417967 -0.06916996  0.14260276]
-<span class="highlight-ln">2</span>均值： 0.064866578
+<pre><code>数据： [-0.02964322 -0.11363636  0.39417967 -0.06916996  0.14260276]
+均值： 0.064866578
 </code></pre>
-<h2 id="标准差-Standard-Deviation-">标准差（Standard Deviation）</h2>
+<h2 id="toc_h2_1">标准差（Standard Deviation）</h2>
 <ul>
 <li>代表一组数据在分布上第离散程度。</li>
 <li>方差是标准差的平方。</li>
 </ul>
-<div class="vditor-math">\sigma=\sqrt{\frac{1}{N}\sum_{i=1}^N\left(x_i-\mu\right)^2} \left(x:x_1,x_2,...,x_N\right)</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 一维数组</span>
-<span class="highlight-ln">4</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-o">-</span><span class="highlight-mf">0.02964322</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.11363636</span><span class="highlight-p">,</span> <span class="highlight-mf">0.39417967</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.06916996</span><span class="highlight-p">,</span> <span class="highlight-mf">0.14260276</span><span class="highlight-p">])</span>
-<span class="highlight-ln">5</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'数据：'</span><span class="highlight-p">,</span> <span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span>
-<span class="highlight-ln">7</span><span class="highlight-c1"># 求标准差</span>
-<span class="highlight-ln">8</span><span class="highlight-n">std</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">std</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln">9</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'标准差：'</span><span class="highlight-p">,</span> <span class="highlight-n">std</span><span class="highlight-p">)</span>
+<p>$$<br>
+\sigma=\sqrt{\frac{1}{N}\sum_{i=1}^N\left(x_i-\mu\right)^2} \left(x:x_1,x_2,...,x_N\right)<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+
+# 一维数组
+x = np.array([-0.02964322, -0.11363636, 0.39417967, -0.06916996, 0.14260276])
+print('数据：', x)
+
+# 求标准差
+std = np.std(x)
+print('标准差：', std)
 </code></pre>
 <p>输出：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>数据： [-0.02964322 -0.11363636  0.39417967 -0.06916996  0.14260276]
-<span class="highlight-ln">2</span>标准差： 0.18614576055671836
+<pre><code>数据： [-0.02964322 -0.11363636  0.39417967 -0.06916996  0.14260276]
+标准差： 0.18614576055671836
 </code></pre>
-<h2 id="正态分布-Normal-Distribution-">正态分布（Normal Distribution）</h2>
+<h2 id="toc_h2_2">正态分布（Normal Distribution）</h2>
 <ul>
 <li>又叫“常态分布”，“高斯分布”，是最重要的一种分布。</li>
 <li>均值决定位置，方差决定幅度。</li>
-<li>表示：<span class="vditor-math">X\sim N\left(\mu,\sigma^2\right)</span></li>
+<li>表示：$X\sim N\left(\mu,\sigma^2\right)$</li>
 </ul>
-<p>正态分布的概率密度函数：</p>
-<div class="vditor-math">f(x)=\frac{1}{\sqrt {2\pi\sigma}}e^{-\frac{\left(x-\mu\right)^2}{2\sigma^2}}</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">matplotlib</span> <span class="highlight-kn">import</span> <span class="highlight-n">pyplot</span> <span class="highlight-k">as</span> <span class="highlight-n">plt</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-k">def</span> <span class="highlight-nf">nd</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">u</span><span class="highlight-o">=-</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">d</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">return</span> <span class="highlight-mi">1</span><span class="highlight-o">/</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sqrt</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-o">*</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">pi</span><span class="highlight-o">*</span><span class="highlight-n">d</span><span class="highlight-p">)</span><span class="highlight-o">*</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-o">-</span><span class="highlight-n">u</span><span class="highlight-p">)</span><span class="highlight-o">**</span><span class="highlight-mi">2</span><span class="highlight-o">/</span><span class="highlight-mi">2</span><span class="highlight-o">/</span><span class="highlight-n">d</span><span class="highlight-o">**</span><span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>  
-<span class="highlight-ln"> 7</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linspace</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-mi">50</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">y</span> <span class="highlight-o">=</span> <span class="highlight-n">nd</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span><span class="highlight-c1"># 调整坐标</span>
-<span class="highlight-ln">12</span><span class="highlight-n">ax</span> <span class="highlight-o">=</span> <span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">gca</span><span class="highlight-p">()</span>
-<span class="highlight-ln">13</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'right'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'top'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">xaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">yaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'left'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">18</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'left'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">19</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">show</span><span class="highlight-p">()</span>
+<p>正态分布的概率密度函数：<br>
+$$<br>
+f(x)=\frac{1}{\sqrt {2\pi\sigma}}e^{-\frac{\left(x-\mu\right)^2}{2\sigma^2}}<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+from matplotlib import pyplot as plt
+
+def nd(x, u=-0, d=1):
+    return 1/np.sqrt(2*np.pi*d)*np.exp(-(x-u)**2/2/d**2)
+  
+x = np.linspace(-3, 3, 50)
+y = nd(x)
+plt.plot(x, y)
+
+# 调整坐标
+ax = plt.gca()
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+ax.xaxis.set_ticks_position('bottom')
+ax.yaxis.set_ticks_position('left')
+ax.spines['bottom'].set_position(('data', 0))
+ax.spines['left'].set_position(('data', 0))
+plt.show()
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/02/GYOUc4.png" alt="在这里插入图片描述"></p>
-<h2 id="非标准正态分布的标准化-Normalization-">非标准正态分布的标准化（Normalization）</h2>
+<h2 id="toc_h2_3">非标准正态分布的标准化（Normalization）</h2>
 <ul>
 <li>将非标准正态变为标准正态。</li>
 <li>将每个数据减均值，除标准差。</li>
 </ul>
-<div class="vditor-math">y=\frac{x-\mu}{\sigma}</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">matplotlib</span> <span class="highlight-kn">import</span> <span class="highlight-n">pyplot</span> <span class="highlight-k">as</span> <span class="highlight-n">plt</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-k">def</span> <span class="highlight-nf">nd</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">u</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">d</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">return</span> <span class="highlight-mi">1</span><span class="highlight-o">/</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sqrt</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-o">*</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">pi</span><span class="highlight-o">*</span><span class="highlight-n">d</span><span class="highlight-p">)</span><span class="highlight-o">*</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-o">-</span><span class="highlight-n">u</span><span class="highlight-p">)</span><span class="highlight-o">**</span><span class="highlight-mi">2</span><span class="highlight-o">/</span><span class="highlight-mi">2</span><span class="highlight-o">/</span><span class="highlight-n">d</span><span class="highlight-o">**</span><span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>  
-<span class="highlight-ln"> 7</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linspace</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-mi">50</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">y1</span> <span class="highlight-o">=</span> <span class="highlight-n">nd</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">y2</span> <span class="highlight-o">=</span> <span class="highlight-n">nd</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-mf">0.5</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span><span class="highlight-c1"># 调整坐标</span>
-<span class="highlight-ln">14</span><span class="highlight-n">ax</span> <span class="highlight-o">=</span> <span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">gca</span><span class="highlight-p">()</span>
-<span class="highlight-ln">15</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'right'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'top'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">xaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">yaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'left'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">20</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'left'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">21</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">show</span><span class="highlight-p">()</span>
+<p>$$<br>
+y=\frac{x-\mu}{\sigma}<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+from matplotlib import pyplot as plt
+
+def nd(x, u=0, d=1):
+    return 1/np.sqrt(2*np.pi*d)*np.exp(-(x-u)**2/2/d**2)
+  
+x = np.linspace(-5, 5, 50)
+y1 = nd(x)
+y2 = nd(x, 0.5, 2)
+plt.plot(x, y1)
+plt.plot(x, y2)
+
+# 调整坐标
+ax = plt.gca()
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+ax.xaxis.set_ticks_position('bottom')
+ax.yaxis.set_ticks_position('left')
+ax.spines['bottom'].set_position(('data', 0))
+ax.spines['left'].set_position(('data', 0))
+plt.show()
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/30/Gn97LT.png" alt="在这里插入图片描述"></p>
-<h2 id="指数函数-Exponent-">指数函数（Exponent）</h2>
+<h2 id="toc_h2_4">指数函数（Exponent）</h2>
 <ul>
 <li>常用2, e的指数函数；</li>
 <li>输入为任意实数；</li>
 <li>输出为非负数。</li>
 </ul>
-<div class="vditor-math">y_1=2^x</div>
-<div class="vditor-math">y_2=e^x</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">matplotlib</span> <span class="highlight-kn">import</span> <span class="highlight-n">pyplot</span> <span class="highlight-k">as</span> <span class="highlight-n">plt</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linspace</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span><span class="highlight-n">y1</span> <span class="highlight-o">=</span> <span class="highlight-mi">2</span><span class="highlight-o">**</span><span class="highlight-n">x</span>
-<span class="highlight-ln"> 6</span><span class="highlight-n">y2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span><span class="highlight-n">y1</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'red'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y2</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'blue'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span><span class="highlight-c1"># 调整坐标</span>
-<span class="highlight-ln">11</span><span class="highlight-n">ax</span> <span class="highlight-o">=</span> <span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">gca</span><span class="highlight-p">()</span>
-<span class="highlight-ln">12</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'right'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'top'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">xaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">yaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'left'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">17</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'left'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">18</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">show</span><span class="highlight-p">()</span>
+<p>$$<br>
+y_1=2^x<br>
+$$<br>
+$$<br>
+y_2=e^x<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+from matplotlib import pyplot as plt
+
+x = np.linspace(-2, 3, 100)
+y1 = 2**x
+y2 = np.exp(x)
+plt.plot(x,y1, color='red')
+plt.plot(x, y2, color='blue')
+
+# 调整坐标
+ax = plt.gca()
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+ax.xaxis.set_ticks_position('bottom')
+ax.yaxis.set_ticks_position('left')
+ax.spines['bottom'].set_position(('data', 0))
+ax.spines['left'].set_position(('data', 0))
+plt.show()
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/30/GmciOe.png" alt="在这里插入图片描述"></p>
-<h2 id="对数函数-Logarithm-">对数函数（Logarithm）</h2>
+<h2 id="toc_h2_5">对数函数（Logarithm）</h2>
 <ul>
 <li>常用以2, e, 10为底的对数函数；</li>
 <li>定义域为正数；</li>
 <li>值域为全体实数；</li>
 <li>输入在(0, 1)范围内时，输出为负数。</li>
 </ul>
-<div class="vditor-math">y_1=log_2x</div>
-<div class="vditor-math">y_2=lnx</div>
-<div class="vditor-math">y_3=lgx</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">matplotlib</span> <span class="highlight-kn">import</span> <span class="highlight-n">pyplot</span> <span class="highlight-k">as</span> <span class="highlight-n">plt</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linspace</span><span class="highlight-p">(</span><span class="highlight-mf">0.01</span><span class="highlight-p">,</span> <span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span><span class="highlight-n">y1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log2</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span><span class="highlight-n">y2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">y3</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log10</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y1</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'red'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y2</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'blue'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">y3</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'green'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span><span class="highlight-c1"># 调整坐标</span>
-<span class="highlight-ln">13</span><span class="highlight-n">ax</span> <span class="highlight-o">=</span> <span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">gca</span><span class="highlight-p">()</span>
-<span class="highlight-ln">14</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'right'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'top'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">xaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">yaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'left'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">19</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'left'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">20</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">show</span><span class="highlight-p">()</span>
+<p>$$<br>
+y_1=log_2x<br>
+$$<br>
+$$<br>
+y_2=lnx<br>
+$$<br>
+$$<br>
+y_3=lgx<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+from matplotlib import pyplot as plt
+
+x = np.linspace(0.01, 10, 100)
+y1 = np.log2(x)
+y2 = np.log(x)
+y3 = np.log10(x)
+plt.plot(x, y1, color='red')
+plt.plot(x, y2, color='blue')
+plt.plot(x, y3, color='green')
+
+# 调整坐标
+ax = plt.gca()
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+ax.xaxis.set_ticks_position('bottom')
+ax.yaxis.set_ticks_position('left')
+ax.spines['bottom'].set_position(('data', 0))
+ax.spines['left'].set_position(('data', 0))
+plt.show()
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/31/GM2WFg.png" alt="在这里插入图片描述"></p>
-<h2 id="Softmax函数">Softmax函数</h2>
+<h2 id="toc_h2_6">Softmax函数</h2>
 <ul>
 <li>在分类网络的输出层中作激活函数，输出概率；</li>
 <li>先通过指数函数，把所有输出都变为整数；</li>
 <li>再做归一化，每个数都除以所有数的和，输出各分类的概率。</li>
 </ul>
-<div class="vditor-math">P_i=\frac{e^{x_i}}{\sum_{i=1}^Ne^{x_i}}\left(x:x_1,x_2,\ldots,x_N\right)</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-o">-</span><span class="highlight-mf">0.02964322</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.11363636</span><span class="highlight-p">,</span> <span class="highlight-mf">0.39417967</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.06916996</span><span class="highlight-p">,</span> <span class="highlight-mf">0.14260276</span><span class="highlight-p">])</span>
-<span class="highlight-ln">4</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'原始输出：'</span><span class="highlight-p">,</span> <span class="highlight-n">x</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span><span class="highlight-n">prob</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span><span class="highlight-o">/</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">))</span>
-<span class="highlight-ln">6</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'概率输出：'</span><span class="highlight-p">,</span> <span class="highlight-n">prob</span><span class="highlight-p">)</span>
+<p>$$<br>
+P_i=\frac{e^{x_i}}{\sum_{i=1}^Ne^{x_i}}\left(x:x_1,x_2,\ldots,x_N\right)<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+
+x = np.array([-0.02964322, -0.11363636, 0.39417967, -0.06916996, 0.14260276])
+print('原始输出：', x)
+prob = np.exp(x)/np.sum(np.exp(x))
+print('概率输出：', prob)
 </code></pre>
 <p>输出：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>原始输出： [-0.02964322 -0.11363636  0.39417967 -0.06916996  0.14260276]
-<span class="highlight-ln">2</span>概率输出： [0.17868493 0.16428964 0.27299323 0.17175986 0.21227234]
+<pre><code>原始输出： [-0.02964322 -0.11363636  0.39417967 -0.06916996  0.14260276]
+概率输出： [0.17868493 0.16428964 0.27299323 0.17175986 0.21227234]
 </code></pre>
-<h2 id="One-hot-编码">One-hot 编码</h2>
+<h2 id="toc_h2_7">One-hot 编码</h2>
 <ul>
 <li>在分类网络中，用于对类别进行编码；</li>
 <li>编码长度等于类别数；</li>
@@ -342,46 +362,48 @@ var _hmt = _hmt || [];
 第三类：[0, 0, 1, 0, 0]<br>
 第四类：[0, 0, 0, 1, 0]<br>
 第五类：[0, 0, 0, 0, 1]<br>
-<h2 id="交叉熵-Cross-Entropy-">交叉熵（Cross Entropy）</h2>
+<h2 id="toc_h2_8">交叉熵（Cross Entropy）</h2>
 <ul>
 <li>常用于分类问题中，做损失函数；</li>
 <li>从分布的角度，让预测概率趋近于标签。</li>
 </ul>
 <br>
-<p><span class="vditor-math">Label:[l_1, l_2, \ldots, l_N]</span>  ——经过One-hot编码</p>
-<p><span class="vditor-math">predict:[P_1, P_2, \ldots, P_N]</span>   ——经过Softmax函数</p>
-<div class="vditor-math">ce=-\sum_{i=1}^Nl_i\cdot\log^{P_i}</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-c1"># one-hot 编码的标签</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-mi">0</span><span class="highlight-p">,</span><span class="highlight-mi">0</span><span class="highlight-p">,</span><span class="highlight-mi">1</span><span class="highlight-p">,</span><span class="highlight-mi">0</span><span class="highlight-p">,</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 5</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'分类标签：'</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span><span class="highlight-c1"># 网络实际输出</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">x1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-o">-</span><span class="highlight-mf">0.02964322</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.11363636</span><span class="highlight-p">,</span> <span class="highlight-mf">3.39417967</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.06916996</span><span class="highlight-p">,</span> <span class="highlight-mf">0.14260276</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">x2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-o">-</span><span class="highlight-mf">0.02964322</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.11363636</span><span class="highlight-p">,</span> <span class="highlight-mf">1.39417967</span><span class="highlight-p">,</span> <span class="highlight-o">-</span><span class="highlight-mf">0.06916996</span><span class="highlight-p">,</span> <span class="highlight-mf">5.14260276</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 9</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'网络输出1:'</span><span class="highlight-p">,</span> <span class="highlight-n">x1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'网络输出2:'</span><span class="highlight-p">,</span> <span class="highlight-n">x2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span><span class="highlight-c1"># softmax 之后的模拟概率</span>
-<span class="highlight-ln">12</span><span class="highlight-n">p1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x1</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">13</span><span class="highlight-n">p2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x2</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x2</span><span class="highlight-p">))</span>
-<span class="highlight-ln">14</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'概率输出1:'</span><span class="highlight-p">,</span> <span class="highlight-n">p1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'概率输出2:'</span><span class="highlight-p">,</span> <span class="highlight-n">p2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span><span class="highlight-c1"># 交叉熵</span>
-<span class="highlight-ln">17</span><span class="highlight-n">ce1</span> <span class="highlight-o">=</span> <span class="highlight-o">-</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">label</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-n">p1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">18</span><span class="highlight-n">ce2</span> <span class="highlight-o">=</span> <span class="highlight-o">-</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">label</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-n">p2</span><span class="highlight-p">))</span>
-<span class="highlight-ln">19</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'交叉熵1:'</span><span class="highlight-p">,</span> <span class="highlight-n">ce1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'交叉熵2:'</span><span class="highlight-p">,</span> <span class="highlight-n">ce2</span><span class="highlight-p">)</span>
+<p>$Label:[l_1, l_2, \ldots, l_N]$  ——经过One-hot编码</p>
+<p>$predict:[P_1, P_2, \ldots, P_N]$   ——经过Softmax函数</p>
+<p>$$<br>
+ce=-\sum_{i=1}^Nl_i\cdot\log^{P_i}<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+
+# one-hot 编码的标签
+label = np.array([0,0,1,0,0])
+print('分类标签：', label)
+# 网络实际输出
+x1 = np.array([-0.02964322, -0.11363636, 3.39417967, -0.06916996, 0.14260276])
+x2 = np.array([-0.02964322, -0.11363636, 1.39417967, -0.06916996, 5.14260276])
+print('网络输出1:', x1)
+print('网络输出2:', x2)
+# softmax 之后的模拟概率
+p1 = np.exp(x1) / np.sum(np.exp(x1))
+p2 = np.exp(x2) / np.sum(np.exp(x2))
+print('概率输出1:', p1)
+print('概率输出2:', p2)
+# 交叉熵
+ce1 = -np.sum(label * np.log(p1))
+ce2 = -np.sum(label * np.log(p2))
+print('交叉熵1:', ce1)
+print('交叉熵2:', ce2)
 </code></pre>
 <p>输出：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>分类标签： [0 0 1 0 0]
-<span class="highlight-ln">2</span>网络输出1: [-0.02964322 -0.11363636  3.39417967 -0.06916996  0.14260276]
-<span class="highlight-ln">3</span>网络输出2: [-0.02964322 -0.11363636  1.39417967 -0.06916996  5.14260276]
-<span class="highlight-ln">4</span>概率输出1: [0.02877271 0.02645471 0.88293386 0.0276576  0.03418112]
-<span class="highlight-ln">5</span>概率输出2: [0.00545423 0.00501482 0.02265122 0.00524284 0.96163688]
-<span class="highlight-ln">6</span>交叉熵1: 0.12450498821197674
-<span class="highlight-ln">7</span>交叉熵2: 3.787541448750617
+<pre><code>分类标签： [0 0 1 0 0]
+网络输出1: [-0.02964322 -0.11363636  3.39417967 -0.06916996  0.14260276]
+网络输出2: [-0.02964322 -0.11363636  1.39417967 -0.06916996  5.14260276]
+概率输出1: [0.02877271 0.02645471 0.88293386 0.0276576  0.03418112]
+概率输出2: [0.00545423 0.00501482 0.02265122 0.00524284 0.96163688]
+交叉熵1: 0.12450498821197674
+交叉熵2: 3.787541448750617
 </code></pre>
-<h2 id="激活函数-Activation-Function-">激活函数（Activation Function）</h2>
+<h2 id="toc_h2_9">激活函数（Activation Function）</h2>
 <ul>
 <li>引入非线性因素，使模型有更强的表达能力；</li>
 <li>输出层采用softmax激活，可以模拟输出概率；</li>
@@ -389,50 +411,56 @@ var _hmt = _hmt || [];
 <li>在深度学习中，sigmoid和tanh主要用于做各种门或开关；</li>
 <li>在深度学习中，最常用的激活函数为ReLU及其变体。</li>
 </ul>
-<div class="vditor-math">\delta(x)=\frac{1}{1+e^{-x}}</div>
-<div class="vditor-math">Tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}</div>
-<div class="vditor-math">ReLU(x)=max(x, 0)</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">matplotlib</span> <span class="highlight-kn">import</span> <span class="highlight-n">pyplot</span> <span class="highlight-k">as</span> <span class="highlight-n">plt</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">x</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linspace</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span><span class="highlight-c1"># plt.figure(31)</span>
-<span class="highlight-ln"> 6</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">figure</span><span class="highlight-p">(</span><span class="highlight-n">figsize</span><span class="highlight-o">=</span><span class="highlight-p">(</span><span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-mi">20</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span><span class="highlight-c1"># Sigmoid</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">sigmoid</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">x</span><span class="highlight-p">))</span>
-<span class="highlight-ln">10</span><span class="highlight-n">top</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">ones</span><span class="highlight-p">(</span><span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">subplot</span><span class="highlight-p">(</span><span class="highlight-mi">311</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">sigmoid</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'blue'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">top</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'red'</span><span class="highlight-p">,</span> <span class="highlight-n">linestyle</span><span class="highlight-o">=</span><span class="highlight-s1">'-.'</span><span class="highlight-p">,</span> <span class="highlight-n">linewidth</span><span class="highlight-o">=</span><span class="highlight-mf">0.5</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">title</span><span class="highlight-p">(</span><span class="highlight-n">s</span><span class="highlight-o">=</span><span class="highlight-s1">'Sigmoid'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span><span class="highlight-c1"># Tanh</span>
-<span class="highlight-ln">17</span><span class="highlight-n">tanh</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span> <span class="highlight-o">-</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">x</span><span class="highlight-p">))</span> <span class="highlight-o">/</span> <span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">exp</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">x</span><span class="highlight-p">))</span>
-<span class="highlight-ln">18</span><span class="highlight-n">top</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">ones</span><span class="highlight-p">(</span><span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span><span class="highlight-n">bottom</span> <span class="highlight-o">=</span> <span class="highlight-o">-</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">ones</span><span class="highlight-p">(</span><span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">subplot</span><span class="highlight-p">(</span><span class="highlight-mi">312</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">tanh</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'blue'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">top</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'red'</span><span class="highlight-p">,</span> <span class="highlight-n">linestyle</span><span class="highlight-o">=</span><span class="highlight-s1">'-.'</span><span class="highlight-p">,</span> <span class="highlight-n">linewidth</span><span class="highlight-o">=</span><span class="highlight-mf">0.5</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">bottom</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'red'</span><span class="highlight-p">,</span> <span class="highlight-n">linestyle</span><span class="highlight-o">=</span><span class="highlight-s1">'-.'</span><span class="highlight-p">,</span> <span class="highlight-n">linewidth</span><span class="highlight-o">=</span><span class="highlight-mf">0.5</span><span class="highlight-p">)</span>
-<span class="highlight-ln">24</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">title</span><span class="highlight-p">(</span><span class="highlight-s1">'Tanh'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span><span class="highlight-c1"># ReLU</span>
-<span class="highlight-ln">27</span><span class="highlight-n">relu</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">maximum</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">)</span>
-<span class="highlight-ln">28</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">subplot</span><span class="highlight-p">(</span><span class="highlight-mi">313</span><span class="highlight-p">)</span>
-<span class="highlight-ln">29</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">plot</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">relu</span><span class="highlight-p">,</span> <span class="highlight-n">color</span><span class="highlight-o">=</span><span class="highlight-s1">'blue'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">30</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">title</span><span class="highlight-p">(</span><span class="highlight-s1">'ReLU'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">31</span>
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span><span class="highlight-c1"># 调整坐标</span>
-<span class="highlight-ln">34</span><span class="highlight-n">ax</span> <span class="highlight-o">=</span> <span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">gca</span><span class="highlight-p">()</span>
-<span class="highlight-ln">35</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'right'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">36</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'top'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_color</span><span class="highlight-p">(</span><span class="highlight-s1">'none'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">37</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">xaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">38</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">yaxis</span><span class="highlight-o">.</span><span class="highlight-n">set_ticks_position</span><span class="highlight-p">(</span><span class="highlight-s1">'left'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">39</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'bottom'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">40</span><span class="highlight-n">ax</span><span class="highlight-o">.</span><span class="highlight-n">spines</span><span class="highlight-p">[</span><span class="highlight-s1">'left'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">set_position</span><span class="highlight-p">((</span><span class="highlight-s1">'data'</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">41</span><span class="highlight-n">plt</span><span class="highlight-o">.</span><span class="highlight-n">show</span><span class="highlight-p">()</span>
+<p>$$<br>
+\delta(x)=\frac{1}{1+e^{-x}}<br>
+$$<br>
+$$<br>
+Tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}<br>
+$$<br>
+$$<br>
+ReLU(x)=max(x, 0)<br>
+$$</p>
+<pre><code class="language-python">import numpy as np
+from matplotlib import pyplot as plt
+
+x = np.linspace(-10, 10, 100)
+# plt.figure(31)
+plt.figure(figsize=(10, 20))
+
+# Sigmoid
+sigmoid = 1 / (1 + np.exp(-x))
+top = np.ones(100)
+plt.subplot(311)
+plt.plot(x, sigmoid, color='blue')
+plt.plot(x, top, color='red', linestyle='-.', linewidth=0.5)
+plt.title(s='Sigmoid')
+
+# Tanh
+tanh = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+top = np.ones(100)
+bottom = -np.ones(100)
+plt.subplot(312)
+plt.plot(x, tanh, color='blue')
+plt.plot(x, top, color='red', linestyle='-.', linewidth=0.5)
+plt.plot(x, bottom, color='red', linestyle='-.', linewidth=0.5)
+plt.title('Tanh')
+
+# ReLU
+relu = np.maximum(x, 0)
+plt.subplot(313)
+plt.plot(x, relu, color='blue')
+plt.title('ReLU')
+
+
+# 调整坐标
+ax = plt.gca()
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+ax.xaxis.set_ticks_position('bottom')
+ax.yaxis.set_ticks_position('left')
+ax.spines['bottom'].set_position(('data', 0))
+ax.spines['left'].set_position(('data', 0))
+plt.show()
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/30/GmceYt.png" alt="在这里插入图片描述"></p>
 <p><img src="https://s1.ax1x.com/2020/03/31/Gln7a4.png" alt="在这里插入图片描述"></p>
@@ -513,7 +541,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -522,7 +550,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -530,11 +558,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466418322",
@@ -552,4 +580,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 374ms, 2020/04/07 11:38:41 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 27ms, 2020/04/07 14:57:07 -->

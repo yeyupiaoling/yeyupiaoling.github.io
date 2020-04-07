@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>MySQL数据库实现主从复制 - 夜雨飘零</title><meta name="description" content="前言 我们用的在这篇文章《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》使用的只有一个MySQL数据库。 从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。 从性能上来说，我们在《CentOS下安装和使用Mycat实现分布式数据库》这篇文章中介绍了分布式数据库，性能虽然比单个数据库的性能要好。但是当使用分布式数据库时，数据量还是很大，在查询数据时，可能会变得非常慢，导致锁表，一旦锁表就无法写入数据，就会影响其他用户的写入数据的操做。所以就需要读写分离，主（master）数据库负责写入数据，从（slave）数据库负责查询数据，就算从（slave）数据库在查询数据时出现了锁表，也不会影响到主（master）数据库的的写入操作，最多也是从（slave）数据库的数据更新的慢一些。基于这种情况，就出现了主从复制这个技术。 **主从复制：**就是有两个数据库服务器，一个是主（master）数据库服务器...."/><meta property="og:description" content="前言 我们用的在这篇文章《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》使用的只有一个MySQL数据库。 从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。 从性能上来说，我们在《CentOS下安装和使用Mycat实现分布式数据库》这篇文章中介绍了分布式数据库，性能虽然比单个数据库的性能要好。但是当使用分布式数据库时，数据量还是很大，在查询数据时，可能会变得非常慢，导致锁表，一旦锁表就无法写入数据，就会影响其他用户的写入数据的操做。所以就需要读写分离，主（master）数据库负责写入数据，从（slave）数据库负责查询数据，就算从（slave）数据库在查询数据时出现了锁表，也不会影响到主（master）数据库的的写入操作，最多也是从（slave）数据库的数据更新的慢一些。基于这种情况，就出现了主从复制这个技术。 **主从复制：**就是有两个数据库服务器，一个是主（master）数据库服务器...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="MySQL数据库实现主从复制 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="MySQL数据库实现主从复制 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>MySQL数据库实现主从复制 - 夜雨飘零</title><meta name="description" content="前言 我们用的在这篇文章《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》使用的只有一个MySQL数据库。 从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。 从性能上来说，我们在《CentOS下安装和使用Mycat实现分布式数据库》这篇文章中介绍了分布式数据库，性能虽然比单个数据库的性能要好。但是当使用分布式数据库时，数据量还是很大，在查询数据时，可能会变得非常慢，导致锁表，一旦锁表就无法写入数据，就会影响其他用户的写入数据的操做。所以就需要读写分离，主（master）数据库负责写入数据，从（slave）数据库负责查询数据，就算从（slave）数据库在查询数据时出现了锁表，也不会影响到主（master）数据库的的写入操作，最多也是从（slave）数据库的数据更新的慢一些。基于这种情况，就出现了主从复制这个技术。 **主从复制：**就是有两个数据库服务器，一个是主（master）数据库服务器...."/><meta property="og:description" content="前言 我们用的在这篇文章《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》使用的只有一个MySQL数据库。 从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。 从性能上来说，我们在《CentOS下安装和使用Mycat实现分布式数据库》这篇文章中介绍了分布式数据库，性能虽然比单个数据库的性能要好。但是当使用分布式数据库时，数据量还是很大，在查询数据时，可能会变得非常慢，导致锁表，一旦锁表就无法写入数据，就会影响其他用户的写入数据的操做。所以就需要读写分离，主（master）数据库负责写入数据，从（slave）数据库负责查询数据，就算从（slave）数据库在查询数据时出现了锁表，也不会影响到主（master）数据库的的写入操作，最多也是从（slave）数据库的数据更新的慢一些。基于这种情况，就出现了主从复制这个技术。 **主从复制：**就是有两个数据库服务器，一个是主（master）数据库服务器...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="MySQL数据库实现主从复制 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="MySQL数据库实现主从复制 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="CentOS下安装和使用Mycat实现分布式数据库" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972765438.html">
             <link rel="next" title="Mycat中间件实现一主一从和双主双从的读写分离" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html">
     <!-- 百度统计 -->
@@ -78,19 +78,19 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#安装MySQL">安装MySQL</a>
+            <a href="#toc_h1_1">安装MySQL</a>
         </li>
         <li class="toc__h1">
-            <a href="#配置主从复制">配置主从复制</a>
+            <a href="#toc_h1_2">配置主从复制</a>
         </li>
         <li class="toc__h1">
-            <a href="#测试配置">测试配置</a>
+            <a href="#toc_h1_3">测试配置</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_4">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -134,7 +134,7 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20180612.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>我们用的在这篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80707616" target="_blank">《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》</a>使用的只有一个MySQL数据库。</p>
 <ul>
 <li>从安全角度来说这是非常不安全的，比如这个数据库服务器磁盘突然损坏了，里面的数据全部丢失了。这种情况如果一开始只是部署一个数据库的话就非常危险了，这表明我们要丢失全部数据，而数据对网站来说是最最重要的，所以我们要保证数据的安全。</li>
@@ -148,100 +148,85 @@ var _hmt = _hmt || [];
 <li>最后从（slave）数据库其他SQL线程，把中继日志（Relay log）文件中的事件再执行一遍，更新从（slave）数据库的数据，保持主从数据一致。</li>
 </ol>
 <p><img src="https://s1.ax1x.com/2020/04/02/GG1HW8.jpg" alt="这里写图片描述"></p>
-<h1 id="安装MySQL">安装MySQL</h1>
+<h1 id="toc_h1_1">安装MySQL</h1>
 <p>要实现主从复制就需要两台数据库服务器，可以参考这篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80707616" target="_blank">《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》</a>安装两个CentOS虚拟机。它们的信息如下：</p>
 <table>
 <thead>
-<tr>
-<th align="center">主机名</th>
-<th align="center">IP地址</th>
-<th align="center">任务角色</th>
-<th align="center">数据库</th>
-</tr>
+<tr><th align="center">主机名</th><th align="center">IP地址</th><th align="center">任务角色</th><th align="center">数据库</th></tr>
 </thead>
 <tbody>
-<tr>
-<td align="center">node2</td>
-<td align="center">192.168.204.122</td>
-<td align="center">master</td>
-<td align="center">MySQL</td>
-</tr>
-<tr>
-<td align="center">node3</td>
-<td align="center">192.168.204.123</td>
-<td align="center">slave</td>
-<td align="center">MySQL</td>
-</tr>
+<tr><td align="center">node2</td><td align="center">192.168.204.122</td><td align="center">master</td><td align="center">MySQL</td></tr>
+<tr><td align="center">node3</td><td align="center">192.168.204.123</td><td align="center">slave</td><td align="center">MySQL</td></tr>
 </tbody>
 </table>
 <p>然后我们在node2和node3机器上安装MySQL数据库。操作如下：</p>
 <p>首先关闭防火墙，方便之后的操作。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+<pre><code class="language-text">service iptables stop
 </code></pre>
 <p>我们可以使用以下命令查看MySQL是否安装了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rpm -qa | grep mysql
+<pre><code class="language-text">rpm -qa | grep mysql
 </code></pre>
 <p>应该会输出一下日志：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>[root@localhost ~]# rpm -qa | grep mysql
-<span class="highlight-ln">2</span>mysql-libs-5.1.71-1.el6.x86_64
+<pre><code class="language-text">[root@localhost ~]# rpm -qa | grep mysql
+mysql-libs-5.1.71-1.el6.x86_64
 </code></pre>
 <p>然后我们可以先移除这个MySQL，重新安装一个：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y remove mysql-libs-5.1.71-1.el6.x86_64
+<pre><code class="language-text">yum -y remove mysql-libs-5.1.71-1.el6.x86_64
 </code></pre>
 <p>移除之前的MySQL之后，可以重新安装MySQL：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install mysql-server mysql mysql-devel
+<pre><code class="language-text">yum -y install mysql-server mysql mysql-devel
 </code></pre>
 <p>最后再查看安装情况：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rpm -qa | grep mysql
+<pre><code class="language-text">rpm -qa | grep mysql
 </code></pre>
 <p>正常的应该会输出以下信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql-5.1.73-8.el6_8.x86_64
-<span class="highlight-ln">2</span>mysql-libs-5.1.73-8.el6_8.x86_64
-<span class="highlight-ln">3</span>mysql-server-5.1.73-8.el6_8.x86_64
-<span class="highlight-ln">4</span>mysql-devel-5.1.73-8.el6_8.x86_64
+<pre><code class="language-text">mysql-5.1.73-8.el6_8.x86_64
+mysql-libs-5.1.73-8.el6_8.x86_64
+mysql-server-5.1.73-8.el6_8.x86_64
+mysql-devel-5.1.73-8.el6_8.x86_64
 </code></pre>
 <p>安装完成之后，我们可以对MySQL数据库进行一些配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim /etc/my.cnf
+<pre><code class="language-text">vim /etc/my.cnf
 </code></pre>
 <p>主要也是在<code>[mysqld]</code>下加上下面两行代码，主要是设置编码方式和不区分字母大小写。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>default-character-set=utf8    # 设置编码方式
-<span class="highlight-ln">2</span>lower_case_table_names=1      # 不区分字母大小写
+<pre><code class="language-text">default-character-set=utf8    # 设置编码方式
+lower_case_table_names=1      # 不区分字母大小写
 </code></pre>
 <p>修改之后的配置文件如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>default-character-set=utf8    # 设置编码方式
-<span class="highlight-ln"> 9</span>lower_case_table_names=1      # 不区分字母大小写
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>[mysqld_safe]
-<span class="highlight-ln">12</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">13</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8    # 设置编码方式
+lower_case_table_names=1      # 不区分字母大小写
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>配置完成之后，我们直接启动MySQL：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld start
+<pre><code class="language-text">service mysqld start
 </code></pre>
 <p>然后我们可以把MySQL服务添加到开机自动启，这样就不用每次都启动了。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig mysqld on
+<pre><code class="language-text">chkconfig mysqld on
 </code></pre>
 <p>我们可以使用以下的命令查看是否成功添加到开机服务中了。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig --list | grep mysqld
+<pre><code class="language-text">chkconfig --list | grep mysqld
 </code></pre>
 <p>设置MySQL数据库的密码：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysqladmin -u root password 'root'
+<pre><code class="language-text">mysqladmin -u root password 'root'
 </code></pre>
 <p>登录数据库，输入该命令之后还有输入数据库的密码，这个密码就是上面设置的root：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql -u root -p
+<pre><code class="language-text">mysql -u root -p
 </code></pre>
 <p>为了让Mycat可以连接MySQL数据库，我们还要设置数据库支持远程连接，在登录数据库之后输入以下两条命令：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-<span class="highlight-ln">2</span>mysql&gt; FLUSH PRIVILEGES;
+<pre><code class="language-text">mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+mysql&gt; FLUSH PRIVILEGES;
 </code></pre>
-<h1 id="配置主从复制">配置主从复制</h1>
+<h1 id="toc_h1_2">配置主从复制</h1>
 <p><strong>主（master）数据库</strong>主要做以下几件事情：</p>
 <ul>
 <li>开启bin二进制日志；</li>
@@ -250,61 +235,61 @@ var _hmt = _hmt || [];
 <li>创建一个用于slave和master通信的用户账号，这个可以使用我们已经设置了的远程访问账号。</li>
 </ul>
 <p>开启bin二进制日志和配置server-id都是在配置文件<code>/etc/my.cnf</code>中进行设置。在<code>[mysqld]</code>下加上下面两行代码，完成这两个配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>log-bin=mysql-bin  # 开启二进制日志
-<span class="highlight-ln">2</span>server-id=1        # 设置server-id
+<pre><code class="language-text">log-bin=mysql-bin  # 开启二进制日志
+server-id=1        # 设置server-id
 </code></pre>
 <p>除了配置这些重要的信息，我们还可以配置其他的信息，比如不要复制哪些数据库，或者是只是复制哪些数据库。配置如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span># 不同步哪些数据库  
-<span class="highlight-ln">2</span>binlog-ignore-db = mysql
-<span class="highlight-ln">3</span>binlog-ignore-db = test
-<span class="highlight-ln">4</span>binlog-ignore-db = information_schema
-<span class="highlight-ln">5</span>
-<span class="highlight-ln">6</span># 只同步哪些数据库，除此之外，其他不同步  
-<span class="highlight-ln">7</span># binlog-do-db = game 
+<pre><code class="language-text"># 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game 
 </code></pre>
 <p>整个配置完成之后是以下这个样子的：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>default-character-set=utf8   # 设置编码方式
-<span class="highlight-ln"> 9</span>lower_case_table_names=1     # 不区分字母大小写
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>log-bin=mysql-bin  # 开启二进制日志
-<span class="highlight-ln">12</span>server-id=1        # 设置server-id
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span># 不同步哪些数据库  
-<span class="highlight-ln">15</span>binlog-ignore-db = mysql
-<span class="highlight-ln">16</span>binlog-ignore-db = test
-<span class="highlight-ln">17</span>binlog-ignore-db = information_schema
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span># 只同步哪些数据库，除此之外，其他不同步  
-<span class="highlight-ln">20</span># binlog-do-db = game  
-<span class="highlight-ln">21</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>[mysqld_safe]
-<span class="highlight-ln">24</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">25</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=1        # 设置server-id
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>配置完成之后，还要重启一下数据库：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld restart
+<pre><code class="language-text">service mysqld restart
 </code></pre>
 <p>现在执行第三步， 获得主（master）数据库二进制日志文件名及位置，首先登陆数据库：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>[root@node2 ~]# mysql -u root -p
+<pre><code class="language-text">[root@node2 ~]# mysql -u root -p
 </code></pre>
 <p>然后输入以下命令获取这些信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
+<pre><code class="language-text">mysql&gt; show master status;
 </code></pre>
 <p>正常情况下是输出以下信息，其中File和Position都是我们在设置从（slave）数据库的时候用到的：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">2</span>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
-<span class="highlight-ln">3</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">4</span>| mysql-bin.000003 |      106 |              | mysql,test,information_schema |
-<span class="highlight-ln">5</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">6</span>1 row in set (0.00 sec)
+<pre><code class="language-text">+------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000003 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
 </code></pre>
 <p><strong>从（slave）数据库</strong>配置：</p>
 <ul>
@@ -313,77 +298,77 @@ var _hmt = _hmt || [];
 <li>启用slave服务；</li>
 </ul>
 <p>首先配置server-id，编辑<code>/etc/my.cnf</code>文件。在<code>[mysqld]</code>下加上下面一行代码，这个server-id不要跟之前的主（master）数据库服务器获取其他数据库一样，要唯一的：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>server-id=2   # 设置server-id，必须唯一
+<pre><code class="language-text">server-id=2   # 设置server-id，必须唯一
 </code></pre>
 <p>同样要重启一下数据库：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld restart
+<pre><code class="language-text">service mysqld restart
 </code></pre>
 <p>然后登录到数据库，进行以下配置。首先是配置主（master）数据库的IP地址，用户命，登录密码，刚才在主（master）数据库中查到的bin二进制文件的名称和所在的位置。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; change master to 
-<span class="highlight-ln">2</span>    -&gt; master_host='192.168.204.122',
-<span class="highlight-ln">3</span>    -&gt; master_user='root',
-<span class="highlight-ln">4</span>    -&gt; master_password='root',
-<span class="highlight-ln">5</span>    -&gt; master_log_file='mysql-bin.000003',
-<span class="highlight-ln">6</span>    -&gt; master_log_pos=106;
+<pre><code>mysql&gt; change master to 
+    -&gt; master_host='192.168.204.122',
+    -&gt; master_user='root',
+    -&gt; master_password='root',
+    -&gt; master_log_file='mysql-bin.000003',
+    -&gt; master_log_pos=106;
 </code></pre>
 <p>配置完成之后就启动slave，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; start slave;
+<pre><code class="language-text">mysql&gt; start slave;
 </code></pre>
 <p>然后可以查看配置结果，使用以下命令查看：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show slave status\G;
+<pre><code class="language-text">mysql&gt; show slave status\G;
 </code></pre>
 <p>正常情况下是输出以下内容的：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>mysql&gt; show slave status\G;
-<span class="highlight-ln"> 2</span>*************************** 1. row ***************************
-<span class="highlight-ln"> 3</span>               Slave_IO_State: Waiting for master to send event
-<span class="highlight-ln"> 4</span>                  Master_Host: 192.168.204.122
-<span class="highlight-ln"> 5</span>                  Master_User: root
-<span class="highlight-ln"> 6</span>                  Master_Port: 3306
-<span class="highlight-ln"> 7</span>                Connect_Retry: 60
-<span class="highlight-ln"> 8</span>              Master_Log_File: mysql-bin.000003
-<span class="highlight-ln"> 9</span>          Read_Master_Log_Pos: 106
-<span class="highlight-ln">10</span>               Relay_Log_File: mysqld-relay-bin.000002
-<span class="highlight-ln">11</span>                Relay_Log_Pos: 251
-<span class="highlight-ln">12</span>        Relay_Master_Log_File: mysql-bin.000003
-<span class="highlight-ln">13</span>             Slave_IO_Running: Yes
-<span class="highlight-ln">14</span>            Slave_SQL_Running: Yes
-<span class="highlight-ln">15</span>              Replicate_Do_DB: 
-<span class="highlight-ln">16</span>          Replicate_Ignore_DB: 
-<span class="highlight-ln">17</span>           Replicate_Do_Table: 
-<span class="highlight-ln">18</span>       Replicate_Ignore_Table: 
-<span class="highlight-ln">19</span>      Replicate_Wild_Do_Table: 
-<span class="highlight-ln">20</span>  Replicate_Wild_Ignore_Table: 
-<span class="highlight-ln">21</span>                   Last_Errno: 0
-<span class="highlight-ln">22</span>                   Last_Error: 
-<span class="highlight-ln">23</span>                 Skip_Counter: 0
-<span class="highlight-ln">24</span>          Exec_Master_Log_Pos: 106
-<span class="highlight-ln">25</span>              Relay_Log_Space: 407
-<span class="highlight-ln">26</span>              Until_Condition: None
-<span class="highlight-ln">27</span>               Until_Log_File: 
-<span class="highlight-ln">28</span>                Until_Log_Pos: 0
-<span class="highlight-ln">29</span>           Master_SSL_Allowed: No
-<span class="highlight-ln">30</span>           Master_SSL_CA_File: 
-<span class="highlight-ln">31</span>           Master_SSL_CA_Path: 
-<span class="highlight-ln">32</span>              Master_SSL_Cert: 
-<span class="highlight-ln">33</span>            Master_SSL_Cipher: 
-<span class="highlight-ln">34</span>               Master_SSL_Key: 
-<span class="highlight-ln">35</span>        Seconds_Behind_Master: 0
-<span class="highlight-ln">36</span>Master_SSL_Verify_Server_Cert: No
-<span class="highlight-ln">37</span>                Last_IO_Errno: 0
-<span class="highlight-ln">38</span>                Last_IO_Error: 
-<span class="highlight-ln">39</span>               Last_SQL_Errno: 0
-<span class="highlight-ln">40</span>               Last_SQL_Error: 
-<span class="highlight-ln">41</span>1 row in set (0.00 sec)
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>ERROR: 
-<span class="highlight-ln">44</span>No query specified
+<pre><code>mysql&gt; show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.204.122
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000003
+          Read_Master_Log_Pos: 106
+               Relay_Log_File: mysqld-relay-bin.000002
+                Relay_Log_Pos: 251
+        Relay_Master_Log_File: mysql-bin.000003
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 106
+              Relay_Log_Space: 407
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
 </code></pre>
 <p>可以通过这些输出信息查看配置信息是否正确，其中最重要的是以下这两条信息，必须两个都是<code>Yse</code>才可以使用，这两个就是从（slave）数据库的两个读取和执行SQL语句的线程。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>Slave_IO_Running: Yes
-<span class="highlight-ln">2</span>Slave_SQL_Running: Yes
+<pre><code>Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
 </code></pre>
 <p>到这里就已经配置完成了，我们接下来可以测试一下配置效果了。</p>
-<h1 id="测试配置">测试配置</h1>
+<h1 id="toc_h1_3">测试配置</h1>
 <p>为了方便测试，笔者使用NavicatForMySQL连接数据库，读者可以使用自己熟悉的连接工具，或者是直接在命令行上直接操作。</p>
 <p>首先是连接主（master）数据库：<br>
 <img src="https://s1.ax1x.com/2020/03/30/GmcD0J.png" alt="这里写图片描述"></p>
@@ -398,7 +383,7 @@ var _hmt = _hmt || [];
 <p>可以发现从（slave）数据库中已经创建了一个<code>yeyupiaoling</code>数据库，同时也有了一张<code>user</code>表，该表的数据库都是一样的。<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYwFC4.png" alt="这里写图片描述"></p>
 <p>从上面的测试来看，我们的数据是已经保证了主从数据一致了。也表命令了我门只要对主（master）数据库进行写入操作，从（slave）数据库就会作相应的操作，保证主从（slave）数据库数据一致。但我们对从（slave）数据库进行写入操作时，是不会对主（master）数据库进行改动的，在实际的情况下也不应该对从（slave）数据库进行写入操作。笔者就不在这里进行展示了，有兴趣的读者可以尝试一下。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_4">参考资料</h1>
 <ol>
 <li><a href="https://www.cnblogs.com/gl-developer/p/6170423.html" target="_blank">https://www.cnblogs.com/gl-developer/p/6170423.html</a></li>
 <li><a href="https://blog.csdn.net/daicooper/article/details/79905660" target="_blank">https://blog.csdn.net/daicooper/article/details/79905660</a></li>
@@ -480,7 +465,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -489,7 +474,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -497,11 +482,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466399194",
@@ -519,4 +504,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 577ms, 2020/04/07 11:38:45 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 24ms, 2020/04/07 14:57:08 -->

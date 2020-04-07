@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android调试的Log.d()没有输出 - 夜雨飘零</title><meta name="description" content="在之前我是很喜欢使用真机进行调试的，因为那时候觉得用真机调试比较方便，直到我发现我的手机打印不出Log.d()的调试日志，我才开始经常使用模拟器。当然还有两小点是：我的手机不支持快速启动和小编的电脑配置比较低，模拟器太吃内存了。 写一个简单的应用，它的代码是 public class MainActivity extends AppCompatActivity { @Override protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); setContentView(R.layout.activity_main); Log.d(&quot;调试日志&quot;,&quot;你好&quot;); Log.e(&quot;错误日志&quot;,&quot;你好&quot;); } 很简单，就输出一个调试日志和错误日志，但是在真机和模拟器的输出却不一样。 首先使用的是真机 它的输出日志只有错误日志，调试日志不见了。 然后我们使用模拟器进行调试 它把所有的日志都输出了 我们在调试应用时但要是每个日志都要输出，否则是很抓狂的。通过网上查得知是...."/><meta property="og:description" content="在之前我是很喜欢使用真机进行调试的，因为那时候觉得用真机调试比较方便，直到我发现我的手机打印不出Log.d()的调试日志，我才开始经常使用模拟器。当然还有两小点是：我的手机不支持快速启动和小编的电脑配置比较低，模拟器太吃内存了。 写一个简单的应用，它的代码是 public class MainActivity extends AppCompatActivity { @Override protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); setContentView(R.layout.activity_main); Log.d(&quot;调试日志&quot;,&quot;你好&quot;); Log.e(&quot;错误日志&quot;,&quot;你好&quot;); } 很简单，就输出一个调试日志和错误日志，但是在真机和模拟器的输出却不一样。 首先使用的是真机 它的输出日志只有错误日志，调试日志不见了。 然后我们使用模拟器进行调试 它把所有的日志都输出了 我们在调试应用时但要是每个日志都要输出，否则是很抓狂的。通过网上查得知是...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android调试的Log.d()没有输出 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584871469374.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android调试的Log.d()没有输出 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871469374.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android调试的Log.d()没有输出 - 夜雨飘零</title><meta name="description" content="在之前我是很喜欢使用真机进行调试的，因为那时候觉得用真机调试比较方便，直到我发现我的手机打印不出Log.d()的调试日志，我才开始经常使用模拟器。当然还有两小点是：我的手机不支持快速启动和小编的电脑配置比较低，模拟器太吃内存了。 写一个简单的应用，它的代码是 public class MainActivity extends AppCompatActivity { @Override protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); setContentView(R.layout.activity_main); Log.d(&quot;调试日志&quot;,&quot;你好&quot;); Log.e(&quot;错误日志&quot;,&quot;你好&quot;); } 很简单，就输出一个调试日志和错误日志，但是在真机和模拟器的输出却不一样。 首先使用的是真机 它的输出日志只有错误日志，调试日志不见了。 然后我们使用模拟器进行调试 它把所有的日志都输出了 我们在调试应用时但要是每个日志都要输出，否则是很抓狂的。通过网上查得知是...."/><meta property="og:description" content="在之前我是很喜欢使用真机进行调试的，因为那时候觉得用真机调试比较方便，直到我发现我的手机打印不出Log.d()的调试日志，我才开始经常使用模拟器。当然还有两小点是：我的手机不支持快速启动和小编的电脑配置比较低，模拟器太吃内存了。 写一个简单的应用，它的代码是 public class MainActivity extends AppCompatActivity { @Override protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); setContentView(R.layout.activity_main); Log.d(&quot;调试日志&quot;,&quot;你好&quot;); Log.e(&quot;错误日志&quot;,&quot;你好&quot;); } 很简单，就输出一个调试日志和错误日志，但是在真机和模拟器的输出却不一样。 首先使用的是真机 它的输出日志只有错误日志，调试日志不见了。 然后我们使用模拟器进行调试 它把所有的日志都输出了 我们在调试应用时但要是每个日志都要输出，否则是很抓狂的。通过网上查得知是...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android调试的Log.d()没有输出 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584871469374.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android调试的Log.d()没有输出 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871469374.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Android的cookie的接收和发送" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871123099.html">
             <link rel="next" title="Windows10安装Linux子系统Ubuntu" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871789572.html">
     <!-- 百度统计 -->
@@ -78,7 +78,7 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h3">
-            <a href="#修改输出日志的级别">修改输出日志的级别</a>
+            <a href="#toc_h3_0">修改输出日志的级别</a>
         </li>
 </ul>        </div>
 </div>
@@ -124,14 +124,14 @@ var _hmt = _hmt || [];
             <p><img src="https://img.hacpai.com/bing/20190404.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
 <p>在之前我是很喜欢使用真机进行调试的，因为那时候觉得用真机调试比较方便，直到我发现我的手机打印不出Log.d()的调试日志，我才开始经常使用模拟器。当然还有两小点是：我的手机不支持快速启动和小编的电脑配置比较低，模拟器太吃内存了。</p>
 <p>写一个简单的应用，它的代码是</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MainActivity</span> <span class="highlight-kd">extends</span> <span class="highlight-n">AppCompatActivity</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">2</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">3</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">4</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">savedInstanceState</span><span class="highlight-o">);</span>
-<span class="highlight-ln">5</span>        <span class="highlight-n">setContentView</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">activity_main</span><span class="highlight-o">);</span>
-<span class="highlight-ln">6</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"调试日志"</span><span class="highlight-o">,</span><span class="highlight-s">"你好"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">7</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"错误日志"</span><span class="highlight-o">,</span><span class="highlight-s">"你好"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">8</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Log.d("调试日志","你好");
+        Log.e("错误日志","你好");
+    }
 </code></pre>
 <p>很简单，就输出一个调试日志和错误日志，但是在真机和模拟器的输出却不一样。</p>
 <p>首先使用的是真机</p>
@@ -144,50 +144,50 @@ var _hmt = _hmt || [];
 <p><img src="https://s1.ax1x.com/2020/04/02/GJynmR.png" alt=""></p>
 <p>我们在调试应用时但要是每个日志都要输出，否则是很抓狂的。通过网上查得知是部分厂家把比较低级的日志禁止输出了，所以就没有看到刚才的调试日志。</p>
 <p>对Log处理一下，写成一个工具类，可以更方便我们使用，下面就是一个包装过的Log</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.Log</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-cm">/**
-</span><span class="highlight-ln"> 4</span><span class="highlight-cm"> * 输出日志工具
-</span><span class="highlight-ln"> 5</span><span class="highlight-cm"> * Created by 15696 on 2017/12/9.
-</span><span class="highlight-ln"> 6</span><span class="highlight-cm"> */</span>
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">LogUtil</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">TAG</span><span class="highlight-o">;</span>
-<span class="highlight-ln">10</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">isRelease</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln">11</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">isDebug</span><span class="highlight-o">;</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-kd">public</span> <span class="highlight-nf">LogUtil</span><span class="highlight-o">(</span><span class="highlight-n">Class</span> <span class="highlight-n">c</span><span class="highlight-o">,</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">isDebug</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">14</span>        <span class="highlight-k">this</span><span class="highlight-o">.</span><span class="highlight-na">TAG</span> <span class="highlight-o">=</span> <span class="highlight-n">c</span><span class="highlight-o">.</span><span class="highlight-na">getName</span><span class="highlight-o">();</span>
-<span class="highlight-ln">15</span>        <span class="highlight-k">this</span><span class="highlight-o">.</span><span class="highlight-na">isDebug</span> <span class="highlight-o">=</span> <span class="highlight-n">isDebug</span><span class="highlight-o">;</span>
-<span class="highlight-ln">16</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">d</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">msg</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">19</span>        <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">isRelease</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">isDebug</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">20</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"---------&gt;"</span> <span class="highlight-o">+</span> <span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">21</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">22</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">i</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">msg</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">25</span>        <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">isRelease</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">isDebug</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">26</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">i</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"---------&gt;"</span> <span class="highlight-o">+</span> <span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">27</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">28</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">29</span>
-<span class="highlight-ln">30</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">w</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">msg</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">31</span>        <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">isRelease</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">isDebug</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">32</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">w</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"---------&gt;"</span> <span class="highlight-o">+</span> <span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">33</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">34</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">35</span>
-<span class="highlight-ln">36</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">e</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">msg</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">37</span>        <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">isRelease</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">isDebug</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">38</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"---------&gt;"</span> <span class="highlight-o">+</span> <span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">39</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">40</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">41</span><span class="highlight-o">}</span>
+<pre><code class="language-java">import android.util.Log;
+
+/**
+ * 输出日志工具
+ * Created by 15696 on 2017/12/9.
+ */
+
+public class LogUtil {
+    private String TAG;
+    private boolean isRelease = false;
+    private boolean isDebug;
+
+    public LogUtil(Class c, boolean isDebug) {
+        this.TAG = c.getName();
+        this.isDebug = isDebug;
+    }
+
+    public void d(String msg) {
+        if (!isRelease &amp;&amp; isDebug) {
+            Log.d(TAG, "---------&gt;" + msg);
+        }
+    }
+
+    public void i(String msg) {
+        if (!isRelease &amp;&amp; isDebug) {
+            Log.i(TAG, "---------&gt;" + msg);
+        }
+    }
+
+    public void w(String msg) {
+        if (!isRelease &amp;&amp; isDebug) {
+            Log.w(TAG, "---------&gt;" + msg);
+        }
+    }
+
+    public void e(String msg) {
+        if (!isRelease &amp;&amp; isDebug) {
+            Log.e(TAG, "---------&gt;" + msg);
+        }
+    }
+}
 </code></pre>
 <p>说到这里，我多唠叨一下，我建议调试日志最后使用Log的方法输出，因为Log是分等级的，还有过滤器，这极大的方便我们对输出日志的捕获，尽量不要用<code>System.out.println()</code>和<code>System.err.println()</code></p>
-<h3 id="修改输出日志的级别">修改输出日志的级别</h3>
+<h3 id="toc_h3_0">修改输出日志的级别</h3>
 <p>如果想修改输出日志级别，可以在进行以下操作（酷派手机）：</p>
 <ol>
 <li>拨号键中输入：<code>*20121220#</code>，输入完成会自动打开<strong>工程模式</strong></li>
@@ -270,7 +270,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -279,7 +279,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -287,11 +287,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466407711",
@@ -309,4 +309,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 83ms, 2020/04/07 11:38:51 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 35ms, 2020/04/07 14:57:08 -->

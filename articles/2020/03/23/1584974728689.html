@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零</title><meta name="description" content="前言 本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在Gym官网上了解。我们这次玩的是一个CartPole-v1游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。 PaddlePaddle程序 创建一个DQN.py的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令pip3 install gym安装。 import numpy as np import paddle.fluid as fluid import random import gym from collections import deque from paddle.fluid.param_attr import ParamAttr 定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个...."/><meta property="og:description" content="前言 本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在Gym官网上了解。我们这次玩的是一个CartPole-v1游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。 PaddlePaddle程序 创建一个DQN.py的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令pip3 install gym安装。 import numpy as np import paddle.fluid as fluid import random import gym from collections import deque from paddle.fluid.param_attr import ParamAttr 定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974728689.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974728689.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零</title><meta name="description" content="前言 本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在Gym官网上了解。我们这次玩的是一个CartPole-v1游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。 PaddlePaddle程序 创建一个DQN.py的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令pip3 install gym安装。 import numpy as np import paddle.fluid as fluid import random import gym from collections import deque from paddle.fluid.param_attr import ParamAttr 定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个...."/><meta property="og:description" content="前言 本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在Gym官网上了解。我们这次玩的是一个CartPole-v1游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。 PaddlePaddle程序 创建一个DQN.py的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令pip3 install gym安装。 import numpy as np import paddle.fluid as fluid import random import gym from collections import deque from paddle.fluid.param_attr import ParamAttr 定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974728689.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974728689.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《PaddlePaddle从入门到炼丹》六——生成对抗网络" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974661687.html">
             <link rel="next" title="《PaddlePaddle从入门到炼丹》八——模型的保存与使用" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974792165.html">
     <!-- 百度统计 -->
@@ -78,13 +78,13 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#PaddlePaddle程序">PaddlePaddle程序</a>
+            <a href="#toc_h1_1">PaddlePaddle程序</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_2">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -132,120 +132,120 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20190203.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在<a href="https://gym.openai.com/envs/#classic_control" target="_blank">Gym官网</a>上了解。我们这次玩的是一个<code>CartPole-v1</code>游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。<br>
 <img src="https://s1.ax1x.com/2020/04/03/Gakzbq.gif" alt="在这里插入图片描述"></p>
-<h1 id="PaddlePaddle程序">PaddlePaddle程序</h1>
+<h1 id="toc_h1_1">PaddlePaddle程序</h1>
 <p>创建一个<code>DQN.py</code>的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令<code>pip3 install gym</code>安装。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">random</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">gym</span>
-<span class="highlight-ln">5</span><span class="highlight-kn">from</span> <span class="highlight-nn">collections</span> <span class="highlight-kn">import</span> <span class="highlight-n">deque</span>
-<span class="highlight-ln">6</span><span class="highlight-kn">from</span> <span class="highlight-nn">paddle.fluid.param_attr</span> <span class="highlight-kn">import</span> <span class="highlight-n">ParamAttr</span>
+<pre><code class="language-python">import numpy as np
+import paddle.fluid as fluid
+import random
+import gym
+from collections import deque
+from paddle.fluid.param_attr import ParamAttr
 </code></pre>
 <p>定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个模型，而且没有模型参数更新不一样。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 定义一个深度神经网络，通过指定参数名称，用于之后更新指定的网络参数</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">DQNetWork</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">variable_field</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">fc1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 4</span>                          <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">24</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 5</span>                          <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 6</span>                          <span class="highlight-n">param_attr</span><span class="highlight-o">=</span><span class="highlight-n">ParamAttr</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'{}_fc1'</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">variable_field</span><span class="highlight-p">)),</span>
-<span class="highlight-ln"> 7</span>                          <span class="highlight-n">bias_attr</span><span class="highlight-o">=</span><span class="highlight-n">ParamAttr</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'{}_fc1_b'</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">variable_field</span><span class="highlight-p">)))</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">fc2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 9</span>                          <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">24</span><span class="highlight-p">,</span>
-<span class="highlight-ln">10</span>                          <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">,</span>
-<span class="highlight-ln">11</span>                          <span class="highlight-n">param_attr</span><span class="highlight-o">=</span><span class="highlight-n">ParamAttr</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'{}_fc2'</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">variable_field</span><span class="highlight-p">)),</span>
-<span class="highlight-ln">12</span>                          <span class="highlight-n">bias_attr</span><span class="highlight-o">=</span><span class="highlight-n">ParamAttr</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'{}_fc2_b'</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">variable_field</span><span class="highlight-p">)))</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">14</span>                          <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">15</span>                          <span class="highlight-n">param_attr</span><span class="highlight-o">=</span><span class="highlight-n">ParamAttr</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'{}_fc3'</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">variable_field</span><span class="highlight-p">)),</span>
-<span class="highlight-ln">16</span>                          <span class="highlight-n">bias_attr</span><span class="highlight-o">=</span><span class="highlight-n">ParamAttr</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'{}_fc3_b'</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">variable_field</span><span class="highlight-p">)))</span>
-<span class="highlight-ln">17</span>    <span class="highlight-k">return</span> <span class="highlight-n">out</span>
+<pre><code class="language-python"># 定义一个深度神经网络，通过指定参数名称，用于之后更新指定的网络参数
+def DQNetWork(ipt, variable_field):
+    fc1 = fluid.layers.fc(input=ipt,
+                          size=24,
+                          act='relu',
+                          param_attr=ParamAttr(name='{}_fc1'.format(variable_field)),
+                          bias_attr=ParamAttr(name='{}_fc1_b'.format(variable_field)))
+    fc2 = fluid.layers.fc(input=fc1,
+                          size=24,
+                          act='relu',
+                          param_attr=ParamAttr(name='{}_fc2'.format(variable_field)),
+                          bias_attr=ParamAttr(name='{}_fc2_b'.format(variable_field)))
+    out = fluid.layers.fc(input=fc2,
+                          size=2,
+                          param_attr=ParamAttr(name='{}_fc3'.format(variable_field)),
+                          bias_attr=ParamAttr(name='{}_fc3_b'.format(variable_field)))
+    return out
 </code></pre>
 <p>定义一个更新参数的函数，这个函数是通过指定的参数名称，通过修剪参数的方式完成模型更新。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 定义更新参数程序</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">_build_sync_target_network</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 获取所有的参数</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-nb">vars</span> <span class="highlight-o">=</span> <span class="highlight-nb">list</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">list_vars</span><span class="highlight-p">())</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 把两个网络的参数分别过滤出来</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">policy_vars</span> <span class="highlight-o">=</span> <span class="highlight-nb">list</span><span class="highlight-p">(</span><span class="highlight-nb">filter</span><span class="highlight-p">(</span><span class="highlight-k">lambda</span> <span class="highlight-n">x</span><span class="highlight-p">:</span> <span class="highlight-s1">'GRAD'</span> <span class="highlight-ow">not</span> <span class="highlight-ow">in</span> <span class="highlight-n">x</span><span class="highlight-o">.</span><span class="highlight-n">name</span> <span class="highlight-ow">and</span> <span class="highlight-s1">'policy'</span> <span class="highlight-ow">in</span> <span class="highlight-n">x</span><span class="highlight-o">.</span><span class="highlight-n">name</span><span class="highlight-p">,</span> <span class="highlight-nb">vars</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">target_vars</span> <span class="highlight-o">=</span> <span class="highlight-nb">list</span><span class="highlight-p">(</span><span class="highlight-nb">filter</span><span class="highlight-p">(</span><span class="highlight-k">lambda</span> <span class="highlight-n">x</span><span class="highlight-p">:</span> <span class="highlight-s1">'GRAD'</span> <span class="highlight-ow">not</span> <span class="highlight-ow">in</span> <span class="highlight-n">x</span><span class="highlight-o">.</span><span class="highlight-n">name</span> <span class="highlight-ow">and</span> <span class="highlight-s1">'target'</span> <span class="highlight-ow">in</span> <span class="highlight-n">x</span><span class="highlight-o">.</span><span class="highlight-n">name</span><span class="highlight-p">,</span> <span class="highlight-nb">vars</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">policy_vars</span><span class="highlight-o">.</span><span class="highlight-n">sort</span><span class="highlight-p">(</span><span class="highlight-n">key</span><span class="highlight-o">=</span><span class="highlight-k">lambda</span> <span class="highlight-n">x</span><span class="highlight-p">:</span> <span class="highlight-n">x</span><span class="highlight-o">.</span><span class="highlight-n">name</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">target_vars</span><span class="highlight-o">.</span><span class="highlight-n">sort</span><span class="highlight-p">(</span><span class="highlight-n">key</span><span class="highlight-o">=</span><span class="highlight-k">lambda</span> <span class="highlight-n">x</span><span class="highlight-p">:</span> <span class="highlight-n">x</span><span class="highlight-o">.</span><span class="highlight-n">name</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-c1"># 从主程序中克隆一个程序用于更新参数</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">sync_program</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">clone</span><span class="highlight-p">()</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">with</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">program_guard</span><span class="highlight-p">(</span><span class="highlight-n">sync_program</span><span class="highlight-p">):</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">sync_ops</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">15</span>        <span class="highlight-k">for</span> <span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">var</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">policy_vars</span><span class="highlight-p">):</span>
-<span class="highlight-ln">16</span>            <span class="highlight-n">sync_op</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">assign</span><span class="highlight-p">(</span><span class="highlight-n">policy_vars</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-n">target_vars</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">])</span>
-<span class="highlight-ln">17</span>            <span class="highlight-n">sync_ops</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">sync_op</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>    <span class="highlight-c1"># 修剪第二个玩了个的参数，完成更新参数</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">sync_program</span> <span class="highlight-o">=</span> <span class="highlight-n">sync_program</span><span class="highlight-o">.</span><span class="highlight-n">_prune</span><span class="highlight-p">(</span><span class="highlight-n">sync_ops</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>    <span class="highlight-k">return</span> <span class="highlight-n">sync_program</span>
+<pre><code class="language-python"># 定义更新参数程序
+def _build_sync_target_network():
+    # 获取所有的参数
+    vars = list(fluid.default_main_program().list_vars())
+    # 把两个网络的参数分别过滤出来
+    policy_vars = list(filter(lambda x: 'GRAD' not in x.name and 'policy' in x.name, vars))
+    target_vars = list(filter(lambda x: 'GRAD' not in x.name and 'target' in x.name, vars))
+    policy_vars.sort(key=lambda x: x.name)
+    target_vars.sort(key=lambda x: x.name)
+
+    # 从主程序中克隆一个程序用于更新参数
+    sync_program = fluid.default_main_program().clone()
+    with fluid.program_guard(sync_program):
+        sync_ops = []
+        for i, var in enumerate(policy_vars):
+            sync_op = fluid.layers.assign(policy_vars[i], target_vars[i])
+            sync_ops.append(sync_op)
+    # 修剪第二个玩了个的参数，完成更新参数
+    sync_program = sync_program._prune(sync_ops)
+    return sync_program
 </code></pre>
 <p>定义5个数据输出层，<code>state_data</code>是当前游戏状态的数据输入层，<code>action_data</code>是对游戏操作动作的数据输入层，只有两个动作0和1，<code>reward_data</code>是当前游戏给出的奖励的数据输入层，<code>next_state_data</code>是游戏下一个状态的数据输入层，<code>done_data</code>是游戏是否结束的数据输入层。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义输入数据</span>
-<span class="highlight-ln">2</span><span class="highlight-n">state_data</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'state'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">4</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">action_data</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'action'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">reward_data</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'reward'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span><span class="highlight-n">next_state_data</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'next_state'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">4</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span><span class="highlight-n">done_data</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'done'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)</span> 
+<pre><code class="language-python"># 定义输入数据
+state_data = fluid.layers.data(name='state', shape=[4], dtype='float32')
+action_data = fluid.layers.data(name='action', shape=[1], dtype='int64')
+reward_data = fluid.layers.data(name='reward', shape=[], dtype='float32')
+next_state_data = fluid.layers.data(name='next_state', shape=[4], dtype='float32')
+done_data = fluid.layers.data(name='done', shape=[], dtype='float32') 
 </code></pre>
 <p>定义一些必要的训练参数，比如epsilon-greedy 探索策略参数。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义训练的参数</span>
-<span class="highlight-ln">2</span><span class="highlight-n">batch_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">32</span>
-<span class="highlight-ln">3</span><span class="highlight-n">num_episodes</span> <span class="highlight-o">=</span> <span class="highlight-mi">300</span>
-<span class="highlight-ln">4</span><span class="highlight-n">num_exploration_episodes</span> <span class="highlight-o">=</span> <span class="highlight-mi">100</span>
-<span class="highlight-ln">5</span><span class="highlight-n">max_len_episode</span> <span class="highlight-o">=</span> <span class="highlight-mi">1000</span>
-<span class="highlight-ln">6</span><span class="highlight-n">learning_rate</span> <span class="highlight-o">=</span> <span class="highlight-mf">1e-3</span>
-<span class="highlight-ln">7</span><span class="highlight-n">gamma</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.0</span>
-<span class="highlight-ln">8</span><span class="highlight-n">initial_epsilon</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.0</span>
-<span class="highlight-ln">9</span><span class="highlight-n">final_epsilon</span> <span class="highlight-o">=</span> <span class="highlight-mf">0.01</span>
+<pre><code class="language-python"># 定义训练的参数
+batch_size = 32
+num_episodes = 300
+num_exploration_episodes = 100
+max_len_episode = 1000
+learning_rate = 1e-3
+gamma = 1.0
+initial_epsilon = 1.0
+final_epsilon = 0.01
 </code></pre>
 <p>创建一个游戏，通过指定游戏的名称<code>CartPole-v1</code>就可以获取前言部分所说的游戏。也可以创建其他更多的有些，具体可以参照官方的游戏名称。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 实例化一个游戏环境，参数为游戏名称</span>
-<span class="highlight-ln">2</span><span class="highlight-n">env</span> <span class="highlight-o">=</span> <span class="highlight-n">gym</span><span class="highlight-o">.</span><span class="highlight-n">make</span><span class="highlight-p">(</span><span class="highlight-s2">"CartPole-v1"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">replay_buffer</span> <span class="highlight-o">=</span> <span class="highlight-n">deque</span><span class="highlight-p">(</span><span class="highlight-n">maxlen</span><span class="highlight-o">=</span><span class="highlight-mi">10000</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 实例化一个游戏环境，参数为游戏名称
+env = gym.make("CartPole-v1")
+replay_buffer = deque(maxlen=10000)
 </code></pre>
 <p>获取第一个网络模型，并指定参数名称内包含<code>policy</code>字符串。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取网络</span>
-<span class="highlight-ln">2</span><span class="highlight-n">state_model</span> <span class="highlight-o">=</span> <span class="highlight-n">DQNetWork</span><span class="highlight-p">(</span><span class="highlight-n">state_data</span><span class="highlight-p">,</span> <span class="highlight-s1">'policy'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取网络
+state_model = DQNetWork(state_data, 'policy')
 </code></pre>
 <p>这里从主程序中克隆一个预测程序，这个预测程序是之后预测游戏的下一个动作的，也就是说它在操作游戏。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 克隆预测程序</span>
-<span class="highlight-ln">2</span><span class="highlight-n">predict_program</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">clone</span><span class="highlight-p">()</span>
+<pre><code class="language-python"># 克隆预测程序
+predict_program = fluid.default_main_program().clone()
 </code></pre>
 <p>这里定义损失函数，强化学习中的损失函数跟之后我们使用的损失函数有点不一样。虽然最终还是使用平方差损失函数，但是输入的不只是普通的输入数据和标签。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 定义损失函数</span>
-<span class="highlight-ln"> 2</span><span class="highlight-n">action_onehot</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">one_hot</span><span class="highlight-p">(</span><span class="highlight-n">action_data</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 3</span><span class="highlight-n">action_value</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">elementwise_mul</span><span class="highlight-p">(</span><span class="highlight-n">action_onehot</span><span class="highlight-p">,</span> <span class="highlight-n">state_model</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">pred_action_value</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">reduce_sum</span><span class="highlight-p">(</span><span class="highlight-n">action_value</span><span class="highlight-p">,</span> <span class="highlight-n">dim</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span><span class="highlight-n">targetQ_predict_value</span> <span class="highlight-o">=</span> <span class="highlight-n">DQNetWork</span><span class="highlight-p">(</span><span class="highlight-n">next_state_data</span><span class="highlight-p">,</span> <span class="highlight-s1">'target'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">best_v</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">reduce_max</span><span class="highlight-p">(</span><span class="highlight-n">targetQ_predict_value</span><span class="highlight-p">,</span> <span class="highlight-n">dim</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">best_v</span><span class="highlight-o">.</span><span class="highlight-n">stop_gradient</span> <span class="highlight-o">=</span> <span class="highlight-bp">True</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">target</span> <span class="highlight-o">=</span> <span class="highlight-n">reward_data</span> <span class="highlight-o">+</span> <span class="highlight-n">gamma</span> <span class="highlight-o">*</span> <span class="highlight-n">best_v</span> <span class="highlight-o">*</span> <span class="highlight-p">(</span><span class="highlight-mf">1.0</span> <span class="highlight-o">-</span> <span class="highlight-n">done_data</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">square_error_cost</span><span class="highlight-p">(</span><span class="highlight-n">pred_action_value</span><span class="highlight-p">,</span> <span class="highlight-n">target</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span><span class="highlight-n">avg_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">reduce_mean</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义损失函数
+action_onehot = fluid.layers.one_hot(action_data, 2)
+action_value = fluid.layers.elementwise_mul(action_onehot, state_model)
+pred_action_value = fluid.layers.reduce_sum(action_value, dim=1)
+
+targetQ_predict_value = DQNetWork(next_state_data, 'target')
+best_v = fluid.layers.reduce_max(targetQ_predict_value, dim=1)
+best_v.stop_gradient = True
+target = reward_data + gamma * best_v * (1.0 - done_data)
+
+cost = fluid.layers.square_error_cost(pred_action_value, target)
+avg_cost = fluid.layers.reduce_mean(cost)
 </code></pre>
 <p>这里获取一个更新参数的程序，用于之后执行更新参数。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取更新参数程序</span>
-<span class="highlight-ln">2</span><span class="highlight-n">_sync_program</span> <span class="highlight-o">=</span> <span class="highlight-n">_build_sync_target_network</span><span class="highlight-p">()</span>
+<pre><code class="language-python"># 获取更新参数程序
+_sync_program = _build_sync_target_network()
 </code></pre>
 <p>定义一个优化方法，这里还是用AdamOptimizer，笔者也是比较喜欢使用这个优化方法。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义优化方法</span>
-<span class="highlight-ln">2</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">AdamOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-n">learning_rate</span><span class="highlight-p">,</span> <span class="highlight-n">epsilon</span><span class="highlight-o">=</span><span class="highlight-mf">1e-3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">opt</span> <span class="highlight-o">=</span> <span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">avg_cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义优化方法
+optimizer = fluid.optimizer.AdamOptimizer(learning_rate=learning_rate, epsilon=1e-3)
+opt = optimizer.minimize(avg_cost)
 </code></pre>
 <p>开始创建执行器</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 创建执行器并进行初始化</span>
-<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
-<span class="highlight-ln">5</span><span class="highlight-n">epsilon</span> <span class="highlight-o">=</span> <span class="highlight-n">initial_epsilon</span>
+<pre><code class="language-python"># 创建执行器并进行初始化
+place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+exe.run(fluid.default_startup_program())
+epsilon = initial_epsilon
 </code></pre>
 <p>这个循环有点大，不过因为是一个整体，不好拆分出来，所以就一起介绍吧。</p>
 <ul>
@@ -258,85 +258,85 @@ var _hmt = _hmt || [];
 <li>然后把这些数据存储起来，用于之后训练使用。</li>
 <li>当存储的数据大于或等于Batch size，就可以开始训练。</li>
 </ul>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-n">update_num</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln"> 2</span><span class="highlight-c1"># 开始玩游戏</span>
-<span class="highlight-ln"> 3</span><span class="highlight-k">for</span> <span class="highlight-n">epsilon_id</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-n">num_episodes</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 初始化环境，获得初始状态</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">state</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">.</span><span class="highlight-n">reset</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">epsilon</span> <span class="highlight-o">=</span> <span class="highlight-nb">max</span><span class="highlight-p">(</span><span class="highlight-n">initial_epsilon</span> <span class="highlight-o">*</span> <span class="highlight-p">(</span><span class="highlight-n">num_exploration_episodes</span> <span class="highlight-o">-</span> <span class="highlight-n">epsilon_id</span><span class="highlight-p">)</span> <span class="highlight-o">/</span>
-<span class="highlight-ln"> 7</span>                  <span class="highlight-n">num_exploration_episodes</span><span class="highlight-p">,</span> <span class="highlight-n">final_epsilon</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-k">for</span> <span class="highlight-n">t</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-n">max_len_episode</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-c1"># 显示游戏界面</span>
-<span class="highlight-ln">10</span>        <span class="highlight-c1"># env.render()</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">state</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">expand_dims</span><span class="highlight-p">(</span><span class="highlight-n">state</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>        <span class="highlight-c1"># epsilon-greedy 探索策略</span>
-<span class="highlight-ln">13</span>        <span class="highlight-k">if</span> <span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-p">()</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">epsilon</span><span class="highlight-p">:</span>
-<span class="highlight-ln">14</span>            <span class="highlight-c1"># 以 epsilon 的概率选择随机下一步动作</span>
-<span class="highlight-ln">15</span>            <span class="highlight-n">action</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">.</span><span class="highlight-n">action_space</span><span class="highlight-o">.</span><span class="highlight-n">sample</span><span class="highlight-p">()</span>
-<span class="highlight-ln">16</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">17</span>            <span class="highlight-c1"># 使用模型预测作为结果下一步动作</span>
-<span class="highlight-ln">18</span>            <span class="highlight-n">action</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">predict_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">19</span>                             <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-s1">'state'</span><span class="highlight-p">:</span> <span class="highlight-n">state</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">)},</span>
-<span class="highlight-ln">20</span>                             <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">state_model</span><span class="highlight-p">])[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">21</span>            <span class="highlight-n">action</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">squeeze</span><span class="highlight-p">(</span><span class="highlight-n">action</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>            <span class="highlight-n">action</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argmax</span><span class="highlight-p">(</span><span class="highlight-n">action</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>        <span class="highlight-c1"># 让游戏执行动作，获得执行完 动作的下一个状态，动作的奖励，游戏是否已结束以及额外信息</span>
-<span class="highlight-ln">25</span>        <span class="highlight-n">next_state</span><span class="highlight-p">,</span> <span class="highlight-n">reward</span><span class="highlight-p">,</span> <span class="highlight-n">done</span><span class="highlight-p">,</span> <span class="highlight-n">info</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">.</span><span class="highlight-n">step</span><span class="highlight-p">(</span><span class="highlight-n">action</span><span class="highlight-p">)</span>
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>        <span class="highlight-c1"># 如果游戏结束，就进行惩罚</span>
-<span class="highlight-ln">28</span>        <span class="highlight-n">reward</span> <span class="highlight-o">=</span> <span class="highlight-o">-</span><span class="highlight-mi">10</span> <span class="highlight-k">if</span> <span class="highlight-n">done</span> <span class="highlight-k">else</span> <span class="highlight-n">reward</span>
-<span class="highlight-ln">29</span>        <span class="highlight-c1"># 记录游戏输出的结果，作为之后训练的数据</span>
-<span class="highlight-ln">30</span>        <span class="highlight-n">replay_buffer</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">state</span><span class="highlight-p">,</span> <span class="highlight-n">action</span><span class="highlight-p">,</span> <span class="highlight-n">reward</span><span class="highlight-p">,</span> <span class="highlight-n">next_state</span><span class="highlight-p">,</span> <span class="highlight-n">done</span><span class="highlight-p">))</span>
-<span class="highlight-ln">31</span>        <span class="highlight-n">state</span> <span class="highlight-o">=</span> <span class="highlight-n">next_state</span>
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>        <span class="highlight-c1"># 如果游戏结束，就重新玩游戏</span>
-<span class="highlight-ln">34</span>        <span class="highlight-k">if</span> <span class="highlight-n">done</span><span class="highlight-p">:</span>
-<span class="highlight-ln">35</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Pass:</span><span class="highlight-si">%d</span><span class="highlight-s1">, epsilon:</span><span class="highlight-si">%f</span><span class="highlight-s1">, score:</span><span class="highlight-si">%d</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">epsilon_id</span><span class="highlight-p">,</span> <span class="highlight-n">epsilon</span><span class="highlight-p">,</span> <span class="highlight-n">t</span><span class="highlight-p">))</span>
-<span class="highlight-ln">36</span>            <span class="highlight-k">break</span>
-<span class="highlight-ln">37</span>
-<span class="highlight-ln">38</span>        <span class="highlight-c1"># 如果收集的数据大于Batch的大小，就开始训练</span>
-<span class="highlight-ln">39</span>        <span class="highlight-k">if</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">replay_buffer</span><span class="highlight-p">)</span> <span class="highlight-o">&gt;=</span> <span class="highlight-n">batch_size</span><span class="highlight-p">:</span>
-<span class="highlight-ln">40</span>            <span class="highlight-n">batch_state</span><span class="highlight-p">,</span> <span class="highlight-n">batch_action</span><span class="highlight-p">,</span> <span class="highlight-n">batch_reward</span><span class="highlight-p">,</span> <span class="highlight-n">batch_next_state</span><span class="highlight-p">,</span> <span class="highlight-n">batch_done</span> <span class="highlight-o">=</span> \
-<span class="highlight-ln">41</span>                <span class="highlight-p">[</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">a</span><span class="highlight-p">,</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span> <span class="highlight-k">for</span> <span class="highlight-n">a</span> <span class="highlight-ow">in</span> <span class="highlight-nb">zip</span><span class="highlight-p">(</span><span class="highlight-o">*</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">sample</span><span class="highlight-p">(</span><span class="highlight-n">replay_buffer</span><span class="highlight-p">,</span> <span class="highlight-n">batch_size</span><span class="highlight-p">))]</span>
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>            <span class="highlight-c1"># 更新参数</span>
-<span class="highlight-ln">44</span>            <span class="highlight-k">if</span> <span class="highlight-n">update_num</span> <span class="highlight-o">%</span> <span class="highlight-mi">200</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">45</span>                <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">_sync_program</span><span class="highlight-p">)</span>
-<span class="highlight-ln">46</span>            <span class="highlight-n">update_num</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">47</span>
-<span class="highlight-ln">48</span>            <span class="highlight-c1"># 调整数据维度</span>
-<span class="highlight-ln">49</span>            <span class="highlight-n">batch_action</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">expand_dims</span><span class="highlight-p">(</span><span class="highlight-n">batch_action</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=-</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">50</span>            <span class="highlight-n">batch_next_state</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">expand_dims</span><span class="highlight-p">(</span><span class="highlight-n">batch_next_state</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">51</span>
-<span class="highlight-ln">52</span>            <span class="highlight-c1"># 执行训练</span>
-<span class="highlight-ln">53</span>            <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">54</span>                    <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-s1">'state'</span><span class="highlight-p">:</span> <span class="highlight-n">batch_state</span><span class="highlight-p">,</span>
-<span class="highlight-ln">55</span>                          <span class="highlight-s1">'action'</span><span class="highlight-p">:</span> <span class="highlight-n">batch_action</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'int64'</span><span class="highlight-p">),</span>
-<span class="highlight-ln">56</span>                          <span class="highlight-s1">'reward'</span><span class="highlight-p">:</span> <span class="highlight-n">batch_reward</span><span class="highlight-p">,</span>
-<span class="highlight-ln">57</span>                          <span class="highlight-s1">'next_state'</span><span class="highlight-p">:</span> <span class="highlight-n">batch_next_state</span><span class="highlight-p">,</span>
-<span class="highlight-ln">58</span>                          <span class="highlight-s1">'done'</span><span class="highlight-p">:</span> <span class="highlight-n">batch_done</span><span class="highlight-p">})</span>
+<pre><code class="language-python">update_num = 0
+# 开始玩游戏
+for epsilon_id in range(num_episodes):
+    # 初始化环境，获得初始状态
+    state = env.reset()
+    epsilon = max(initial_epsilon * (num_exploration_episodes - epsilon_id) /
+                  num_exploration_episodes, final_epsilon)
+    for t in range(max_len_episode):
+        # 显示游戏界面
+        # env.render()
+        state = np.expand_dims(state, axis=0)
+        # epsilon-greedy 探索策略
+        if random.random() &lt; epsilon:
+            # 以 epsilon 的概率选择随机下一步动作
+            action = env.action_space.sample()
+        else:
+            # 使用模型预测作为结果下一步动作
+            action = exe.run(predict_program,
+                             feed={'state': state.astype('float32')},
+                             fetch_list=[state_model])[0]
+            action = np.squeeze(action, axis=0)
+            action = np.argmax(action)
+
+        # 让游戏执行动作，获得执行完 动作的下一个状态，动作的奖励，游戏是否已结束以及额外信息
+        next_state, reward, done, info = env.step(action)
+
+        # 如果游戏结束，就进行惩罚
+        reward = -10 if done else reward
+        # 记录游戏输出的结果，作为之后训练的数据
+        replay_buffer.append((state, action, reward, next_state, done))
+        state = next_state
+
+        # 如果游戏结束，就重新玩游戏
+        if done:
+            print('Pass:%d, epsilon:%f, score:%d' % (epsilon_id, epsilon, t))
+            break
+
+        # 如果收集的数据大于Batch的大小，就开始训练
+        if len(replay_buffer) &gt;= batch_size:
+            batch_state, batch_action, batch_reward, batch_next_state, batch_done = \
+                [np.array(a, np.float32) for a in zip(*random.sample(replay_buffer, batch_size))]
+
+            # 更新参数
+            if update_num % 200 == 0:
+                exe.run(program=_sync_program)
+            update_num += 1
+
+            # 调整数据维度
+            batch_action = np.expand_dims(batch_action, axis=-1)
+            batch_next_state = np.expand_dims(batch_next_state, axis=1)
+
+            # 执行训练
+            exe.run(program=fluid.default_main_program(),
+                    feed={'state': batch_state,
+                          'action': batch_action.astype('int64'),
+                          'reward': batch_reward,
+                          'next_state': batch_next_state,
+                          'done': batch_done})
 </code></pre>
 <p>输出训练信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>......
-<span class="highlight-ln"> 2</span>Pass:70, epsilon:0.300000, score:234
-<span class="highlight-ln"> 3</span>Pass:71, epsilon:0.290000, score:272
-<span class="highlight-ln"> 4</span>Pass:72, epsilon:0.280000, score:254
-<span class="highlight-ln"> 5</span>Pass:73, epsilon:0.270000, score:148
-<span class="highlight-ln"> 6</span>Pass:74, epsilon:0.260000, score:147
-<span class="highlight-ln"> 7</span>Pass:75, epsilon:0.250000, score:342
-<span class="highlight-ln"> 8</span>Pass:76, epsilon:0.240000, score:295
-<span class="highlight-ln"> 9</span>Pass:77, epsilon:0.230000, score:290
-<span class="highlight-ln">10</span>Pass:78, epsilon:0.220000, score:276
-<span class="highlight-ln">11</span>Pass:79, epsilon:0.210000, score:279
-<span class="highlight-ln">12</span>......
+<pre><code>......
+Pass:70, epsilon:0.300000, score:234
+Pass:71, epsilon:0.290000, score:272
+Pass:72, epsilon:0.280000, score:254
+Pass:73, epsilon:0.270000, score:148
+Pass:74, epsilon:0.260000, score:147
+Pass:75, epsilon:0.250000, score:342
+Pass:76, epsilon:0.240000, score:295
+Pass:77, epsilon:0.230000, score:290
+Pass:78, epsilon:0.220000, score:276
+Pass:79, epsilon:0.210000, score:279
+......
 </code></pre>
 <p>关于通过使用PaddlePaddle实现强化学习，并玩一个小游戏就介绍完成了。强化学习还有很多好玩的地方，比如应用于机器人的避障等一些智能控制上。</p>
 <p>同步到百度AI Studio平台：<a href="http://aistudio.baidu.com/aistudio/projectdetail/31310" target="_blank">http://aistudio.baidu.com/aistudio/projectdetail/31310</a><br>
 同步到科赛网K-Lab平台：<a href="https://www.kesci.com/home/project/5c3eaac54223d9002bfef5ae" target="_blank">https://www.kesci.com/home/project/5c3eaac54223d9002bfef5ae</a><br>
 项目代码GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note7" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note7</a></p>
 <p><strong>注意：</strong> 最新代码以GitHub上的为准</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_2">参考资料</h1>
 <ol>
 <li><a href="https://github.com/PaddlePaddle/models/blob/develop/fluid/DeepQNetwork/README_cn.md" target="_blank">https://github.com/PaddlePaddle/models/blob/develop/fluid/DeepQNetwork/README_cn.md</a></li>
 <li><a href="https://github.com/snowkylin/TensorFlow-cn" target="_blank">https://github.com/snowkylin/TensorFlow-cn</a></li>
@@ -416,7 +416,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -425,7 +425,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -433,11 +433,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466416844",
@@ -455,4 +455,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 58ms, 2020/04/07 11:38:41 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 33ms, 2020/04/07 14:57:07 -->

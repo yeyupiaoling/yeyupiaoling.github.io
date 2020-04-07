@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Caffe模型转PaddlePaddle的Fluid版本预测模型 - 夜雨飘零</title><meta name="description" content="前言 有不少开发者在学习深度学习框架的时候会开源一些训练好的模型，我们可以使用这些模型来运用到我们自己的项目中。如果使用的是同一个深度学习框架，那就很方便，可以直接使用，但是如果时不同深度学习框架，我们就要对模型转换一下。下面我们就介绍如何把Caffe的模型转换成PaddlePaddle的Fluid模型。 环境准备 在线安装最新发布的PaddlePaddle，可以使用pip命令直接在线安装PaddlePaddle。 pip install paddlepaddle 下在安装最新的PaddlePaddle，可以在下面选择适合自己PaddlePaddle的版本，这里下载的是最新编译得到的，然后使用pip命令安装。 http://www.paddlepaddle.org/documentation/docs/zh/0.14.0/new_docs/beginners_guide/install/install_doc.html#id26 克隆PaddlePaddle下的models源码。 git clone https://github.com/PaddlePaddle/mod...."/><meta property="og:description" content="前言 有不少开发者在学习深度学习框架的时候会开源一些训练好的模型，我们可以使用这些模型来运用到我们自己的项目中。如果使用的是同一个深度学习框架，那就很方便，可以直接使用，但是如果时不同深度学习框架，我们就要对模型转换一下。下面我们就介绍如何把Caffe的模型转换成PaddlePaddle的Fluid模型。 环境准备 在线安装最新发布的PaddlePaddle，可以使用pip命令直接在线安装PaddlePaddle。 pip install paddlepaddle 下在安装最新的PaddlePaddle，可以在下面选择适合自己PaddlePaddle的版本，这里下载的是最新编译得到的，然后使用pip命令安装。 http://www.paddlepaddle.org/documentation/docs/zh/0.14.0/new_docs/beginners_guide/install/install_doc.html#id26 克隆PaddlePaddle下的models源码。 git clone https://github.com/PaddlePaddle/mod...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Caffe模型转PaddlePaddle的Fluid版本预测模型 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973420477.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Caffe模型转PaddlePaddle的Fluid版本预测模型 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973420477.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Caffe模型转PaddlePaddle的Fluid版本预测模型 - 夜雨飘零</title><meta name="description" content="前言 有不少开发者在学习深度学习框架的时候会开源一些训练好的模型，我们可以使用这些模型来运用到我们自己的项目中。如果使用的是同一个深度学习框架，那就很方便，可以直接使用，但是如果时不同深度学习框架，我们就要对模型转换一下。下面我们就介绍如何把Caffe的模型转换成PaddlePaddle的Fluid模型。 环境准备 在线安装最新发布的PaddlePaddle，可以使用pip命令直接在线安装PaddlePaddle。 pip install paddlepaddle 下在安装最新的PaddlePaddle，可以在下面选择适合自己PaddlePaddle的版本，这里下载的是最新编译得到的，然后使用pip命令安装。 http://www.paddlepaddle.org/documentation/docs/zh/0.14.0/new_docs/beginners_guide/install/install_doc.html#id26 克隆PaddlePaddle下的models源码。 git clone https://github.com/PaddlePaddle/mod...."/><meta property="og:description" content="前言 有不少开发者在学习深度学习框架的时候会开源一些训练好的模型，我们可以使用这些模型来运用到我们自己的项目中。如果使用的是同一个深度学习框架，那就很方便，可以直接使用，但是如果时不同深度学习框架，我们就要对模型转换一下。下面我们就介绍如何把Caffe的模型转换成PaddlePaddle的Fluid模型。 环境准备 在线安装最新发布的PaddlePaddle，可以使用pip命令直接在线安装PaddlePaddle。 pip install paddlepaddle 下在安装最新的PaddlePaddle，可以在下面选择适合自己PaddlePaddle的版本，这里下载的是最新编译得到的，然后使用pip命令安装。 http://www.paddlepaddle.org/documentation/docs/zh/0.14.0/new_docs/beginners_guide/install/install_doc.html#id26 克隆PaddlePaddle下的models源码。 git clone https://github.com/PaddlePaddle/mod...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Caffe模型转PaddlePaddle的Fluid版本预测模型 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973420477.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Caffe模型转PaddlePaddle的Fluid版本预测模型 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973420477.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="使用PaddlePaddle实现人脸对比和人脸识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html">
             <link rel="next" title="在Android手机上使用MACE实现图像分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973497621.html">
     <!-- 百度统计 -->
@@ -78,19 +78,19 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#环境准备">环境准备</a>
+            <a href="#toc_h1_1">环境准备</a>
         </li>
         <li class="toc__h1">
-            <a href="#转换模型">转换模型</a>
+            <a href="#toc_h1_2">转换模型</a>
         </li>
         <li class="toc__h1">
-            <a href="#测试预测模型">测试预测模型</a>
+            <a href="#toc_h1_3">测试预测模型</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_4">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -138,200 +138,200 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20191221.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>有不少开发者在学习深度学习框架的时候会开源一些训练好的模型，我们可以使用这些模型来运用到我们自己的项目中。如果使用的是同一个深度学习框架，那就很方便，可以直接使用，但是如果时不同深度学习框架，我们就要对模型转换一下。下面我们就介绍如何把Caffe的模型转换成PaddlePaddle的Fluid模型。</p>
-<h1 id="环境准备">环境准备</h1>
+<h1 id="toc_h1_1">环境准备</h1>
 <ul>
 <li>在线安装最新发布的PaddlePaddle，可以使用pip命令直接在线安装PaddlePaddle。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>pip install paddlepaddle
+<pre><code>pip install paddlepaddle
 </code></pre>
 <ul>
 <li>下在安装最新的PaddlePaddle，可以在下面选择适合自己PaddlePaddle的版本，这里下载的是最新编译得到的，然后使用pip命令安装。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>http://www.paddlepaddle.org/documentation/docs/zh/0.14.0/new_docs/beginners_guide/install/install_doc.html#id26
+<pre><code>http://www.paddlepaddle.org/documentation/docs/zh/0.14.0/new_docs/beginners_guide/install/install_doc.html#id26
 </code></pre>
 <ul>
 <li>克隆PaddlePaddle下的models源码。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/PaddlePaddle/models.git
+<pre><code>git clone https://github.com/PaddlePaddle/models.git
 </code></pre>
-<h1 id="转换模型">转换模型</h1>
+<h1 id="toc_h1_2">转换模型</h1>
 <ul>
 <li>进入到上一步克隆的<code>models</code>的<code>caffe2fluid</code>目录。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd models/fluid/image_classification/caffe2fluid/
+<pre><code>cd models/fluid/image_classification/caffe2fluid/
 </code></pre>
 <ul>
 <li>下载转换时所需要的依赖的Python文件。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd proto/ &amp;&amp; wget https://raw.githubusercontent.com/ethereon/caffe-tensorflow/master/kaffe/caffe/caffepb.py
+<pre><code>cd proto/ &amp;&amp; wget https://raw.githubusercontent.com/ethereon/caffe-tensorflow/master/kaffe/caffe/caffepb.py
 </code></pre>
 <p>修改刚下载的文件名：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mv caffepb.py caffe_pb2.py
+<pre><code>mv caffepb.py caffe_pb2.py
 </code></pre>
 <ul>
 <li>获取需要转换的Caffe模型，笔者是参考以下这个开源获取的：</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>https://gist.github.com/ksimonyan/211839e770f7b538e2d8
+<pre><code>https://gist.github.com/ksimonyan/211839e770f7b538e2d8
 </code></pre>
 <p>首先是获取<code>VGG_ILSVRC_16_layers_deploy.prototxt</code>网络文件。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd ../ &amp;&amp; wget https://gist.githubusercontent.com/ksimonyan/211839e770f7b538e2d8/raw/ded9363bd93ec0c770134f4e387d8aaaaa2407ce/VGG_ILSVRC_16_layers_deploy.prototxt
+<pre><code>cd ../ &amp;&amp; wget https://gist.githubusercontent.com/ksimonyan/211839e770f7b538e2d8/raw/ded9363bd93ec0c770134f4e387d8aaaaa2407ce/VGG_ILSVRC_16_layers_deploy.prototxt
 </code></pre>
 <p>其次是获取<code>VGG_ILSVRC_16_layers.caffemodel</code>权重文件。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>wget http://www.robots.ox.ac.uk/~vgg/software/very_deep/caffe/VGG_ILSVRC_16_layers.caffemodel
+<pre><code>wget http://www.robots.ox.ac.uk/~vgg/software/very_deep/caffe/VGG_ILSVRC_16_layers.caffemodel
 </code></pre>
 <ul>
 <li>把Caffe模型转换成Fluid版本的网络结构文件和权重文件，其中<code>VGG16.py</code>是PaddlePaddle定义网络结构的Python文件，<code>VGG16.npy</code>是网络的权重文件。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>python convert.py VGG_ILSVRC_16_layers_deploy.prototxt \
-<span class="highlight-ln">2</span>        --caffemodel VGG_ILSVRC_16_layers.caffemodel \
-<span class="highlight-ln">3</span>        --data-output-path VGG16.npy \
-<span class="highlight-ln">4</span>        --code-output-path VGG16.py
+<pre><code>python convert.py VGG_ILSVRC_16_layers_deploy.prototxt \
+        --caffemodel VGG_ILSVRC_16_layers.caffemodel \
+        --data-output-path VGG16.npy \
+        --code-output-path VGG16.py
 </code></pre>
 <p>在执行过程中会生产以下信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>register layer[Axpy]
-<span class="highlight-ln"> 2</span>register layer[Flatten]
-<span class="highlight-ln"> 3</span>register layer[ArgMax]
-<span class="highlight-ln"> 4</span>register layer[Reshape]
-<span class="highlight-ln"> 5</span>register layer[ROIPooling]
-<span class="highlight-ln"> 6</span>register layer[PriorBox]
-<span class="highlight-ln"> 7</span>register layer[Permute]
-<span class="highlight-ln"> 8</span>register layer[DetectionOutput]
-<span class="highlight-ln"> 9</span>register layer[Normalize]
-<span class="highlight-ln">10</span>register layer[Select]
-<span class="highlight-ln">11</span>register layer[Crop]
-<span class="highlight-ln">12</span>register layer[Reduction]
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>------------------------------------------------------------
-<span class="highlight-ln">15</span>    WARNING: PyCaffe not found!
-<span class="highlight-ln">16</span>    Falling back to a pure protocol buffer implementation.
-<span class="highlight-ln">17</span>    * Conversions will be drastically slower.
-<span class="highlight-ln">18</span>------------------------------------------------------------
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>Type                 Name                                          Param               Output
-<span class="highlight-ln">21</span>----------------------------------------------------------------------------------------------
-<span class="highlight-ln">22</span>Data                 data                                             --    (10, 3, 224, 224)
-<span class="highlight-ln">23</span>Convolution          conv1_1                               (64, 3, 3, 3)   (10, 64, 224, 224)
-<span class="highlight-ln">24</span>Convolution          conv1_1                                       (64,)   (10, 64, 224, 224)
-<span class="highlight-ln">25</span>Convolution          conv1_2                              (64, 64, 3, 3)   (10, 64, 224, 224)
-<span class="highlight-ln">26</span>Convolution          conv1_2                                       (64,)   (10, 64, 224, 224)
-<span class="highlight-ln">27</span>Pooling              pool1                                            --   (10, 64, 112, 112)
-<span class="highlight-ln">28</span>Convolution          conv2_1                             (128, 64, 3, 3)  (10, 128, 112, 112)
-<span class="highlight-ln">29</span>Convolution          conv2_1                                      (128,)  (10, 128, 112, 112)
-<span class="highlight-ln">30</span>Convolution          conv2_2                            (128, 128, 3, 3)  (10, 128, 112, 112)
-<span class="highlight-ln">31</span>Convolution          conv2_2                                      (128,)  (10, 128, 112, 112)
-<span class="highlight-ln">32</span>Pooling              pool2                                            --    (10, 128, 56, 56)
-<span class="highlight-ln">33</span>Convolution          conv3_1                            (256, 128, 3, 3)    (10, 256, 56, 56)
-<span class="highlight-ln">34</span>Convolution          conv3_1                                      (256,)    (10, 256, 56, 56)
-<span class="highlight-ln">35</span>Convolution          conv3_2                            (256, 256, 3, 3)    (10, 256, 56, 56)
-<span class="highlight-ln">36</span>Convolution          conv3_2                                      (256,)    (10, 256, 56, 56)
-<span class="highlight-ln">37</span>Convolution          conv3_3                            (256, 256, 3, 3)    (10, 256, 56, 56)
-<span class="highlight-ln">38</span>Convolution          conv3_3                                      (256,)    (10, 256, 56, 56)
-<span class="highlight-ln">39</span>Pooling              pool3                                            --    (10, 256, 28, 28)
-<span class="highlight-ln">40</span>Convolution          conv4_1                            (512, 256, 3, 3)    (10, 512, 28, 28)
-<span class="highlight-ln">41</span>Convolution          conv4_1                                      (512,)    (10, 512, 28, 28)
-<span class="highlight-ln">42</span>Convolution          conv4_2                            (512, 512, 3, 3)    (10, 512, 28, 28)
-<span class="highlight-ln">43</span>Convolution          conv4_2                                      (512,)    (10, 512, 28, 28)
-<span class="highlight-ln">44</span>Convolution          conv4_3                            (512, 512, 3, 3)    (10, 512, 28, 28)
-<span class="highlight-ln">45</span>Convolution          conv4_3                                      (512,)    (10, 512, 28, 28)
-<span class="highlight-ln">46</span>Pooling              pool4                                            --    (10, 512, 14, 14)
-<span class="highlight-ln">47</span>Convolution          conv5_1                            (512, 512, 3, 3)    (10, 512, 14, 14)
-<span class="highlight-ln">48</span>Convolution          conv5_1                                      (512,)    (10, 512, 14, 14)
-<span class="highlight-ln">49</span>Convolution          conv5_2                            (512, 512, 3, 3)    (10, 512, 14, 14)
-<span class="highlight-ln">50</span>Convolution          conv5_2                                      (512,)    (10, 512, 14, 14)
-<span class="highlight-ln">51</span>Convolution          conv5_3                            (512, 512, 3, 3)    (10, 512, 14, 14)
-<span class="highlight-ln">52</span>Convolution          conv5_3                                      (512,)    (10, 512, 14, 14)
-<span class="highlight-ln">53</span>Pooling              pool5                                            --      (10, 512, 7, 7)
-<span class="highlight-ln">54</span>InnerProduct         fc6                                   (4096, 25088)           (10, 4096)
-<span class="highlight-ln">55</span>InnerProduct         fc6                                         (4096,)           (10, 4096)
-<span class="highlight-ln">56</span>Dropout              drop6                                            --           (10, 4096)
-<span class="highlight-ln">57</span>InnerProduct         fc7                                    (4096, 4096)           (10, 4096)
-<span class="highlight-ln">58</span>InnerProduct         fc7                                         (4096,)           (10, 4096)
-<span class="highlight-ln">59</span>Dropout              drop7                                            --           (10, 4096)
-<span class="highlight-ln">60</span>InnerProduct         fc8                                    (1000, 4096)           (10, 1000)
-<span class="highlight-ln">61</span>InnerProduct         fc8                                         (1000,)           (10, 1000)
-<span class="highlight-ln">62</span>Softmax              prob                                             --           (10, 1000)
-<span class="highlight-ln">63</span>Converting data...
-<span class="highlight-ln">64</span>Saving data...
-<span class="highlight-ln">65</span>Saving source...
-<span class="highlight-ln">66</span>set env variable before using converted model if used custom_layers:
+<pre><code>register layer[Axpy]
+register layer[Flatten]
+register layer[ArgMax]
+register layer[Reshape]
+register layer[ROIPooling]
+register layer[PriorBox]
+register layer[Permute]
+register layer[DetectionOutput]
+register layer[Normalize]
+register layer[Select]
+register layer[Crop]
+register layer[Reduction]
+
+------------------------------------------------------------
+    WARNING: PyCaffe not found!
+    Falling back to a pure protocol buffer implementation.
+    * Conversions will be drastically slower.
+------------------------------------------------------------
+
+Type                 Name                                          Param               Output
+----------------------------------------------------------------------------------------------
+Data                 data                                             --    (10, 3, 224, 224)
+Convolution          conv1_1                               (64, 3, 3, 3)   (10, 64, 224, 224)
+Convolution          conv1_1                                       (64,)   (10, 64, 224, 224)
+Convolution          conv1_2                              (64, 64, 3, 3)   (10, 64, 224, 224)
+Convolution          conv1_2                                       (64,)   (10, 64, 224, 224)
+Pooling              pool1                                            --   (10, 64, 112, 112)
+Convolution          conv2_1                             (128, 64, 3, 3)  (10, 128, 112, 112)
+Convolution          conv2_1                                      (128,)  (10, 128, 112, 112)
+Convolution          conv2_2                            (128, 128, 3, 3)  (10, 128, 112, 112)
+Convolution          conv2_2                                      (128,)  (10, 128, 112, 112)
+Pooling              pool2                                            --    (10, 128, 56, 56)
+Convolution          conv3_1                            (256, 128, 3, 3)    (10, 256, 56, 56)
+Convolution          conv3_1                                      (256,)    (10, 256, 56, 56)
+Convolution          conv3_2                            (256, 256, 3, 3)    (10, 256, 56, 56)
+Convolution          conv3_2                                      (256,)    (10, 256, 56, 56)
+Convolution          conv3_3                            (256, 256, 3, 3)    (10, 256, 56, 56)
+Convolution          conv3_3                                      (256,)    (10, 256, 56, 56)
+Pooling              pool3                                            --    (10, 256, 28, 28)
+Convolution          conv4_1                            (512, 256, 3, 3)    (10, 512, 28, 28)
+Convolution          conv4_1                                      (512,)    (10, 512, 28, 28)
+Convolution          conv4_2                            (512, 512, 3, 3)    (10, 512, 28, 28)
+Convolution          conv4_2                                      (512,)    (10, 512, 28, 28)
+Convolution          conv4_3                            (512, 512, 3, 3)    (10, 512, 28, 28)
+Convolution          conv4_3                                      (512,)    (10, 512, 28, 28)
+Pooling              pool4                                            --    (10, 512, 14, 14)
+Convolution          conv5_1                            (512, 512, 3, 3)    (10, 512, 14, 14)
+Convolution          conv5_1                                      (512,)    (10, 512, 14, 14)
+Convolution          conv5_2                            (512, 512, 3, 3)    (10, 512, 14, 14)
+Convolution          conv5_2                                      (512,)    (10, 512, 14, 14)
+Convolution          conv5_3                            (512, 512, 3, 3)    (10, 512, 14, 14)
+Convolution          conv5_3                                      (512,)    (10, 512, 14, 14)
+Pooling              pool5                                            --      (10, 512, 7, 7)
+InnerProduct         fc6                                   (4096, 25088)           (10, 4096)
+InnerProduct         fc6                                         (4096,)           (10, 4096)
+Dropout              drop6                                            --           (10, 4096)
+InnerProduct         fc7                                    (4096, 4096)           (10, 4096)
+InnerProduct         fc7                                         (4096,)           (10, 4096)
+Dropout              drop7                                            --           (10, 4096)
+InnerProduct         fc8                                    (1000, 4096)           (10, 1000)
+InnerProduct         fc8                                         (1000,)           (10, 1000)
+Softmax              prob                                             --           (10, 1000)
+Converting data...
+Saving data...
+Saving source...
+set env variable before using converted model if used custom_layers:
 </code></pre>
 <ul>
 <li>使用PaddlePaddle的网络结构文件和权重文件生成预测模型文件。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>python VGG16.py VGG16.npy ./fluid_models
+<pre><code>python VGG16.py VGG16.npy ./fluid_models
 </code></pre>
 <ul>
 <li>执行上面的命令之后，就可以生成预测模型了，并存放在当前目录的<code>fluid_models</code>目录下，一共有两文件，分别是<code>model</code>和<code>params</code>，这个跟我们使用<code>paddle.fluid.io.save_inference_model</code>接口是一样的，接口<a href="http://www.paddlepaddle.org/documentation/api/zh/0.14.0/io.html#permalink-7-save_inference_model" target="_blank">文档在这里</a>。在下一步我们会使用这个模型文件来预测我们的图片。</li>
 </ul>
-<h1 id="测试预测模型">测试预测模型</h1>
+<h1 id="toc_h1_3">测试预测模型</h1>
 <p>获得预测模型之后，我们可以使用它来在PaddlePaddle预测图像，首先要编写一个PaddlePaddle的预测程序：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">time</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">):</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">224</span><span class="highlight-p">,</span> <span class="highlight-mi">224</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span>    <span class="highlight-c1"># PIL打开图片存储顺序为H(高度)，W(宽度)，C(通道)。</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1"># PaddlePaddle要求数据顺序为CHW，所以需要转换顺序。</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">transpose</span><span class="highlight-p">((</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">17</span>    <span class="highlight-c1"># CIFAR训练图片通道顺序为B(蓝),G(绿),R(红),</span>
-<span class="highlight-ln">18</span>    <span class="highlight-c1"># 而PIL打开图片默认通道顺序为RGB,因为需要交换通道。</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-p">[(</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">),</span> <span class="highlight-p">:,</span> <span class="highlight-p">:]</span>  <span class="highlight-c1"># BGR</span>
-<span class="highlight-ln">20</span>    <span class="highlight-c1"># 减去均值</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">mean</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-mf">123.68</span><span class="highlight-p">,</span> <span class="highlight-mf">116.78</span><span class="highlight-p">,</span> <span class="highlight-mf">103.94</span><span class="highlight-p">]</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">mean</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">mean</span><span class="highlight-p">,</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">mean</span> <span class="highlight-o">=</span> <span class="highlight-n">mean</span><span class="highlight-p">[:,</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">newaxis</span><span class="highlight-p">,</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">newaxis</span><span class="highlight-p">]</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">im</span> <span class="highlight-o">-=</span> <span class="highlight-n">mean</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-k">return</span> <span class="highlight-n">im</span>
-<span class="highlight-ln">27</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span><span class="highlight-k">def</span> <span class="highlight-nf">infer_one</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">use_cuda</span><span class="highlight-p">,</span> <span class="highlight-n">model_path</span><span class="highlight-p">,</span> <span class="highlight-n">model_filename</span><span class="highlight-p">,</span> <span class="highlight-n">params_filename</span><span class="highlight-p">):</span>
-<span class="highlight-ln">30</span>    <span class="highlight-c1"># 是否使用GPU</span>
-<span class="highlight-ln">31</span>    <span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CUDAPlace</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">)</span> <span class="highlight-k">if</span> <span class="highlight-n">use_cuda</span> <span class="highlight-k">else</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">32</span>    <span class="highlight-c1"># 生成调试器</span>
-<span class="highlight-ln">33</span>    <span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">34</span>
-<span class="highlight-ln">35</span>    <span class="highlight-n">inference_scope</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">core</span><span class="highlight-o">.</span><span class="highlight-n">Scope</span><span class="highlight-p">()</span>
-<span class="highlight-ln">36</span>    <span class="highlight-k">with</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">scope_guard</span><span class="highlight-p">(</span><span class="highlight-n">inference_scope</span><span class="highlight-p">):</span>
-<span class="highlight-ln">37</span>        <span class="highlight-c1"># 加载模型</span>
-<span class="highlight-ln">38</span>        <span class="highlight-p">[</span><span class="highlight-n">inference_program</span><span class="highlight-p">,</span> <span class="highlight-n">feed_target_names</span><span class="highlight-p">,</span> <span class="highlight-n">fetch_targets</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">io</span><span class="highlight-o">.</span><span class="highlight-n">load_inference_model</span><span class="highlight-p">(</span><span class="highlight-n">model_path</span><span class="highlight-p">,</span> <span class="highlight-n">exe</span><span class="highlight-p">,</span> <span class="highlight-n">model_filename</span><span class="highlight-o">=</span><span class="highlight-n">model_filename</span><span class="highlight-p">,</span> <span class="highlight-n">params_filename</span><span class="highlight-o">=</span><span class="highlight-n">params_filename</span><span class="highlight-p">)</span>
-<span class="highlight-ln">39</span>
-<span class="highlight-ln">40</span>        <span class="highlight-c1"># 获取预测数据</span>
-<span class="highlight-ln">41</span>        <span class="highlight-n">test_datas</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">)]</span>
-<span class="highlight-ln">42</span>        <span class="highlight-n">test_data</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">test_datas</span><span class="highlight-p">)</span>
-<span class="highlight-ln">43</span>
-<span class="highlight-ln">44</span>        <span class="highlight-c1"># 开始预测</span>
-<span class="highlight-ln">45</span>        <span class="highlight-n">results</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">inference_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">46</span>                          <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">feed_target_names</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]:</span> <span class="highlight-n">test_data</span><span class="highlight-p">},</span>
-<span class="highlight-ln">47</span>                          <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-n">fetch_targets</span><span class="highlight-p">)</span>
-<span class="highlight-ln">48</span>
-<span class="highlight-ln">49</span>        <span class="highlight-n">results</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">results</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">50</span>
-<span class="highlight-ln">51</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">results</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">52</span>
-<span class="highlight-ln">53</span>        <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"infer label is: </span><span class="highlight-si">%d</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">result</span><span class="highlight-p">)</span>
-<span class="highlight-ln">54</span>
-<span class="highlight-ln">55</span>
-<span class="highlight-ln">56</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">57</span>    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"0b77aba2-9557-11e8-a47a-c8ff285a4317.jpg"</span>
-<span class="highlight-ln">58</span>    <span class="highlight-n">use_cuda</span> <span class="highlight-o">=</span> <span class="highlight-bp">False</span>
-<span class="highlight-ln">59</span>    <span class="highlight-n">model_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"fluid_models/"</span>
-<span class="highlight-ln">60</span>    <span class="highlight-n">model_filename</span> <span class="highlight-o">=</span> <span class="highlight-s2">"model"</span>
-<span class="highlight-ln">61</span>    <span class="highlight-n">params_filename</span> <span class="highlight-o">=</span> <span class="highlight-s2">"params"</span>
-<span class="highlight-ln">62</span>    <span class="highlight-n">infer_one</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">use_cuda</span><span class="highlight-p">,</span> <span class="highlight-n">model_path</span><span class="highlight-p">,</span> <span class="highlight-n">model_filename</span><span class="highlight-p">,</span> <span class="highlight-n">params_filename</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+import os
+import time
+from PIL import Image
+import numpy as np
+import paddle.v2 as paddle
+import paddle.fluid as fluid
+
+
+def load_image(file):
+    im = Image.open(file)
+    im = im.resize((224, 224), Image.ANTIALIAS)
+    im = np.array(im).astype(np.float32)
+    # PIL打开图片存储顺序为H(高度)，W(宽度)，C(通道)。
+    # PaddlePaddle要求数据顺序为CHW，所以需要转换顺序。
+    im = im.transpose((2, 0, 1))
+    # CIFAR训练图片通道顺序为B(蓝),G(绿),R(红),
+    # 而PIL打开图片默认通道顺序为RGB,因为需要交换通道。
+    im = im[(2, 1, 0), :, :]  # BGR
+    # 减去均值
+    mean = [123.68, 116.78, 103.94]
+    mean = np.array(mean, dtype=np.float32)
+    mean = mean[:, np.newaxis, np.newaxis]
+    im -= mean
+
+    return im
+
+
+def infer_one(image_path, use_cuda, model_path, model_filename, params_filename):
+    # 是否使用GPU
+    place = fluid.CUDAPlace(0) if use_cuda else fluid.CPUPlace()
+    # 生成调试器
+    exe = fluid.Executor(place)
+
+    inference_scope = fluid.core.Scope()
+    with fluid.scope_guard(inference_scope):
+        # 加载模型
+        [inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(model_path, exe, model_filename=model_filename, params_filename=params_filename)
+
+        # 获取预测数据
+        test_datas = [load_image(image_path)]
+        test_data = np.array(test_datas)
+
+        # 开始预测
+        results = exe.run(inference_program,
+                          feed={feed_target_names[0]: test_data},
+                          fetch_list=fetch_targets)
+
+        results = np.argsort(-results[0])
+
+        result = results[0][0]
+
+        print("infer label is: %d" % result)
+
+
+if __name__ == '__main__':
+    image_path = "0b77aba2-9557-11e8-a47a-c8ff285a4317.jpg"
+    use_cuda = False
+    model_path = "fluid_models/"
+    model_filename = "model"
+    params_filename = "params"
+    infer_one(image_path, use_cuda, model_path, model_filename, params_filename)
 </code></pre>
 <p>使用上面的程序就是使用转换的模型来预测图片了。要注意训练模型时对图片的处理。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_4">参考资料</h1>
 <ol>
 <li><a href="https://github.com/PaddlePaddle/models/tree/develop/fluid/image_classification/caffe2fluid" target="_blank">https://github.com/PaddlePaddle/models/tree/develop/fluid/image_classification/caffe2fluid</a></li>
 <li><a href="https://gist.github.com/ksimonyan/211839e770f7b538e2d8" target="_blank">https://gist.github.com/ksimonyan/211839e770f7b538e2d8</a></li>
@@ -411,7 +411,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -420,7 +420,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -428,11 +428,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466418977",
@@ -450,4 +450,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 378ms, 2020/04/07 11:38:45 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

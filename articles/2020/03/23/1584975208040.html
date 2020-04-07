@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器 - 夜雨飘零</title><meta name="description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note14 前言 如果读者使用过百度等的一些图像识别的接口，比如百度的细粒度图像识别接口，应该了解这个过程，省略其他的安全方面的考虑。这个接口大体的流程是，我们把图像上传到百度的网站上，然后服务器把这些图像转换成功矢量数据，最后就是拿这些数据传给深度学习的预测接口，比如是PaddlePaddle的预测接口，获取到预测结果，返回给客户端。这个只是简单的流程，真实的复杂性远远不止这些，但是我们只需要了解这些，然后去搭建属于我们的图像识别接口。 了解Flask 安装flask很简单，只要一条命令就可以了： pip install flask 同时我们也使用到flask_cors，所以我们也要安装这个库 pip install flask_cors 创建一个 paddle_server.py文件，然后编写一个简单的程序，了解一些如何使用这个Flask框架，首先导入所需的依赖库： import os import uuid import numpy as np...."/><meta property="og:description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note14 前言 如果读者使用过百度等的一些图像识别的接口，比如百度的细粒度图像识别接口，应该了解这个过程，省略其他的安全方面的考虑。这个接口大体的流程是，我们把图像上传到百度的网站上，然后服务器把这些图像转换成功矢量数据，最后就是拿这些数据传给深度学习的预测接口，比如是PaddlePaddle的预测接口，获取到预测结果，返回给客户端。这个只是简单的流程，真实的复杂性远远不止这些，但是我们只需要了解这些，然后去搭建属于我们的图像识别接口。 了解Flask 安装flask很简单，只要一条命令就可以了： pip install flask 同时我们也使用到flask_cors，所以我们也要安装这个库 pip install flask_cors 创建一个 paddle_server.py文件，然后编写一个简单的程序，了解一些如何使用这个Flask框架，首先导入所需的依赖库： import os import uuid import numpy as np...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584975208040.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975208040.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器 - 夜雨飘零</title><meta name="description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note14 前言 如果读者使用过百度等的一些图像识别的接口，比如百度的细粒度图像识别接口，应该了解这个过程，省略其他的安全方面的考虑。这个接口大体的流程是，我们把图像上传到百度的网站上，然后服务器把这些图像转换成功矢量数据，最后就是拿这些数据传给深度学习的预测接口，比如是PaddlePaddle的预测接口，获取到预测结果，返回给客户端。这个只是简单的流程，真实的复杂性远远不止这些，但是我们只需要了解这些，然后去搭建属于我们的图像识别接口。 了解Flask 安装flask很简单，只要一条命令就可以了： pip install flask 同时我们也使用到flask_cors，所以我们也要安装这个库 pip install flask_cors 创建一个 paddle_server.py文件，然后编写一个简单的程序，了解一些如何使用这个Flask框架，首先导入所需的依赖库： import os import uuid import numpy as np...."/><meta property="og:description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note14 前言 如果读者使用过百度等的一些图像识别的接口，比如百度的细粒度图像识别接口，应该了解这个过程，省略其他的安全方面的考虑。这个接口大体的流程是，我们把图像上传到百度的网站上，然后服务器把这些图像转换成功矢量数据，最后就是拿这些数据传给深度学习的预测接口，比如是PaddlePaddle的预测接口，获取到预测结果，返回给客户端。这个只是简单的流程，真实的复杂性远远不止这些，但是我们只需要了解这些，然后去搭建属于我们的图像识别接口。 了解Flask 安装flask很简单，只要一条命令就可以了： pip install flask 同时我们也使用到flask_cors，所以我们也要安装这个库 pip install flask_cors 创建一个 paddle_server.py文件，然后编写一个简单的程序，了解一些如何使用这个Flask框架，首先导入所需的依赖库： import os import uuid import numpy as np...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584975208040.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975208040.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《PaddlePaddle从入门到炼丹》十三——自定义图像数生成" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975142214.html">
             <link rel="next" title="《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584975263604.html">
     <!-- 百度统计 -->
@@ -78,16 +78,16 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#了解Flask">了解Flask</a>
+            <a href="#toc_h1_1">了解Flask</a>
         </li>
         <li class="toc__h1">
-            <a href="#预测服务">预测服务</a>
+            <a href="#toc_h1_2">预测服务</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_3">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -136,38 +136,38 @@ var _hmt = _hmt || [];
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20171108.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
 <p>GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note14" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note14</a></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>如果读者使用过百度等的一些图像识别的接口，比如百度的细粒度图像识别接口，应该了解这个过程，省略其他的安全方面的考虑。这个接口大体的流程是，我们把图像上传到百度的网站上，然后服务器把这些图像转换成功矢量数据，最后就是拿这些数据传给深度学习的预测接口，比如是PaddlePaddle的预测接口，获取到预测结果，返回给客户端。这个只是简单的流程，真实的复杂性远远不止这些，但是我们只需要了解这些，然后去搭建属于我们的图像识别接口。</p>
-<h1 id="了解Flask">了解Flask</h1>
+<h1 id="toc_h1_1">了解Flask</h1>
 <p>安装flask很简单，只要一条命令就可以了：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>pip install flask
+<pre><code>pip install flask
 </code></pre>
 <p>同时我们也使用到flask_cors，所以我们也要安装这个库</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>pip install flask_cors
+<pre><code>pip install flask_cors
 </code></pre>
 <p>创建一个 <code>paddle_server.py</code>文件，然后编写一个简单的程序，了解一些如何使用这个Flask框架，首先导入所需的依赖库：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">uuid</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln">5</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
-<span class="highlight-ln">6</span><span class="highlight-kn">from</span> <span class="highlight-nn">flask</span> <span class="highlight-kn">import</span> <span class="highlight-n">Flask</span><span class="highlight-p">,</span> <span class="highlight-n">request</span>
-<span class="highlight-ln">7</span><span class="highlight-kn">from</span> <span class="highlight-nn">flask_cors</span> <span class="highlight-kn">import</span> <span class="highlight-n">CORS</span>
-<span class="highlight-ln">8</span><span class="highlight-kn">from</span> <span class="highlight-nn">werkzeug.utils</span> <span class="highlight-kn">import</span> <span class="highlight-n">secure_filename</span>
+<pre><code class="language-python">import os
+import uuid
+import numpy as np
+import paddle.fluid as fluid
+from PIL import Image
+from flask import Flask, request
+from flask_cors import CORS
+from werkzeug.utils import secure_filename
 </code></pre>
 <p>编写一个 <code>hello_world()</code>函数，使用 <code>@app.route('/')</code>是指定访问的路径，该函数的返回值是一个字符串 <code>Welcome to PaddlePaddle</code>：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 根路径，返回一个字符串</span>
-<span class="highlight-ln">2</span><span class="highlight-nd">@app.route</span><span class="highlight-p">(</span><span class="highlight-s1">'/'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-k">def</span> <span class="highlight-nf">hello_world</span><span class="highlight-p">():</span>
-<span class="highlight-ln">4</span>    <span class="highlight-k">return</span> <span class="highlight-s1">'Welcome to PaddlePaddle'</span>
+<pre><code class="language-python"># 根路径，返回一个字符串
+@app.route('/')
+def hello_world():
+    return 'Welcome to PaddlePaddle'
 </code></pre>
 <p>然后启动这个服务，如果是在Ubuntu的话，可能是需要在root下执行这个程序。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-c1"># 启动服务，并指定端口号</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">app</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">port</span><span class="highlight-o">=</span><span class="highlight-mi">80</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 启动服务，并指定端口号
+    app.run(port=80)
 </code></pre>
 <p>然后浏览器访问 <code>http://127.0.0.1</code>，返回之前写好的字符串：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>Welcome to PaddlePaddle
+<pre><code>Welcome to PaddlePaddle
 </code></pre>
 <p>要预测图片，上传图片是首要的，所以我们来学习如何使用Flask来上传图片。</p>
 <ul>
@@ -177,122 +177,122 @@ var _hmt = _hmt || [];
 <li><code>f = request.files['img']</code>读取表单名称为img的文件</li>
 <li><code>f.save(img_path)</code>在指定路径保存该文件</li>
 </ul>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 上传文件</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nd">@app.route</span><span class="highlight-p">(</span><span class="highlight-s1">'/upload'</span><span class="highlight-p">,</span> <span class="highlight-n">methods</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-s1">'POST'</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 3</span><span class="highlight-k">def</span> <span class="highlight-nf">upload_file</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">f</span> <span class="highlight-o">=</span> <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-n">files</span><span class="highlight-p">[</span><span class="highlight-s1">'img'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 设置保存路径</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">save_father_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'images'</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">img_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">save_father_path</span><span class="highlight-p">,</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">uuid</span><span class="highlight-o">.</span><span class="highlight-n">uuid1</span><span class="highlight-p">())</span> <span class="highlight-o">+</span> <span class="highlight-n">secure_filename</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">filename</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">)[</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">save_father_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">save_father_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">img_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>    <span class="highlight-k">return</span> <span class="highlight-s1">'success, save path: '</span> <span class="highlight-o">+</span> <span class="highlight-n">img_path</span>
+<pre><code class="language-python"># 上传文件
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    f = request.files['img']
+    # 设置保存路径
+    save_father_path = 'images'
+    img_path = os.path.join(save_father_path, str(uuid.uuid1()) + secure_filename(f.filename).split('.')[-1])
+    if not os.path.exists(save_father_path):
+        os.makedirs(save_father_path)
+    f.save(img_path)
+    return 'success, save path: ' + img_path
 </code></pre>
 <p>然后再次启动服务</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-c1"># 启动服务，并指定端口号</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">app</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">port</span><span class="highlight-o">=</span><span class="highlight-mi">80</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 启动服务，并指定端口号
+    app.run(port=80)
 </code></pre>
 <p>然后再创建 <code>index.html</code>文件，编写一个表单，指定表单提交的路径 <code>http://127.0.0.1/upload</code>，并设置表单提交数据的格式 <code>multipart/form-data</code>，而且支持表单提交方式是POST。</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;!DOCTYPE html&gt;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nt">&lt;html</span> <span class="highlight-na">lang=</span><span class="highlight-s">"en"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-nt">&lt;head&gt;</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-nt">&lt;meta</span> <span class="highlight-na">charset=</span><span class="highlight-s">"UTF-8"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-nt">&lt;title&gt;</span>预测图像<span class="highlight-nt">&lt;/title&gt;</span>
-<span class="highlight-ln"> 6</span><span class="highlight-nt">&lt;/head&gt;</span>
-<span class="highlight-ln"> 7</span><span class="highlight-nt">&lt;body&gt;</span>
-<span class="highlight-ln"> 8</span><span class="highlight-c">&lt;!--上传图片的表单--&gt;</span>
-<span class="highlight-ln"> 9</span><span class="highlight-nt">&lt;form</span> <span class="highlight-na">action=</span><span class="highlight-s">"http://127.0.0.1/upload"</span> <span class="highlight-na">enctype=</span><span class="highlight-s">"multipart/form-data"</span> <span class="highlight-na">method=</span><span class="highlight-s">"post"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">10</span>    选择上传的图像：<span class="highlight-nt">&lt;input</span> <span class="highlight-na">type=</span><span class="highlight-s">"file"</span> <span class="highlight-na">name=</span><span class="highlight-s">"img"</span><span class="highlight-nt">&gt;&lt;br&gt;</span>
-<span class="highlight-ln">11</span>    <span class="highlight-nt">&lt;input</span> <span class="highlight-na">type=</span><span class="highlight-s">"submit"</span> <span class="highlight-na">value=</span><span class="highlight-s">"上传"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">12</span><span class="highlight-nt">&lt;/form&gt;</span>
-<span class="highlight-ln">13</span><span class="highlight-nt">&lt;/body&gt;</span>
-<span class="highlight-ln">14</span><span class="highlight-nt">&lt;/html&gt;</span>
+<pre><code class="language-xml">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;预测图像&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!--上传图片的表单--&gt;
+&lt;form action="http://127.0.0.1/upload" enctype="multipart/form-data" method="post"&gt;
+    选择上传的图像：&lt;input type="file" name="img"&gt;&lt;br&gt;
+    &lt;input type="submit" value="上传"&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 <p>打开我们编写的网页，选择需要上传的图片，点击上传。成功后返回类似以下的字符串，图片会保存在 <code>images</code>目录下。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>success, save path: images/65d7661a-3892-11e9-a7b7-f44d30185f58jpg
+<pre><code>success, save path: images/65d7661a-3892-11e9-a7b7-f44d30185f58jpg
 </code></pre>
-<h1 id="预测服务">预测服务</h1>
+<h1 id="toc_h1_2">预测服务</h1>
 <p>在 <code>paddle_server.py</code>中添加一个图片文件预处理函数，这个函数的参数是根据已经上传并保存到服务器上图片的路径，根据处理对图片进行预处理，并返回处理否的图片数据：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 预处理图片</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 统一图像大小</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">224</span><span class="highlight-p">,</span> <span class="highlight-mi">224</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 转换成numpy值</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 转换成CHW</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">transpose</span><span class="highlight-p">((</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 转换成BGR</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-p">[(</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">),</span> <span class="highlight-p">:,</span> <span class="highlight-p">:]</span> <span class="highlight-o">/</span> <span class="highlight-mf">255.0</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">expand_dims</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">return</span> <span class="highlight-n">img</span>
+<pre><code class="language-python"># 预处理图片
+def load_image(file):
+    img = Image.open(file)
+    # 统一图像大小
+    img = img.resize((224, 224), Image.ANTIALIAS)
+    # 转换成numpy值
+    img = np.array(img).astype(np.float32)
+    # 转换成CHW
+    img = img.transpose((2, 0, 1))
+    # 转换成BGR
+    img = img[(2, 1, 0), :, :] / 255.0
+    img = np.expand_dims(img, axis=0)
+    return img
 </code></pre>
 <p>以下就是PaddlePaddle代码，这次我们使用<a href="https://blog.csdn.net/qq_33200967/article/details/87895105" target="_blank">《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别</a>训练保存的预测代码。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 创建执行器</span>
-<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
-<span class="highlight-ln">5</span>
-<span class="highlight-ln">6</span><span class="highlight-c1"># 保存预测模型路径</span>
-<span class="highlight-ln">7</span><span class="highlight-n">save_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'infer_model/'</span>
-<span class="highlight-ln">8</span><span class="highlight-c1"># 从模型中获取预测程序、输入数据名称列表、分类器</span>
-<span class="highlight-ln">9</span><span class="highlight-p">[</span><span class="highlight-n">infer_program</span><span class="highlight-p">,</span> <span class="highlight-n">feeded_var_names</span><span class="highlight-p">,</span> <span class="highlight-n">target_var</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">io</span><span class="highlight-o">.</span><span class="highlight-n">load_inference_model</span><span class="highlight-p">(</span><span class="highlight-n">dirname</span><span class="highlight-o">=</span><span class="highlight-n">save_path</span><span class="highlight-p">,</span> <span class="highlight-n">executor</span><span class="highlight-o">=</span><span class="highlight-n">exe</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 创建执行器
+place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+exe.run(fluid.default_startup_program())
+
+# 保存预测模型路径
+save_path = 'infer_model/'
+# 从模型中获取预测程序、输入数据名称列表、分类器
+[infer_program, feeded_var_names, target_var] = fluid.io.load_inference_model(dirname=save_path, executor=exe)
 </code></pre>
 <p>以下就是这个后端服务项目的核心代码，该函数主要的功能是接受上传的图片，对图片进行预测，最后返回预测的结果。预测的方式和之前的图片预测的方式一样的。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nd">@app.route</span><span class="highlight-p">(</span><span class="highlight-s1">'/infer'</span><span class="highlight-p">,</span> <span class="highlight-n">methods</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-s1">'POST'</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">infer</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">f</span> <span class="highlight-o">=</span> <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-n">files</span><span class="highlight-p">[</span><span class="highlight-s1">'img'</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 保存图片</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">save_father_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'images'</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">img_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">save_father_path</span><span class="highlight-p">,</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">uuid</span><span class="highlight-o">.</span><span class="highlight-n">uuid1</span><span class="highlight-p">())</span> <span class="highlight-o">+</span> <span class="highlight-s1">'.'</span> <span class="highlight-o">+</span> <span class="highlight-n">secure_filename</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">filename</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">)[</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">save_father_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">save_father_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">img_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>    <span class="highlight-c1"># 开始预测图片</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">img_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">infer_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">15</span>                     <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-n">feeded_var_names</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]:</span> <span class="highlight-n">img</span><span class="highlight-p">},</span>
-<span class="highlight-ln">16</span>                     <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-n">target_var</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>    <span class="highlight-c1"># 显示图片并输出结果最大的label</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-o">-</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">names</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-s1">'苹果'</span><span class="highlight-p">,</span> <span class="highlight-s1">'哈密瓜'</span><span class="highlight-p">,</span> <span class="highlight-s1">'胡萝卜'</span><span class="highlight-p">,</span> <span class="highlight-s1">'樱桃'</span><span class="highlight-p">,</span> <span class="highlight-s1">'黄瓜'</span><span class="highlight-p">,</span> <span class="highlight-s1">'西瓜'</span><span class="highlight-p">]</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>    <span class="highlight-c1"># 打印和返回预测结果</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-s1">'{"label":</span><span class="highlight-si">%d</span><span class="highlight-s1">, "name":"</span><span class="highlight-si">%s</span><span class="highlight-s1">", "possibility":</span><span class="highlight-si">%f</span><span class="highlight-s1">}'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">lab</span><span class="highlight-p">,</span> <span class="highlight-n">names</span><span class="highlight-p">[</span><span class="highlight-n">lab</span><span class="highlight-p">],</span> <span class="highlight-n">result</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-n">lab</span><span class="highlight-p">])</span>
-<span class="highlight-ln">25</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">r</span><span class="highlight-p">)</span>
-<span class="highlight-ln">26</span>    <span class="highlight-k">return</span> <span class="highlight-n">r</span>
+<pre><code class="language-python">@app.route('/infer', methods=['POST'])
+def infer():
+    f = request.files['img']
+
+    # 保存图片
+    save_father_path = 'images'
+    img_path = os.path.join(save_father_path, str(uuid.uuid1()) + '.' + secure_filename(f.filename).split('.')[-1])
+    if not os.path.exists(save_father_path):
+        os.makedirs(save_father_path)
+    f.save(img_path)
+
+    # 开始预测图片
+    img = load_image(img_path)
+    result = exe.run(program=infer_program,
+                     feed={feeded_var_names[0]: img},
+                     fetch_list=target_var)
+
+    # 显示图片并输出结果最大的label
+    lab = np.argsort(result)[0][0][-1]
+
+    names = ['苹果', '哈密瓜', '胡萝卜', '樱桃', '黄瓜', '西瓜']
+
+    # 打印和返回预测结果
+    r = '{"label":%d, "name":"%s", "possibility":%f}' % (lab, names[lab], result[0][0][lab])
+    print(r)
+    return r
 </code></pre>
 <p>启动服务</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-c1"># 启动服务，并指定端口号</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">app</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">port</span><span class="highlight-o">=</span><span class="highlight-mi">80</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 启动服务，并指定端口号
+    app.run(port=80)
 </code></pre>
 <p>在 <code>index.html</code>文件增加一个表单，这个是访问的地址就是上面服务中的预测函数的访问路径：</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;!DOCTYPE html&gt;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nt">&lt;html</span> <span class="highlight-na">lang=</span><span class="highlight-s">"en"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-nt">&lt;head&gt;</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-nt">&lt;meta</span> <span class="highlight-na">charset=</span><span class="highlight-s">"UTF-8"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-nt">&lt;title&gt;</span>预测图像<span class="highlight-nt">&lt;/title&gt;</span>
-<span class="highlight-ln"> 6</span><span class="highlight-nt">&lt;/head&gt;</span>
-<span class="highlight-ln"> 7</span><span class="highlight-nt">&lt;body&gt;</span>
-<span class="highlight-ln"> 8</span><span class="highlight-c">&lt;!--调用服务器预测接口的表单--&gt;</span>
-<span class="highlight-ln"> 9</span><span class="highlight-nt">&lt;form</span> <span class="highlight-na">action=</span><span class="highlight-s">"http://127.0.0.1/infer"</span> <span class="highlight-na">enctype=</span><span class="highlight-s">"multipart/form-data"</span> <span class="highlight-na">method=</span><span class="highlight-s">"post"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">10</span>    选择预测的图像：<span class="highlight-nt">&lt;input</span> <span class="highlight-na">type=</span><span class="highlight-s">"file"</span> <span class="highlight-na">name=</span><span class="highlight-s">"img"</span><span class="highlight-nt">&gt;&lt;br&gt;</span>
-<span class="highlight-ln">11</span>    <span class="highlight-nt">&lt;input</span> <span class="highlight-na">type=</span><span class="highlight-s">"submit"</span> <span class="highlight-na">value=</span><span class="highlight-s">"预测"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">12</span><span class="highlight-nt">&lt;/form&gt;</span>
-<span class="highlight-ln">13</span><span class="highlight-nt">&lt;/body&gt;</span>
-<span class="highlight-ln">14</span><span class="highlight-nt">&lt;/html&gt;</span>
+<pre><code class="language-xml">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;预测图像&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!--调用服务器预测接口的表单--&gt;
+&lt;form action="http://127.0.0.1/infer" enctype="multipart/form-data" method="post"&gt;
+    选择预测的图像：&lt;input type="file" name="img"&gt;&lt;br&gt;
+    &lt;input type="submit" value="预测"&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 <p>打开我们刚才编写的网页，选择需要预测的图片，点击预测。成功后返回类似以下的字符串，识别类别的标签，名字，还有该类别的概率。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>{"label":1, "name":"哈密瓜", "possibility":0.982786}
+<pre><code>{"label":1, "name":"哈密瓜", "possibility":0.982786}
 </code></pre>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_3">参考资料</h1>
 <ol>
 <li><a href="https://blog.csdn.net/qq_33200967/article/details/79571511" target="_blank">https://blog.csdn.net/qq_33200967/article/details/79571511</a></li>
 <li><a href="http://blog.csdn.net/u011054333/article/details/70151857" target="_blank">http://blog.csdn.net/u011054333/article/details/70151857</a></li>
@@ -372,7 +372,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -381,7 +381,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -389,11 +389,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466404013",
@@ -411,4 +411,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 368ms, 2020/04/07 11:38:42 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 33ms, 2020/04/07 14:57:07 -->

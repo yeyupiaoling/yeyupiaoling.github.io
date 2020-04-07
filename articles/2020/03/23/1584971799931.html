@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>使用带有隐层的神经网络实现颜色二分类 - 夜雨飘零</title><meta name="description" content="前言 数据集是一个红色和蓝色的的分布。其分布图如下： 导包 导入依赖包，这个两个分别是加载数据的工具函数和数据集，这个两个程序可以在这里下载。这个工具函数中使用到sklearn包，使用之前还要使用pip安装该函数。 from planar_utils import sigmoid, load_planar_dataset from testCases_v2 import * 加载数据 加载数据和获取数据的形状 # 加载数据 X, Y = load_planar_dataset() # 获取数据的形状 shape_X = X.shape shape_Y = Y.shape m = shape_X[1] 神经网络模型 定义神经网络结构 定义神经网络结构，比如数据的大小，对应的标签和有多少个隐层。 def layer_sizes(X, Y): &quot;&quot;&quot; 定义神经网络结构 :param X: 形状的输入数据集(输入大小，示例数量) :param Y: 形状标签(输出尺寸，示例数量) :return: n_x -- 输入层的大小。 n_h -- 隐藏层的大小。 n_y -- 隐藏层的大小。。...."/><meta property="og:description" content="前言 数据集是一个红色和蓝色的的分布。其分布图如下： 导包 导入依赖包，这个两个分别是加载数据的工具函数和数据集，这个两个程序可以在这里下载。这个工具函数中使用到sklearn包，使用之前还要使用pip安装该函数。 from planar_utils import sigmoid, load_planar_dataset from testCases_v2 import * 加载数据 加载数据和获取数据的形状 # 加载数据 X, Y = load_planar_dataset() # 获取数据的形状 shape_X = X.shape shape_Y = Y.shape m = shape_X[1] 神经网络模型 定义神经网络结构 定义神经网络结构，比如数据的大小，对应的标签和有多少个隐层。 def layer_sizes(X, Y): &quot;&quot;&quot; 定义神经网络结构 :param X: 形状的输入数据集(输入大小，示例数量) :param Y: 形状标签(输出尺寸，示例数量) :return: n_x -- 输入层的大小。 n_h -- 隐藏层的大小。 n_y -- 隐藏层的大小。。...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="使用带有隐层的神经网络实现颜色二分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="使用带有隐层的神经网络实现颜色二分类 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>使用带有隐层的神经网络实现颜色二分类 - 夜雨飘零</title><meta name="description" content="前言 数据集是一个红色和蓝色的的分布。其分布图如下： 导包 导入依赖包，这个两个分别是加载数据的工具函数和数据集，这个两个程序可以在这里下载。这个工具函数中使用到sklearn包，使用之前还要使用pip安装该函数。 from planar_utils import sigmoid, load_planar_dataset from testCases_v2 import * 加载数据 加载数据和获取数据的形状 # 加载数据 X, Y = load_planar_dataset() # 获取数据的形状 shape_X = X.shape shape_Y = Y.shape m = shape_X[1] 神经网络模型 定义神经网络结构 定义神经网络结构，比如数据的大小，对应的标签和有多少个隐层。 def layer_sizes(X, Y): &quot;&quot;&quot; 定义神经网络结构 :param X: 形状的输入数据集(输入大小，示例数量) :param Y: 形状标签(输出尺寸，示例数量) :return: n_x -- 输入层的大小。 n_h -- 隐藏层的大小。 n_y -- 隐藏层的大小。。...."/><meta property="og:description" content="前言 数据集是一个红色和蓝色的的分布。其分布图如下： 导包 导入依赖包，这个两个分别是加载数据的工具函数和数据集，这个两个程序可以在这里下载。这个工具函数中使用到sklearn包，使用之前还要使用pip安装该函数。 from planar_utils import sigmoid, load_planar_dataset from testCases_v2 import * 加载数据 加载数据和获取数据的形状 # 加载数据 X, Y = load_planar_dataset() # 获取数据的形状 shape_X = X.shape shape_Y = Y.shape m = shape_X[1] 神经网络模型 定义神经网络结构 定义神经网络结构，比如数据的大小，对应的标签和有多少个隐层。 def layer_sizes(X, Y): &quot;&quot;&quot; 定义神经网络结构 :param X: 形状的输入数据集(输入大小，示例数量) :param Y: 形状标签(输出尺寸，示例数量) :return: n_x -- 输入层的大小。 n_h -- 隐藏层的大小。 n_y -- 隐藏层的大小。。...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="使用带有隐层的神经网络实现颜色二分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="使用带有隐层的神经网络实现颜色二分类 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971799931.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="使用Logistic回归实现猫的二分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971742853.html">
             <link rel="next" title="构建深度神经网络实现猫的二分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971882247.html">
     <!-- 百度统计 -->
@@ -78,52 +78,52 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#导包">导包</a>
+            <a href="#toc_h1_1">导包</a>
         </li>
         <li class="toc__h1">
-            <a href="#加载数据">加载数据</a>
+            <a href="#toc_h1_2">加载数据</a>
         </li>
         <li class="toc__h1">
-            <a href="#神经网络模型">神经网络模型</a>
+            <a href="#toc_h1_3">神经网络模型</a>
         </li>
         <li class="toc__h2">
-            <a href="#定义神经网络结构">定义神经网络结构</a>
+            <a href="#toc_h2_4">定义神经网络结构</a>
         </li>
         <li class="toc__h2">
-            <a href="#初始化模型的参数">初始化模型的参数</a>
+            <a href="#toc_h2_5">初始化模型的参数</a>
         </li>
         <li class="toc__h2">
-            <a href="#正向传播">正向传播</a>
+            <a href="#toc_h2_6">正向传播</a>
         </li>
         <li class="toc__h2">
-            <a href="#计算损失函数">计算损失函数</a>
+            <a href="#toc_h2_7">计算损失函数</a>
         </li>
         <li class="toc__h2">
-            <a href="#反向传播">反向传播</a>
+            <a href="#toc_h2_8">反向传播</a>
         </li>
         <li class="toc__h2">
-            <a href="#更新参数">更新参数</a>
+            <a href="#toc_h2_9">更新参数</a>
         </li>
         <li class="toc__h2">
-            <a href="#集成model函数">集成model函数</a>
+            <a href="#toc_h2_10">集成model函数</a>
         </li>
         <li class="toc__h1">
-            <a href="#预测结果">预测结果</a>
+            <a href="#toc_h1_11">预测结果</a>
         </li>
         <li class="toc__h1">
-            <a href="#测试其他隐层">测试其他隐层</a>
+            <a href="#toc_h1_12">测试其他隐层</a>
         </li>
         <li class="toc__h1">
-            <a href="#调用函数训练">调用函数训练</a>
+            <a href="#toc_h1_13">调用函数训练</a>
         </li>
         <li class="toc__h1">
-            <a href="#所有代码">所有代码</a>
+            <a href="#toc_h1_14">所有代码</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_15">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -169,534 +169,540 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20171220.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>数据集是一个红色和蓝色的的分布。其分布图如下：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GlnyVg.png" alt="这里写图片描述"></p>
-<h1 id="导包">导包</h1>
+<h1 id="toc_h1_1">导包</h1>
 <p>导入依赖包，这个两个分别是加载数据的工具函数和数据集，这个两个程序可以在<a href="https://download.csdn.net/download/qq_33200967/10319574" target="_blank">这里下载</a>。这个工具函数中使用到<code>sklearn</code>包，使用之前还要使用<code>pip</code>安装该函数。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">from</span> <span class="highlight-nn">planar_utils</span> <span class="highlight-kn">import</span> <span class="highlight-n">sigmoid</span><span class="highlight-p">,</span> <span class="highlight-n">load_planar_dataset</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">from</span> <span class="highlight-nn">testCases_v2</span> <span class="highlight-kn">import</span> <span class="highlight-o">*</span>
+<pre><code class="language-python">from planar_utils import sigmoid, load_planar_dataset
+from testCases_v2 import *
 </code></pre>
-<h1 id="加载数据">加载数据</h1>
+<h1 id="toc_h1_2">加载数据</h1>
 <p>加载数据和获取数据的形状</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 加载数据</span>
-<span class="highlight-ln">2</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span> <span class="highlight-o">=</span> <span class="highlight-n">load_planar_dataset</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 获取数据的形状</span>
-<span class="highlight-ln">5</span><span class="highlight-n">shape_X</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span>
-<span class="highlight-ln">6</span><span class="highlight-n">shape_Y</span> <span class="highlight-o">=</span> <span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">shape</span>
-<span class="highlight-ln">7</span><span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">shape_X</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">8</span>
+<pre><code class="language-python"># 加载数据
+X, Y = load_planar_dataset()
+
+# 获取数据的形状
+shape_X = X.shape
+shape_Y = Y.shape
+m = shape_X[1]
+
 </code></pre>
-<h1 id="神经网络模型">神经网络模型</h1>
-<h2 id="定义神经网络结构">定义神经网络结构</h2>
+<h1 id="toc_h1_3">神经网络模型</h1>
+<h2 id="toc_h2_4">定义神经网络结构</h2>
 <p>定义神经网络结构，比如数据的大小，对应的标签和有多少个隐层。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">layer_sizes</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    定义神经网络结构
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param X: 形状的输入数据集(输入大小，示例数量)
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param Y: 形状标签(输出尺寸，示例数量)
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    n_x -- 输入层的大小。
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    n_h -- 隐藏层的大小。
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    n_y -- 隐藏层的大小。。
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">n_x</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">n_h</span> <span class="highlight-o">=</span> <span class="highlight-mi">4</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">n_y</span> <span class="highlight-o">=</span> <span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">14</span>    <span class="highlight-k">return</span> <span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">)</span>
+<pre><code class="language-python">def layer_sizes(X, Y):
+    """
+    定义神经网络结构
+    :param X: 形状的输入数据集(输入大小，示例数量)
+    :param Y: 形状标签(输出尺寸，示例数量)
+    :return: 
+    n_x -- 输入层的大小。
+    n_h -- 隐藏层的大小。
+    n_y -- 隐藏层的大小。。
+    """
+    n_x = X.shape[0]
+    n_h = 4
+    n_y = Y.shape[0]
+    return (n_x, n_h, n_y)
 </code></pre>
-<h2 id="初始化模型的参数">初始化模型的参数</h2>
+<h2 id="toc_h2_5">初始化模型的参数</h2>
 <p>根据神经网络的结构来初始化模型权重和偏置值，并把权重和偏置值存放在参数字典中。权重向量使用随机初始化，偏置向量初始化为零矩阵。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">initialize_parameters</span><span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    初始化模型的参数
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param n_x: 输入层的大小
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param n_h: 隐藏层的大小
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :param n_y: 隐藏层的大小
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    params --包含您的参数的python字典:
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">                W1 -- 形状重量矩阵(n_h, n_x)
-</span><span class="highlight-ln">10</span><span class="highlight-s2">                b1 -- 形状的偏置向量(n_h, 1)
-</span><span class="highlight-ln">11</span><span class="highlight-s2">                W2 -- 形状重量矩阵(n_y, n_h)
-</span><span class="highlight-ln">12</span><span class="highlight-s2">                b2 -- 形状的偏置向量(n_y, 1)
-</span><span class="highlight-ln">13</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">seed</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_x</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">W1</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_x</span><span class="highlight-p">))</span>
-<span class="highlight-ln">22</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">b1</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">23</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">))</span>
-<span class="highlight-ln">24</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">b2</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"W1"</span><span class="highlight-p">:</span> <span class="highlight-n">W1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">27</span>                  <span class="highlight-s2">"b1"</span><span class="highlight-p">:</span> <span class="highlight-n">b1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">28</span>                  <span class="highlight-s2">"W2"</span><span class="highlight-p">:</span> <span class="highlight-n">W2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">29</span>                  <span class="highlight-s2">"b2"</span><span class="highlight-p">:</span> <span class="highlight-n">b2</span><span class="highlight-p">}</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<pre><code class="language-python">def initialize_parameters(n_x, n_h, n_y):
+    """
+    初始化模型的参数
+    :param n_x: 输入层的大小
+    :param n_h: 隐藏层的大小
+    :param n_y: 隐藏层的大小
+    :return: 
+    params --包含您的参数的python字典:
+                W1 -- 形状重量矩阵(n_h, n_x)
+                b1 -- 形状的偏置向量(n_h, 1)
+                W2 -- 形状重量矩阵(n_y, n_h)
+                b2 -- 形状的偏置向量(n_y, 1)
+    """
+    np.random.seed(2)
+
+    W1 = np.random.randn(n_h, n_x) * 0.01
+    b1 = np.zeros((n_h, 1))
+    W2 = np.random.randn(n_y, n_h) * 0.01
+    b2 = np.zeros((n_y, 1))
+
+    assert (W1.shape == (n_h, n_x))
+    assert (b1.shape == (n_h, 1))
+    assert (W2.shape == (n_y, n_h))
+    assert (b2.shape == (n_y, 1))
+
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+
+    return parameters
 </code></pre>
-<h2 id="正向传播">正向传播</h2>
+<h2 id="toc_h2_6">正向传播</h2>
 <p>这个正向传播使用了两个激活函数，一个是tanh函数，另一个是sigmoid函数。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span> <span class="highlight-k">def</span> <span class="highlight-nf">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    向前传播
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param X: 输入数据大小(n_x, m)
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param parameters: 包含参数的python字典(初始化函数的输出)
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    A2 -- 第二个激活的sigmoid输出。
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    cache -- 包含“Z1”、“A1”、“Z2”和“A2”的字典
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">Z1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b1</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">A1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">tanh</span><span class="highlight-p">(</span><span class="highlight-n">Z1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">Z2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b2</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">A2</span> <span class="highlight-o">=</span> <span class="highlight-n">sigmoid</span><span class="highlight-p">(</span><span class="highlight-n">Z2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]))</span>
-<span class="highlight-ln">21</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"Z1"</span><span class="highlight-p">:</span> <span class="highlight-n">Z1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">23</span>             <span class="highlight-s2">"A1"</span><span class="highlight-p">:</span> <span class="highlight-n">A1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">24</span>             <span class="highlight-s2">"Z2"</span><span class="highlight-p">:</span> <span class="highlight-n">Z2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">25</span>             <span class="highlight-s2">"A2"</span><span class="highlight-p">:</span> <span class="highlight-n">A2</span><span class="highlight-p">}</span>
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>    <span class="highlight-k">return</span> <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span>
+<pre><code class="language-python"> def forward_propagation(X, parameters):
+    """
+    向前传播
+    :param X: 输入数据大小(n_x, m)
+    :param parameters: 包含参数的python字典(初始化函数的输出)
+    :return: 
+    A2 -- 第二个激活的sigmoid输出。
+    cache -- 包含“Z1”、“A1”、“Z2”和“A2”的字典
+    """
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
+    W2 = parameters["W2"]
+    b2 = parameters["b2"]
+
+    Z1 = np.dot(W1, X) + b1
+    A1 = np.tanh(Z1)
+    Z2 = np.dot(W2, A1) + b2
+    A2 = sigmoid(Z2)
+
+    assert (A2.shape == (1, X.shape[1]))
+
+    cache = {"Z1": Z1,
+             "A1": A1,
+             "Z2": Z2,
+             "A2": A2}
+
+    return A2, cache
 </code></pre>
-<h2 id="计算损失函数">计算损失函数</h2>
-<p>以下就是要计算的损失函数的公式：</p>
-<div class="vditor-math">J = - \frac{1}{m} \sum\limits_{i = 0}^{m} \large{(} \small y^{(i)}\log\left(a^{[2] (i)}\right) + (1-y^{(i)})\log\left(1- a^{[2] (i)}\right) \large{)} \small\tag{1}</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">compute_cost</span><span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    计算公式(1)中的交叉熵成本
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param A2: 第二次激活的sigmoid输出，形状(1，示例数量)
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param Y: “真”标签向量的形状(1，样本数目)
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    cost -- 交叉熵成本方程(1)
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>  <span class="highlight-c1"># number of example</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">logprobs</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-p">),</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">A2</span><span class="highlight-p">))</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-o">-</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">logprobs</span><span class="highlight-p">))</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">squeeze</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>  <span class="highlight-c1"># 确保成本是我们期望的尺寸。</span>
-<span class="highlight-ln">15</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-nb">float</span><span class="highlight-p">))</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-k">return</span> <span class="highlight-n">cost</span>
+<h2 id="toc_h2_7">计算损失函数</h2>
+<p>以下就是要计算的损失函数的公式：<br>
+$$<br>
+J = - \frac{1}{m} \sum\limits_{i = 0}^{m} \large{(} \small y^{(i)}\log\left(a^{[2] (i)}\right) + (1-y^{(i)})\log\left(1- a^{[2] (i)}\right) \large{)} \small\tag{1}<br>
+$$</p>
+<pre><code class="language-python">def compute_cost(A2, Y):
+    """
+    计算公式(1)中的交叉熵成本
+    :param A2: 第二次激活的sigmoid输出，形状(1，示例数量)
+    :param Y: “真”标签向量的形状(1，样本数目)
+    :return: 
+    cost -- 交叉熵成本方程(1)
+    """
+    m = Y.shape[1]  # number of example
+
+    logprobs = np.multiply(np.log(A2), Y) + np.multiply(1 - Y, np.log(1 - A2))
+    cost = -(np.sum(logprobs)) / m
+
+    cost = np.squeeze(cost)  # 确保成本是我们期望的尺寸。
+    assert (isinstance(cost, float))
+
+    return cost
 </code></pre>
-<h2 id="反向传播">反向传播</h2>
+<h2 id="toc_h2_8">反向传播</h2>
 <p>反向传播使用到了以下这些公式：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQenBQ.png" alt="这里写图片描述"></p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">backward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    使用上面的说明实现反向传播。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param parameters: 包含我们的参数的python字典。
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param cache: 包含“Z1”、“A1”、“Z2”和“A2”的字典。
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :param X: 形状输入数据(2，实例数)
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    :param Y: “真”标签向量的形状(1，样本数目)
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    grads -- 包含不同参数的渐变的python字典
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-n">m</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">A1</span> <span class="highlight-o">=</span> <span class="highlight-n">cache</span><span class="highlight-p">[</span><span class="highlight-s2">"A1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">A2</span> <span class="highlight-o">=</span> <span class="highlight-n">cache</span><span class="highlight-p">[</span><span class="highlight-s2">"A2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">dZ2</span> <span class="highlight-o">=</span> <span class="highlight-n">A2</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">dW2</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">db2</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">dZ1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">,</span> <span class="highlight-n">dZ2</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">power</span><span class="highlight-p">(</span><span class="highlight-n">A1</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">))</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">dW1</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span>
-<span class="highlight-ln">25</span>    <span class="highlight-n">db1</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>    <span class="highlight-n">grads</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"dW1"</span><span class="highlight-p">:</span> <span class="highlight-n">dW1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">28</span>             <span class="highlight-s2">"db1"</span><span class="highlight-p">:</span> <span class="highlight-n">db1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">29</span>             <span class="highlight-s2">"dW2"</span><span class="highlight-p">:</span> <span class="highlight-n">dW2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">30</span>             <span class="highlight-s2">"db2"</span><span class="highlight-p">:</span> <span class="highlight-n">db2</span><span class="highlight-p">}</span>
-<span class="highlight-ln">31</span>    <span class="highlight-k">return</span> <span class="highlight-n">grads</span>
+<pre><code class="language-python">def backward_propagation(parameters, cache, X, Y):
+    """
+    使用上面的说明实现反向传播。
+    :param parameters: 包含我们的参数的python字典。
+    :param cache: 包含“Z1”、“A1”、“Z2”和“A2”的字典。
+    :param X: 形状输入数据(2，实例数)
+    :param Y: “真”标签向量的形状(1，样本数目)
+    :return: 
+    grads -- 包含不同参数的渐变的python字典
+    """
+    m = X.shape[1]
+    m = float(m)
+
+    W1 = parameters["W1"]
+    W2 = parameters["W2"]
+
+    A1 = cache["A1"]
+    A2 = cache["A2"]
+
+    dZ2 = A2 - Y
+    dW2 = (1 / m) * np.dot(dZ2, A1.T)
+    db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
+    dZ1 = np.dot(W2.T, dZ2) * (1 - np.power(A1, 2))
+    dW1 = (1 / m) * np.dot(dZ1, X.T)
+    db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
+
+    grads = {"dW1": dW1,
+             "db1": db1,
+             "dW2": dW2,
+             "db2": db2}
+    return grads
 </code></pre>
-<h2 id="更新参数">更新参数</h2>
-<p>实施更新规则。使用梯度下降。您必须使用（dW1，db1，dW2，db2）才能更新（W1，b1，W2，b2），使用到更新的规则公式如下：</p>
-<div class="vditor-math">\theta = \theta - \alpha \frac{\partial J }{ \partial \theta }\tag{2}</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">update_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">grads</span><span class="highlight-p">,</span> <span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">1.2</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    使用上面给出的梯度下降更新规则更新参数。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param parameters: 包含参数的python字典。
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param grads: 包含梯度的python字典。
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :param learning_rate: 学习率
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    parameters -- 包含更新参数的python字典。
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">dW1</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"dW1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">db1</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"db1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">dW2</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"dW2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">db2</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"db2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">W1</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">dW1</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">b1</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">db1</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">W2</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">dW2</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">b2</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">db2</span>
-<span class="highlight-ln">24</span>
-<span class="highlight-ln">25</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"W1"</span><span class="highlight-p">:</span> <span class="highlight-n">W1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">26</span>                  <span class="highlight-s2">"b1"</span><span class="highlight-p">:</span> <span class="highlight-n">b1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">27</span>                  <span class="highlight-s2">"W2"</span><span class="highlight-p">:</span> <span class="highlight-n">W2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">28</span>                  <span class="highlight-s2">"b2"</span><span class="highlight-p">:</span> <span class="highlight-n">b2</span><span class="highlight-p">}</span>
-<span class="highlight-ln">29</span>
-<span class="highlight-ln">30</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<h2 id="toc_h2_9">更新参数</h2>
+<p>实施更新规则。使用梯度下降。您必须使用（dW1，db1，dW2，db2）才能更新（W1，b1，W2，b2），使用到更新的规则公式如下：<br>
+$$<br>
+\theta = \theta - \alpha \frac{\partial J }{ \partial \theta }\tag{2}<br>
+$$</p>
+<pre><code class="language-python">def update_parameters(parameters, grads, learning_rate=1.2):
+    """
+    使用上面给出的梯度下降更新规则更新参数。
+    :param parameters: 包含参数的python字典。
+    :param grads: 包含梯度的python字典。
+    :param learning_rate: 学习率
+    :return: 
+    parameters -- 包含更新参数的python字典。
+    """
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
+    W2 = parameters["W2"]
+    b2 = parameters["b2"]
+
+    dW1 = grads["dW1"]
+    db1 = grads["db1"]
+    dW2 = grads["dW2"]
+    db2 = grads["db2"]
+
+    W1 = W1 - learning_rate * dW1
+    b1 = b1 - learning_rate * db1
+    W2 = W2 - learning_rate * dW2
+    b2 = b2 - learning_rate * db2
+
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+
+    return parameters
 </code></pre>
-<h2 id="集成model函数">集成model函数</h2>
+<h2 id="toc_h2_10">集成model函数</h2>
 <p>把上面定义的神经网络结构的函数集成到这个函数中，形成一个完整的神经网络。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">nn_model</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-o">=</span><span class="highlight-mi">10000</span><span class="highlight-p">,</span> <span class="highlight-n">print_cost</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    把上面定义的神经网络集成到这个函数
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param X: 形状数据集(2，样本数目)
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param Y: 形状标签(1，样本数目)
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :param n_h: 隐藏层的大小
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    :param num_iterations: 梯度下降循环的迭代次数。
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    :param print_cost: 如果是真的，打印每1000次迭代的成本。
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    parameters -- 由模型学习的参数。他们可以被用来预测。
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">seed</span><span class="highlight-p">(</span><span class="highlight-mi">3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">n_x</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_sizes</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">n_y</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_sizes</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)[</span><span class="highlight-mi">2</span><span class="highlight-p">]</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">initialize_parameters</span><span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">compute_cost</span><span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>        <span class="highlight-n">grads</span> <span class="highlight-o">=</span> <span class="highlight-n">backward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">update_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">grads</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>        <span class="highlight-k">if</span> <span class="highlight-n">print_cost</span> <span class="highlight-ow">and</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-mi">1000</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">24</span>            <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Cost after iteration </span><span class="highlight-si">%i</span><span class="highlight-s2">: </span><span class="highlight-si">%f</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-p">))</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<pre><code class="language-python">def nn_model(X, Y, n_h, num_iterations=10000, print_cost=False):
+    """
+    把上面定义的神经网络集成到这个函数
+    :param X: 形状数据集(2，样本数目)
+    :param Y: 形状标签(1，样本数目)
+    :param n_h: 隐藏层的大小
+    :param num_iterations: 梯度下降循环的迭代次数。
+    :param print_cost: 如果是真的，打印每1000次迭代的成本。
+    :return: 
+    parameters -- 由模型学习的参数。他们可以被用来预测。
+    """
+    np.random.seed(3)
+    n_x = layer_sizes(X, Y)[0]
+    n_y = layer_sizes(X, Y)[2]
+
+    parameters = initialize_parameters(n_x, n_h, n_y)
+
+    for i in range(0, num_iterations):
+        A2, cache = forward_propagation(X, parameters)
+        cost = compute_cost(A2, Y)
+        grads = backward_propagation(parameters, cache, X, Y)
+        parameters = update_parameters(parameters, grads)
+        if print_cost and i % 1000 == 0:
+            print ("Cost after iteration %i: %f" % (i, cost))
+
+    return parameters
 </code></pre>
-<h1 id="预测结果">预测结果</h1>
-<p>使用您的模型通过构建<code>predict()</code>来进行预测。使用向前传播来预测结果。</p>
-<div class="vditor-math">y_{prediction} = \mathbb 1 \text{{activation &gt; 0.5}} = \begin{cases}
-      1 &amp; \text{if}\ activation &gt; 0.5 \\
-      0 &amp; \text{otherwise}
-    \end{cases}\tag{3}</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">predict</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    使用学习的参数，为X中的每个例子预测一个类。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param parameters: 包含参数的python字典。
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param X: 输入数据大小(n_x, m)
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    predictions -- 模型预测向量(红色:0 / blue: 1)
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">predictions</span> <span class="highlight-o">=</span> <span class="highlight-n">A2</span> <span class="highlight-o">&gt;</span> <span class="highlight-mf">0.5</span>
-<span class="highlight-ln">11</span>    <span class="highlight-k">return</span> <span class="highlight-n">predictions</span>
-<span class="highlight-ln">12</span>
+<h1 id="toc_h1_11">预测结果</h1>
+<p>使用您的模型通过构建<code>predict()</code>来进行预测。使用向前传播来预测结果。<br>
+$$<br>
+y_{prediction} = \mathbb 1 \text{{activation &gt; 0.5}} = \begin{cases}<br>
+1 &amp; \text{if}\ activation &gt; 0.5 \<br>
+0 &amp; \text{otherwise}<br>
+\end{cases}\tag{3}<br>
+$$</p>
+<pre><code class="language-python">def predict(parameters, X):
+    """
+    使用学习的参数，为X中的每个例子预测一个类。
+    :param parameters: 包含参数的python字典。
+    :param X: 输入数据大小(n_x, m)
+    :return: 
+    predictions -- 模型预测向量(红色:0 / blue: 1)
+    """
+    A2, cache = forward_propagation(X, parameters)
+    predictions = A2 &gt; 0.5
+    return predictions
+
 </code></pre>
-<h1 id="测试其他隐层">测试其他隐层</h1>
+<h1 id="toc_h1_12">测试其他隐层</h1>
 <p>通过测试不用的隐层数量，观察模型的预测效果，获得最优的隐层数量。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">test_anther_hidden</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    使用不同的隐层训练
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">hidden_layer_sizes</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-mi">20</span><span class="highlight-p">,</span> <span class="highlight-mi">50</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">hidden_layer_sizes</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">nn_model</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-o">=</span><span class="highlight-mi">1000</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-n">predictions</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>        <span class="highlight-n">accuracy</span> <span class="highlight-o">=</span> <span class="highlight-nb">float</span><span class="highlight-p">((</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">))</span> <span class="highlight-o">/</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">size</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Accuracy for {} hidden units: {} %"</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">accuracy</span><span class="highlight-p">))</span>
+<pre><code class="language-python">def test_anther_hidden():
+    """
+    使用不同的隐层训练
+    :return: 
+    """
+    hidden_layer_sizes = [1, 2, 3, 4, 5, 20, 50]
+    for i, n_h in enumerate(hidden_layer_sizes):
+        parameters = nn_model(X, Y, n_h, num_iterations=1000)
+        predictions = predict(parameters, X)
+        accuracy = float((np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T)) / float(Y.size) * 100)
+        print ("Accuracy for {} hidden units: {} %".format(n_h, accuracy))
 </code></pre>
-<h1 id="调用函数训练">调用函数训练</h1>
+<h1 id="toc_h1_13">调用函数训练</h1>
 <p>通过调用刚才集成的神经网络函数<code>nn_model()</code>来训练参数，获得参数之后就可以是参数预测数据了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">nn_model</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-o">=</span><span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-o">=</span><span class="highlight-mi">10000</span><span class="highlight-p">,</span> <span class="highlight-n">print_cost</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">predictions</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-k">print</span> <span class="highlight-s1">'Accuracy: </span><span class="highlight-si">%d</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span>
-<span class="highlight-ln">5</span>        <span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">))</span> <span class="highlight-o">/</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">size</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-s1">'%'</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    parameters = nn_model(X, Y, n_h=4, num_iterations=10000, print_cost=True)
+    predictions = predict(parameters, X)
+    print 'Accuracy: %d' % float(
+        (np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T)) / float(Y.size) * 100) + '%'
 </code></pre>
 <p>训练和预测输出的结果是：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>Cost after iteration 0: 0.693048
-<span class="highlight-ln"> 2</span>Cost after iteration 1000: 0.288083
-<span class="highlight-ln"> 3</span>Cost after iteration 2000: 0.254385
-<span class="highlight-ln"> 4</span>Cost after iteration 3000: 0.233864
-<span class="highlight-ln"> 5</span>Cost after iteration 4000: 0.226792
-<span class="highlight-ln"> 6</span>Cost after iteration 5000: 0.222644
-<span class="highlight-ln"> 7</span>Cost after iteration 6000: 0.219731
-<span class="highlight-ln"> 8</span>Cost after iteration 7000: 0.217504
-<span class="highlight-ln"> 9</span>Cost after iteration 8000: 0.219415
-<span class="highlight-ln">10</span>Cost after iteration 9000: 0.218547
-<span class="highlight-ln">11</span>Accuracy: 90%
+<pre><code class="language-text">Cost after iteration 0: 0.693048
+Cost after iteration 1000: 0.288083
+Cost after iteration 2000: 0.254385
+Cost after iteration 3000: 0.233864
+Cost after iteration 4000: 0.226792
+Cost after iteration 5000: 0.222644
+Cost after iteration 6000: 0.219731
+Cost after iteration 7000: 0.217504
+Cost after iteration 8000: 0.219415
+Cost after iteration 9000: 0.218547
+Accuracy: 90%
 </code></pre>
 <p>这个使用的是不同的隐层训练和预测</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">test_anther_hidden</span><span class="highlight-p">()</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    test_anther_hidden()
 </code></pre>
 <p>以下就是不同的隐层训练后得到的不同准确率。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>Accuracy for 1 hidden units: 67.75 %
-<span class="highlight-ln">2</span>Accuracy for 2 hidden units: 65.25 %
-<span class="highlight-ln">3</span>Accuracy for 3 hidden units: 89.5 %
-<span class="highlight-ln">4</span>Accuracy for 4 hidden units: 89.25 %
-<span class="highlight-ln">5</span>Accuracy for 5 hidden units: 89.5 %
-<span class="highlight-ln">6</span>Accuracy for 20 hidden units: 88.0 %
-<span class="highlight-ln">7</span>Accuracy for 50 hidden units: 88.0 %
+<pre><code class="language-text">Accuracy for 1 hidden units: 67.75 %
+Accuracy for 2 hidden units: 65.25 %
+Accuracy for 3 hidden units: 89.5 %
+Accuracy for 4 hidden units: 89.25 %
+Accuracy for 5 hidden units: 89.5 %
+Accuracy for 20 hidden units: 88.0 %
+Accuracy for 50 hidden units: 88.0 %
 </code></pre>
-<h1 id="所有代码">所有代码</h1>
+<h1 id="toc_h1_14">所有代码</h1>
 <p>为了方便读者阅读代码，这里放出了所有的代码（除了那两个工具类）：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln">  2</span><span class="highlight-kn">from</span> <span class="highlight-nn">planar_utils</span> <span class="highlight-kn">import</span> <span class="highlight-n">sigmoid</span><span class="highlight-p">,</span> <span class="highlight-n">load_planar_dataset</span>
-<span class="highlight-ln">  3</span><span class="highlight-kn">from</span> <span class="highlight-nn">testCases_v2</span> <span class="highlight-kn">import</span> <span class="highlight-o">*</span>
-<span class="highlight-ln">  4</span>
-<span class="highlight-ln">  5</span><span class="highlight-c1"># 加载数据</span>
-<span class="highlight-ln">  6</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span> <span class="highlight-o">=</span> <span class="highlight-n">load_planar_dataset</span><span class="highlight-p">()</span>
-<span class="highlight-ln">  7</span>
-<span class="highlight-ln">  8</span><span class="highlight-c1"># 获取数据的形状</span>
-<span class="highlight-ln">  9</span><span class="highlight-n">shape_X</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span>
-<span class="highlight-ln"> 10</span><span class="highlight-n">shape_Y</span> <span class="highlight-o">=</span> <span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">shape</span>
-<span class="highlight-ln"> 11</span><span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">shape_X</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 12</span>
-<span class="highlight-ln"> 13</span>
-<span class="highlight-ln"> 14</span><span class="highlight-k">def</span> <span class="highlight-nf">layer_sizes</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 15</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 16</span><span class="highlight-s2">    定义神经网络结构
-</span><span class="highlight-ln"> 17</span><span class="highlight-s2">    :param X: 形状的输入数据集(输入大小，示例数量)
-</span><span class="highlight-ln"> 18</span><span class="highlight-s2">    :param Y: 形状标签(输出尺寸，示例数量)
-</span><span class="highlight-ln"> 19</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 20</span><span class="highlight-s2">    n_x -- 输入层的大小。
-</span><span class="highlight-ln"> 21</span><span class="highlight-s2">    n_h -- 隐藏层的大小。
-</span><span class="highlight-ln"> 22</span><span class="highlight-s2">    n_y -- 隐藏层的大小。。
-</span><span class="highlight-ln"> 23</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 24</span>    <span class="highlight-n">n_x</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 25</span>    <span class="highlight-n">n_h</span> <span class="highlight-o">=</span> <span class="highlight-mi">4</span>
-<span class="highlight-ln"> 26</span>    <span class="highlight-n">n_y</span> <span class="highlight-o">=</span> <span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 27</span>    <span class="highlight-k">return</span> <span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 28</span>
-<span class="highlight-ln"> 29</span>
-<span class="highlight-ln"> 30</span><span class="highlight-k">def</span> <span class="highlight-nf">initialize_parameters</span><span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 31</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 32</span><span class="highlight-s2">    初始化模型的参数
-</span><span class="highlight-ln"> 33</span><span class="highlight-s2">    :param n_x: 输入层的大小
-</span><span class="highlight-ln"> 34</span><span class="highlight-s2">    :param n_h: 隐藏层的大小
-</span><span class="highlight-ln"> 35</span><span class="highlight-s2">    :param n_y: 隐藏层的大小
-</span><span class="highlight-ln"> 36</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 37</span><span class="highlight-s2">    params --包含您的参数的python字典:
-</span><span class="highlight-ln"> 38</span><span class="highlight-s2">                W1 -- 形状重量矩阵(n_h, n_x)
-</span><span class="highlight-ln"> 39</span><span class="highlight-s2">                b1 -- 形状的偏置向量(n_h, 1)
-</span><span class="highlight-ln"> 40</span><span class="highlight-s2">                W2 -- 形状重量矩阵(n_y, n_h)
-</span><span class="highlight-ln"> 41</span><span class="highlight-s2">                b2 -- 形状的偏置向量(n_y, 1)
-</span><span class="highlight-ln"> 42</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 43</span>    <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">seed</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 44</span>
-<span class="highlight-ln"> 45</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_x</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
-<span class="highlight-ln"> 46</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 47</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mf">0.01</span>
-<span class="highlight-ln"> 48</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 49</span>
-<span class="highlight-ln"> 50</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">W1</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_x</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 51</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">b1</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 52</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 53</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">b2</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-n">n_y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 54</span>
-<span class="highlight-ln"> 55</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"W1"</span><span class="highlight-p">:</span> <span class="highlight-n">W1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 56</span>                  <span class="highlight-s2">"b1"</span><span class="highlight-p">:</span> <span class="highlight-n">b1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 57</span>                  <span class="highlight-s2">"W2"</span><span class="highlight-p">:</span> <span class="highlight-n">W2</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 58</span>                  <span class="highlight-s2">"b2"</span><span class="highlight-p">:</span> <span class="highlight-n">b2</span><span class="highlight-p">}</span>
-<span class="highlight-ln"> 59</span>
-<span class="highlight-ln"> 60</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln"> 61</span>
-<span class="highlight-ln"> 62</span>
-<span class="highlight-ln"> 63</span><span class="highlight-k">def</span> <span class="highlight-nf">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 64</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 65</span><span class="highlight-s2">    向前传播
-</span><span class="highlight-ln"> 66</span><span class="highlight-s2">    :param X: 输入数据大小(n_x, m)
-</span><span class="highlight-ln"> 67</span><span class="highlight-s2">    :param parameters: 包含参数的python字典(初始化函数的输出)
-</span><span class="highlight-ln"> 68</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 69</span><span class="highlight-s2">    A2 -- 第二个激活的sigmoid输出。
-</span><span class="highlight-ln"> 70</span><span class="highlight-s2">    cache -- 包含“Z1”、“A1”、“Z2”和“A2”的字典
-</span><span class="highlight-ln"> 71</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 72</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 73</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 74</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 75</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 76</span>
-<span class="highlight-ln"> 77</span>    <span class="highlight-n">Z1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b1</span>
-<span class="highlight-ln"> 78</span>    <span class="highlight-n">A1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">tanh</span><span class="highlight-p">(</span><span class="highlight-n">Z1</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 79</span>    <span class="highlight-n">Z2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b2</span>
-<span class="highlight-ln"> 80</span>    <span class="highlight-n">A2</span> <span class="highlight-o">=</span> <span class="highlight-n">sigmoid</span><span class="highlight-p">(</span><span class="highlight-n">Z2</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 81</span>
-<span class="highlight-ln"> 82</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">==</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]))</span>
-<span class="highlight-ln"> 83</span>
-<span class="highlight-ln"> 84</span>    <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"Z1"</span><span class="highlight-p">:</span> <span class="highlight-n">Z1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 85</span>             <span class="highlight-s2">"A1"</span><span class="highlight-p">:</span> <span class="highlight-n">A1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 86</span>             <span class="highlight-s2">"Z2"</span><span class="highlight-p">:</span> <span class="highlight-n">Z2</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 87</span>             <span class="highlight-s2">"A2"</span><span class="highlight-p">:</span> <span class="highlight-n">A2</span><span class="highlight-p">}</span>
-<span class="highlight-ln"> 88</span>
-<span class="highlight-ln"> 89</span>    <span class="highlight-k">return</span> <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span>
-<span class="highlight-ln"> 90</span>
-<span class="highlight-ln"> 91</span>
-<span class="highlight-ln"> 92</span><span class="highlight-k">def</span> <span class="highlight-nf">compute_cost</span><span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 93</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 94</span><span class="highlight-s2">    计算公式(13)中的交叉熵成本
-</span><span class="highlight-ln"> 95</span><span class="highlight-s2">    :param A2: 第二次激活的sigmoid输出，形状(1，示例数量)
-</span><span class="highlight-ln"> 96</span><span class="highlight-s2">    :param Y: “真”标签向量的形状(1，样本数目)
-</span><span class="highlight-ln"> 97</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln"> 98</span><span class="highlight-s2">    cost -- 交叉熵成本方程(13)
-</span><span class="highlight-ln"> 99</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">100</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>  <span class="highlight-c1"># number of example</span>
-<span class="highlight-ln">101</span>
-<span class="highlight-ln">102</span>    <span class="highlight-n">logprobs</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-p">),</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">A2</span><span class="highlight-p">))</span>
-<span class="highlight-ln">103</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-o">-</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">logprobs</span><span class="highlight-p">))</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span>
-<span class="highlight-ln">104</span>
-<span class="highlight-ln">105</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">squeeze</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>  <span class="highlight-c1"># 确保成本是我们期望的尺寸。</span>
-<span class="highlight-ln">106</span>    <span class="highlight-k">assert</span> <span class="highlight-p">(</span><span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-nb">float</span><span class="highlight-p">))</span>
-<span class="highlight-ln">107</span>
-<span class="highlight-ln">108</span>    <span class="highlight-k">return</span> <span class="highlight-n">cost</span>
-<span class="highlight-ln">109</span>
-<span class="highlight-ln">110</span>
-<span class="highlight-ln">111</span><span class="highlight-k">def</span> <span class="highlight-nf">backward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">):</span>
-<span class="highlight-ln">112</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln">113</span><span class="highlight-s2">    使用上面的说明实现反向传播。
-</span><span class="highlight-ln">114</span><span class="highlight-s2">    :param parameters: 包含我们的参数的python字典。
-</span><span class="highlight-ln">115</span><span class="highlight-s2">    :param cache: 包含“Z1”、“A1”、“Z2”和“A2”的字典。
-</span><span class="highlight-ln">116</span><span class="highlight-s2">    :param X: 形状输入数据(2，实例数)
-</span><span class="highlight-ln">117</span><span class="highlight-s2">    :param Y: “真”标签向量的形状(1，样本数目)
-</span><span class="highlight-ln">118</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln">119</span><span class="highlight-s2">    grads -- 包含不同参数的渐变的python字典
-</span><span class="highlight-ln">120</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">121</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">122</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-n">m</span><span class="highlight-p">)</span>
-<span class="highlight-ln">123</span>
-<span class="highlight-ln">124</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">125</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">126</span>
-<span class="highlight-ln">127</span>    <span class="highlight-n">A1</span> <span class="highlight-o">=</span> <span class="highlight-n">cache</span><span class="highlight-p">[</span><span class="highlight-s2">"A1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">128</span>    <span class="highlight-n">A2</span> <span class="highlight-o">=</span> <span class="highlight-n">cache</span><span class="highlight-p">[</span><span class="highlight-s2">"A2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">129</span>
-<span class="highlight-ln">130</span>    <span class="highlight-n">dZ2</span> <span class="highlight-o">=</span> <span class="highlight-n">A2</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span>
-<span class="highlight-ln">131</span>    <span class="highlight-n">dW2</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span>
-<span class="highlight-ln">132</span>    <span class="highlight-n">db2</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">133</span>    <span class="highlight-n">dZ1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">,</span> <span class="highlight-n">dZ2</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">power</span><span class="highlight-p">(</span><span class="highlight-n">A1</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">))</span>
-<span class="highlight-ln">134</span>    <span class="highlight-n">dW1</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span>
-<span class="highlight-ln">135</span>    <span class="highlight-n">db1</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">136</span>
-<span class="highlight-ln">137</span>    <span class="highlight-n">grads</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"dW1"</span><span class="highlight-p">:</span> <span class="highlight-n">dW1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">138</span>             <span class="highlight-s2">"db1"</span><span class="highlight-p">:</span> <span class="highlight-n">db1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">139</span>             <span class="highlight-s2">"dW2"</span><span class="highlight-p">:</span> <span class="highlight-n">dW2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">140</span>             <span class="highlight-s2">"db2"</span><span class="highlight-p">:</span> <span class="highlight-n">db2</span><span class="highlight-p">}</span>
-<span class="highlight-ln">141</span>    <span class="highlight-k">return</span> <span class="highlight-n">grads</span>
-<span class="highlight-ln">142</span>
-<span class="highlight-ln">143</span>
-<span class="highlight-ln">144</span><span class="highlight-k">def</span> <span class="highlight-nf">update_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">grads</span><span class="highlight-p">,</span> <span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">1.2</span><span class="highlight-p">):</span>
-<span class="highlight-ln">145</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln">146</span><span class="highlight-s2">    使用上面给出的梯度下降更新规则更新参数。
-</span><span class="highlight-ln">147</span><span class="highlight-s2">    :param parameters: 包含参数的python字典。
-</span><span class="highlight-ln">148</span><span class="highlight-s2">    :param grads: 包含梯度的python字典。
-</span><span class="highlight-ln">149</span><span class="highlight-s2">    :param learning_rate: 学习率
-</span><span class="highlight-ln">150</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln">151</span><span class="highlight-s2">    parameters -- 包含更新参数的python字典。
-</span><span class="highlight-ln">152</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">153</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">154</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">155</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">156</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">157</span>
-<span class="highlight-ln">158</span>    <span class="highlight-n">dW1</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"dW1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">159</span>    <span class="highlight-n">db1</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"db1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">160</span>    <span class="highlight-n">dW2</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"dW2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">161</span>    <span class="highlight-n">db2</span> <span class="highlight-o">=</span> <span class="highlight-n">grads</span><span class="highlight-p">[</span><span class="highlight-s2">"db2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">162</span>
-<span class="highlight-ln">163</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">W1</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">dW1</span>
-<span class="highlight-ln">164</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">b1</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">db1</span>
-<span class="highlight-ln">165</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">W2</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">dW2</span>
-<span class="highlight-ln">166</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">b2</span> <span class="highlight-o">-</span> <span class="highlight-n">learning_rate</span> <span class="highlight-o">*</span> <span class="highlight-n">db2</span>
-<span class="highlight-ln">167</span>
-<span class="highlight-ln">168</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"W1"</span><span class="highlight-p">:</span> <span class="highlight-n">W1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">169</span>                  <span class="highlight-s2">"b1"</span><span class="highlight-p">:</span> <span class="highlight-n">b1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">170</span>                  <span class="highlight-s2">"W2"</span><span class="highlight-p">:</span> <span class="highlight-n">W2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">171</span>                  <span class="highlight-s2">"b2"</span><span class="highlight-p">:</span> <span class="highlight-n">b2</span><span class="highlight-p">}</span>
-<span class="highlight-ln">172</span>
-<span class="highlight-ln">173</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln">174</span>
-<span class="highlight-ln">175</span>
-<span class="highlight-ln">176</span><span class="highlight-k">def</span> <span class="highlight-nf">nn_model</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-o">=</span><span class="highlight-mi">10000</span><span class="highlight-p">,</span> <span class="highlight-n">print_cost</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">):</span>
-<span class="highlight-ln">177</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln">178</span><span class="highlight-s2">    把上面定义的神经网络集成到这个函数
-</span><span class="highlight-ln">179</span><span class="highlight-s2">    :param X: 形状数据集(2，样本数目)
-</span><span class="highlight-ln">180</span><span class="highlight-s2">    :param Y: 形状标签(1，样本数目)
-</span><span class="highlight-ln">181</span><span class="highlight-s2">    :param n_h: 隐藏层的大小
-</span><span class="highlight-ln">182</span><span class="highlight-s2">    :param num_iterations: 梯度下降循环的迭代次数。
-</span><span class="highlight-ln">183</span><span class="highlight-s2">    :param print_cost: 如果是真的，打印每1000次迭代的成本。
-</span><span class="highlight-ln">184</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln">185</span><span class="highlight-s2">    parameters -- 由模型学习的参数。他们可以被用来预测。
-</span><span class="highlight-ln">186</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">187</span>    <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">seed</span><span class="highlight-p">(</span><span class="highlight-mi">3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">188</span>    <span class="highlight-n">n_x</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_sizes</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">189</span>    <span class="highlight-n">n_y</span> <span class="highlight-o">=</span> <span class="highlight-n">layer_sizes</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)[</span><span class="highlight-mi">2</span><span class="highlight-p">]</span>
-<span class="highlight-ln">190</span>
-<span class="highlight-ln">191</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">initialize_parameters</span><span class="highlight-p">(</span><span class="highlight-n">n_x</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">n_y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">192</span>
-<span class="highlight-ln">193</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-p">):</span>
-<span class="highlight-ln">194</span>        <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">195</span>        <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">compute_cost</span><span class="highlight-p">(</span><span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">196</span>        <span class="highlight-n">grads</span> <span class="highlight-o">=</span> <span class="highlight-n">backward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">197</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">update_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">grads</span><span class="highlight-p">)</span>
-<span class="highlight-ln">198</span>        <span class="highlight-k">if</span> <span class="highlight-n">print_cost</span> <span class="highlight-ow">and</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-mi">1000</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">199</span>            <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Cost after iteration </span><span class="highlight-si">%i</span><span class="highlight-s2">: </span><span class="highlight-si">%f</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-p">))</span>
-<span class="highlight-ln">200</span>
-<span class="highlight-ln">201</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln">202</span>
-<span class="highlight-ln">203</span>
-<span class="highlight-ln">204</span><span class="highlight-k">def</span> <span class="highlight-nf">predict</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">):</span>
-<span class="highlight-ln">205</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln">206</span><span class="highlight-s2">    使用学习的参数，为X中的每个例子预测一个类。
-</span><span class="highlight-ln">207</span><span class="highlight-s2">    :param parameters: 包含参数的python字典。
-</span><span class="highlight-ln">208</span><span class="highlight-s2">    :param X: 输入数据大小(n_x, m)
-</span><span class="highlight-ln">209</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln">210</span><span class="highlight-s2">    predictions -- 模型预测向量(红色:0 / blue: 1)
-</span><span class="highlight-ln">211</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">212</span>    <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">213</span>    <span class="highlight-n">predictions</span> <span class="highlight-o">=</span> <span class="highlight-n">A2</span> <span class="highlight-o">&gt;</span> <span class="highlight-mf">0.5</span>
-<span class="highlight-ln">214</span>    <span class="highlight-k">return</span> <span class="highlight-n">predictions</span>
-<span class="highlight-ln">215</span>
-<span class="highlight-ln">216</span>
-<span class="highlight-ln">217</span><span class="highlight-k">def</span> <span class="highlight-nf">test_anther_hidden</span><span class="highlight-p">():</span>
-<span class="highlight-ln">218</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln">219</span><span class="highlight-s2">    使用不同的隐层训练
-</span><span class="highlight-ln">220</span><span class="highlight-s2">    :return: 
-</span><span class="highlight-ln">221</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">222</span>    <span class="highlight-n">hidden_layer_sizes</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-mi">20</span><span class="highlight-p">,</span> <span class="highlight-mi">50</span><span class="highlight-p">]</span>
-<span class="highlight-ln">223</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">hidden_layer_sizes</span><span class="highlight-p">):</span>
-<span class="highlight-ln">224</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">nn_model</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-o">=</span><span class="highlight-mi">1000</span><span class="highlight-p">)</span>
-<span class="highlight-ln">225</span>        <span class="highlight-n">predictions</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">)</span>
-<span class="highlight-ln">226</span>        <span class="highlight-n">accuracy</span> <span class="highlight-o">=</span> <span class="highlight-nb">float</span><span class="highlight-p">((</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">))</span> <span class="highlight-o">/</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">size</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span>
-<span class="highlight-ln">227</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"Accuracy for {} hidden units: {} %"</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">n_h</span><span class="highlight-p">,</span> <span class="highlight-n">accuracy</span><span class="highlight-p">))</span>
-<span class="highlight-ln">228</span>
-<span class="highlight-ln">229</span>
-<span class="highlight-ln">230</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">231</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">nn_model</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">n_h</span><span class="highlight-o">=</span><span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-o">=</span><span class="highlight-mi">10000</span><span class="highlight-p">,</span> <span class="highlight-n">print_cost</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">232</span>    <span class="highlight-n">predictions</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">)</span>
-<span class="highlight-ln">233</span>    <span class="highlight-k">print</span> <span class="highlight-s1">'Accuracy: </span><span class="highlight-si">%d</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span>
-<span class="highlight-ln">234</span>        <span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">predictions</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">))</span> <span class="highlight-o">/</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-n">Y</span><span class="highlight-o">.</span><span class="highlight-n">size</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-s1">'%'</span>
-<span class="highlight-ln">235</span>    <span class="highlight-c1"># test_anther_hidden()</span>
+<pre><code class="language-python"># coding=utf-8
+from planar_utils import sigmoid, load_planar_dataset
+from testCases_v2 import *
+
+# 加载数据
+X, Y = load_planar_dataset()
+
+# 获取数据的形状
+shape_X = X.shape
+shape_Y = Y.shape
+m = shape_X[1]
+
+
+def layer_sizes(X, Y):
+    """
+    定义神经网络结构
+    :param X: 形状的输入数据集(输入大小，示例数量)
+    :param Y: 形状标签(输出尺寸，示例数量)
+    :return: 
+    n_x -- 输入层的大小。
+    n_h -- 隐藏层的大小。
+    n_y -- 隐藏层的大小。。
+    """
+    n_x = X.shape[0]
+    n_h = 4
+    n_y = Y.shape[0]
+    return (n_x, n_h, n_y)
+
+
+def initialize_parameters(n_x, n_h, n_y):
+    """
+    初始化模型的参数
+    :param n_x: 输入层的大小
+    :param n_h: 隐藏层的大小
+    :param n_y: 隐藏层的大小
+    :return: 
+    params --包含您的参数的python字典:
+                W1 -- 形状重量矩阵(n_h, n_x)
+                b1 -- 形状的偏置向量(n_h, 1)
+                W2 -- 形状重量矩阵(n_y, n_h)
+                b2 -- 形状的偏置向量(n_y, 1)
+    """
+    np.random.seed(2)
+
+    W1 = np.random.randn(n_h, n_x) * 0.01
+    b1 = np.zeros((n_h, 1))
+    W2 = np.random.randn(n_y, n_h) * 0.01
+    b2 = np.zeros((n_y, 1))
+
+    assert (W1.shape == (n_h, n_x))
+    assert (b1.shape == (n_h, 1))
+    assert (W2.shape == (n_y, n_h))
+    assert (b2.shape == (n_y, 1))
+
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+
+    return parameters
+
+
+def forward_propagation(X, parameters):
+    """
+    向前传播
+    :param X: 输入数据大小(n_x, m)
+    :param parameters: 包含参数的python字典(初始化函数的输出)
+    :return: 
+    A2 -- 第二个激活的sigmoid输出。
+    cache -- 包含“Z1”、“A1”、“Z2”和“A2”的字典
+    """
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
+    W2 = parameters["W2"]
+    b2 = parameters["b2"]
+
+    Z1 = np.dot(W1, X) + b1
+    A1 = np.tanh(Z1)
+    Z2 = np.dot(W2, A1) + b2
+    A2 = sigmoid(Z2)
+
+    assert (A2.shape == (1, X.shape[1]))
+
+    cache = {"Z1": Z1,
+             "A1": A1,
+             "Z2": Z2,
+             "A2": A2}
+
+    return A2, cache
+
+
+def compute_cost(A2, Y):
+    """
+    计算公式(13)中的交叉熵成本
+    :param A2: 第二次激活的sigmoid输出，形状(1，示例数量)
+    :param Y: “真”标签向量的形状(1，样本数目)
+    :return: 
+    cost -- 交叉熵成本方程(13)
+    """
+    m = Y.shape[1]  # number of example
+
+    logprobs = np.multiply(np.log(A2), Y) + np.multiply(1 - Y, np.log(1 - A2))
+    cost = -(np.sum(logprobs)) / m
+
+    cost = np.squeeze(cost)  # 确保成本是我们期望的尺寸。
+    assert (isinstance(cost, float))
+
+    return cost
+
+
+def backward_propagation(parameters, cache, X, Y):
+    """
+    使用上面的说明实现反向传播。
+    :param parameters: 包含我们的参数的python字典。
+    :param cache: 包含“Z1”、“A1”、“Z2”和“A2”的字典。
+    :param X: 形状输入数据(2，实例数)
+    :param Y: “真”标签向量的形状(1，样本数目)
+    :return: 
+    grads -- 包含不同参数的渐变的python字典
+    """
+    m = X.shape[1]
+    m = float(m)
+
+    W1 = parameters["W1"]
+    W2 = parameters["W2"]
+
+    A1 = cache["A1"]
+    A2 = cache["A2"]
+
+    dZ2 = A2 - Y
+    dW2 = (1 / m) * np.dot(dZ2, A1.T)
+    db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
+    dZ1 = np.dot(W2.T, dZ2) * (1 - np.power(A1, 2))
+    dW1 = (1 / m) * np.dot(dZ1, X.T)
+    db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
+
+    grads = {"dW1": dW1,
+             "db1": db1,
+             "dW2": dW2,
+             "db2": db2}
+    return grads
+
+
+def update_parameters(parameters, grads, learning_rate=1.2):
+    """
+    使用上面给出的梯度下降更新规则更新参数。
+    :param parameters: 包含参数的python字典。
+    :param grads: 包含梯度的python字典。
+    :param learning_rate: 学习率
+    :return: 
+    parameters -- 包含更新参数的python字典。
+    """
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
+    W2 = parameters["W2"]
+    b2 = parameters["b2"]
+
+    dW1 = grads["dW1"]
+    db1 = grads["db1"]
+    dW2 = grads["dW2"]
+    db2 = grads["db2"]
+
+    W1 = W1 - learning_rate * dW1
+    b1 = b1 - learning_rate * db1
+    W2 = W2 - learning_rate * dW2
+    b2 = b2 - learning_rate * db2
+
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+
+    return parameters
+
+
+def nn_model(X, Y, n_h, num_iterations=10000, print_cost=False):
+    """
+    把上面定义的神经网络集成到这个函数
+    :param X: 形状数据集(2，样本数目)
+    :param Y: 形状标签(1，样本数目)
+    :param n_h: 隐藏层的大小
+    :param num_iterations: 梯度下降循环的迭代次数。
+    :param print_cost: 如果是真的，打印每1000次迭代的成本。
+    :return: 
+    parameters -- 由模型学习的参数。他们可以被用来预测。
+    """
+    np.random.seed(3)
+    n_x = layer_sizes(X, Y)[0]
+    n_y = layer_sizes(X, Y)[2]
+
+    parameters = initialize_parameters(n_x, n_h, n_y)
+
+    for i in range(0, num_iterations):
+        A2, cache = forward_propagation(X, parameters)
+        cost = compute_cost(A2, Y)
+        grads = backward_propagation(parameters, cache, X, Y)
+        parameters = update_parameters(parameters, grads)
+        if print_cost and i % 1000 == 0:
+            print ("Cost after iteration %i: %f" % (i, cost))
+
+    return parameters
+
+
+def predict(parameters, X):
+    """
+    使用学习的参数，为X中的每个例子预测一个类。
+    :param parameters: 包含参数的python字典。
+    :param X: 输入数据大小(n_x, m)
+    :return: 
+    predictions -- 模型预测向量(红色:0 / blue: 1)
+    """
+    A2, cache = forward_propagation(X, parameters)
+    predictions = A2 &gt; 0.5
+    return predictions
+
+
+def test_anther_hidden():
+    """
+    使用不同的隐层训练
+    :return: 
+    """
+    hidden_layer_sizes = [1, 2, 3, 4, 5, 20, 50]
+    for i, n_h in enumerate(hidden_layer_sizes):
+        parameters = nn_model(X, Y, n_h, num_iterations=1000)
+        predictions = predict(parameters, X)
+        accuracy = float((np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T)) / float(Y.size) * 100)
+        print ("Accuracy for {} hidden units: {} %".format(n_h, accuracy))
+
+
+if __name__ == "__main__":
+    parameters = nn_model(X, Y, n_h=4, num_iterations=10000, print_cost=True)
+    predictions = predict(parameters, X)
+    print 'Accuracy: %d' % float(
+        (np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T)) / float(Y.size) * 100) + '%'
+    # test_anther_hidden()
 </code></pre>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_15">参考资料</h1>
 <ol>
-<li>http://deeplearning.ai/</li>
+<li><a href="http://deeplearning.ai/" target="_blank">http://deeplearning.ai/</a></li>
 </ol>
 <p><br><br><br></p>
 <blockquote>
@@ -777,7 +783,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -786,7 +792,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -794,11 +800,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466408709",
@@ -816,4 +822,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 65ms, 2020/04/07 11:38:49 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 36ms, 2020/04/07 14:57:08 -->

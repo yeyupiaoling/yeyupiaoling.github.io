@@ -19,6 +19,13 @@
 -->
 <footer class="footer">
     <div class="fn-clear">
+        <#--
+        <div class="fn-left">
+            Theme ${skinDirName}
+            by
+            <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
+        </div>
+        -->
         <span class="fn-right">
             ${viewCount1Label}<span data-uvstaturl="${servePath}">${statistic.statisticBlogViewCount}</span>
             &nbsp;
@@ -33,7 +40,7 @@
         <a href="${servePath}">${blogTitle}</a>
         ${footerContent}
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>

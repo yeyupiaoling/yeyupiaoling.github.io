@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Python2实现简单的爬虫 - 夜雨飘零</title><meta name="description" content="前言 有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。 爬虫的框架 整体框架 下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下： 调度端：主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口； URL管理器：管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL； 网页下载器：通过URL下载网页数据，并以字符串保存； 网页解析器：解析网页下载器获取到的字符串数据，获取用户需要的数据； 价值数据：所有有用的数据都存储在这里。 *图像来自慕课网课程 下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。 *图像来自慕课网课程 URL管理器 如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判...."/><meta property="og:description" content="前言 有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。 爬虫的框架 整体框架 下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下： 调度端：主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口； URL管理器：管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL； 网页下载器：通过URL下载网页数据，并以字符串保存； 网页解析器：解析网页下载器获取到的字符串数据，获取用户需要的数据； 价值数据：所有有用的数据都存储在这里。 *图像来自慕课网课程 下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。 *图像来自慕课网课程 URL管理器 如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Python2实现简单的爬虫 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Python2实现简单的爬虫 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Python2实现简单的爬虫 - 夜雨飘零</title><meta name="description" content="前言 有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。 爬虫的框架 整体框架 下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下： 调度端：主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口； URL管理器：管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL； 网页下载器：通过URL下载网页数据，并以字符串保存； 网页解析器：解析网页下载器获取到的字符串数据，获取用户需要的数据； 价值数据：所有有用的数据都存储在这里。 *图像来自慕课网课程 下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。 *图像来自慕课网课程 URL管理器 如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判...."/><meta property="og:description" content="前言 有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。 爬虫的框架 整体框架 下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下： 调度端：主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口； URL管理器：管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL； 网页下载器：通过URL下载网页数据，并以字符串保存； 网页解析器：解析网页下载器获取到的字符串数据，获取用户需要的数据； 价值数据：所有有用的数据都存储在这里。 *图像来自慕课网课程 下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。 *图像来自慕课网课程 URL管理器 如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Python2实现简单的爬虫 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Python2实现简单的爬虫 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="构建深度神经网络实现猫的二分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971882247.html">
             <link rel="next" title="《Improving Deep Neural Networks》的理论知识点" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html">
     <!-- 百度统计 -->
@@ -78,46 +78,46 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#爬虫的框架">爬虫的框架</a>
+            <a href="#toc_h1_1">爬虫的框架</a>
         </li>
         <li class="toc__h2">
-            <a href="#整体框架">整体框架</a>
+            <a href="#toc_h2_2">整体框架</a>
         </li>
         <li class="toc__h2">
-            <a href="#URL管理器">URL管理器</a>
+            <a href="#toc_h2_3">URL管理器</a>
         </li>
         <li class="toc__h2">
-            <a href="#网页下载器">网页下载器</a>
+            <a href="#toc_h2_4">网页下载器</a>
         </li>
         <li class="toc__h2">
-            <a href="#网页解析器">网页解析器</a>
+            <a href="#toc_h2_5">网页解析器</a>
         </li>
         <li class="toc__h1">
-            <a href="#爬虫程序">爬虫程序</a>
+            <a href="#toc_h1_6">爬虫程序</a>
         </li>
         <li class="toc__h2">
-            <a href="#调度器">调度器</a>
+            <a href="#toc_h2_7">调度器</a>
         </li>
         <li class="toc__h2">
-            <a href="#URL管理器">URL管理器</a>
+            <a href="#toc_h2_8">URL管理器</a>
         </li>
         <li class="toc__h2">
-            <a href="#网页下载器">网页下载器</a>
+            <a href="#toc_h2_9">网页下载器</a>
         </li>
         <li class="toc__h2">
-            <a href="#网页解析器">网页解析器</a>
+            <a href="#toc_h2_10">网页解析器</a>
         </li>
         <li class="toc__h2">
-            <a href="#数据存储器">数据存储器</a>
+            <a href="#toc_h2_11">数据存储器</a>
         </li>
         <li class="toc__h2">
-            <a href="#运行代码">运行代码</a>
+            <a href="#toc_h2_12">运行代码</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_13">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -163,10 +163,10 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20171208.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。</p>
-<h1 id="爬虫的框架">爬虫的框架</h1>
-<h2 id="整体框架">整体框架</h2>
+<h1 id="toc_h1_1">爬虫的框架</h1>
+<h2 id="toc_h2_2">整体框架</h2>
 <p>下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下：<br>
 <code>调度端：</code>主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口；<br>
 <code>URL管理器：</code>管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL；<br>
@@ -178,325 +178,325 @@ var _hmt = _hmt || [];
 <p>下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。<br>
 <img src="https://s1.ax1x.com/2020/04/03/GaAyss.png" alt="这里写图片描述"></p>
 <center>*图像来自慕课网课程</center>
-<h2 id="URL管理器">URL管理器</h2>
+<h2 id="toc_h2_3">URL管理器</h2>
 <p>如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判断URL是否已经存在。在获取时，先判断是否还有URL，如果有就提前URL并将它移动到已爬取的列表中。这样保证不添加新的重复的URL<br>
 <img src="https://s1.ax1x.com/2020/03/30/GmcalT.png" alt="这里写图片描述"></p>
 <center>*图像来自慕课网课程</center>
-<h2 id="网页下载器">网页下载器</h2>
+<h2 id="toc_h2_4">网页下载器</h2>
 <p>从URL管理器中获取的URL，我们要把这些URL的网页数据下载下来，这是就要使用到了网页下载器，这说到下载的有本地文件或字符串，这是因为当我们爬取的是文件时，如图片，下载的就是文件了。当我们爬取的是网页中的内容数据时，这时就是字符串。</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GlnW2q.png" alt="这里写图片描述"></p>
 <center>*图像来自慕课网课程</center>
 <p>网页下载器的代码片段：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">urllib2</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-s2">"https://www.baidu.com"</span>
-<span class="highlight-ln"> 5</span><span class="highlight-n">response</span> <span class="highlight-o">=</span> <span class="highlight-n">urllib2</span><span class="highlight-o">.</span><span class="highlight-n">urlopen</span><span class="highlight-p">(</span><span class="highlight-n">url</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span><span class="highlight-n">code</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-n">getcode</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">content</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-n">read</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span><span class="highlight-k">print</span> <span class="highlight-s2">"状态码："</span><span class="highlight-p">,</span> <span class="highlight-n">code</span>
-<span class="highlight-ln">10</span><span class="highlight-k">print</span> <span class="highlight-s2">"网页内容"</span><span class="highlight-p">,</span> <span class="highlight-n">content</span>
+<pre><code class="language-python"># coding=utf-8
+import urllib2
+
+url = "https://www.baidu.com"
+response = urllib2.urlopen(url)
+code = response.getcode()
+content = response.read()
+
+print "状态码：", code
+print "网页内容", content
 </code></pre>
 <p>还可以添加请求头，模仿其他浏览器访问</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">urllib2</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-s2">"https://www.baidu.com"</span>
-<span class="highlight-ln"> 5</span><span class="highlight-n">request</span> <span class="highlight-o">=</span> <span class="highlight-n">urllib2</span><span class="highlight-o">.</span><span class="highlight-n">Request</span><span class="highlight-p">(</span><span class="highlight-n">url</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span><span class="highlight-c1"># 模仿火狐浏览器</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-n">add_header</span><span class="highlight-p">(</span><span class="highlight-s2">"user-agent"</span><span class="highlight-p">,</span> <span class="highlight-s2">"Mozilla/5.0"</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">response</span> <span class="highlight-o">=</span> <span class="highlight-n">urllib2</span><span class="highlight-o">.</span><span class="highlight-n">urlopen</span><span class="highlight-p">(</span><span class="highlight-n">request</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">code</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-n">getcode</span><span class="highlight-p">()</span>
-<span class="highlight-ln">10</span><span class="highlight-n">content</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-n">read</span><span class="highlight-p">()</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span><span class="highlight-k">print</span> <span class="highlight-s2">"状态码："</span><span class="highlight-p">,</span> <span class="highlight-n">code</span>
-<span class="highlight-ln">13</span><span class="highlight-k">print</span> <span class="highlight-s2">"网页内容"</span><span class="highlight-p">,</span> <span class="highlight-n">content</span>
+<pre><code class="language-python"># coding=utf-8
+import urllib2
+
+url = "https://www.baidu.com"
+request = urllib2.Request(url)
+# 模仿火狐浏览器
+request.add_header("user-agent", "Mozilla/5.0")
+response = urllib2.urlopen(request)
+code = response.getcode()
+content = response.read()
+
+print "状态码：", code
+print "网页内容", content
 </code></pre>
 <p>输出信息为：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>状态码： 200
-<span class="highlight-ln"> 2</span>网页内容 &lt;html&gt;
-<span class="highlight-ln"> 3</span>&lt;head&gt;
-<span class="highlight-ln"> 4</span>	&lt;script&gt;
-<span class="highlight-ln"> 5</span>		location.replace(location.href.replace("https://","http://"));
-<span class="highlight-ln"> 6</span>	&lt;/script&gt;
-<span class="highlight-ln"> 7</span>&lt;/head&gt;
-<span class="highlight-ln"> 8</span>&lt;body&gt;
-<span class="highlight-ln"> 9</span>	&lt;noscript&gt;&lt;meta http-equiv="refresh" content="0;url=http://www.baidu.com/"&gt;&lt;/noscript&gt;
-<span class="highlight-ln">10</span>&lt;/body&gt;
-<span class="highlight-ln">11</span>&lt;/html&gt;
+<pre><code>状态码： 200
+网页内容 &lt;html&gt;
+&lt;head&gt;
+	&lt;script&gt;
+		location.replace(location.href.replace("https://","http://"));
+	&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;noscript&gt;&lt;meta http-equiv="refresh" content="0;url=http://www.baidu.com/"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
-<h2 id="网页解析器">网页解析器</h2>
+<h2 id="toc_h2_5">网页解析器</h2>
 <p>在网页下载器中下载的众多字符串中，我们要提前我们需要的数据，如新的要爬取的URL、我们需要的网页数据。通过这个网页解析器就可以解析这些数据了。获取新的URL可以添加到URL管理器中，获取有用的数据就将它保存。<br>
 <img src="https://s1.ax1x.com/2020/04/02/GGfcfx.png" alt="这里写图片描述"></p>
 <center>*图像来自慕课网课程</center>
 <p>网页解析器的代码片段：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">bs4</span> <span class="highlight-kn">import</span> <span class="highlight-n">BeautifulSoup</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">html_doc</span> <span class="highlight-o">=</span> <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse's story&lt;/title&gt;&lt;/head&gt;
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">&lt;body&gt;
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">&lt;p class="title"&gt;&lt;b&gt;The Dormouse's story&lt;/b&gt;&lt;/p&gt;
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">"""</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span><span class="highlight-n">soup</span> <span class="highlight-o">=</span> <span class="highlight-n">BeautifulSoup</span><span class="highlight-p">(</span><span class="highlight-n">html_doc</span><span class="highlight-p">,</span> <span class="highlight-s1">'html.parser'</span><span class="highlight-p">,</span> <span class="highlight-n">from_encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span><span class="highlight-c1"># 寻找属性class为title的p标签</span>
-<span class="highlight-ln">12</span><span class="highlight-n">title_all</span> <span class="highlight-o">=</span> <span class="highlight-n">soup</span><span class="highlight-o">.</span><span class="highlight-n">find</span><span class="highlight-p">(</span><span class="highlight-s1">'p'</span><span class="highlight-p">,</span> <span class="highlight-n">class_</span><span class="highlight-o">=</span><span class="highlight-s2">"title"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span><span class="highlight-k">print</span> <span class="highlight-n">title_all</span>
-<span class="highlight-ln">14</span><span class="highlight-c1"># 获取该标签对应的内容</span>
-<span class="highlight-ln">15</span><span class="highlight-n">title</span> <span class="highlight-o">=</span> <span class="highlight-n">title_all</span><span class="highlight-o">.</span><span class="highlight-n">get_text</span><span class="highlight-p">()</span>
-<span class="highlight-ln">16</span><span class="highlight-k">print</span> <span class="highlight-n">title</span>
+<pre><code class="language-python"># coding=utf-8
+from bs4 import BeautifulSoup
+
+html_doc = """
+&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse's story&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;p class="title"&gt;&lt;b&gt;The Dormouse's story&lt;/b&gt;&lt;/p&gt;
+"""
+
+soup = BeautifulSoup(html_doc, 'html.parser', from_encoding='utf-8')
+# 寻找属性class为title的p标签
+title_all = soup.find('p', class_="title")
+print title_all
+# 获取该标签对应的内容
+title = title_all.get_text()
+print title
 </code></pre>
 <p>输出信息如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>&lt;p class="title"&gt;&lt;b&gt;The Dormouse's story&lt;/b&gt;&lt;/p&gt;
-<span class="highlight-ln">2</span>The Dormouse's story
+<pre><code>&lt;p class="title"&gt;&lt;b&gt;The Dormouse's story&lt;/b&gt;&lt;/p&gt;
+The Dormouse's story
 </code></pre>
-<h1 id="爬虫程序">爬虫程序</h1>
+<h1 id="toc_h1_6">爬虫程序</h1>
 <p>这个程序是爬取CSDN博客的文章，并爬取相关的文章。比如我们的爬虫入口是一篇<a href="https://blog.csdn.net/qq_33200967/article/details/70186759" target="_blank">《把项目上传到码云》</a>的文章，在每章文章的最后都有相关的文章推荐，这些推荐的文章的URL就是我们补充的URL来源。如：<br>
 <img src="https://s1.ax1x.com/2020/04/02/GGW5iq.png" alt="这里写图片描述"></p>
 <p>然后观察整个文章的网页源码，可以得到文章的标题的代码片段如下，关键定位信息是<code>class="csdn_top"</code>：</p>
-<pre><code class="language-html highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-p">&lt;</span><span class="highlight-nt">article</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">2</span>    <span class="highlight-p">&lt;</span><span class="highlight-nt">h1</span> <span class="highlight-na">class</span><span class="highlight-o">=</span><span class="highlight-s">"csdn_top"</span><span class="highlight-p">&gt;</span>把项目上传到码云<span class="highlight-p">&lt;/</span><span class="highlight-nt">h1</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">3</span>    <span class="highlight-p">&lt;</span><span class="highlight-nt">div</span> <span class="highlight-na">class</span><span class="highlight-o">=</span><span class="highlight-s">"article_bar clearfix"</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">4</span>        <span class="highlight-p">&lt;</span><span class="highlight-nt">div</span> <span class="highlight-na">class</span><span class="highlight-o">=</span><span class="highlight-s">"artical_tag"</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">5</span>            <span class="highlight-p">&lt;</span><span class="highlight-nt">span</span> <span class="highlight-na">class</span><span class="highlight-o">=</span><span class="highlight-s">"original"</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">6</span>            原创                <span class="highlight-p">&lt;/</span><span class="highlight-nt">span</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">7</span>            <span class="highlight-p">&lt;</span><span class="highlight-nt">span</span> <span class="highlight-na">class</span><span class="highlight-o">=</span><span class="highlight-s">"time"</span><span class="highlight-p">&gt;</span>2017年04月15日 20:39:02<span class="highlight-p">&lt;/</span><span class="highlight-nt">span</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">8</span>        <span class="highlight-p">&lt;/</span><span class="highlight-nt">div</span><span class="highlight-p">&gt;</span>
+<pre><code class="language-html">&lt;article&gt;
+    &lt;h1 class="csdn_top"&gt;把项目上传到码云&lt;/h1&gt;
+    &lt;div class="article_bar clearfix"&gt;
+        &lt;div class="artical_tag"&gt;
+            &lt;span class="original"&gt;
+            原创                &lt;/span&gt;
+            &lt;span class="time"&gt;2017年04月15日 20:39:02&lt;/span&gt;
+        &lt;/div&gt;
 </code></pre>
 <p>文章内容的代码片段如下，关键定位信息是<code>class="article_content csdn-tracking-statistics tracking-click"</code>：</p>
-<pre><code class="language-html highlight-chroma"><span class="highlight-ln">1</span> <span class="highlight-p">&lt;</span><span class="highlight-nt">div</span> <span class="highlight-na">id</span><span class="highlight-o">=</span><span class="highlight-s">"article_content"</span> <span class="highlight-na">class</span><span class="highlight-o">=</span><span class="highlight-s">"article_content csdn-tracking-statistics tracking-click"</span> <span class="highlight-na">data-mod</span><span class="highlight-o">=</span><span class="highlight-s">"popu_519"</span> <span class="highlight-na">data-dsm</span><span class="highlight-o">=</span><span class="highlight-s">"post"</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">2</span>                            <span class="highlight-p">&lt;</span><span class="highlight-nt">div</span> <span class="highlight-na">class</span><span class="highlight-o">=</span><span class="highlight-s">"markdown_views"</span><span class="highlight-p">&gt;</span>
-<span class="highlight-ln">3</span>                        <span class="highlight-p">&lt;</span><span class="highlight-nt">p</span><span class="highlight-p">&gt;</span>一、为什么要使用码云而不使用GitHub？会有很多朋友这样问，原因有以下几条： <span class="highlight-p">&lt;</span><span class="highlight-nt">br</span><span class="highlight-p">&gt;</span>
+<pre><code class="language-html"> &lt;div id="article_content" class="article_content csdn-tracking-statistics tracking-click" data-mod="popu_519" data-dsm="post"&gt;
+                            &lt;div class="markdown_views"&gt;
+                        &lt;p&gt;一、为什么要使用码云而不使用GitHub？会有很多朋友这样问，原因有以下几条： &lt;br&gt;
 </code></pre>
 <p>推荐文章的代码片段如下，关键定位信息是<code>strategy="BlogCommendFromBaidu_0"</code>：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>      &lt;div class="recommend_list clearfix" id="rasss"&gt;
-<span class="highlight-ln">2</span>                                          &lt;dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post"&gt;
-<span class="highlight-ln">3</span>                &lt;a href="https://blog.csdn.net/Mastery_Nihility/article/details/53020481"  target="_blank" strategy="BlogCommendFromBaidu_0"&gt;
-<span class="highlight-ln">4</span>                    &lt;dd&gt;
-<span class="highlight-ln">5</span>                        &lt;h2&gt;上传项目到开源中国码云&lt;/h2&gt;
-<span class="highlight-ln">6</span>                        &lt;div class="summary"&gt;
-<span class="highlight-ln">7</span>                            上传项目到开源中国码云 
-<span class="highlight-ln">8</span>                        &lt;/div&gt;
+<pre><code>      &lt;div class="recommend_list clearfix" id="rasss"&gt;
+                                          &lt;dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post"&gt;
+                &lt;a href="https://blog.csdn.net/Mastery_Nihility/article/details/53020481"  target="_blank" strategy="BlogCommendFromBaidu_0"&gt;
+                    &lt;dd&gt;
+                        &lt;h2&gt;上传项目到开源中国码云&lt;/h2&gt;
+                        &lt;div class="summary"&gt;
+                            上传项目到开源中国码云 
+                        &lt;/div&gt;
 </code></pre>
 <p>有了这些定位，就可以开始爬取数据了，我们开始吧。</p>
-<h2 id="调度器">调度器</h2>
+<h2 id="toc_h2_7">调度器</h2>
 <p>创建一个<code>spider_mamin.py</code>文件来编写调度器的代码，这个就是调度中心，在这里控制整个爬虫程序：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">html_downloader</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">html_outputer</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">html_parser</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">url_manager</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span><span class="highlight-k">class</span> <span class="highlight-nc">SpiderMain</span><span class="highlight-p">(</span><span class="highlight-nb">object</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 调度程序</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">10</span>        <span class="highlight-c1"># 获取URL管理器</span>
-<span class="highlight-ln">11</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">urls</span> <span class="highlight-o">=</span> <span class="highlight-n">url_manager</span><span class="highlight-o">.</span><span class="highlight-n">UrlManager</span><span class="highlight-p">()</span>
-<span class="highlight-ln">12</span>        <span class="highlight-c1"># 获取网页下载器</span>
-<span class="highlight-ln">13</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">downloader</span> <span class="highlight-o">=</span> <span class="highlight-n">html_downloader</span><span class="highlight-o">.</span><span class="highlight-n">HtmlDownloader</span><span class="highlight-p">()</span>
-<span class="highlight-ln">14</span>        <span class="highlight-c1"># 获取网页解析器</span>
-<span class="highlight-ln">15</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">parser</span> <span class="highlight-o">=</span> <span class="highlight-n">html_parser</span><span class="highlight-o">.</span><span class="highlight-n">HtmlParser</span><span class="highlight-p">()</span>
-<span class="highlight-ln">16</span>        <span class="highlight-c1"># 获取数据输出器</span>
-<span class="highlight-ln">17</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">output</span> <span class="highlight-o">=</span> <span class="highlight-n">html_outputer</span><span class="highlight-o">.</span><span class="highlight-n">HtmlOutput</span><span class="highlight-p">()</span>
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>    <span class="highlight-k">def</span> <span class="highlight-nf">craw</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">root_url</span><span class="highlight-p">,</span> <span class="highlight-n">max_count</span><span class="highlight-p">):</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">count</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">21</span>        <span class="highlight-c1"># 添加爬虫入口的跟路径</span>
-<span class="highlight-ln">22</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">urls</span><span class="highlight-o">.</span><span class="highlight-n">add_new_url</span><span class="highlight-p">(</span><span class="highlight-n">root_url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>        <span class="highlight-c1"># 创建一个循环,如果URL管理器中还有新的URL就一直循环</span>
-<span class="highlight-ln">24</span>        <span class="highlight-k">while</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">urls</span><span class="highlight-o">.</span><span class="highlight-n">has_new_url</span><span class="highlight-p">():</span>
-<span class="highlight-ln">25</span>            <span class="highlight-k">try</span><span class="highlight-p">:</span>
-<span class="highlight-ln">26</span>                <span class="highlight-c1"># 从URL管理器中获取新的URL</span>
-<span class="highlight-ln">27</span>                <span class="highlight-n">new_url</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">urls</span><span class="highlight-o">.</span><span class="highlight-n">get_new_url</span><span class="highlight-p">()</span>
-<span class="highlight-ln">28</span>                <span class="highlight-k">print</span> <span class="highlight-s1">'craw </span><span class="highlight-si">%d</span><span class="highlight-s1"> : </span><span class="highlight-si">%s</span><span class="highlight-s1"> '</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">count</span><span class="highlight-p">,</span> <span class="highlight-n">new_url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">29</span>                <span class="highlight-c1"># 下载网页</span>
-<span class="highlight-ln">30</span>                <span class="highlight-n">html_cont</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">downloader</span><span class="highlight-o">.</span><span class="highlight-n">downloader</span><span class="highlight-p">(</span><span class="highlight-n">new_url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">31</span>                <span class="highlight-c1"># 解析网页数据</span>
-<span class="highlight-ln">32</span>                <span class="highlight-n">new_urls</span><span class="highlight-p">,</span> <span class="highlight-n">new_data</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">parser</span><span class="highlight-o">.</span><span class="highlight-n">parser</span><span class="highlight-p">(</span><span class="highlight-n">new_url</span><span class="highlight-p">,</span> <span class="highlight-n">html_cont</span><span class="highlight-p">)</span>
-<span class="highlight-ln">33</span>                <span class="highlight-c1"># 添加新的URL</span>
-<span class="highlight-ln">34</span>                <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">urls</span><span class="highlight-o">.</span><span class="highlight-n">add_new_urls</span><span class="highlight-p">(</span><span class="highlight-n">new_urls</span><span class="highlight-p">)</span>
-<span class="highlight-ln">35</span>                <span class="highlight-c1"># 添加新的数据</span>
-<span class="highlight-ln">36</span>                <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">output</span><span class="highlight-o">.</span><span class="highlight-n">collect_data</span><span class="highlight-p">(</span><span class="highlight-n">new_data</span><span class="highlight-p">)</span>
-<span class="highlight-ln">37</span>                <span class="highlight-c1"># 满足爬取数量及中断</span>
-<span class="highlight-ln">38</span>                <span class="highlight-k">if</span> <span class="highlight-n">count</span> <span class="highlight-o">==</span> <span class="highlight-n">max_count</span><span class="highlight-p">:</span>
-<span class="highlight-ln">39</span>                    <span class="highlight-k">break</span>
-<span class="highlight-ln">40</span>                <span class="highlight-n">count</span> <span class="highlight-o">=</span> <span class="highlight-n">count</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">41</span>            <span class="highlight-k">except</span> <span class="highlight-ne">Exception</span><span class="highlight-p">,</span> <span class="highlight-n">e</span><span class="highlight-p">:</span>
-<span class="highlight-ln">42</span>                <span class="highlight-k">print</span> <span class="highlight-s1">'爬取失败：'</span><span class="highlight-p">,</span> <span class="highlight-n">e</span>
-<span class="highlight-ln">43</span>        <span class="highlight-c1"># 输出数据</span>
-<span class="highlight-ln">44</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">output</span><span class="highlight-o">.</span><span class="highlight-n">output_html</span><span class="highlight-p">()</span>
-<span class="highlight-ln">45</span>
-<span class="highlight-ln">46</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">47</span>    <span class="highlight-c1"># 爬虫的根URL</span>
-<span class="highlight-ln">48</span>    <span class="highlight-n">root_url</span> <span class="highlight-o">=</span> <span class="highlight-s2">"https://blog.csdn.net/qq_33200967/article/details/70186759"</span>
-<span class="highlight-ln">49</span>    <span class="highlight-c1"># 爬取的数量</span>
-<span class="highlight-ln">50</span>    <span class="highlight-n">max_count</span> <span class="highlight-o">=</span> <span class="highlight-mi">100</span>
-<span class="highlight-ln">51</span>    <span class="highlight-n">obj_spider</span> <span class="highlight-o">=</span> <span class="highlight-n">SpiderMain</span><span class="highlight-p">()</span>
-<span class="highlight-ln">52</span>    <span class="highlight-c1"># 启动调度器</span>
-<span class="highlight-ln">53</span>    <span class="highlight-n">obj_spider</span><span class="highlight-o">.</span><span class="highlight-n">craw</span><span class="highlight-p">(</span><span class="highlight-n">root_url</span><span class="highlight-p">,</span> <span class="highlight-n">max_count</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+import html_downloader
+import html_outputer
+import html_parser
+import url_manager
+
+class SpiderMain(object):
+    # 调度程序
+    def __init__(self):
+        # 获取URL管理器
+        self.urls = url_manager.UrlManager()
+        # 获取网页下载器
+        self.downloader = html_downloader.HtmlDownloader()
+        # 获取网页解析器
+        self.parser = html_parser.HtmlParser()
+        # 获取数据输出器
+        self.output = html_outputer.HtmlOutput()
+
+    def craw(self, root_url, max_count):
+        count = 1
+        # 添加爬虫入口的跟路径
+        self.urls.add_new_url(root_url)
+        # 创建一个循环,如果URL管理器中还有新的URL就一直循环
+        while self.urls.has_new_url():
+            try:
+                # 从URL管理器中获取新的URL
+                new_url = self.urls.get_new_url()
+                print 'craw %d : %s ' % (count, new_url)
+                # 下载网页
+                html_cont = self.downloader.downloader(new_url)
+                # 解析网页数据
+                new_urls, new_data = self.parser.parser(new_url, html_cont)
+                # 添加新的URL
+                self.urls.add_new_urls(new_urls)
+                # 添加新的数据
+                self.output.collect_data(new_data)
+                # 满足爬取数量及中断
+                if count == max_count:
+                    break
+                count = count + 1
+            except Exception, e:
+                print '爬取失败：', e
+        # 输出数据
+        self.output.output_html()
+
+if __name__ == '__main__':
+    # 爬虫的根URL
+    root_url = "https://blog.csdn.net/qq_33200967/article/details/70186759"
+    # 爬取的数量
+    max_count = 100
+    obj_spider = SpiderMain()
+    # 启动调度器
+    obj_spider.craw(root_url, max_count)
 </code></pre>
-<h2 id="URL管理器">URL管理器</h2>
+<h2 id="toc_h2_8">URL管理器</h2>
 <p>创建一个<code>url_manager.py</code>文件编写URL管理器的代码，添加新的URL和提供URL给网页下载器，由这个程序负责：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-k">class</span> <span class="highlight-nc">UrlManager</span><span class="highlight-p">(</span><span class="highlight-nb">object</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># url管理器</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">new_urls</span> <span class="highlight-o">=</span> <span class="highlight-nb">set</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">old_urls</span> <span class="highlight-o">=</span> <span class="highlight-nb">set</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-c1"># 向管理器中添加一个新的url</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">def</span> <span class="highlight-nf">add_new_url</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">url</span><span class="highlight-p">):</span>
-<span class="highlight-ln">11</span>        <span class="highlight-k">if</span> <span class="highlight-n">url</span> <span class="highlight-ow">is</span> <span class="highlight-bp">None</span><span class="highlight-p">:</span>
-<span class="highlight-ln">12</span>            <span class="highlight-k">return</span>
-<span class="highlight-ln">13</span>        <span class="highlight-c1"># 判断要添加的URL是否已存在新列表或者旧列表中</span>
-<span class="highlight-ln">14</span>        <span class="highlight-k">if</span> <span class="highlight-n">url</span> <span class="highlight-ow">not</span> <span class="highlight-ow">in</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">new_urls</span> <span class="highlight-ow">and</span> <span class="highlight-n">url</span> <span class="highlight-ow">not</span> <span class="highlight-ow">in</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">old_urls</span><span class="highlight-p">:</span>
-<span class="highlight-ln">15</span>            <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">new_urls</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-c1"># 向管理器中添加批量url</span>
-<span class="highlight-ln">18</span>    <span class="highlight-k">def</span> <span class="highlight-nf">add_new_urls</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">urls</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>        <span class="highlight-k">if</span> <span class="highlight-n">urls</span> <span class="highlight-ow">is</span> <span class="highlight-bp">None</span> <span class="highlight-ow">or</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">urls</span><span class="highlight-p">)</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">20</span>            <span class="highlight-k">return</span>
-<span class="highlight-ln">21</span>        <span class="highlight-k">for</span> <span class="highlight-n">url</span> <span class="highlight-ow">in</span> <span class="highlight-n">urls</span><span class="highlight-p">:</span>
-<span class="highlight-ln">22</span>            <span class="highlight-c1"># 添加新的URL</span>
-<span class="highlight-ln">23</span>            <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">add_new_url</span><span class="highlight-p">(</span><span class="highlight-n">url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">24</span>
-<span class="highlight-ln">25</span>    <span class="highlight-c1"># 判断管理器中是否有新的待爬取的url</span>
-<span class="highlight-ln">26</span>    <span class="highlight-k">def</span> <span class="highlight-nf">has_new_url</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">27</span>        <span class="highlight-k">return</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">new_urls</span><span class="highlight-p">)</span> <span class="highlight-o">!=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>    <span class="highlight-c1"># 从url中获取一个新的待爬取的url</span>
-<span class="highlight-ln">30</span>    <span class="highlight-k">def</span> <span class="highlight-nf">get_new_url</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">31</span>        <span class="highlight-c1"># 获取并移除最先添加的URL</span>
-<span class="highlight-ln">32</span>        <span class="highlight-n">new_url</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">new_urls</span><span class="highlight-o">.</span><span class="highlight-n">pop</span><span class="highlight-p">()</span>
-<span class="highlight-ln">33</span>        <span class="highlight-c1"># 把这个路径添加到已爬取的列表中</span>
-<span class="highlight-ln">34</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">old_urls</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">new_url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">35</span>        <span class="highlight-k">return</span> <span class="highlight-n">new_url</span>
+<pre><code class="language-python"># coding=utf-8
+
+class UrlManager(object):
+    # url管理器
+    def __init__(self):
+        self.new_urls = set()
+        self.old_urls = set()
+
+    # 向管理器中添加一个新的url
+    def add_new_url(self, url):
+        if url is None:
+            return
+        # 判断要添加的URL是否已存在新列表或者旧列表中
+        if url not in self.new_urls and url not in self.old_urls:
+            self.new_urls.add(url)
+
+    # 向管理器中添加批量url
+    def add_new_urls(self, urls):
+        if urls is None or len(urls) == 0:
+            return
+        for url in urls:
+            # 添加新的URL
+            self.add_new_url(url)
+
+    # 判断管理器中是否有新的待爬取的url
+    def has_new_url(self):
+        return len(self.new_urls) != 0
+
+    # 从url中获取一个新的待爬取的url
+    def get_new_url(self):
+        # 获取并移除最先添加的URL
+        new_url = self.new_urls.pop()
+        # 把这个路径添加到已爬取的列表中
+        self.old_urls.add(new_url)
+        return new_url
 </code></pre>
-<h2 id="网页下载器">网页下载器</h2>
+<h2 id="toc_h2_9">网页下载器</h2>
 <p>创建一个<code>html_downloader.py</code>文件来编写网页下载器的代码，下载网页的字符串数据，都是HTML的代码：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">urllib2</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-k">class</span> <span class="highlight-nc">HtmlDownloader</span><span class="highlight-p">(</span><span class="highlight-nb">object</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># html下载器</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-k">def</span> <span class="highlight-nf">downloader</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">url</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-c1"># 如果路径为空就返回空</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-k">if</span> <span class="highlight-n">url</span> <span class="highlight-ow">is</span> <span class="highlight-bp">None</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-k">return</span> <span class="highlight-bp">None</span>
-<span class="highlight-ln">10</span>        <span class="highlight-c1"># 打开网页数据</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">response</span> <span class="highlight-o">=</span> <span class="highlight-n">urllib2</span><span class="highlight-o">.</span><span class="highlight-n">urlopen</span><span class="highlight-p">(</span><span class="highlight-n">url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>        <span class="highlight-c1"># 判断是否访问成功，如果不成功就返回空</span>
-<span class="highlight-ln">13</span>        <span class="highlight-k">if</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-n">getcode</span><span class="highlight-p">()</span> <span class="highlight-o">!=</span> <span class="highlight-mi">200</span><span class="highlight-p">:</span>
-<span class="highlight-ln">14</span>            <span class="highlight-k">return</span> <span class="highlight-bp">None</span>
-<span class="highlight-ln">15</span>        <span class="highlight-c1"># 返回网页数据</span>
-<span class="highlight-ln">16</span>        <span class="highlight-k">return</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-n">read</span><span class="highlight-p">()</span>
+<pre><code class="language-python"># coding=utf-8
+import urllib2
+
+class HtmlDownloader(object):
+    # html下载器
+    def downloader(self, url):
+        # 如果路径为空就返回空
+        if url is None:
+            return None
+        # 打开网页数据
+        response = urllib2.urlopen(url)
+        # 判断是否访问成功，如果不成功就返回空
+        if response.getcode() != 200:
+            return None
+        # 返回网页数据
+        return response.read()
 </code></pre>
-<h2 id="网页解析器">网页解析器</h2>
+<h2 id="toc_h2_10">网页解析器</h2>
 <p>创建一个<code>html_parser.py</code>文件来编写网页解析器的代码，从网页下载器获取的HTML格式的字符串中解析想要的数据个URL：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">re</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">from</span> <span class="highlight-nn">bs4</span> <span class="highlight-kn">import</span> <span class="highlight-n">BeautifulSoup</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span><span class="highlight-k">class</span> <span class="highlight-nc">HtmlParser</span><span class="highlight-p">(</span><span class="highlight-nb">object</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-k">def</span> <span class="highlight-nf">parser</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">page_url</span><span class="highlight-p">,</span> <span class="highlight-n">html_cont</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">        # html解析器
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">        :param page_url: 网页的URL
-</span><span class="highlight-ln">10</span><span class="highlight-s2">        :param html_cont: 网页的字符串数据
-</span><span class="highlight-ln">11</span><span class="highlight-s2">        :return: 网页包含相关的URL和文章的内容
-</span><span class="highlight-ln">12</span><span class="highlight-s2">        """</span>
-<span class="highlight-ln">13</span>        <span class="highlight-c1"># 判断网页URL和网页内容是否为空</span>
-<span class="highlight-ln">14</span>        <span class="highlight-k">if</span> <span class="highlight-n">page_url</span> <span class="highlight-ow">is</span> <span class="highlight-bp">None</span> <span class="highlight-ow">or</span> <span class="highlight-n">html_cont</span> <span class="highlight-ow">is</span> <span class="highlight-bp">None</span><span class="highlight-p">:</span>
-<span class="highlight-ln">15</span>            <span class="highlight-k">return</span>
-<span class="highlight-ln">16</span>        <span class="highlight-c1"># 获取解析器</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">soup</span> <span class="highlight-o">=</span> <span class="highlight-n">BeautifulSoup</span><span class="highlight-p">(</span><span class="highlight-n">html_cont</span><span class="highlight-p">,</span> <span class="highlight-s1">'html.parser'</span><span class="highlight-p">,</span> <span class="highlight-n">from_encoding</span><span class="highlight-o">=</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>        <span class="highlight-c1"># 获取解析到的URL</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">new_urls</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">_get_new_urls</span><span class="highlight-p">(</span><span class="highlight-n">soup</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>        <span class="highlight-c1"># 获取解析到的文章数据</span>
-<span class="highlight-ln">21</span>        <span class="highlight-n">new_data</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">_get_new_data</span><span class="highlight-p">(</span><span class="highlight-n">page_url</span><span class="highlight-p">,</span> <span class="highlight-n">soup</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>        <span class="highlight-k">return</span> <span class="highlight-n">new_urls</span><span class="highlight-p">,</span> <span class="highlight-n">new_data</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    <span class="highlight-c1"># 解析相关文章的URL</span>
-<span class="highlight-ln">25</span>    <span class="highlight-k">def</span> <span class="highlight-nf">_get_new_urls</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">soup</span><span class="highlight-p">):</span>
-<span class="highlight-ln">26</span>        <span class="highlight-n">new_urls</span> <span class="highlight-o">=</span> <span class="highlight-nb">set</span><span class="highlight-p">()</span>
-<span class="highlight-ln">27</span>        <span class="highlight-c1"># 获取相关的文章URL,格式如下:</span>
-<span class="highlight-ln">28</span>        <span class="highlight-c1"># &lt;a href="https://blog.csdn.net/qq_18601953/article/details/78395878"</span>
-<span class="highlight-ln">29</span>        <span class="highlight-c1"># target="_blank" strategy="BlogCommendFromBaidu_7"&gt;</span>
-<span class="highlight-ln">30</span>        <span class="highlight-n">links</span> <span class="highlight-o">=</span> <span class="highlight-n">soup</span><span class="highlight-o">.</span><span class="highlight-n">find_all</span><span class="highlight-p">(</span><span class="highlight-s1">'a'</span><span class="highlight-p">,</span> <span class="highlight-n">strategy</span><span class="highlight-o">=</span><span class="highlight-n">re</span><span class="highlight-o">.</span><span class="highlight-n">compile</span><span class="highlight-p">(</span><span class="highlight-sa">r</span><span class="highlight-s2">"BlogCommendFromBaidu_\d+"</span><span class="highlight-p">))</span>
-<span class="highlight-ln">31</span>        <span class="highlight-c1"># 提取所有相关的URL</span>
-<span class="highlight-ln">32</span>        <span class="highlight-k">for</span> <span class="highlight-n">link</span> <span class="highlight-ow">in</span> <span class="highlight-n">links</span><span class="highlight-p">:</span>
-<span class="highlight-ln">33</span>            <span class="highlight-n">new_url</span> <span class="highlight-o">=</span> <span class="highlight-n">link</span><span class="highlight-p">[</span><span class="highlight-s1">'href'</span><span class="highlight-p">]</span>
-<span class="highlight-ln">34</span>            <span class="highlight-n">new_urls</span><span class="highlight-o">.</span><span class="highlight-n">add</span><span class="highlight-p">(</span><span class="highlight-n">new_url</span><span class="highlight-p">)</span>
-<span class="highlight-ln">35</span>        <span class="highlight-k">return</span> <span class="highlight-n">new_urls</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>    <span class="highlight-c1"># 解析数据</span>
-<span class="highlight-ln">38</span>    <span class="highlight-k">def</span> <span class="highlight-nf">_get_new_data</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">page_url</span><span class="highlight-p">,</span> <span class="highlight-n">soup</span><span class="highlight-p">):</span>
-<span class="highlight-ln">39</span>        <span class="highlight-n">res_data</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
-<span class="highlight-ln">40</span>        <span class="highlight-c1"># 获取URLurl</span>
-<span class="highlight-ln">41</span>        <span class="highlight-n">res_data</span><span class="highlight-p">[</span><span class="highlight-s1">'url'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">page_url</span>
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>        <span class="highlight-c1"># 获取标题&lt;h1 class="csdn_top"&gt;把项目上传到码云&lt;/h1&gt;</span>
-<span class="highlight-ln">44</span>        <span class="highlight-n">essay_title</span> <span class="highlight-o">=</span> <span class="highlight-n">soup</span><span class="highlight-o">.</span><span class="highlight-n">find</span><span class="highlight-p">(</span><span class="highlight-s1">'h1'</span><span class="highlight-p">,</span> <span class="highlight-n">class_</span><span class="highlight-o">=</span><span class="highlight-s2">"csdn_top"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">45</span>        <span class="highlight-n">res_data</span><span class="highlight-p">[</span><span class="highlight-s1">'title'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">essay_title</span><span class="highlight-o">.</span><span class="highlight-n">get_text</span><span class="highlight-p">()</span>
-<span class="highlight-ln">46</span>
-<span class="highlight-ln">47</span>        <span class="highlight-c1"># 内容标签的格式如下:</span>
-<span class="highlight-ln">48</span>        <span class="highlight-c1"># &lt;div id="article_content" class="article_content csdn-tracking-statistics tracking-click"</span>
-<span class="highlight-ln">49</span>        <span class="highlight-c1"># data-mod="popu_519" data-dsm="post"&gt;</span>
-<span class="highlight-ln">50</span>        <span class="highlight-n">essay_content</span> <span class="highlight-o">=</span> <span class="highlight-n">soup</span><span class="highlight-o">.</span><span class="highlight-n">find</span><span class="highlight-p">(</span><span class="highlight-s1">'div'</span><span class="highlight-p">,</span> <span class="highlight-n">class_</span><span class="highlight-o">=</span><span class="highlight-s2">"article_content csdn-tracking-statistics tracking-click"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">51</span>        <span class="highlight-n">res_data</span><span class="highlight-p">[</span><span class="highlight-s1">'content'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">essay_content</span><span class="highlight-o">.</span><span class="highlight-n">get_text</span><span class="highlight-p">()</span>
-<span class="highlight-ln">52</span>        <span class="highlight-k">return</span> <span class="highlight-n">res_data</span>
+<pre><code class="language-python"># coding=utf-8
+import re
+from bs4 import BeautifulSoup
+
+class HtmlParser(object):
+    def parser(self, page_url, html_cont):
+        """
+        # html解析器
+        :param page_url: 网页的URL
+        :param html_cont: 网页的字符串数据
+        :return: 网页包含相关的URL和文章的内容
+        """
+        # 判断网页URL和网页内容是否为空
+        if page_url is None or html_cont is None:
+            return
+        # 获取解析器
+        soup = BeautifulSoup(html_cont, 'html.parser', from_encoding='utf-8')
+        # 获取解析到的URL
+        new_urls = self._get_new_urls(soup)
+        # 获取解析到的文章数据
+        new_data = self._get_new_data(page_url, soup)
+        return new_urls, new_data
+
+    # 解析相关文章的URL
+    def _get_new_urls(self, soup):
+        new_urls = set()
+        # 获取相关的文章URL,格式如下:
+        # &lt;a href="https://blog.csdn.net/qq_18601953/article/details/78395878"
+        # target="_blank" strategy="BlogCommendFromBaidu_7"&gt;
+        links = soup.find_all('a', strategy=re.compile(r"BlogCommendFromBaidu_\d+"))
+        # 提取所有相关的URL
+        for link in links:
+            new_url = link['href']
+            new_urls.add(new_url)
+        return new_urls
+
+    # 解析数据
+    def _get_new_data(self, page_url, soup):
+        res_data = {}
+        # 获取URLurl
+        res_data['url'] = page_url
+
+        # 获取标题&lt;h1 class="csdn_top"&gt;把项目上传到码云&lt;/h1&gt;
+        essay_title = soup.find('h1', class_="csdn_top")
+        res_data['title'] = essay_title.get_text()
+
+        # 内容标签的格式如下:
+        # &lt;div id="article_content" class="article_content csdn-tracking-statistics tracking-click"
+        # data-mod="popu_519" data-dsm="post"&gt;
+        essay_content = soup.find('div', class_="article_content csdn-tracking-statistics tracking-click")
+        res_data['content'] = essay_content.get_text()
+        return res_data
 </code></pre>
-<h2 id="数据存储器">数据存储器</h2>
+<h2 id="toc_h2_11">数据存储器</h2>
 <p>创建一个<code>html_outputer.py</code>文件来编写存储数据的代码，当爬取完成数据之后，通过这个程序永久保存爬取的数据：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-k">class</span> <span class="highlight-nc">HtmlOutput</span><span class="highlight-p">(</span><span class="highlight-nb">object</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1">#html输出器</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">datas</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1">#收集数据</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">def</span> <span class="highlight-nf">collect_data</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">data</span><span class="highlight-p">):</span>
-<span class="highlight-ln">10</span>        <span class="highlight-k">if</span> <span class="highlight-n">data</span> <span class="highlight-ow">is</span> <span class="highlight-bp">None</span><span class="highlight-p">:</span>
-<span class="highlight-ln">11</span>            <span class="highlight-k">return</span>
-<span class="highlight-ln">12</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">datas</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-c1">#将收集好的数据写出到html文件中</span>
-<span class="highlight-ln">15</span>    <span class="highlight-k">def</span> <span class="highlight-nf">output_html</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">16</span>        <span class="highlight-n">fout</span> <span class="highlight-o">=</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-s1">'output.html'</span><span class="highlight-p">,</span><span class="highlight-s1">'w'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>        <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;html&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;body&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;table&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>        <span class="highlight-k">if</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">datas</span><span class="highlight-p">)</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">22</span>            <span class="highlight-k">print</span> <span class="highlight-s2">"数据为空！"</span>
-<span class="highlight-ln">23</span>        <span class="highlight-c1">#ascii</span>
-<span class="highlight-ln">24</span>        <span class="highlight-k">for</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">datas</span><span class="highlight-p">:</span>
-<span class="highlight-ln">25</span>            <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;tr&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">26</span>            <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;td&gt;</span><span class="highlight-si">%s</span><span class="highlight-s2">&lt;/td&gt;"</span> <span class="highlight-o">%</span> <span class="highlight-n">data</span><span class="highlight-p">[</span><span class="highlight-s1">'url'</span><span class="highlight-p">])</span>
-<span class="highlight-ln">27</span>            <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;td&gt;</span><span class="highlight-si">%s</span><span class="highlight-s2">&lt;/td&gt;"</span> <span class="highlight-o">%</span> <span class="highlight-n">data</span><span class="highlight-p">[</span><span class="highlight-s1">'title'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">encode</span><span class="highlight-p">(</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">))</span>
-<span class="highlight-ln">28</span>            <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;td&gt;</span><span class="highlight-si">%s</span><span class="highlight-s2">&lt;/td&gt;"</span> <span class="highlight-o">%</span> <span class="highlight-n">data</span><span class="highlight-p">[</span><span class="highlight-s1">'content'</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">encode</span><span class="highlight-p">(</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">))</span>
-<span class="highlight-ln">29</span>            <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;/tr&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>        <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;/table&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>        <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;/body&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">33</span>        <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"&lt;/html&gt;"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">34</span>
-<span class="highlight-ln">35</span>        <span class="highlight-n">fout</span><span class="highlight-o">.</span><span class="highlight-n">close</span><span class="highlight-p">()</span>
+<pre><code class="language-python"># coding=utf-8
+
+class HtmlOutput(object):
+    #html输出器
+    def __init__(self):
+        self.datas = []
+
+    #收集数据
+    def collect_data(self, data):
+        if data is None:
+            return
+        self.datas.append(data)
+
+    #将收集好的数据写出到html文件中
+    def output_html(self):
+        fout = open('output.html','w')
+
+        fout.write("&lt;html&gt;")
+        fout.write("&lt;body&gt;")
+        fout.write("&lt;table&gt;")
+        if len(self.datas) == 0:
+            print "数据为空！"
+        #ascii
+        for data in self.datas:
+            fout.write("&lt;tr&gt;")
+            fout.write("&lt;td&gt;%s&lt;/td&gt;" % data['url'])
+            fout.write("&lt;td&gt;%s&lt;/td&gt;" % data['title'].encode('utf-8'))
+            fout.write("&lt;td&gt;%s&lt;/td&gt;" % data['content'].encode('utf-8'))
+            fout.write("&lt;/tr&gt;")
+
+        fout.write("&lt;/table&gt;")
+        fout.write("&lt;/body&gt;")
+        fout.write("&lt;/html&gt;")
+
+        fout.close()
 </code></pre>
-<h2 id="运行代码">运行代码</h2>
+<h2 id="toc_h2_12">运行代码</h2>
 <p>运行调度器代码<code>spider_mamin.py</code>，可以看到爬取过程输出的日志信息，如果出现失败是正常的：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>craw 1 : https://blog.csdn.net/qq_33200967/article/details/70186759 
-<span class="highlight-ln">2</span>craw 2 : https://blog.csdn.net/qq_18601953/article/details/78395878 
-<span class="highlight-ln">3</span>craw 3 : https://blog.csdn.net/wust_lh/article/details/68068176 
+<pre><code class="language-text">craw 1 : https://blog.csdn.net/qq_33200967/article/details/70186759 
+craw 2 : https://blog.csdn.net/qq_18601953/article/details/78395878 
+craw 3 : https://blog.csdn.net/wust_lh/article/details/68068176 
 </code></pre>
 <p>爬取完成之后，所有的数据都会以HTML格式存储在<code>output.html</code>中。可以在浏览器中打开，如：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GMKpSx.png" alt="这里写图片描述"><br>
 为了读者方便使用代码，我已将这些代码打包了，可以在<a href="https://download.csdn.net/download/qq_33200967/10339299" target="_blank">这里下载</a>完整代码。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_13">参考资料</h1>
 <ol>
 <li><a href="http://www.imooc.com/learn/563" target="_blank">http://www.imooc.com/learn/563</a></li>
 </ol>
@@ -575,7 +575,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -584,7 +584,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -592,11 +592,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466395849",
@@ -614,4 +614,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 56ms, 2020/04/07 11:38:49 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 27ms, 2020/04/07 14:57:08 -->

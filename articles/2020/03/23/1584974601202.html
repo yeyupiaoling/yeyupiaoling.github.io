@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》五——循环神经网络 - 夜雨飘零</title><meta name="description" content="前言 除了卷积神经网络，深度学习中还有循环神经网络也是很常用的，循环神经网络更常用于自然语言处理任务上。我们在这一章中，我们就来学习如何使用PaddlePaddle来实现一个循环神经网络，并使用该网络完成情感分析的模型训练。 训练模型 创建一个text_classification.py的Python文件。首先导入Python库，fluid和numpy库我们在前几章都有使用过，这里就不重复了。这里主要结束是imdb库，这个是一个数据集的库，这个是数据集是一个英文的电影评论数据集，每一条数据都会有两个分类，分别是正面和负面。 import paddle import paddle.dataset.imdb as imdb import paddle.fluid as fluid import numpy as np 循环神经网络发展到现在，已经有不少性能很好的升级版的循环神经网络，比如长短期记忆网络等。一下的代码片段是一个比较简单的循环神经网络，首先是经过一个fluid.layers.embedding()，这个是接口是接受数据的ID输入，因为输入数据时一个句子，但是在训练的时候我们是...."/><meta property="og:description" content="前言 除了卷积神经网络，深度学习中还有循环神经网络也是很常用的，循环神经网络更常用于自然语言处理任务上。我们在这一章中，我们就来学习如何使用PaddlePaddle来实现一个循环神经网络，并使用该网络完成情感分析的模型训练。 训练模型 创建一个text_classification.py的Python文件。首先导入Python库，fluid和numpy库我们在前几章都有使用过，这里就不重复了。这里主要结束是imdb库，这个是一个数据集的库，这个是数据集是一个英文的电影评论数据集，每一条数据都会有两个分类，分别是正面和负面。 import paddle import paddle.dataset.imdb as imdb import paddle.fluid as fluid import numpy as np 循环神经网络发展到现在，已经有不少性能很好的升级版的循环神经网络，比如长短期记忆网络等。一下的代码片段是一个比较简单的循环神经网络，首先是经过一个fluid.layers.embedding()，这个是接口是接受数据的ID输入，因为输入数据时一个句子，但是在训练的时候我们是...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》五——循环神经网络 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974601202.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》五——循环神经网络 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974601202.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》五——循环神经网络 - 夜雨飘零</title><meta name="description" content="前言 除了卷积神经网络，深度学习中还有循环神经网络也是很常用的，循环神经网络更常用于自然语言处理任务上。我们在这一章中，我们就来学习如何使用PaddlePaddle来实现一个循环神经网络，并使用该网络完成情感分析的模型训练。 训练模型 创建一个text_classification.py的Python文件。首先导入Python库，fluid和numpy库我们在前几章都有使用过，这里就不重复了。这里主要结束是imdb库，这个是一个数据集的库，这个是数据集是一个英文的电影评论数据集，每一条数据都会有两个分类，分别是正面和负面。 import paddle import paddle.dataset.imdb as imdb import paddle.fluid as fluid import numpy as np 循环神经网络发展到现在，已经有不少性能很好的升级版的循环神经网络，比如长短期记忆网络等。一下的代码片段是一个比较简单的循环神经网络，首先是经过一个fluid.layers.embedding()，这个是接口是接受数据的ID输入，因为输入数据时一个句子，但是在训练的时候我们是...."/><meta property="og:description" content="前言 除了卷积神经网络，深度学习中还有循环神经网络也是很常用的，循环神经网络更常用于自然语言处理任务上。我们在这一章中，我们就来学习如何使用PaddlePaddle来实现一个循环神经网络，并使用该网络完成情感分析的模型训练。 训练模型 创建一个text_classification.py的Python文件。首先导入Python库，fluid和numpy库我们在前几章都有使用过，这里就不重复了。这里主要结束是imdb库，这个是一个数据集的库，这个是数据集是一个英文的电影评论数据集，每一条数据都会有两个分类，分别是正面和负面。 import paddle import paddle.dataset.imdb as imdb import paddle.fluid as fluid import numpy as np 循环神经网络发展到现在，已经有不少性能很好的升级版的循环神经网络，比如长短期记忆网络等。一下的代码片段是一个比较简单的循环神经网络，首先是经过一个fluid.layers.embedding()，这个是接口是接受数据的ID输入，因为输入数据时一个句子，但是在训练的时候我们是...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》五——循环神经网络 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974601202.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》五——循环神经网络 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974601202.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《PaddlePaddle从入门到炼丹》四——卷积神经网络" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974540988.html">
             <link rel="next" title="《PaddlePaddle从入门到炼丹》六——生成对抗网络" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974661687.html">
     <!-- 百度统计 -->
@@ -78,16 +78,16 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#训练模型">训练模型</a>
+            <a href="#toc_h1_1">训练模型</a>
         </li>
         <li class="toc__h1">
-            <a href="#预测数据">预测数据</a>
+            <a href="#toc_h1_2">预测数据</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_3">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -135,197 +135,197 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20180828.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>除了卷积神经网络，深度学习中还有循环神经网络也是很常用的，循环神经网络更常用于自然语言处理任务上。我们在这一章中，我们就来学习如何使用PaddlePaddle来实现一个循环神经网络，并使用该网络完成情感分析的模型训练。</p>
-<h1 id="训练模型">训练模型</h1>
+<h1 id="toc_h1_1">训练模型</h1>
 <p>创建一个<code>text_classification.py</code>的Python文件。首先导入Python库，fluid和numpy库我们在前几章都有使用过，这里就不重复了。这里主要结束是imdb库，这个是一个数据集的库，这个是数据集是一个英文的电影评论数据集，每一条数据都会有两个分类，分别是正面和负面。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.dataset.imdb</span> <span class="highlight-kn">as</span> <span class="highlight-nn">imdb</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<pre><code class="language-python">import paddle
+import paddle.dataset.imdb as imdb
+import paddle.fluid as fluid
+import numpy as np
 </code></pre>
 <p>循环神经网络发展到现在，已经有不少性能很好的升级版的循环神经网络，比如长短期记忆网络等。一下的代码片段是一个比较简单的循环神经网络，首先是经过一个<code>fluid.layers.embedding()</code>，这个是接口是接受数据的ID输入，因为输入数据时一个句子，但是在训练的时候我们是把每个单词转换成对应的ID，再输入到网络中，所以这里使用到了<code>embedding</code>接口。然后是一个全连接层，接着是一个循环神经网络块，在循环神经网络块之后再经过一个<code>sequence_last_step</code>接口，这个接口通常是使用在序列函数的最后一步。最后的输出层的激活函数是Softmax，大小为2，因为数据的结果有2个，为正负面。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">rnn_net</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">input_dim</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 以数据的IDs作为输入</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">emb</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">embedding</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">input_dim</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">],</span> <span class="highlight-n">is_sparse</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">sentence</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">emb</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'tanh'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">rnn</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">DynamicRNN</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-k">with</span> <span class="highlight-n">rnn</span><span class="highlight-o">.</span><span class="highlight-n">block</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-n">word</span> <span class="highlight-o">=</span> <span class="highlight-n">rnn</span><span class="highlight-o">.</span><span class="highlight-n">step_input</span><span class="highlight-p">(</span><span class="highlight-n">sentence</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-n">prev</span> <span class="highlight-o">=</span> <span class="highlight-n">rnn</span><span class="highlight-o">.</span><span class="highlight-n">memory</span><span class="highlight-p">(</span><span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">128</span><span class="highlight-p">])</span>
-<span class="highlight-ln">10</span>        <span class="highlight-n">hidden</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">word</span><span class="highlight-p">,</span> <span class="highlight-n">prev</span><span class="highlight-p">],</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'relu'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">rnn</span><span class="highlight-o">.</span><span class="highlight-n">update_memory</span><span class="highlight-p">(</span><span class="highlight-n">prev</span><span class="highlight-p">,</span> <span class="highlight-n">hidden</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>        <span class="highlight-n">rnn</span><span class="highlight-o">.</span><span class="highlight-n">output</span><span class="highlight-p">(</span><span class="highlight-n">hidden</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">last</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">sequence_last_step</span><span class="highlight-p">(</span><span class="highlight-n">rnn</span><span class="highlight-p">())</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">last</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'softmax'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>    <span class="highlight-k">return</span> <span class="highlight-n">out</span>
+<pre><code class="language-python">def rnn_net(ipt, input_dim):
+    # 以数据的IDs作为输入
+    emb = fluid.layers.embedding(input=ipt, size=[input_dim, 128], is_sparse=True)
+    sentence = fluid.layers.fc(input=emb, size=128, act='tanh')
+
+    rnn = fluid.layers.DynamicRNN()
+    with rnn.block():
+        word = rnn.step_input(sentence)
+        prev = rnn.memory(shape=[128])
+        hidden = fluid.layers.fc(input=[word, prev], size=128, act='relu')
+        rnn.update_memory(prev, hidden)
+        rnn.output(hidden)
+
+    last = fluid.layers.sequence_last_step(rnn())
+    out = fluid.layers.fc(input=last, size=2, act='softmax')
+    return out
 </code></pre>
 <p>下面的代码片段是一个简单的长短期记忆网络，这个网络是有循环神经网络演化过来的。当较长的序列数据，循环神经网络的训练过程中容易出现梯度消失或爆炸现象，而长短期记忆网络就可以解决这个问题。在网络的开始同样是经过一个<code>embedding</code>接口，接着是一个全连接层，紧接的是一个<code>dynamic_lstm</code>长短期记忆操作接口，有这个接口，我们很容易就搭建一个长短期记忆网络。然后是经过两个序列池操作，该序列池的类型是最大化。最后也是一个大小为2的输出层。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 定义长短期记忆网络</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">lstm_net</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">input_dim</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 以数据的IDs作为输入</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">emb</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">embedding</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">input_dim</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">],</span> <span class="highlight-n">is_sparse</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 第一个全连接层</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">fc1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">emb</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 进行一个长短期记忆操作</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">lstm1</span><span class="highlight-p">,</span> <span class="highlight-n">_</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">dynamic_lstm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc1</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-c1"># 第一个最大序列池操作</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">fc2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">sequence_pool</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc1</span><span class="highlight-p">,</span> <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-s1">'max'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    <span class="highlight-c1"># 第二个最大序列池操作</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">lstm2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">sequence_pool</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">lstm1</span><span class="highlight-p">,</span> <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-s1">'max'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    <span class="highlight-c1"># 以softmax作为全连接的输出层，大小为2,也就是正负面</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">fc2</span><span class="highlight-p">,</span> <span class="highlight-n">lstm2</span><span class="highlight-p">],</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-s1">'softmax'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>    <span class="highlight-k">return</span> <span class="highlight-n">out</span>
+<pre><code class="language-python"># 定义长短期记忆网络
+def lstm_net(ipt, input_dim):
+    # 以数据的IDs作为输入
+    emb = fluid.layers.embedding(input=ipt, size=[input_dim, 128], is_sparse=True)
+
+    # 第一个全连接层
+    fc1 = fluid.layers.fc(input=emb, size=128)
+    # 进行一个长短期记忆操作
+    lstm1, _ = fluid.layers.dynamic_lstm(input=fc1, size=128)
+
+    # 第一个最大序列池操作
+    fc2 = fluid.layers.sequence_pool(input=fc1, pool_type='max')
+    # 第二个最大序列池操作
+    lstm2 = fluid.layers.sequence_pool(input=lstm1, pool_type='max')
+
+    # 以softmax作为全连接的输出层，大小为2,也就是正负面
+    out = fluid.layers.fc(input=[fc2, lstm2], size=2, act='softmax')
+    return out
 </code></pre>
 <p>这里可以先定义一个输入层，这样要注意的是我们使用的数据属于序列数据，所以我们可以设置<code>lod_level</code>为1，当该参数不为0时，表示输入的数据为序列数据，默认<code>lod_level</code>的值是0.</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义输入数据， lod_level不为0指定输入数据为序列数据</span>
-<span class="highlight-ln">2</span><span class="highlight-n">words</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'words'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">,</span> <span class="highlight-n">lod_level</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'label'</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义输入数据， lod_level不为0指定输入数据为序列数据
+words = fluid.layers.data(name='words', shape=[1], dtype='int64', lod_level=1)
+label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 </code></pre>
 <p>然后是读取数据字典，因为我们的数据是以数据标签的放方式表示数据一个句子。所以每个句子都是以一串整数来表示的，每个数字都是对应一个单词。所以这个数据集就会有一个数据集字典，这个字典是训练数据中出现单词对应的数字标签。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取数据字典</span>
-<span class="highlight-ln">2</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"加载数据字典中..."</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">word_dict</span> <span class="highlight-o">=</span> <span class="highlight-n">imdb</span><span class="highlight-o">.</span><span class="highlight-n">word_dict</span><span class="highlight-p">()</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 获取数据字典长度</span>
-<span class="highlight-ln">5</span><span class="highlight-n">dict_dim</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">word_dict</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取数据字典
+print("加载数据字典中...")
+word_dict = imdb.word_dict()
+# 获取数据字典长度
+dict_dim = len(word_dict)
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>加载数据字典中...
+<pre><code>加载数据字典中...
 </code></pre>
 <p>这里可以获取我们上面定义的网络作为我们之后训练的网络模型，这两个网络读者都可以试试，可以对比它们的差别。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取长短期记忆网络</span>
-<span class="highlight-ln">2</span><span class="highlight-n">model</span> <span class="highlight-o">=</span> <span class="highlight-n">lstm_net</span><span class="highlight-p">(</span><span class="highlight-n">words</span><span class="highlight-p">,</span> <span class="highlight-n">dict_dim</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 获取循环神经网络</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># model = rnn_net(words, dict_dim)</span>
+<pre><code class="language-python"># 获取长短期记忆网络
+model = lstm_net(words, dict_dim)
+# 获取循环神经网络
+# model = rnn_net(words, dict_dim)
 </code></pre>
 <p>接着定义损失函数，这里同样是一个分类任务，所以使用的损失函数也是交叉熵损失函数。这里也可以使用<code>fluid.layers.accuracy()</code>接口定义一个输出分类准确率的函数，可以方便在训练的时候，输出测试时的分类准确率，观察模型收敛的情况。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取损失函数和准确率</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">cross_entropy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">avg_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">mean</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">acc</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">accuracy</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取损失函数和准确率
+cost = fluid.layers.cross_entropy(input=model, label=label)
+avg_cost = fluid.layers.mean(cost)
+acc = fluid.layers.accuracy(input=model, label=label)
 </code></pre>
 <p>这里克隆一个测试测试程序，用于之后的测试和预测数据使用的。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取预测程序</span>
-<span class="highlight-ln">2</span><span class="highlight-n">test_program</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">clone</span><span class="highlight-p">(</span><span class="highlight-n">for_test</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取预测程序
+test_program = fluid.default_main_program().clone(for_test=True)
 </code></pre>
 <p>然后是定义优化方法，这里使用的时Adagrad优化方法，Adagrad优化方法多用于处理稀疏数据，设置学习率为0.002。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义优化方法</span>
-<span class="highlight-ln">2</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">AdagradOptimizer</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.002</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">opt</span> <span class="highlight-o">=</span> <span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">minimize</span><span class="highlight-p">(</span><span class="highlight-n">avg_cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义优化方法
+optimizer = fluid.optimizer.AdagradOptimizer(learning_rate=0.002)
+opt = optimizer.minimize(avg_cost)
 </code></pre>
 <p>接着创建一个执行器，这次是的数据集比之前使用的数据集要大不少，所以训练起来先对比较慢，如果读取有GPU环境，可以尝试使用GPU来训练，使用方式是使用<code>fluid.CUDAPlace(0)</code>来创建执行器。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 创建一个执行器</span>
-<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># place = fluid.CUDAPlace(0)</span>
-<span class="highlight-ln">4</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span><span class="highlight-c1"># 进行参数初始化</span>
-<span class="highlight-ln">6</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+<pre><code class="language-python"># 创建一个执行器
+place = fluid.CPUPlace()
+# place = fluid.CUDAPlace(0)
+exe = fluid.Executor(place)
+# 进行参数初始化
+exe.run(fluid.default_startup_program())
 </code></pre>
 <p>然后把训练数据和测试数据读取到内存中，因为数据集比较大，为了加快数据的数据，使用<code>paddle.reader.shuffle()</code>接口来将数据先按照设置的大小读取到缓存中。读入缓存的大小可以根据硬件环境内存大小来设置。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取训练和预测数据</span>
-<span class="highlight-ln">2</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"加载训练数据中..."</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">train_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span><span class="highlight-n">imdb</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-p">(</span><span class="highlight-n">word_dict</span><span class="highlight-p">),</span> <span class="highlight-mi">25000</span><span class="highlight-p">),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"加载测试数据中..."</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span><span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">imdb</span><span class="highlight-o">.</span><span class="highlight-n">test</span><span class="highlight-p">(</span><span class="highlight-n">word_dict</span><span class="highlight-p">),</span> <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取训练和预测数据
+print("加载训练数据中...")
+train_reader = paddle.batch(paddle.reader.shuffle(imdb.train(word_dict), 25000), batch_size=128)
+print("加载测试数据中...")
+test_reader = paddle.batch(imdb.test(word_dict), batch_size=128)
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>加载训练数据中...
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span>加载测试数据中...
+<pre><code>加载训练数据中...
+
+加载测试数据中...
 </code></pre>
 <p>定义数据数据的维度，数据的顺序是一条句子数据对应一个标签。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义输入数据的维度</span>
-<span class="highlight-ln">2</span><span class="highlight-n">feeder</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">DataFeeder</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-o">=</span><span class="highlight-n">place</span><span class="highlight-p">,</span> <span class="highlight-n">feed_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">words</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 定义输入数据的维度
+feeder = fluid.DataFeeder(place=place, feed_list=[words, label])
 </code></pre>
 <p>现在就可以开始训练了，这里设置训练的循环是1次，读者可以根据情况设置更多的训练轮数，来让模型完全收敛。我们在训练中，每40个Batch打印一层训练信息和进行一次测试，测试是使用测试集进行预测并输出损失值和准确率，测试完成之后，对之前预测的结果进行求平均值。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 开始训练</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">for</span> <span class="highlight-n">pass_id</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 进行训练</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">train_cost</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">train_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-n">train_cost</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln"> 7</span>                             <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 8</span>                             <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">])</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>        <span class="highlight-k">if</span> <span class="highlight-n">batch_id</span> <span class="highlight-o">%</span> <span class="highlight-mi">40</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">11</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Pass:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Batch:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">train_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]))</span>
-<span class="highlight-ln">12</span>            <span class="highlight-c1"># 进行测试</span>
-<span class="highlight-ln">13</span>            <span class="highlight-n">test_costs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">14</span>            <span class="highlight-n">test_accs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">15</span>            <span class="highlight-k">for</span> <span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">data</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">test_reader</span><span class="highlight-p">()):</span>
-<span class="highlight-ln">16</span>                <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">test_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">17</span>                                              <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-n">feeder</span><span class="highlight-o">.</span><span class="highlight-n">feed</span><span class="highlight-p">(</span><span class="highlight-n">data</span><span class="highlight-p">),</span>
-<span class="highlight-ln">18</span>                                              <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">avg_cost</span><span class="highlight-p">,</span> <span class="highlight-n">acc</span><span class="highlight-p">])</span>
-<span class="highlight-ln">19</span>                <span class="highlight-n">test_costs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_cost</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">20</span>                <span class="highlight-n">test_accs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">test_acc</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">21</span>            <span class="highlight-c1"># 计算平均预测损失在和准确率</span>
-<span class="highlight-ln">22</span>            <span class="highlight-n">test_cost</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_costs</span><span class="highlight-p">))</span>
-<span class="highlight-ln">23</span>            <span class="highlight-n">test_acc</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-nb">sum</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_accs</span><span class="highlight-p">))</span>
-<span class="highlight-ln">24</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s1">'Test:</span><span class="highlight-si">%d</span><span class="highlight-s1">, Cost:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">, ACC:</span><span class="highlight-si">%0.5f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">test_cost</span><span class="highlight-p">,</span> <span class="highlight-n">test_acc</span><span class="highlight-p">))</span>
+<pre><code class="language-python"># 开始训练
+for pass_id in range(1):
+    # 进行训练
+    train_cost = 0
+    for batch_id, data in enumerate(train_reader()):
+        train_cost = exe.run(program=fluid.default_main_program(),
+                             feed=feeder.feed(data),
+                             fetch_list=[avg_cost])
+
+        if batch_id % 40 == 0:
+            print('Pass:%d, Batch:%d, Cost:%0.5f' % (pass_id, batch_id, train_cost[0]))
+            # 进行测试
+            test_costs = []
+            test_accs = []
+            for batch_id, data in enumerate(test_reader()):
+                test_cost, test_acc = exe.run(program=test_program,
+                                              feed=feeder.feed(data),
+                                              fetch_list=[avg_cost, acc])
+                test_costs.append(test_cost[0])
+                test_accs.append(test_acc[0])
+            # 计算平均预测损失在和准确率
+            test_cost = (sum(test_costs) / len(test_costs))
+            test_acc = (sum(test_accs) / len(test_accs))
+            print('Test:%d, Cost:%0.5f, ACC:%0.5f' % (pass_id, test_cost, test_acc))
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>Pass:0, Batch:0, Cost:0.69274
-<span class="highlight-ln"> 2</span>Test:0, Cost:0.69329, ACC:0.50175
-<span class="highlight-ln"> 3</span>Pass:0, Batch:40, Cost:0.61183
-<span class="highlight-ln"> 4</span>Test:0, Cost:0.61142, ACC:0.82659
-<span class="highlight-ln"> 5</span>Pass:0, Batch:80, Cost:0.55504
-<span class="highlight-ln"> 6</span>Test:0, Cost:0.54904, ACC:0.83959
-<span class="highlight-ln"> 7</span>Pass:0, Batch:120, Cost:0.51100
-<span class="highlight-ln"> 8</span>Test:0, Cost:0.50026, ACC:0.84318
-<span class="highlight-ln"> 9</span>Pass:0, Batch:160, Cost:0.46800
-<span class="highlight-ln">10</span>Test:0, Cost:0.46199, ACC:0.84533
+<pre><code>Pass:0, Batch:0, Cost:0.69274
+Test:0, Cost:0.69329, ACC:0.50175
+Pass:0, Batch:40, Cost:0.61183
+Test:0, Cost:0.61142, ACC:0.82659
+Pass:0, Batch:80, Cost:0.55504
+Test:0, Cost:0.54904, ACC:0.83959
+Pass:0, Batch:120, Cost:0.51100
+Test:0, Cost:0.50026, ACC:0.84318
+Pass:0, Batch:160, Cost:0.46800
+Test:0, Cost:0.46199, ACC:0.84533
 </code></pre>
-<h1 id="预测数据">预测数据</h1>
+<h1 id="toc_h1_2">预测数据</h1>
 <p>我们先定义三个句子，第一句是中性的，第二句偏向正面，第三句偏向负面。然后把这些句子读取到一个列表中。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义预测数据</span>
-<span class="highlight-ln">2</span><span class="highlight-n">reviews_str</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-s1">'read the book forget the movie'</span><span class="highlight-p">,</span> <span class="highlight-s1">'this is a great movie'</span><span class="highlight-p">,</span> <span class="highlight-s1">'this is very bad'</span><span class="highlight-p">]</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 把每个句子拆成一个个单词</span>
-<span class="highlight-ln">4</span><span class="highlight-n">reviews</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">c</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">()</span> <span class="highlight-k">for</span> <span class="highlight-n">c</span> <span class="highlight-ow">in</span> <span class="highlight-n">reviews_str</span><span class="highlight-p">]</span>
+<pre><code class="language-python"># 定义预测数据
+reviews_str = ['read the book forget the movie', 'this is a great movie', 'this is very bad']
+# 把每个句子拆成一个个单词
+reviews = [c.split() for c in reviews_str]
 </code></pre>
 <p>然后把句子转换成编码，根据数据集的字典，把句子中的单词转换成对应标签。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取结束符号的标签</span>
-<span class="highlight-ln">2</span><span class="highlight-n">UNK</span> <span class="highlight-o">=</span> <span class="highlight-n">word_dict</span><span class="highlight-p">[</span><span class="highlight-s1">'&lt;unk&gt;'</span><span class="highlight-p">]</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 获取每句话对应的标签</span>
-<span class="highlight-ln">4</span><span class="highlight-n">lod</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">5</span><span class="highlight-k">for</span> <span class="highlight-n">c</span> <span class="highlight-ow">in</span> <span class="highlight-n">reviews</span><span class="highlight-p">:</span>
-<span class="highlight-ln">6</span>    <span class="highlight-c1"># 需要把单词进行字符串编码转换</span>
-<span class="highlight-ln">7</span>    <span class="highlight-n">lod</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">([</span><span class="highlight-n">word_dict</span><span class="highlight-o">.</span><span class="highlight-n">get</span><span class="highlight-p">(</span><span class="highlight-n">words</span><span class="highlight-o">.</span><span class="highlight-n">encode</span><span class="highlight-p">(</span><span class="highlight-s1">'utf-8'</span><span class="highlight-p">),</span> <span class="highlight-n">UNK</span><span class="highlight-p">)</span> <span class="highlight-k">for</span> <span class="highlight-n">words</span> <span class="highlight-ow">in</span> <span class="highlight-n">c</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 获取结束符号的标签
+UNK = word_dict['&lt;unk&gt;']
+# 获取每句话对应的标签
+lod = []
+for c in reviews:
+    # 需要把单词进行字符串编码转换
+    lod.append([word_dict.get(words.encode('utf-8'), UNK) for words in c])
 </code></pre>
 <p>获取输入数据的维度和大小。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取每句话的单词数量</span>
-<span class="highlight-ln">2</span><span class="highlight-n">base_shape</span> <span class="highlight-o">=</span> <span class="highlight-p">[[</span><span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">c</span><span class="highlight-p">)</span> <span class="highlight-k">for</span> <span class="highlight-n">c</span> <span class="highlight-ow">in</span> <span class="highlight-n">lod</span><span class="highlight-p">]]</span>
+<pre><code class="language-python"># 获取每句话的单词数量
+base_shape = [[len(c) for c in lod]]
 </code></pre>
 <p>将要预测的数据转换成张量，准备开始预测。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 生成预测数据</span>
-<span class="highlight-ln">2</span><span class="highlight-n">tensor_words</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">create_lod_tensor</span><span class="highlight-p">(</span><span class="highlight-n">lod</span><span class="highlight-p">,</span> <span class="highlight-n">base_shape</span><span class="highlight-p">,</span> <span class="highlight-n">place</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 生成预测数据
+tensor_words = fluid.create_lod_tensor(lod, base_shape, place)
 </code></pre>
 <p>开始预测，使用的<code>program</code>是克隆的测试程序。预测数据是通过<code>feed</code>键值对的方式传入到预测程序中，为了符合输入数据的格式，label中使用了一个假的label输入到程序中。<code>fetch_list</code>的值是网络的分类器。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 预测获取预测结果,因为输入的是3个数据，所以要模拟3个label的输入</span>
-<span class="highlight-ln">2</span><span class="highlight-n">results</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">test_program</span><span class="highlight-p">,</span>
-<span class="highlight-ln">3</span>                  <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-s1">'words'</span><span class="highlight-p">:</span> <span class="highlight-n">tensor_words</span><span class="highlight-p">,</span> <span class="highlight-s1">'label'</span><span class="highlight-p">:</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)},</span>
-<span class="highlight-ln">4</span>                  <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">model</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 预测获取预测结果,因为输入的是3个数据，所以要模拟3个label的输入
+results = exe.run(program=test_program,
+                  feed={'words': tensor_words, 'label': np.array([[0], [0], [0]]).astype('int64')},
+                  fetch_list=[model])
 </code></pre>
 <p>最后可以把预测结果输出，因为我们使用了3条数据进行预测，所以输出也会有3个结果。每个结果是类别的概率。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 打印每句话的正负面概率</span>
-<span class="highlight-ln">2</span><span class="highlight-k">for</span> <span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">r</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">results</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]):</span>
-<span class="highlight-ln">3</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"</span><span class="highlight-se">\'</span><span class="highlight-si">%s</span><span class="highlight-se">\'</span><span class="highlight-s2">的预测结果为：正面概率为：</span><span class="highlight-si">%0.5f</span><span class="highlight-s2">，负面概率为：</span><span class="highlight-si">%0.5f</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">reviews_str</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-n">r</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">r</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]))</span>
+<pre><code class="language-python"># 打印每句话的正负面概率
+for i, r in enumerate(results[0]):
+    print("\'%s\'的预测结果为：正面概率为：%0.5f，负面概率为：%0.5f" % (reviews_str[i], r[0], r[1]))
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>'read the book forget the movie'的预测结果为：正面概率为：0.53604，负面概率为：0.46396
-<span class="highlight-ln">2</span>'this is a great movie'的预测结果为：正面概率为：0.67564，负面概率为：0.32436
-<span class="highlight-ln">3</span>'this is very bad'的预测结果为：正面概率为：0.35406，负面概率为：0.64594
+<pre><code>'read the book forget the movie'的预测结果为：正面概率为：0.53604，负面概率为：0.46396
+'this is a great movie'的预测结果为：正面概率为：0.67564，负面概率为：0.32436
+'this is very bad'的预测结果为：正面概率为：0.35406，负面概率为：0.64594
 </code></pre>
 <p>到处为止，本章就结束了。希望读者经过学习完这一章，可以对PaddlePaddle的使用有更深一步的认识。在下一章中，我们来使用PaddlePaddle实现一个生成对抗网络，生成对抗网络这一两年中可以说时非常火的，同样也非长有趣。那么我们下一章见吧。</p>
 <p>同步到百度AI Studio平台：<a href="http://aistudio.baidu.com/aistudio/projectdetail/29347" target="_blank">http://aistudio.baidu.com/aistudio/projectdetail/29347</a><br>
 同步到科赛网K-Lab平台：<a href="https://www.kesci.com/home/project/5bf8cb78954d6e001066d7d8" target="_blank">https://www.kesci.com/home/project/5bf8cb78954d6e001066d7d8</a><br>
 项目代码GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note5" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note5</a></p>
 <p><strong>注意：</strong> 最新代码以GitHub上的为准</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_3">参考资料</h1>
 <ol>
 <li><a href="https://blog.csdn.net/u010089444/article/details/76725843" target="_blank">https://blog.csdn.net/u010089444/article/details/76725843</a></li>
 <li><a href="http://ai.stanford.edu/~amaas/data/sentiment/" target="_blank">http://ai.stanford.edu/~amaas/data/sentiment/</a></li>
@@ -406,7 +406,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -415,7 +415,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -423,11 +423,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466394848",
@@ -445,4 +445,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 60ms, 2020/04/07 11:38:40 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 27ms, 2020/04/07 14:57:07 -->

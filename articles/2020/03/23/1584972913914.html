@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零</title><meta name="description" content="前言 笔者在《MySQL数据库实现主从复制》这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。 在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式： 一主一从： 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Myc...."/><meta property="og:description" content="前言 笔者在《MySQL数据库实现主从复制》这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。 在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式： 一主一从： 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Myc...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零</title><meta name="description" content="前言 笔者在《MySQL数据库实现主从复制》这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。 在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式： 一主一从： 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Myc...."/><meta property="og:description" content="前言 笔者在《MySQL数据库实现主从复制》这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。 在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式： 一主一从： 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Myc...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972913914.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="MySQL数据库实现主从复制" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972836923.html">
             <link rel="next" title="TensorFlow的安装" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972978949.html">
     <!-- 百度统计 -->
@@ -78,34 +78,34 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#一主一从读写分离">一主一从读写分离</a>
+            <a href="#toc_h1_1">一主一从读写分离</a>
         </li>
         <li class="toc__h2">
-            <a href="#MySQL数据库配置">MySQL数据库配置</a>
+            <a href="#toc_h2_2">MySQL数据库配置</a>
         </li>
         <li class="toc__h2">
-            <a href="#Mycat的配置">Mycat的配置</a>
+            <a href="#toc_h2_3">Mycat的配置</a>
         </li>
         <li class="toc__h2">
-            <a href="#测试">测试</a>
+            <a href="#toc_h2_4">测试</a>
         </li>
         <li class="toc__h1">
-            <a href="#双主双从读写分离">双主双从读写分离</a>
+            <a href="#toc_h1_5">双主双从读写分离</a>
         </li>
         <li class="toc__h2">
-            <a href="#MySQL数据库配置">MySQL数据库配置</a>
+            <a href="#toc_h2_6">MySQL数据库配置</a>
         </li>
         <li class="toc__h2">
-            <a href="#Mycat的配置">Mycat的配置</a>
+            <a href="#toc_h2_7">Mycat的配置</a>
         </li>
         <li class="toc__h2">
-            <a href="#测试">测试</a>
+            <a href="#toc_h2_8">测试</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_9">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -151,7 +151,7 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20191103.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>笔者在<a href="https://blog.csdn.net/qq_33200967/article/details/80939040" target="_blank">《MySQL数据库实现主从复制》</a>这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。</p>
 <p>在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式：</p>
 <p><strong>一主一从：</strong> 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Mycat呢。主要是使用Mycat配置会更加简单，更容易维护，当数据库的位置发生了变化，如果是使用代码实现的，那么网站的后端代码要全部修改了，对于分布式的后端服务器来说，那工作量是非常大的。再且使用后端代码实现的读写分离也很难实现数据库的分布式。而使用Mycat都能解决这些问题。</p>
@@ -161,288 +161,258 @@ var _hmt = _hmt || [];
 <p>如图所示：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQeh4I.png" alt="这里写图片描述"></p>
 <p>那么下面就介绍Mycat中间件实现一主一从和双主双从的读写分离，在阅读下面教程之前，读者应该先阅读笔者之前的两篇文章，分别是<a href="https://blog.csdn.net/qq_33200967/article/details/80863305" target="_blank">《CentOS下安装和使用Mycat实现分布式数据库》</a>和<a href="https://blog.csdn.net/qq_33200967/article/details/80939040" target="_blank">《MySQL数据库实现主从复制》</a>，在接下来的教程中会运用到这两篇文章的知识，所以读者要阅读并理解这两篇文件的知识。好，我们现在开始吧。</p>
-<h1 id="一主一从读写分离">一主一从读写分离</h1>
+<h1 id="toc_h1_1">一主一从读写分离</h1>
 <p>我们一共使用5个虚拟机，每个机器的作用如下：</p>
 <table>
 <thead>
-<tr>
-<th align="center">主机名</th>
-<th align="center">IP地址</th>
-<th align="center">任务角色</th>
-<th align="center">数据库</th>
-</tr>
+<tr><th align="center">主机名</th><th align="center">IP地址</th><th align="center">任务角色</th><th align="center">数据库</th></tr>
 </thead>
 <tbody>
-<tr>
-<td align="center">node1</td>
-<td align="center">192.168.204.121</td>
-<td align="center">Mycat</td>
-<td align="center">无</td>
-</tr>
-<tr>
-<td align="center">node2</td>
-<td align="center">192.168.204.122</td>
-<td align="center">master1</td>
-<td align="center">MySQL</td>
-</tr>
-<tr>
-<td align="center">node3</td>
-<td align="center">192.168.204.123</td>
-<td align="center">slave1</td>
-<td align="center">MySQL</td>
-</tr>
-<tr>
-<td align="center">node4</td>
-<td align="center">192.168.204.124</td>
-<td align="center">master2</td>
-<td align="center">MySQL</td>
-</tr>
-<tr>
-<td align="center">node5</td>
-<td align="center">192.168.204.125</td>
-<td align="center">slave2</td>
-<td align="center">MySQL</td>
-</tr>
+<tr><td align="center">node1</td><td align="center">192.168.204.121</td><td align="center">Mycat</td><td align="center">无</td></tr>
+<tr><td align="center">node2</td><td align="center">192.168.204.122</td><td align="center">master1</td><td align="center">MySQL</td></tr>
+<tr><td align="center">node3</td><td align="center">192.168.204.123</td><td align="center">slave1</td><td align="center">MySQL</td></tr>
+<tr><td align="center">node4</td><td align="center">192.168.204.124</td><td align="center">master2</td><td align="center">MySQL</td></tr>
+<tr><td align="center">node5</td><td align="center">192.168.204.125</td><td align="center">slave2</td><td align="center">MySQL</td></tr>
 </tbody>
 </table>
-<h2 id="MySQL数据库配置">MySQL数据库配置</h2>
+<h2 id="toc_h2_2">MySQL数据库配置</h2>
 <p>首先我们要在node2、node3、node4和node5上安装MySQL数据库，安装方式 可以参考<a href="https://blog.csdn.net/qq_33200967/article/details/80939040#%E5%AE%89%E8%A3%85mysql" target="_blank">《MySQL数据库实现主从复制》的安装MySQL</a>部分，这里就不展开讲了。安装完成之后要对数据库做一些配置，如下：<br>
 node2的数据库是node3的数据库的主数据库，所以node2数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>default-character-set=utf8   # 设置编码方式
-<span class="highlight-ln"> 9</span>lower_case_table_names=1     # 不区分字母大小写
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>log-bin=mysql-bin  # 开启二进制日志
-<span class="highlight-ln">12</span>server-id=1        # 设置server-id
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span># 不同步哪些数据库  
-<span class="highlight-ln">15</span>binlog-ignore-db = mysql
-<span class="highlight-ln">16</span>binlog-ignore-db = test
-<span class="highlight-ln">17</span>binlog-ignore-db = information_schema
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span># 只同步哪些数据库，除此之外，其他不同步  
-<span class="highlight-ln">20</span># binlog-do-db = game  
-<span class="highlight-ln">21</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>[mysqld_safe]
-<span class="highlight-ln">24</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">25</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=1        # 设置server-id
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>node3的数据库是node2上数据库的从数据库，所以不用修改太多。node3数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>default-character-set=utf8
-<span class="highlight-ln"> 8</span>lower_case_table_names=1
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>server-id=2 #设置server-id，必须唯一
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>[mysqld_safe]
-<span class="highlight-ln">13</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">14</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=2 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>node4的数据库是node5的数据库的主数据库，所以node4数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>default-character-set=utf8   # 设置编码方式
-<span class="highlight-ln"> 9</span>lower_case_table_names=1     # 不区分字母大小写
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>log-bin=mysql-bin  # 开启二进制日志
-<span class="highlight-ln">12</span>server-id=3        # 设置server-id
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span># 不同步哪些数据库  
-<span class="highlight-ln">15</span>binlog-ignore-db = mysql
-<span class="highlight-ln">16</span>binlog-ignore-db = test
-<span class="highlight-ln">17</span>binlog-ignore-db = information_schema
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span># 只同步哪些数据库，除此之外，其他不同步  
-<span class="highlight-ln">20</span># binlog-do-db = game  
-<span class="highlight-ln">21</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>[mysqld_safe]
-<span class="highlight-ln">24</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">25</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=3        # 设置server-id
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>node5的数据库是node4上数据库的从数据库，所以不用修改太多。node5数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>default-character-set=utf8
-<span class="highlight-ln"> 8</span>lower_case_table_names=1
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>server-id=4 #设置server-id，必须唯一
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>[mysqld_safe]
-<span class="highlight-ln">13</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">14</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=4 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>方便之后的操作，我们关闭了全部虚拟机的防火墙：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+<pre><code class="language-text">service iptables stop
 </code></pre>
 <p>全部都修改了配置文件，所以全部都要重启MySQL数据库：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld restart
+<pre><code class="language-text">service mysqld restart
 </code></pre>
 <p>我们进入到node2数据库中，输入以下命令查看相关信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
+<pre><code class="language-text">mysql&gt; show master status;
 </code></pre>
 <p>得到的信息如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
-<span class="highlight-ln">2</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">3</span>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
-<span class="highlight-ln">4</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">5</span>| mysql-bin.000007 |      106 |              | mysql,test,information_schema |
-<span class="highlight-ln">6</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">7</span>1 row in set (0.00 sec)
+<pre><code class="language-text">mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000007 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
 </code></pre>
 <p>根据node2这个主数据库的信息，开始配置node3的从数据库，进入到node3数据库 中，输入以下命令，注意<code>master_log_file</code>和<code>master_log_pos</code>来自于上一步获取到的node2主数据库的信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; change master to master_host='192.168.204.122', master_user='root', master_password='root', master_log_file='mysql-bin.000007', master_log_pos=106;
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.122', master_user='root', master_password='root', master_log_file='mysql-bin.000007', master_log_pos=106;
 </code></pre>
 <p>在执行上一条命令之前，要保证slave是关闭的，如果没用关闭，使用以下命令关闭：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; stop slave;
+<pre><code class="language-text">mysql&gt; stop slave;
 </code></pre>
 <p>配置完成之后，要启动slave，执行下面的命令启动slave：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; start slave;
+<pre><code class="language-text">mysql&gt; start slave;
 </code></pre>
 <p>其中完成之后使用以下命令查看启动的情况：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show slave status\G;
+<pre><code>mysql&gt; show slave status\G;
 </code></pre>
 <p>正常情况下输出以下内容，要保证<code>Slave_IO_Running</code>和<code>Slave_SQL_Running</code>是<code>Yes</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>mysql&gt; show slave status\G;
-<span class="highlight-ln"> 2</span>*************************** 1. row ***************************
-<span class="highlight-ln"> 3</span>               Slave_IO_State: Waiting for master to send event
-<span class="highlight-ln"> 4</span>                  Master_Host: 192.168.204.122
-<span class="highlight-ln"> 5</span>                  Master_User: root
-<span class="highlight-ln"> 6</span>                  Master_Port: 3306
-<span class="highlight-ln"> 7</span>                Connect_Retry: 60
-<span class="highlight-ln"> 8</span>              Master_Log_File: mysql-bin.000007
-<span class="highlight-ln"> 9</span>          Read_Master_Log_Pos: 106
-<span class="highlight-ln">10</span>               Relay_Log_File: mysqld-relay-bin.000002
-<span class="highlight-ln">11</span>                Relay_Log_Pos: 251
-<span class="highlight-ln">12</span>        Relay_Master_Log_File: mysql-bin.000007
-<span class="highlight-ln">13</span>             Slave_IO_Running: Yes
-<span class="highlight-ln">14</span>            Slave_SQL_Running: Yes
-<span class="highlight-ln">15</span>              Replicate_Do_DB: 
-<span class="highlight-ln">16</span>          Replicate_Ignore_DB: 
-<span class="highlight-ln">17</span>           Replicate_Do_Table: 
-<span class="highlight-ln">18</span>       Replicate_Ignore_Table: 
-<span class="highlight-ln">19</span>      Replicate_Wild_Do_Table: 
-<span class="highlight-ln">20</span>  Replicate_Wild_Ignore_Table: 
-<span class="highlight-ln">21</span>                   Last_Errno: 0
-<span class="highlight-ln">22</span>                   Last_Error: 
-<span class="highlight-ln">23</span>                 Skip_Counter: 0
-<span class="highlight-ln">24</span>          Exec_Master_Log_Pos: 106
-<span class="highlight-ln">25</span>              Relay_Log_Space: 407
-<span class="highlight-ln">26</span>              Until_Condition: None
-<span class="highlight-ln">27</span>               Until_Log_File: 
-<span class="highlight-ln">28</span>                Until_Log_Pos: 0
-<span class="highlight-ln">29</span>           Master_SSL_Allowed: No
-<span class="highlight-ln">30</span>           Master_SSL_CA_File: 
-<span class="highlight-ln">31</span>           Master_SSL_CA_Path: 
-<span class="highlight-ln">32</span>              Master_SSL_Cert: 
-<span class="highlight-ln">33</span>            Master_SSL_Cipher: 
-<span class="highlight-ln">34</span>               Master_SSL_Key: 
-<span class="highlight-ln">35</span>        Seconds_Behind_Master: 0
-<span class="highlight-ln">36</span>Master_SSL_Verify_Server_Cert: No
-<span class="highlight-ln">37</span>                Last_IO_Errno: 0
-<span class="highlight-ln">38</span>                Last_IO_Error: 
-<span class="highlight-ln">39</span>               Last_SQL_Errno: 0
-<span class="highlight-ln">40</span>               Last_SQL_Error: 
-<span class="highlight-ln">41</span>1 row in set (0.00 sec)
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>ERROR: 
-<span class="highlight-ln">44</span>No query specified
+<pre><code class="language-text">mysql&gt; show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.204.122
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000007
+          Read_Master_Log_Pos: 106
+               Relay_Log_File: mysqld-relay-bin.000002
+                Relay_Log_Pos: 251
+        Relay_Master_Log_File: mysql-bin.000007
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 106
+              Relay_Log_Space: 407
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
 </code></pre>
 <p>接下来开始配置node4数据库中，进入到node4数据库并输入以下命令查看相关信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
+<pre><code class="language-text">mysql&gt; show master status;
 </code></pre>
 <p>得到的信息如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
-<span class="highlight-ln">2</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">3</span>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
-<span class="highlight-ln">4</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">5</span>| mysql-bin.000001 |      106 |              | mysql,test,information_schema |
-<span class="highlight-ln">6</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">7</span>1 row in set (0.00 sec)
+<pre><code class="language-text">mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000001 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
 </code></pre>
 <p>根据node4这个主数据库的信息，开始配置node5的从数据库，进入到node5数据库 中，输入以下命令，注意<code>master_log_file</code>和<code>master_log_pos</code>来自于上一步获取到的node4主数据库的信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; change master to master_host='192.168.204.124', master_user='root', master_password='root', master_log_file='mysql-bin.000001', master_log_pos=106;
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.124', master_user='root', master_password='root', master_log_file='mysql-bin.000001', master_log_pos=106;
 </code></pre>
 <p>在执行上一条命令之前，要保证slave是关闭的，如果没用关闭，使用以下命令关闭：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; stop slave;
+<pre><code class="language-text">mysql&gt; stop slave;
 </code></pre>
 <p>配置完成之后，要启动slave，执行下面的命令启动slave：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; start slave;
+<pre><code class="language-text">mysql&gt; start slave;
 </code></pre>
 <p>其中完成之后使用以下命令查看启动的情况：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show slave status\G;
+<pre><code>mysql&gt; show slave status\G;
 </code></pre>
 <p>正常情况下输出以下内容，要保证<code>Slave_IO_Running</code>和<code>Slave_SQL_Running</code>是<code>Yes</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>mysql&gt; show slave status\G;
-<span class="highlight-ln"> 2</span>*************************** 1. row ***************************
-<span class="highlight-ln"> 3</span>               Slave_IO_State: Waiting for master to send event
-<span class="highlight-ln"> 4</span>                  Master_Host: 192.168.204.124
-<span class="highlight-ln"> 5</span>                  Master_User: root
-<span class="highlight-ln"> 6</span>                  Master_Port: 3306
-<span class="highlight-ln"> 7</span>                Connect_Retry: 60
-<span class="highlight-ln"> 8</span>              Master_Log_File: mysql-bin.000001
-<span class="highlight-ln"> 9</span>          Read_Master_Log_Pos: 106
-<span class="highlight-ln">10</span>               Relay_Log_File: mysqld-relay-bin.000002
-<span class="highlight-ln">11</span>                Relay_Log_Pos: 251
-<span class="highlight-ln">12</span>        Relay_Master_Log_File: mysql-bin.000001
-<span class="highlight-ln">13</span>             Slave_IO_Running: Yes
-<span class="highlight-ln">14</span>            Slave_SQL_Running: Yes
-<span class="highlight-ln">15</span>              Replicate_Do_DB: 
-<span class="highlight-ln">16</span>          Replicate_Ignore_DB: 
-<span class="highlight-ln">17</span>           Replicate_Do_Table: 
-<span class="highlight-ln">18</span>       Replicate_Ignore_Table: 
-<span class="highlight-ln">19</span>      Replicate_Wild_Do_Table: 
-<span class="highlight-ln">20</span>  Replicate_Wild_Ignore_Table: 
-<span class="highlight-ln">21</span>                   Last_Errno: 0
-<span class="highlight-ln">22</span>                   Last_Error: 
-<span class="highlight-ln">23</span>                 Skip_Counter: 0
-<span class="highlight-ln">24</span>          Exec_Master_Log_Pos: 106
-<span class="highlight-ln">25</span>              Relay_Log_Space: 407
-<span class="highlight-ln">26</span>              Until_Condition: None
-<span class="highlight-ln">27</span>               Until_Log_File: 
-<span class="highlight-ln">28</span>                Until_Log_Pos: 0
-<span class="highlight-ln">29</span>           Master_SSL_Allowed: No
-<span class="highlight-ln">30</span>           Master_SSL_CA_File: 
-<span class="highlight-ln">31</span>           Master_SSL_CA_Path: 
-<span class="highlight-ln">32</span>              Master_SSL_Cert: 
-<span class="highlight-ln">33</span>            Master_SSL_Cipher: 
-<span class="highlight-ln">34</span>               Master_SSL_Key: 
-<span class="highlight-ln">35</span>        Seconds_Behind_Master: 0
-<span class="highlight-ln">36</span>Master_SSL_Verify_Server_Cert: No
-<span class="highlight-ln">37</span>                Last_IO_Errno: 0
-<span class="highlight-ln">38</span>                Last_IO_Error: 
-<span class="highlight-ln">39</span>               Last_SQL_Errno: 0
-<span class="highlight-ln">40</span>               Last_SQL_Error: 
-<span class="highlight-ln">41</span>1 row in set (0.00 sec)
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>ERROR: 
-<span class="highlight-ln">44</span>No query specified
+<pre><code class="language-text">mysql&gt; show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.204.124
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000001
+          Read_Master_Log_Pos: 106
+               Relay_Log_File: mysqld-relay-bin.000002
+                Relay_Log_Pos: 251
+        Relay_Master_Log_File: mysql-bin.000001
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 106
+              Relay_Log_Space: 407
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
 </code></pre>
-<h2 id="Mycat的配置">Mycat的配置</h2>
+<h2 id="toc_h2_3">Mycat的配置</h2>
 <p>关于Mycat的安装可以参考<a href="https://blog.csdn.net/qq_33200967/article/details/80863305#%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AEmycat" target="_blank">《CentOS下安装和使用Mycat实现分布式数据库》安装和配置Mycat</a>，这里就不再介绍Mycat的安装了，这一部分主要是介绍Mycat配置读写分离。</p>
 <p>安装完成之后，开始配置<code>schema.xml</code>文件，我们的读写分离主要是在这里配置的。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim $MYCAT_HOME/conf/schema.xml
+<pre><code class="language-text">vim $MYCAT_HOME/conf/schema.xml
 </code></pre>
 <p>该配置文件如下，我们创建了两个数据库，分别是<code>yeyupiaoling1</code>和<code>yeyupiaoling2</code>，主要是分布式数据库，数据采用分片存储。这个两个数据库都有同一张<code>employee</code>表，也可以配置多个表。我们的读写分离主要是在<code>dataHost</code>里配置。主要的配置有三个<code>balance="1" writeType="0" switchType="1"</code>，它们的作用分别是：</p>
 <p>balance 属性负载均衡类型，目前的取值有 4 种：</p>
@@ -465,100 +435,100 @@ node2的数据库是node3的数据库的主数据库，所以node2数据库的�
 <li>2 基于MySQL 主从同步的状态决定是否切换</li>
 </ul>
 <p>下面就是<code>schema.xml</code>文件全部配置信息：</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;?xml version="1.0" encoding="UTF8"?&gt;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-cp">&lt;!DOCTYPE mycat:schema SYSTEM "schema.dtd"&gt;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-nt">&lt;mycat:schema</span> <span class="highlight-na">xmlns:mycat=</span><span class="highlight-s">"http://org.opencloudb/"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c">&lt;!-- 设置表的存储方式.schema name="JamesMycatSchema" 与 server.xml中的 JamesMycatSchema 设置一致  --&gt;</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-nt">&lt;schema</span> <span class="highlight-na">name=</span><span class="highlight-s">"JamesMycatSchema"</span> <span class="highlight-na">checkSQLschema=</span><span class="highlight-s">"false"</span> <span class="highlight-na">sqlMaxLimit=</span><span class="highlight-s">"100"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-nt">&lt;table</span> <span class="highlight-na">name=</span><span class="highlight-s">"employee"</span> <span class="highlight-na">primaryKey=</span><span class="highlight-s">"ID"</span> <span class="highlight-na">dataNode=</span><span class="highlight-s">"dn2,dn3"</span> <span class="highlight-na">rule=</span><span class="highlight-s">"sharding-by-intfile"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-nt">&lt;/schema&gt;</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c">&lt;!--数据节点dn1，对应的主机c1,对应是数据库db1 --&gt;</span>
-<span class="highlight-ln">11</span>    <span class="highlight-nt">&lt;dataNode</span> <span class="highlight-na">name=</span><span class="highlight-s">"dn2"</span> <span class="highlight-na">dataHost=</span><span class="highlight-s">"node2"</span> <span class="highlight-na">database=</span><span class="highlight-s">"yeyupiaoling1"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">12</span>    <span class="highlight-nt">&lt;dataNode</span> <span class="highlight-na">name=</span><span class="highlight-s">"dn3"</span> <span class="highlight-na">dataHost=</span><span class="highlight-s">"node4"</span> <span class="highlight-na">database=</span><span class="highlight-s">"yeyupiaoling2"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-c">&lt;!-- 主机C2--&gt;</span>
-<span class="highlight-ln">15</span>    <span class="highlight-nt">&lt;dataHost</span> <span class="highlight-na">name=</span><span class="highlight-s">"node2"</span> <span class="highlight-na">maxCon=</span><span class="highlight-s">"1000"</span> <span class="highlight-na">minCon=</span><span class="highlight-s">"10"</span> <span class="highlight-na">balance=</span><span class="highlight-s">"1"</span> <span class="highlight-na">writeType=</span><span class="highlight-s">"0"</span> <span class="highlight-na">switchType=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">16</span>        <span class="highlight-na">dbType=</span><span class="highlight-s">"mysql"</span> <span class="highlight-na">dbDriver=</span><span class="highlight-s">"native"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">17</span>        <span class="highlight-nt">&lt;heartbeat&gt;</span>select user()<span class="highlight-nt">&lt;/heartbeat&gt;</span>
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>        <span class="highlight-c">&lt;!--MySQL的写的数据，master1 --&gt;</span>
-<span class="highlight-ln">20</span>        <span class="highlight-nt">&lt;writeHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM2"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.122:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">21</span>            <span class="highlight-c">&lt;!--MySQL读的数据库，slave1 --&gt;</span>
-<span class="highlight-ln">22</span>            <span class="highlight-nt">&lt;readHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM3"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.123:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">23</span>        <span class="highlight-nt">&lt;/writeHost&gt;</span>
-<span class="highlight-ln">24</span>    <span class="highlight-nt">&lt;/dataHost&gt;</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-c">&lt;!-- 主机C3--&gt;</span>
-<span class="highlight-ln">27</span>    <span class="highlight-nt">&lt;dataHost</span> <span class="highlight-na">name=</span><span class="highlight-s">"node4"</span> <span class="highlight-na">maxCon=</span><span class="highlight-s">"1000"</span> <span class="highlight-na">minCon=</span><span class="highlight-s">"10"</span> <span class="highlight-na">balance=</span><span class="highlight-s">"1"</span> <span class="highlight-na">writeType=</span><span class="highlight-s">"0"</span> <span class="highlight-na">switchType=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">28</span>        <span class="highlight-na">dbType=</span><span class="highlight-s">"mysql"</span> <span class="highlight-na">dbDriver=</span><span class="highlight-s">"native"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">29</span>        <span class="highlight-nt">&lt;heartbeat&gt;</span>select user()<span class="highlight-nt">&lt;/heartbeat&gt;</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>        <span class="highlight-c">&lt;!--MySQL的写的数据，master2 --&gt;</span>
-<span class="highlight-ln">32</span>        <span class="highlight-nt">&lt;writeHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM4"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.124:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">33</span>            <span class="highlight-c">&lt;!--MySQL读的数据库，slave2 --&gt;</span>
-<span class="highlight-ln">34</span>            <span class="highlight-nt">&lt;readHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM5"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.125:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">35</span>        <span class="highlight-nt">&lt;/writeHost&gt;</span>
-<span class="highlight-ln">36</span>    <span class="highlight-nt">&lt;/dataHost&gt;</span>
-<span class="highlight-ln">37</span>
-<span class="highlight-ln">38</span><span class="highlight-nt">&lt;/mycat:schema&gt;</span>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF8"?&gt;
+&lt;!DOCTYPE mycat:schema SYSTEM "schema.dtd"&gt;
+&lt;mycat:schema xmlns:mycat="http://org.opencloudb/"&gt;
+
+    &lt;!-- 设置表的存储方式.schema name="JamesMycatSchema" 与 server.xml中的 JamesMycatSchema 设置一致  --&gt;
+    &lt;schema name="JamesMycatSchema" checkSQLschema="false" sqlMaxLimit="100"&gt;
+        &lt;table name="employee" primaryKey="ID" dataNode="dn2,dn3" rule="sharding-by-intfile" /&gt;
+    &lt;/schema&gt;
+
+    &lt;!--数据节点dn1，对应的主机c1,对应是数据库db1 --&gt;
+    &lt;dataNode name="dn2" dataHost="node2" database="yeyupiaoling1" /&gt;
+    &lt;dataNode name="dn3" dataHost="node4" database="yeyupiaoling2" /&gt;
+
+    &lt;!-- 主机C2--&gt;
+    &lt;dataHost name="node2" maxCon="1000" minCon="10" balance="1" writeType="0" switchType="1"
+        dbType="mysql" dbDriver="native"&gt;
+        &lt;heartbeat&gt;select user()&lt;/heartbeat&gt;
+
+        &lt;!--MySQL的写的数据，master1 --&gt;
+        &lt;writeHost host="hostM2" url="192.168.204.122:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave1 --&gt;
+            &lt;readHost host="hostM3" url="192.168.204.123:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+    &lt;/dataHost&gt;
+
+    &lt;!-- 主机C3--&gt;
+    &lt;dataHost name="node4" maxCon="1000" minCon="10" balance="1" writeType="0" switchType="1"
+        dbType="mysql" dbDriver="native"&gt;
+        &lt;heartbeat&gt;select user()&lt;/heartbeat&gt;
+
+        &lt;!--MySQL的写的数据，master2 --&gt;
+        &lt;writeHost host="hostM4" url="192.168.204.124:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave2 --&gt;
+            &lt;readHost host="hostM5" url="192.168.204.125:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+    &lt;/dataHost&gt;
+
+&lt;/mycat:schema&gt;
 </code></pre>
 <p>然后配置<code>server.xml</code>，这里主要是配置Mycat的登录账户和密码的，其中<code>schemas</code>的值要对应<code>schema.xml</code>中的<code>schema</code>的<code>name</code>的值。</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-cp">&lt;!DOCTYPE mycat:server SYSTEM "server.dtd"&gt;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-nt">&lt;mycat:server</span> <span class="highlight-na">xmlns:mycat=</span><span class="highlight-s">"http://org.opencloudb/"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-nt">&lt;system&gt;</span>
-<span class="highlight-ln"> 5</span>                <span class="highlight-nt">&lt;property</span> <span class="highlight-na">name=</span><span class="highlight-s">"defaultSqlParser"</span><span class="highlight-nt">&gt;</span>druidparser<span class="highlight-nt">&lt;/property&gt;</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-nt">&lt;/system&gt;</span>
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-nt">&lt;user</span> <span class="highlight-na">name=</span><span class="highlight-s">"mycat"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 9</span>                <span class="highlight-nt">&lt;property</span> <span class="highlight-na">name=</span><span class="highlight-s">"password"</span><span class="highlight-nt">&gt;</span>123456<span class="highlight-nt">&lt;/property&gt;</span>
-<span class="highlight-ln">10</span>                <span class="highlight-nt">&lt;property</span> <span class="highlight-na">name=</span><span class="highlight-s">"schemas"</span><span class="highlight-nt">&gt;</span>JamesMycatSchema<span class="highlight-nt">&lt;/property&gt;</span>
-<span class="highlight-ln">11</span>        <span class="highlight-nt">&lt;/user&gt;</span>
-<span class="highlight-ln">12</span><span class="highlight-nt">&lt;/mycat:server&gt;</span>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE mycat:server SYSTEM "server.dtd"&gt;
+&lt;mycat:server xmlns:mycat="http://org.opencloudb/"&gt;
+        &lt;system&gt;
+                &lt;property name="defaultSqlParser"&gt;druidparser&lt;/property&gt;
+        &lt;/system&gt;
+
+        &lt;user name="mycat"&gt;
+                &lt;property name="password"&gt;123456&lt;/property&gt;
+                &lt;property name="schemas"&gt;JamesMycatSchema&lt;/property&gt;
+        &lt;/user&gt;
+&lt;/mycat:server&gt;
 </code></pre>
 <p>配置完成之后，可以重启Mycat：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mycat restart
+<pre><code class="language-text">mycat restart
 </code></pre>
 <p>启动之后，可以分别查看输出的日志信息，观察是否正常启动了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>tail -f $MYCAT_HOME/logs/wrapper.log
-<span class="highlight-ln">2</span>tail -f $MYCAT_HOME/logs/mycat.log
+<pre><code class="language-text">tail -f $MYCAT_HOME/logs/wrapper.log
+tail -f $MYCAT_HOME/logs/mycat.log
 </code></pre>
-<h2 id="测试">测试</h2>
+<h2 id="toc_h2_4">测试</h2>
 <p>正常其中之后，可以测试整个数据库是否符合了分布式切片存储和读写分离。笔者使用的是NavicatForMySQL连接数据库，读者可以使用自己熟悉的连接工具，或者是直接在命令行上直接操作。</p>
 <p>首先连接node2数据库并在上面创建一个<code>yeyupiaoling1</code>数据库：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQmpvT.png" alt="这里写图片描述"></p>
 <p>然后在node2的<code>yeyupiaoling1</code>数据库上创建一张<code>employee</code>表：</p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">create</span> <span class="highlight-k">table</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span> <span class="highlight-nb">int</span> <span class="highlight-k">not</span> <span class="highlight-k">null</span> <span class="highlight-k">primary</span> <span class="highlight-k">key</span><span class="highlight-p">,</span><span class="highlight-n">name</span> <span class="highlight-nb">varchar</span><span class="highlight-p">(</span><span class="highlight-mi">100</span><span class="highlight-p">),</span><span class="highlight-n">sharding_id</span> <span class="highlight-nb">int</span> <span class="highlight-k">not</span> <span class="highlight-k">null</span><span class="highlight-p">);</span>
+<pre><code class="language-sql">create table employee(id int not null primary key,name varchar(100),sharding_id int not null);
 </code></pre>
 <p>可以在新建查询上执行这个SQL语句，其中字段<code>sharding_id</code>非常重要，我们选择的规则就是Mycat是根据这个字段来分片存储数据库。<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYXAKJ.png" alt="这里写图片描述"></p>
 <p>同样连接node4数据库并在上面创建一个<code>yeyupiaoling2</code>数据库：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQXX0U.png" alt="这里写图片描述"></p>
 <p>然后在node4的<code>yeyupiaoling2</code>数据库上创建一张<code>employee</code>表，同样的执行方式，就不重复介绍了。</p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">create</span> <span class="highlight-k">table</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span> <span class="highlight-nb">int</span> <span class="highlight-k">not</span> <span class="highlight-k">null</span> <span class="highlight-k">primary</span> <span class="highlight-k">key</span><span class="highlight-p">,</span><span class="highlight-n">name</span> <span class="highlight-nb">varchar</span><span class="highlight-p">(</span><span class="highlight-mi">100</span><span class="highlight-p">),</span><span class="highlight-n">sharding_id</span> <span class="highlight-nb">int</span> <span class="highlight-k">not</span> <span class="highlight-k">null</span><span class="highlight-p">);</span>
+<pre><code class="language-sql">create table employee(id int not null primary key,name varchar(100),sharding_id int not null);
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/31/GMuIWq.png" alt="这里写图片描述"></p>
 <p>然后连接node1的Mycat，记得Mycat默认的端口是8066，账号和密码是<code>server.xml</code>中设置的。连接之后可以看到一个<code>JamesMycatSchema</code>数据库，这个就是我们在<code>schema.xml</code>配置的，可以看到有一张<code>employee</code>表，我们新建查询在这里插入一些数据：</p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db1'</span><span class="highlight-p">,</span><span class="highlight-mi">10000</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db2'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 3</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db3'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 4</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db1'</span><span class="highlight-p">,</span><span class="highlight-mi">10000</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 5</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db2'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 6</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">6</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db3'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 7</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">7</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db1'</span><span class="highlight-p">,</span><span class="highlight-mi">10000</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 8</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">8</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db2'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 9</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">9</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db3'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln">10</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db1'</span><span class="highlight-p">,</span><span class="highlight-mi">10000</span><span class="highlight-p">);</span>
-<span class="highlight-ln">11</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">11</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db2'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln">12</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">12</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db3'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln">13</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">13</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db1'</span><span class="highlight-p">,</span><span class="highlight-mi">10000</span><span class="highlight-p">);</span>
-<span class="highlight-ln">14</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">14</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db2'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln">15</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">15</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db3'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln">16</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">16</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db1'</span><span class="highlight-p">,</span><span class="highlight-mi">10000</span><span class="highlight-p">);</span>
-<span class="highlight-ln">17</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">17</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db2'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
-<span class="highlight-ln">18</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-n">employee</span><span class="highlight-p">(</span><span class="highlight-n">id</span><span class="highlight-p">,</span><span class="highlight-n">name</span><span class="highlight-p">,</span><span class="highlight-n">sharding_id</span><span class="highlight-p">)</span> <span class="highlight-k">values</span><span class="highlight-p">(</span><span class="highlight-mi">18</span><span class="highlight-p">,</span> <span class="highlight-s1">'I am db3'</span><span class="highlight-p">,</span><span class="highlight-mi">10010</span><span class="highlight-p">);</span>
+<pre><code class="language-sql">insert into employee(id,name,sharding_id) values(1, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(2, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(3, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(4, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(5, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(6, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(7, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(8, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(9, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(10, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(11, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(12, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(13, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(14, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(15, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(16, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(17, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(18, 'I am db3',10010);
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/03/GaAC5T.png" alt="这里写图片描述"></p>
 <p>在Mycat中可以可以看到<code>employee</code>表已经插入的全部数据。<br>
@@ -574,281 +544,281 @@ node2的数据库是node3的数据库的主数据库，所以node2数据库的�
 <img src="https://s1.ax1x.com/2020/04/02/GJyu01.png" alt="这里写图片描述"></p>
 <p>经过在Mycat上查询，发现结果如预想的一样，所以证明了是读写分离的。<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYXP8U.png" alt="这里写图片描述"></p>
-<h1 id="双主双从读写分离">双主双从读写分离</h1>
+<h1 id="toc_h1_5">双主双从读写分离</h1>
 <p>在这一部分，我们来实现双主双从读写分离，主要在上一步的基础之上做一些修改。在上一部分的一主一从读写分离中，M1-&gt;S1，M2-&gt;S2，但是M1和M2是没有关系的。而在双主双从上M1和M2是互为主从关系，它们各自是对方的主从数据库，这样的话，无论是M1或者M2发生数据变化，其他的数据库也会发生相应的变化。在开始之前，先清空数库之前的数据，保证各个数据库一致。</p>
-<h2 id="MySQL数据库配置">MySQL数据库配置</h2>
+<h2 id="toc_h2_6">MySQL数据库配置</h2>
 <p>在上一部分的MySQL的配置基础上，这部分的修改并不多，但为了读者更清楚了解各个配置文件的内容，笔者将会展示所有的配置信息：</p>
 <p>node2（master1）的MySQL配置文件<code>/etc/my.cnf</code>，主要是增加了<code>log-slave-updates</code>，增加这个的作用主要是为了当node2（master1）的数据库作为node4（master2）的从数据库时，node4（master2）的数据发生更改时，作为从数据库的node2（master1）也会发生相应改变，但是如果没有添加<code>log-slave-updates</code>的话，作为从数据库的node2（master1）在跟着node4进行写入操作时，这个写入操作node2（master1）并不会添加到bin二进制文件中，所以node2（master1）的从数据库node3（slave1）就不会跟着改变，这样的话就node3就不会跟node4（master2）的数据同步。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>default-character-set=utf8   # 设置编码方式
-<span class="highlight-ln"> 9</span>lower_case_table_names=1     # 不区分字母大小写
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>log-bin=mysql-bin  # 开启二进制日志
-<span class="highlight-ln">12</span>server-id=1        # 设置server-id
-<span class="highlight-ln">13</span>log-slave-updates  # 在作为从数据库的时候，有写入操作也要更新二进制日志文件
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span># 不同步哪些数据库  
-<span class="highlight-ln">16</span>binlog-ignore-db = mysql
-<span class="highlight-ln">17</span>binlog-ignore-db = test
-<span class="highlight-ln">18</span>binlog-ignore-db = information_schema
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span># 只同步哪些数据库，除此之外，其他不同步  
-<span class="highlight-ln">21</span># binlog-do-db = game  
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>[mysqld_safe]
-<span class="highlight-ln">25</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">26</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=1        # 设置server-id
+log-slave-updates  # 在作为从数据库的时候，有写入操作也要更新二进制日志文件
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>node3数据库的配置文件<code>/etc/my.cnf</code>，这个配置不用做修改：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>default-character-set=utf8
-<span class="highlight-ln"> 8</span>lower_case_table_names=1
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>server-id=2 #设置server-id，必须唯一
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>[mysqld_safe]
-<span class="highlight-ln">13</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">14</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=2 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>node4的配置跟node2一样，主要不同的是<code>server-id</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>default-character-set=utf8   # 设置编码方式
-<span class="highlight-ln"> 9</span>lower_case_table_names=1     # 不区分字母大小写
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>log-bin=mysql-bin  # 开启二进制日志
-<span class="highlight-ln">12</span>server-id=3        # 设置server-id
-<span class="highlight-ln">13</span>log-slave-updates  # 在作为从数据库的时候，有写入操作也要更新二进制日志文件
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span># 不同步哪些数据库  
-<span class="highlight-ln">16</span>binlog-ignore-db = mysql
-<span class="highlight-ln">17</span>binlog-ignore-db = test
-<span class="highlight-ln">18</span>binlog-ignore-db = information_schema
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span># 只同步哪些数据库，除此之外，其他不同步  
-<span class="highlight-ln">21</span># binlog-do-db = game  
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>[mysqld_safe]
-<span class="highlight-ln">25</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">26</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=3        # 设置server-id
+log-slave-updates  # 在作为从数据库的时候，有写入操作也要更新二进制日志文件
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>node5数据库的配置文件<code>/etc/my.cnf</code>，也是一样只要修改<code>server-id</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>[mysqld]
-<span class="highlight-ln"> 2</span>datadir=/var/lib/mysql
-<span class="highlight-ln"> 3</span>socket=/var/lib/mysql/mysql.sock
-<span class="highlight-ln"> 4</span>user=mysql
-<span class="highlight-ln"> 5</span># Disabling symbolic-links is recommended to prevent assorted security risks
-<span class="highlight-ln"> 6</span>symbolic-links=0
-<span class="highlight-ln"> 7</span>default-character-set=utf8
-<span class="highlight-ln"> 8</span>lower_case_table_names=1
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>server-id=4 #设置server-id，必须唯一
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>[mysqld_safe]
-<span class="highlight-ln">13</span>log-error=/var/log/mysqld.log
-<span class="highlight-ln">14</span>pid-file=/var/run/mysqld/mysqld.pid
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=4 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 </code></pre>
 <p>node2的MySQL的信息如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
-<span class="highlight-ln">2</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">3</span>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
-<span class="highlight-ln">4</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">5</span>| mysql-bin.000008 |      106 |              | mysql,test,information_schema |
-<span class="highlight-ln">6</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">7</span>1 row in set (0.00 sec)
+<pre><code>mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000008 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
 </code></pre>
 <p>配置node2的从数据库，需要配置的是node3和node4的数据库，配置如下：</p>
 <p>首先要关闭slave：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; stop slave;
+<pre><code class="language-text">mysql&gt; stop slave;
 </code></pre>
 <p>配置信息，注意<code>master_log_file</code>和<code>master_log_pos</code>的值：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; change master to master_host='192.168.204.122', master_user='root', master_password='root', master_log_file='mysql-bin.000008', master_log_pos=106;
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.122', master_user='root', master_password='root', master_log_file='mysql-bin.000008', master_log_pos=106;
 </code></pre>
 <p>然后启动slave：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; start slave;
+<pre><code class="language-text">mysql&gt; start slave;
 </code></pre>
 <p>node4的MySQL的信息如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; show master status;
-<span class="highlight-ln">2</span>mysql&gt; show master status;
-<span class="highlight-ln">3</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">4</span>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
-<span class="highlight-ln">5</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">6</span>| mysql-bin.000002 |      106 |              | mysql,test,information_schema |
-<span class="highlight-ln">7</span>+------------------+----------+--------------+-------------------------------+
-<span class="highlight-ln">8</span>1 row in set (0.00 sec)
+<pre><code>mysql&gt; show master status;
+mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000002 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
 </code></pre>
 <p>配置node4的从数据库，需要配置的是node2和node5的数据库，配置如下：</p>
 <p>首先要关闭slave：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; stop slave;
+<pre><code class="language-text">mysql&gt; stop slave;
 </code></pre>
 <p>配置信息，注意<code>master_log_file</code>和<code>master_log_pos</code>的值：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; change master to master_host='192.168.204.124', master_user='root', master_password='root', master_log_file='mysql-bin.000002', master_log_pos=106;
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.124', master_user='root', master_password='root', master_log_file='mysql-bin.000002', master_log_pos=106;
 </code></pre>
 <p>然后启动slave：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; start slave;
+<pre><code class="language-text">mysql&gt; start slave;
 </code></pre>
 <p>配置完成就可以查看各个数据库的配置信息了，观察是否配置成功了，以下是node2的配置信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>mysql&gt; show slave status\G;
-<span class="highlight-ln"> 2</span>*************************** 1. row ***************************
-<span class="highlight-ln"> 3</span>               Slave_IO_State: Waiting for master to send event
-<span class="highlight-ln"> 4</span>                  Master_Host: 192.168.204.124
-<span class="highlight-ln"> 5</span>                  Master_User: root
-<span class="highlight-ln"> 6</span>                  Master_Port: 3306
-<span class="highlight-ln"> 7</span>                Connect_Retry: 60
-<span class="highlight-ln"> 8</span>              Master_Log_File: mysql-bin.000002
-<span class="highlight-ln"> 9</span>          Read_Master_Log_Pos: 106
-<span class="highlight-ln">10</span>               Relay_Log_File: mysqld-relay-bin.000002
-<span class="highlight-ln">11</span>                Relay_Log_Pos: 251
-<span class="highlight-ln">12</span>        Relay_Master_Log_File: mysql-bin.000002
-<span class="highlight-ln">13</span>             Slave_IO_Running: Yes
-<span class="highlight-ln">14</span>            Slave_SQL_Running: Yes
-<span class="highlight-ln">15</span>              Replicate_Do_DB: 
-<span class="highlight-ln">16</span>          Replicate_Ignore_DB: 
-<span class="highlight-ln">17</span>           Replicate_Do_Table: 
-<span class="highlight-ln">18</span>       Replicate_Ignore_Table: 
-<span class="highlight-ln">19</span>      Replicate_Wild_Do_Table: 
-<span class="highlight-ln">20</span>  Replicate_Wild_Ignore_Table: 
-<span class="highlight-ln">21</span>                   Last_Errno: 0
-<span class="highlight-ln">22</span>                   Last_Error: 
-<span class="highlight-ln">23</span>                 Skip_Counter: 0
-<span class="highlight-ln">24</span>          Exec_Master_Log_Pos: 106
-<span class="highlight-ln">25</span>              Relay_Log_Space: 407
-<span class="highlight-ln">26</span>              Until_Condition: None
-<span class="highlight-ln">27</span>               Until_Log_File: 
-<span class="highlight-ln">28</span>                Until_Log_Pos: 0
-<span class="highlight-ln">29</span>           Master_SSL_Allowed: No
-<span class="highlight-ln">30</span>           Master_SSL_CA_File: 
-<span class="highlight-ln">31</span>           Master_SSL_CA_Path: 
-<span class="highlight-ln">32</span>              Master_SSL_Cert: 
-<span class="highlight-ln">33</span>            Master_SSL_Cipher: 
-<span class="highlight-ln">34</span>               Master_SSL_Key: 
-<span class="highlight-ln">35</span>        Seconds_Behind_Master: 0
-<span class="highlight-ln">36</span>Master_SSL_Verify_Server_Cert: No
-<span class="highlight-ln">37</span>                Last_IO_Errno: 0
-<span class="highlight-ln">38</span>                Last_IO_Error: 
-<span class="highlight-ln">39</span>               Last_SQL_Errno: 0
-<span class="highlight-ln">40</span>               Last_SQL_Error: 
-<span class="highlight-ln">41</span>1 row in set (0.00 sec)
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>ERROR: 
-<span class="highlight-ln">44</span>No query specified
+<pre><code class="language-text">mysql&gt; show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.204.124
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 106
+               Relay_Log_File: mysqld-relay-bin.000002
+                Relay_Log_Pos: 251
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 106
+              Relay_Log_Space: 407
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
 </code></pre>
 <p>然后我们可以使用NavicatForMySQL连接node2数据库，我们可以测试只对master1数据库执行写操作，其他的数据库是不是也会做相应的改变。</p>
 <p>比如我们在node2的数据库创建一个<code>yeyupiaoling</code>数据库：<br>
 <img src="https://s1.ax1x.com/2020/03/30/GnC9OK.png" alt="这里写图片描述"></p>
 <p>然后在这个数据库上创建一张<code>employee</code>表：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>create table employee(id int not null primary key,name varchar(100),sharding_id int not null);
+<pre><code class="language-text">create table employee(id int not null primary key,name varchar(100),sharding_id int not null);
 </code></pre>
 <p>然后我们发现其它的数据库也会做相应的改变：<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYwZK1.png" alt="这里写图片描述"></p>
 <p>证明了我们的配置是正确的。</p>
-<h2 id="Mycat的配置">Mycat的配置</h2>
+<h2 id="toc_h2_7">Mycat的配置</h2>
 <p>我们首先配置<code>schema.xml</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim $MYCAT_HOME/conf/schema.xml
+<pre><code class="language-text">vim $MYCAT_HOME/conf/schema.xml
 </code></pre>
 <p>配置信息如下：</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;?xml version="1.0" encoding="UTF8"?&gt;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-cp">&lt;!DOCTYPE mycat:schema SYSTEM "schema.dtd"&gt;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-nt">&lt;mycat:schema</span> <span class="highlight-na">xmlns:mycat=</span><span class="highlight-s">"http://org.opencloudb/"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c">&lt;!-- 设置表的存储方式.schema name="JamesMycatSchema" 与 server.xml中的 JamesMycatSchema 设置一致  --&gt;</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-nt">&lt;schema</span> <span class="highlight-na">name=</span><span class="highlight-s">"JamesMycatSchema"</span> <span class="highlight-na">checkSQLschema=</span><span class="highlight-s">"false"</span> <span class="highlight-na">sqlMaxLimit=</span><span class="highlight-s">"100"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-nt">&lt;table</span> <span class="highlight-na">name=</span><span class="highlight-s">"employee"</span> <span class="highlight-na">primaryKey=</span><span class="highlight-s">"ID"</span> <span class="highlight-na">dataNode=</span><span class="highlight-s">"dn2"</span> <span class="highlight-na">rule=</span><span class="highlight-s">"sharding-by-intfile"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-nt">&lt;/schema&gt;</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c">&lt;!--数据节点dn1，对应的主机c1,对应是数据库db1 --&gt;</span>
-<span class="highlight-ln">11</span>    <span class="highlight-nt">&lt;dataNode</span> <span class="highlight-na">name=</span><span class="highlight-s">"dn2"</span> <span class="highlight-na">dataHost=</span><span class="highlight-s">"node2"</span> <span class="highlight-na">database=</span><span class="highlight-s">"yeyupiaoling"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-c">&lt;!-- 主机C2--&gt;</span>
-<span class="highlight-ln">14</span>    <span class="highlight-nt">&lt;dataHost</span> <span class="highlight-na">name=</span><span class="highlight-s">"node2"</span> <span class="highlight-na">maxCon=</span><span class="highlight-s">"1000"</span> <span class="highlight-na">minCon=</span><span class="highlight-s">"10"</span> <span class="highlight-na">balance=</span><span class="highlight-s">"1"</span> <span class="highlight-na">writeType=</span><span class="highlight-s">"0"</span> <span class="highlight-na">switchType=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">15</span>        <span class="highlight-na">dbType=</span><span class="highlight-s">"mysql"</span> <span class="highlight-na">dbDriver=</span><span class="highlight-s">"native"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">16</span>        <span class="highlight-nt">&lt;heartbeat&gt;</span>select user()<span class="highlight-nt">&lt;/heartbeat&gt;</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>        <span class="highlight-c">&lt;!--MySQL的写的数据，master1 --&gt;</span>
-<span class="highlight-ln">19</span>        <span class="highlight-nt">&lt;writeHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM2"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.122:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">20</span>            <span class="highlight-c">&lt;!--MySQL读的数据库，slave1 --&gt;</span>
-<span class="highlight-ln">21</span>            <span class="highlight-nt">&lt;readHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM3"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.123:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">22</span>        <span class="highlight-nt">&lt;/writeHost&gt;</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>        <span class="highlight-c">&lt;!--MySQL的写的数据，master2 --&gt;</span>
-<span class="highlight-ln">25</span>        <span class="highlight-nt">&lt;writeHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM4"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.124:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">26</span>            <span class="highlight-c">&lt;!--MySQL读的数据库，slave2 --&gt;</span>
-<span class="highlight-ln">27</span>            <span class="highlight-nt">&lt;readHost</span> <span class="highlight-na">host=</span><span class="highlight-s">"hostM5"</span> <span class="highlight-na">url=</span><span class="highlight-s">"192.168.204.125:3306"</span> <span class="highlight-na">user=</span><span class="highlight-s">"root"</span> <span class="highlight-na">password=</span><span class="highlight-s">"root"</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">28</span>        <span class="highlight-nt">&lt;/writeHost&gt;</span>
-<span class="highlight-ln">29</span>
-<span class="highlight-ln">30</span>    <span class="highlight-nt">&lt;/dataHost&gt;</span>
-<span class="highlight-ln">31</span>
-<span class="highlight-ln">32</span><span class="highlight-nt">&lt;/mycat:schema&gt;</span>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF8"?&gt;
+&lt;!DOCTYPE mycat:schema SYSTEM "schema.dtd"&gt;
+&lt;mycat:schema xmlns:mycat="http://org.opencloudb/"&gt;
+
+    &lt;!-- 设置表的存储方式.schema name="JamesMycatSchema" 与 server.xml中的 JamesMycatSchema 设置一致  --&gt;
+    &lt;schema name="JamesMycatSchema" checkSQLschema="false" sqlMaxLimit="100"&gt;
+        &lt;table name="employee" primaryKey="ID" dataNode="dn2" rule="sharding-by-intfile" /&gt;
+    &lt;/schema&gt;
+
+    &lt;!--数据节点dn1，对应的主机c1,对应是数据库db1 --&gt;
+    &lt;dataNode name="dn2" dataHost="node2" database="yeyupiaoling" /&gt;
+
+    &lt;!-- 主机C2--&gt;
+    &lt;dataHost name="node2" maxCon="1000" minCon="10" balance="1" writeType="0" switchType="1"
+        dbType="mysql" dbDriver="native"&gt;
+        &lt;heartbeat&gt;select user()&lt;/heartbeat&gt;
+
+        &lt;!--MySQL的写的数据，master1 --&gt;
+        &lt;writeHost host="hostM2" url="192.168.204.122:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave1 --&gt;
+            &lt;readHost host="hostM3" url="192.168.204.123:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+
+        &lt;!--MySQL的写的数据，master2 --&gt;
+        &lt;writeHost host="hostM4" url="192.168.204.124:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave2 --&gt;
+            &lt;readHost host="hostM5" url="192.168.204.125:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+
+    &lt;/dataHost&gt;
+
+&lt;/mycat:schema&gt;
 </code></pre>
 <p>然后配置<code>server.xml</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim $MYCAT_HOME/conf/server.xml
+<pre><code class="language-text">vim $MYCAT_HOME/conf/server.xml
 </code></pre>
 <p>配置信息如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-<span class="highlight-ln"> 2</span>&lt;!DOCTYPE mycat:server SYSTEM "server.dtd"&gt;
-<span class="highlight-ln"> 3</span>&lt;mycat:server xmlns:mycat="http://org.opencloudb/"&gt;
-<span class="highlight-ln"> 4</span>        &lt;system&gt;
-<span class="highlight-ln"> 5</span>                &lt;property name="defaultSqlParser"&gt;druidparser&lt;/property&gt;
-<span class="highlight-ln"> 6</span>        &lt;/system&gt;
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>        &lt;user name="mycat"&gt;
-<span class="highlight-ln"> 9</span>                &lt;property name="password"&gt;123456&lt;/property&gt;
-<span class="highlight-ln">10</span>                &lt;property name="schemas"&gt;JamesMycatSchema&lt;/property&gt;
-<span class="highlight-ln">11</span>        &lt;/user&gt;
-<span class="highlight-ln">12</span>&lt;/mycat:server&gt;
+<pre><code class="language-text">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE mycat:server SYSTEM "server.dtd"&gt;
+&lt;mycat:server xmlns:mycat="http://org.opencloudb/"&gt;
+        &lt;system&gt;
+                &lt;property name="defaultSqlParser"&gt;druidparser&lt;/property&gt;
+        &lt;/system&gt;
+
+        &lt;user name="mycat"&gt;
+                &lt;property name="password"&gt;123456&lt;/property&gt;
+                &lt;property name="schemas"&gt;JamesMycatSchema&lt;/property&gt;
+        &lt;/user&gt;
+&lt;/mycat:server&gt;
 </code></pre>
 <p>配置<code>partition-hash-int.txt</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim $MYCAT_HOME/conf/partition-hash-int.txt
+<pre><code class="language-text">vim $MYCAT_HOME/conf/partition-hash-int.txt
 </code></pre>
 <p>因为我们选择的分片规则是<code>sharding-by-intfile</code>，所以Mycat会根据<code>sharding_id</code>进行分片存储到不同的数据库节点的上，因为我们上面配置的数据库只是配置了一个数据库节点，所以这个文件只是配置了一个：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>10000=0
+<pre><code class="language-text">10000=0
 </code></pre>
 <p>配置完成之后，要重新启动Mycat：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mycat restart
+<pre><code class="language-text">mycat restart
 </code></pre>
 <p>启动之后，可以分别查看输出的日志信息，观察是否正常启动了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>tail -f $MYCAT_HOME/logs/wrapper.log
-<span class="highlight-ln">2</span>tail -f $MYCAT_HOME/logs/mycat.log
+<pre><code class="language-text">tail -f $MYCAT_HOME/logs/wrapper.log
+tail -f $MYCAT_HOME/logs/mycat.log
 </code></pre>
 <p>正常启动启动之后，测试是否一切正常了。</p>
-<h2 id="测试">测试</h2>
+<h2 id="toc_h2_8">测试</h2>
 <p>首先我们连接Mycat，然后在Mycat上对<code>employee</code>表添加数据：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>insert into employee(id,name,sharding_id) values(1, 'I am db1',10000);
-<span class="highlight-ln"> 2</span>insert into employee(id,name,sharding_id) values(2, 'I am db2',10000);
-<span class="highlight-ln"> 3</span>insert into employee(id,name,sharding_id) values(3, 'I am db3',10000);
-<span class="highlight-ln"> 4</span>insert into employee(id,name,sharding_id) values(4, 'I am db1',10000);
-<span class="highlight-ln"> 5</span>insert into employee(id,name,sharding_id) values(5, 'I am db2',10000);
-<span class="highlight-ln"> 6</span>insert into employee(id,name,sharding_id) values(6, 'I am db3',10000);
-<span class="highlight-ln"> 7</span>insert into employee(id,name,sharding_id) values(7, 'I am db1',10000);
-<span class="highlight-ln"> 8</span>insert into employee(id,name,sharding_id) values(8, 'I am db2',10000);
-<span class="highlight-ln"> 9</span>insert into employee(id,name,sharding_id) values(9, 'I am db3',10000);
-<span class="highlight-ln">10</span>insert into employee(id,name,sharding_id) values(10, 'I am db1',10000);
-<span class="highlight-ln">11</span>insert into employee(id,name,sharding_id) values(11, 'I am db2',10000);
-<span class="highlight-ln">12</span>insert into employee(id,name,sharding_id) values(12, 'I am db3',10000);
-<span class="highlight-ln">13</span>insert into employee(id,name,sharding_id) values(13, 'I am db1',10000);
-<span class="highlight-ln">14</span>insert into employee(id,name,sharding_id) values(14, 'I am db2',10000);
-<span class="highlight-ln">15</span>insert into employee(id,name,sharding_id) values(15, 'I am db3',10000);
-<span class="highlight-ln">16</span>insert into employee(id,name,sharding_id) values(16, 'I am db1',10000);
-<span class="highlight-ln">17</span>insert into employee(id,name,sharding_id) values(17, 'I am db2',10000);
-<span class="highlight-ln">18</span>insert into employee(id,name,sharding_id) values(18, 'I am db3',10000);
+<pre><code class="language-text">insert into employee(id,name,sharding_id) values(1, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(2, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(3, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(4, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(5, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(6, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(7, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(8, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(9, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(10, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(11, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(12, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(13, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(14, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(15, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(16, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(17, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(18, 'I am db3',10000);
 </code></pre>
 <p>操作如下：<br>
 <img src="https://s1.ax1x.com/2020/04/04/GdWHUO.png" alt="这里写图片描述"></p>
@@ -866,20 +836,20 @@ node2的数据库是node3的数据库的主数据库，所以node2数据库的�
 <p><img src="https://s1.ax1x.com/2020/04/02/GJyR7q.png" alt="这里写图片描述"></p>
 <p>然后测试高可用作用，我们手动关闭node2（master1）数据库，看看是不是自动启用node4（master2）作为主数据库了。当我们关闭了node2（master1）的数据库，发现Mycat还能正常工作，但是无论我们怎么刷新查询操作，都只能查询到一下的数据，这个是node5（slave2）数据库中的数据。这种情况证明了两件事情，一是当node2（master）数据库挂掉了，会自动启用node4（master2）作为主数据库，二是如果主数据库挂掉了，其的从数据库也不会参与查询操作，这样保证了数据的一致性。</p>
 <p>关闭数据库命令：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld stop
+<pre><code class="language-text">service mysqld stop
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/30/Gmc1mQ.png" alt="这里写图片描述"></p>
 <p>然后我们在node4数据库上插入一条数据，主要是观察当再次启动node2的数据库时，会不会保证数据库的数据一致。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>insert into employee(id,name,sharding_id) values(20, 'hello',10000);
+<pre><code class="language-text">insert into employee(id,name,sharding_id) values(20, 'hello',10000);
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/31/GQer36.png" alt="这里写图片描述"></p>
 <p>然后我们再启动MySQL数据库，观察到在node4添加的数据也被添加到这里了。</p>
 <p>启动数据库命令：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld start
+<pre><code class="language-text">service mysqld start
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/03/Gdp8dU.png" alt="这里写图片描述"></p>
 <p>最后有一点要说的是，在真实的项目中，不应该对从数据库（slave）做写入操作，这样会破坏数据的一致性的。上面笔者的操作主要是为了测试使用的。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_9">参考资料</h1>
 <ol>
 <li><a href="https://blog.csdn.net/ydyang1126/article/details/70224185" target="_blank">https://blog.csdn.net/ydyang1126/article/details/70224185</a></li>
 <li><a href="https://www.cnblogs.com/biglittleant/p/7059569.html" target="_blank">https://www.cnblogs.com/biglittleant/p/7059569.html</a></li>
@@ -961,7 +931,7 @@ node2的数据库是node3的数据库的主数据库，所以node2数据库的�
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -970,7 +940,7 @@ node2的数据库是node3的数据库的主数据库，所以node2数据库的�
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -978,11 +948,11 @@ node2的数据库是node3的数据库的主数据库，所以node2数据库的�
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466418002",
@@ -1000,4 +970,4 @@ node2的数据库是node3的数据库的主数据库，所以node2数据库的�
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 440ms, 2020/04/07 11:38:45 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

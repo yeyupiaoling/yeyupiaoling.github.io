@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》二——计算1+1 - 夜雨飘零</title><meta name="description" content="前言 在第一章介绍了PaddlePaddle的安装，接下来我们将介绍如何使用PaddlePaddle。PaddlePaddle是百度在2016年9月27日开源的一个深度学习框架，也是目前国内唯一一个开源的深度学习框架。PaddlePaddle在0.11.0版本之后，开始推出Fluid版本，Fluid版本相对之前的V2版本，Fluid的代码结构更加清晰，使用起来更加方便。这本章中我们将会介绍如何使用PaddlePaddle来计算1+1，选择这个简单的例子主要是为了让读者了解PaddlePaddle的Fluid版本的使用，掌握PaddlePaddle的使用流程。我们讲过介绍如何使用PaddlePaddle定义一个张量和如何对张量进行计算。 计算常量的1+1 PaddlePaddle类似一个科学计算库，比如Python下我们使用的numpy，提供的大量的计算操作，但是PaddlePaddle的计算对象是张量。我们下面就编写一个constant_sum.pyPython文件，使用PaddlePaddle计算一个[[1, 1], [1, 1]] * [[1, 1], [1, 1]]。 首先导入P...."/><meta property="og:description" content="前言 在第一章介绍了PaddlePaddle的安装，接下来我们将介绍如何使用PaddlePaddle。PaddlePaddle是百度在2016年9月27日开源的一个深度学习框架，也是目前国内唯一一个开源的深度学习框架。PaddlePaddle在0.11.0版本之后，开始推出Fluid版本，Fluid版本相对之前的V2版本，Fluid的代码结构更加清晰，使用起来更加方便。这本章中我们将会介绍如何使用PaddlePaddle来计算1+1，选择这个简单的例子主要是为了让读者了解PaddlePaddle的Fluid版本的使用，掌握PaddlePaddle的使用流程。我们讲过介绍如何使用PaddlePaddle定义一个张量和如何对张量进行计算。 计算常量的1+1 PaddlePaddle类似一个科学计算库，比如Python下我们使用的numpy，提供的大量的计算操作，但是PaddlePaddle的计算对象是张量。我们下面就编写一个constant_sum.pyPython文件，使用PaddlePaddle计算一个[[1, 1], [1, 1]] * [[1, 1], [1, 1]]。 首先导入P...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》二——计算1+1 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974387872.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》二——计算1+1 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974387872.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》二——计算1+1 - 夜雨飘零</title><meta name="description" content="前言 在第一章介绍了PaddlePaddle的安装，接下来我们将介绍如何使用PaddlePaddle。PaddlePaddle是百度在2016年9月27日开源的一个深度学习框架，也是目前国内唯一一个开源的深度学习框架。PaddlePaddle在0.11.0版本之后，开始推出Fluid版本，Fluid版本相对之前的V2版本，Fluid的代码结构更加清晰，使用起来更加方便。这本章中我们将会介绍如何使用PaddlePaddle来计算1+1，选择这个简单的例子主要是为了让读者了解PaddlePaddle的Fluid版本的使用，掌握PaddlePaddle的使用流程。我们讲过介绍如何使用PaddlePaddle定义一个张量和如何对张量进行计算。 计算常量的1+1 PaddlePaddle类似一个科学计算库，比如Python下我们使用的numpy，提供的大量的计算操作，但是PaddlePaddle的计算对象是张量。我们下面就编写一个constant_sum.pyPython文件，使用PaddlePaddle计算一个[[1, 1], [1, 1]] * [[1, 1], [1, 1]]。 首先导入P...."/><meta property="og:description" content="前言 在第一章介绍了PaddlePaddle的安装，接下来我们将介绍如何使用PaddlePaddle。PaddlePaddle是百度在2016年9月27日开源的一个深度学习框架，也是目前国内唯一一个开源的深度学习框架。PaddlePaddle在0.11.0版本之后，开始推出Fluid版本，Fluid版本相对之前的V2版本，Fluid的代码结构更加清晰，使用起来更加方便。这本章中我们将会介绍如何使用PaddlePaddle来计算1+1，选择这个简单的例子主要是为了让读者了解PaddlePaddle的Fluid版本的使用，掌握PaddlePaddle的使用流程。我们讲过介绍如何使用PaddlePaddle定义一个张量和如何对张量进行计算。 计算常量的1+1 PaddlePaddle类似一个科学计算库，比如Python下我们使用的numpy，提供的大量的计算操作，但是PaddlePaddle的计算对象是张量。我们下面就编写一个constant_sum.pyPython文件，使用PaddlePaddle计算一个[[1, 1], [1, 1]] * [[1, 1], [1, 1]]。 首先导入P...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》二——计算1+1 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974387872.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》二——计算1+1 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974387872.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《PaddlePaddle从入门到炼丹》一——新版本PaddlePaddle的安装" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974303857.html">
             <link rel="next" title="《PaddlePaddle从入门到炼丹》三——线性回归" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974471592.html">
     <!-- 百度统计 -->
@@ -78,16 +78,16 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#计算常量的1-1">计算常量的1+1</a>
+            <a href="#toc_h1_1">计算常量的1+1</a>
         </li>
         <li class="toc__h1">
-            <a href="#计算变量的1-1">计算变量的1+1</a>
+            <a href="#toc_h1_2">计算变量的1+1</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_3">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -135,82 +135,82 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20180114.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>在第一章介绍了PaddlePaddle的安装，接下来我们将介绍如何使用PaddlePaddle。PaddlePaddle是百度在2016年9月27日开源的一个深度学习框架，也是目前国内唯一一个开源的深度学习框架。PaddlePaddle在0.11.0版本之后，开始推出Fluid版本，Fluid版本相对之前的V2版本，Fluid的代码结构更加清晰，使用起来更加方便。这本章中我们将会介绍如何使用PaddlePaddle来计算1+1，选择这个简单的例子主要是为了让读者了解PaddlePaddle的Fluid版本的使用，掌握PaddlePaddle的使用流程。我们讲过介绍如何使用PaddlePaddle定义一个张量和如何对张量进行计算。</p>
-<h1 id="计算常量的1-1">计算常量的1+1</h1>
+<h1 id="toc_h1_1">计算常量的1+1</h1>
 <p>PaddlePaddle类似一个科学计算库，比如Python下我们使用的numpy，提供的大量的计算操作，但是PaddlePaddle的计算对象是张量。我们下面就编写一个<code>constant_sum.py</code>Python文件，使用PaddlePaddle计算一个<code>[[1, 1], [1, 1]] * [[1, 1], [1, 1]]</code>。</p>
 <p>首先导入PaddlePaddle库，大部分的API都在<code>paddle.fluid</code>下。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
+<pre><code class="language-python">import paddle.fluid as fluid
 </code></pre>
 <p>定义两个张量的常量x1和x2，并指定它们的形状是[2, 2]，并赋值为1铺满整个张量，类型为int64.</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义两个张量</span>
-<span class="highlight-ln">2</span><span class="highlight-n">x1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fill_constant</span><span class="highlight-p">(</span><span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">],</span> <span class="highlight-n">value</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">x2</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">fill_constant</span><span class="highlight-p">(</span><span class="highlight-n">shape</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">],</span> <span class="highlight-n">value</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义两个张量
+x1 = fluid.layers.fill_constant(shape=[2, 2], value=1, dtype='int64')
+x2 = fluid.layers.fill_constant(shape=[2, 2], value=1, dtype='int64')
 </code></pre>
 <p>接着定义一个操作，该计算是将上面两个张量进行加法计算，并返回一个求和的算子。PaddlePaddle提供了大量的操作，比如加减乘除、三角函数等，读者可以在<code>fluid.layers</code>找到。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 将两个张量求和</span>
-<span class="highlight-ln">2</span><span class="highlight-n">y1</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">x1</span><span class="highlight-p">,</span> <span class="highlight-n">x2</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 将两个张量求和
+y1 = fluid.layers.sum(x=[x1, x2])
 </code></pre>
 <p>然后创建一个执行器，可以在这里指定计算使用CPU或GPU。当使用<code>CPUPlace()</code>时使用的是CPU，如果是<code>CUDAPlace()</code>使用的是GPU。解析器是之后使用它来进行计算过的，比如在执行计算之前我们要先执行参数初始化的<code>program</code>也是要使用到解析器的，因为只有解析器才能执行<code>program</code>。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 创建一个使用CPU的执行器</span>
-<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">executor</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 进行参数初始化</span>
-<span class="highlight-ln">5</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+<pre><code class="language-python"># 创建一个使用CPU的执行器
+place = fluid.CPUPlace()
+exe = fluid.executor.Executor(place)
+# 进行参数初始化
+exe.run(fluid.default_startup_program())
 </code></pre>
 <p>最后执行计算，<code>program</code>的参数值是主程序，不是上一步使用的是初始化参数的程序，<code>program</code>默认一共有两个，分别是<code>default_startup_program()</code>和<code>default_main_program()</code>。<code>fetch_list</code>参数的值是在解析器在run之后要输出的值，我们要输出计算加法之后输出结果值。最后计算得到的也是一个张量。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 进行运算，并把y的结果输出</span>
-<span class="highlight-ln">2</span><span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">3</span>                 <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">y1</span><span class="highlight-p">])</span>
-<span class="highlight-ln">4</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 进行运算，并把y的结果输出
+result = exe.run(program=fluid.default_main_program(),
+                 fetch_list=[y1])
+print(result)
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>[array([[2, 2],
-<span class="highlight-ln">2</span>       [2, 2]], dtype=int64)]
+<pre><code>[array([[2, 2],
+       [2, 2]], dtype=int64)]
 </code></pre>
-<h1 id="计算变量的1-1">计算变量的1+1</h1>
+<h1 id="toc_h1_2">计算变量的1+1</h1>
 <p>上面计算的是张量常量的1+1，并不能随意修改常量的值，所以下面我们要编写一个<code>variable_sum.py</code>程序文件，使用张量变量作为乘数的程序，类似是一个占位符，等到将要计算时，再把要计算的值添加到占位符中进行计算。</p>
 <p>导入PaddlePaddle库和numpy的库。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.fluid</span> <span class="highlight-kn">as</span> <span class="highlight-nn">fluid</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
+<pre><code class="language-python">import paddle.fluid as fluid
+import numpy as np
 </code></pre>
 <p>定义两个张量，并不指定该张量的形状和值，它们是之后动态赋值的。这里只是指定它们的类型和名字，这个名字是我们之后赋值的关键。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义两个张量</span>
-<span class="highlight-ln">2</span><span class="highlight-n">a</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">create_tensor</span><span class="highlight-p">(</span><span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'a'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">b</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">create_tensor</span><span class="highlight-p">(</span><span class="highlight-n">dtype</span><span class="highlight-o">=</span><span class="highlight-s1">'int64'</span><span class="highlight-p">,</span> <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'b'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义两个张量
+a = fluid.layers.create_tensor(dtype='int64', name='a')
+b = fluid.layers.create_tensor(dtype='int64', name='b')
 </code></pre>
 <p>使用同样的方式，定义这个两个张量的加法操作。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 将两个张量求和</span>
-<span class="highlight-ln">2</span><span class="highlight-n">y</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">layers</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">a</span><span class="highlight-p">,</span> <span class="highlight-n">b</span><span class="highlight-p">])</span>
+<pre><code class="language-python"># 将两个张量求和
+y = fluid.layers.sum(x=[a, b])
 </code></pre>
 <p>这里我们同样是创建一个使用CPU的执行器，和进行参数初始化。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 创建一个使用CPU的执行器</span>
-<span class="highlight-ln">2</span><span class="highlight-n">place</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">CPUPlace</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span><span class="highlight-n">exe</span> <span class="highlight-o">=</span> <span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">executor</span><span class="highlight-o">.</span><span class="highlight-n">Executor</span><span class="highlight-p">(</span><span class="highlight-n">place</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 进行参数初始化</span>
-<span class="highlight-ln">5</span><span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_startup_program</span><span class="highlight-p">())</span>
+<pre><code class="language-python"># 创建一个使用CPU的执行器
+place = fluid.CPUPlace()
+exe = fluid.executor.Executor(place)
+# 进行参数初始化
+exe.run(fluid.default_startup_program())
 </code></pre>
 <p>然后使用numpy创建两个张量值，之后我们要计算的就是这两个值。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 定义两个要计算的变量</span>
-<span class="highlight-ln">2</span><span class="highlight-n">a1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">([</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">])</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'int64'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 定义两个要计算的变量
+a1 = np.array([3, 2]).astype('int64')
+b1 = np.array([1, 1]).astype('int64')
 </code></pre>
 <p>这次<code>exe.run()</code>的参数有点不一样了，多了一个<code>feed</code>参数，这个就是要对张量变量进行赋值的。赋值的方式是使用了键值对的格式，key是定义张量变量是指定的名称，value就是要传递的值。在<code>fetch_list</code>参数中，笔者希望把<code>a, b, y</code>的值都输出来，所以要使用3个变量来接受返回值。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 进行运算，并把y的结果输出</span>
-<span class="highlight-ln">2</span><span class="highlight-n">out_a</span><span class="highlight-p">,</span> <span class="highlight-n">out_b</span><span class="highlight-p">,</span> <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">exe</span><span class="highlight-o">.</span><span class="highlight-n">run</span><span class="highlight-p">(</span><span class="highlight-n">program</span><span class="highlight-o">=</span><span class="highlight-n">fluid</span><span class="highlight-o">.</span><span class="highlight-n">default_main_program</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">3</span>                               <span class="highlight-n">feed</span><span class="highlight-o">=</span><span class="highlight-p">{</span><span class="highlight-s1">'a'</span><span class="highlight-p">:</span> <span class="highlight-n">a1</span><span class="highlight-p">,</span> <span class="highlight-s1">'b'</span><span class="highlight-p">:</span> <span class="highlight-n">b1</span><span class="highlight-p">},</span>
-<span class="highlight-ln">4</span>                               <span class="highlight-n">fetch_list</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">a</span><span class="highlight-p">,</span> <span class="highlight-n">b</span><span class="highlight-p">,</span> <span class="highlight-n">y</span><span class="highlight-p">])</span>
-<span class="highlight-ln">5</span><span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-n">out_a</span><span class="highlight-p">,</span> <span class="highlight-s2">" + "</span><span class="highlight-p">,</span> <span class="highlight-n">out_b</span><span class="highlight-p">,</span><span class="highlight-s2">" = "</span><span class="highlight-p">,</span> <span class="highlight-n">result</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 进行运算，并把y的结果输出
+out_a, out_b, result = exe.run(program=fluid.default_main_program(),
+                               feed={'a': a1, 'b': b1},
+                               fetch_list=[a, b, y])
+print(out_a, " + ", out_b," = ", result)
 </code></pre>
 <p>输出信息：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>[3 2]  +  [1 1]  =  [4 3]
+<pre><code>[3 2]  +  [1 1]  =  [4 3]
 </code></pre>
 <p>到处为止，本章就结束了。在本章我们学会了PaddlePaddle的使用方式，那在下一章我们使用PaddlePaddle完成我们的第一个安装——线性回归，我们下章见。</p>
 <p>同步到百度AI Studio平台：<a href="http://aistudio.baidu.com/aistudio/projectdetail/29339" target="_blank">http://aistudio.baidu.com/aistudio/projectdetail/29339</a><br>
 同步到科赛网K-Lab平台：<a href="https://www.kesci.com/home/project/5bf75387954d6e0010668f76" target="_blank">https://www.kesci.com/home/project/5bf75387954d6e0010668f76</a><br>
 项目代码GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note2" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note2</a></p>
 <p><strong>注意：</strong> 最新代码以GitHub上的为准</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_3">参考资料</h1>
 <ol>
 <li><a href="http://www.paddlepaddle.org/documentation/api/zh/1.0/layers.html" target="_blank">http://www.paddlepaddle.org/documentation/api/zh/1.0/layers.html</a></li>
 </ol>
@@ -289,7 +289,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -298,7 +298,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -306,11 +306,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466414105",
@@ -328,4 +328,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 46ms, 2020/04/07 11:38:41 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 30ms, 2020/04/07 14:57:07 -->

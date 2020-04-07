@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上 - 夜雨飘零</title><meta name="description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 PaddlePaddle还可以迁移到Android或者Linux设备上，在这些部署了PaddlePaddle的设备同样可以做深度学习的预测。在这篇文章中我们就介绍如何把PaddlePaddle迁移到Android手机上，并在Android的APP中使用PaddlePaddle。 编译PaddlePaddle库 使用Docker编译PaddlePaddle库 使用Docker编译PaddlePaddle真的会很方便，如果你对比了下面部分的使用Linux编译PaddlePaddle库，你就会发现使用Docker会少很多麻烦，比如安装一些依赖库等等。而且Docker是跨平台的，不管读者使用的是Windows，Linux，还是Mac，都可以使用Docker。以下操作方法都是在64位的Ubuntu 16.04上实现的。 首先安装Docker，在Ubuntu上安装很简单，只要一条命令就可以了 sudo apt install docker.io 安装完成之后，可以使用docker --version命令查看是...."/><meta property="og:description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 PaddlePaddle还可以迁移到Android或者Linux设备上，在这些部署了PaddlePaddle的设备同样可以做深度学习的预测。在这篇文章中我们就介绍如何把PaddlePaddle迁移到Android手机上，并在Android的APP中使用PaddlePaddle。 编译PaddlePaddle库 使用Docker编译PaddlePaddle库 使用Docker编译PaddlePaddle真的会很方便，如果你对比了下面部分的使用Linux编译PaddlePaddle库，你就会发现使用Docker会少很多麻烦，比如安装一些依赖库等等。而且Docker是跨平台的，不管读者使用的是Windows，Linux，还是Mac，都可以使用Docker。以下操作方法都是在64位的Ubuntu 16.04上实现的。 首先安装Docker，在Ubuntu上安装很简单，只要一条命令就可以了 sudo apt install docker.io 安装完成之后，可以使用docker --version命令查看是...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上 - 夜雨飘零</title><meta name="description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 PaddlePaddle还可以迁移到Android或者Linux设备上，在这些部署了PaddlePaddle的设备同样可以做深度学习的预测。在这篇文章中我们就介绍如何把PaddlePaddle迁移到Android手机上，并在Android的APP中使用PaddlePaddle。 编译PaddlePaddle库 使用Docker编译PaddlePaddle库 使用Docker编译PaddlePaddle真的会很方便，如果你对比了下面部分的使用Linux编译PaddlePaddle库，你就会发现使用Docker会少很多麻烦，比如安装一些依赖库等等。而且Docker是跨平台的，不管读者使用的是Windows，Linux，还是Mac，都可以使用Docker。以下操作方法都是在64位的Ubuntu 16.04上实现的。 首先安装Docker，在Ubuntu上安装很简单，只要一条命令就可以了 sudo apt install docker.io 安装完成之后，可以使用docker --version命令查看是...."/><meta property="og:description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 PaddlePaddle还可以迁移到Android或者Linux设备上，在这些部署了PaddlePaddle的设备同样可以做深度学习的预测。在这篇文章中我们就介绍如何把PaddlePaddle迁移到Android手机上，并在Android的APP中使用PaddlePaddle。 编译PaddlePaddle库 使用Docker编译PaddlePaddle库 使用Docker编译PaddlePaddle真的会很方便，如果你对比了下面部分的使用Linux编译PaddlePaddle库，你就会发现使用Docker会少很多麻烦，比如安装一些依赖库等等。而且Docker是跨平台的，不管读者使用的是Windows，Linux，还是Mac，都可以使用Docker。以下操作方法都是在64位的Ubuntu 16.04上实现的。 首先安装Docker，在Ubuntu上安装很简单，只要一条命令就可以了 sudo apt install docker.io 安装完成之后，可以使用docker --version命令查看是...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记十四——把PaddlePaddle迁移到Android设备上 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971487998.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《我的PaddlePaddle学习之路》笔记十三——把PaddlePaddle部署到网站服务器上" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971401082.html">
             <link rel="next" title="《Neural Networks and Deep Learning》的理论知识点" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971580995.html">
     <!-- 百度统计 -->
@@ -78,94 +78,94 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#编译PaddlePaddle库">编译PaddlePaddle库</a>
+            <a href="#toc_h1_1">编译PaddlePaddle库</a>
         </li>
         <li class="toc__h2">
-            <a href="#使用Docker编译PaddlePaddle库">使用Docker编译PaddlePaddle库</a>
+            <a href="#toc_h2_2">使用Docker编译PaddlePaddle库</a>
         </li>
         <li class="toc__h3">
-            <a href="#可能会出现的问题">可能会出现的问题</a>
+            <a href="#toc_h3_3">可能会出现的问题</a>
         </li>
         <li class="toc__h3">
-            <a href="#使用官方的Docker容器">使用官方的Docker容器</a>
+            <a href="#toc_h3_4">使用官方的Docker容器</a>
         </li>
         <li class="toc__h3">
-            <a href="#开始编译PaddlePaddle库">开始编译PaddlePaddle库</a>
+            <a href="#toc_h3_5">开始编译PaddlePaddle库</a>
         </li>
         <li class="toc__h2">
-            <a href="#使用Linux编译PaddlePaddle库">使用Linux编译PaddlePaddle库</a>
+            <a href="#toc_h2_6">使用Linux编译PaddlePaddle库</a>
         </li>
         <li class="toc__h3">
-            <a href="#安装依赖环境">安装依赖环境</a>
+            <a href="#toc_h3_7">安装依赖环境</a>
         </li>
         <li class="toc__h3">
-            <a href="#配置编译环境">配置编译环境</a>
+            <a href="#toc_h3_8">配置编译环境</a>
         </li>
         <li class="toc__h3">
-            <a href="#编译和安装">编译和安装</a>
+            <a href="#toc_h3_9">编译和安装</a>
         </li>
         <li class="toc__h1">
-            <a href="#训练模型">训练模型</a>
+            <a href="#toc_h1_10">训练模型</a>
         </li>
         <li class="toc__h2">
-            <a href="#定义神经网络">定义神经网络</a>
+            <a href="#toc_h2_11">定义神经网络</a>
         </li>
         <li class="toc__h2">
-            <a href="#编写训练代码">编写训练代码</a>
+            <a href="#toc_h2_12">编写训练代码</a>
         </li>
         <li class="toc__h3">
-            <a href="#初始化PaddlePaddle">初始化PaddlePaddle</a>
+            <a href="#toc_h3_13">初始化PaddlePaddle</a>
         </li>
         <li class="toc__h3">
-            <a href="#获取训练参数">获取训练参数</a>
+            <a href="#toc_h3_14">获取训练参数</a>
         </li>
         <li class="toc__h3">
-            <a href="#获取训练器">获取训练器</a>
+            <a href="#toc_h3_15">获取训练器</a>
         </li>
         <li class="toc__h3">
-            <a href="#开始训练">开始训练</a>
+            <a href="#toc_h3_16">开始训练</a>
         </li>
         <li class="toc__h2">
-            <a href="#编写预测代码">编写预测代码</a>
+            <a href="#toc_h2_17">编写预测代码</a>
         </li>
         <li class="toc__h1">
-            <a href="#合并模型">合并模型</a>
+            <a href="#toc_h1_18">合并模型</a>
         </li>
         <li class="toc__h2">
-            <a href="#准备文件">准备文件</a>
+            <a href="#toc_h2_19">准备文件</a>
         </li>
         <li class="toc__h2">
-            <a href="#开始合并">开始合并</a>
+            <a href="#toc_h2_20">开始合并</a>
         </li>
         <li class="toc__h1">
-            <a href="#移植到Android">移植到Android</a>
+            <a href="#toc_h1_21">移植到Android</a>
         </li>
         <li class="toc__h2">
-            <a href="#加载PaddlePaddle库">加载PaddlePaddle库</a>
+            <a href="#toc_h2_22">加载PaddlePaddle库</a>
         </li>
         <li class="toc__h2">
-            <a href="#加载合并模型">加载合并模型</a>
+            <a href="#toc_h2_23">加载合并模型</a>
         </li>
         <li class="toc__h2">
-            <a href="#开发Android程序">开发Android程序</a>
+            <a href="#toc_h2_24">开发Android程序</a>
         </li>
         <li class="toc__h3">
-            <a href="#初始化PaddlePaddle">初始化PaddlePaddle</a>
+            <a href="#toc_h3_25">初始化PaddlePaddle</a>
         </li>
         <li class="toc__h3">
-            <a href="#加载合并模型">加载合并模型</a>
+            <a href="#toc_h3_26">加载合并模型</a>
         </li>
         <li class="toc__h3">
-            <a href="#预测图像">预测图像</a>
+            <a href="#toc_h3_27">预测图像</a>
         </li>
         <li class="toc__h1">
-            <a href="#项目代码">项目代码</a>
+            <a href="#toc_h1_28">项目代码</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_29">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -214,56 +214,56 @@ var _hmt = _hmt || [];
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20181022.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
 <p>*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7</p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <hr>
 <p>PaddlePaddle还可以迁移到Android或者Linux设备上，在这些部署了PaddlePaddle的设备同样可以做深度学习的预测。在这篇文章中我们就介绍如何把PaddlePaddle迁移到Android手机上，并在Android的APP中使用PaddlePaddle。</p>
-<h1 id="编译PaddlePaddle库">编译PaddlePaddle库</h1>
+<h1 id="toc_h1_1">编译PaddlePaddle库</h1>
 <hr>
-<h2 id="使用Docker编译PaddlePaddle库">使用Docker编译PaddlePaddle库</h2>
+<h2 id="toc_h2_2">使用Docker编译PaddlePaddle库</h2>
 <p>使用Docker编译PaddlePaddle真的会很方便，如果你对比了下面部分的<strong>使用Linux编译PaddlePaddle库</strong>，你就会发现使用Docker会少很多麻烦，比如安装一些依赖库等等。而且Docker是跨平台的，不管读者使用的是Windows，Linux，还是Mac，都可以使用Docker。以下操作方法都是在64位的Ubuntu 16.04上实现的。<br>
 首先安装Docker，在Ubuntu上安装很简单，只要一条命令就可以了</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt install docker.io
+<pre><code class="language-text">sudo apt install docker.io
 </code></pre>
 <p>安装完成之后，可以使用<code>docker --version</code>命令查看是否安装成功，如果安装成功会输出Docker的版本信息。</p>
 <p>然后是在GitHub上克隆PaddlePaddle源码，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/PaddlePaddle/Paddle.git
+<pre><code class="language-text">git clone https://github.com/PaddlePaddle/Paddle.git
 </code></pre>
 <p>克隆完成PaddlePaddle源码之后，就可以使用PaddlePaddle源码创建可以编译给Android使用的PaddlePaddle库的Docker容器了：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 切入到源码目录</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cd</span> <span class="highlight-n">Paddle</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 创建Docker容器</span>
-<span class="highlight-ln">4</span><span class="highlight-n">docker</span> <span class="highlight-n">build</span> <span class="highlight-o">-</span><span class="highlight-n">t</span> <span class="highlight-n">mypaddle</span><span class="highlight-o">/</span><span class="highlight-n">paddle</span><span class="highlight-o">-</span><span class="highlight-n">android</span><span class="highlight-p">:</span><span class="highlight-n">dev</span> <span class="highlight-o">.</span> <span class="highlight-o">-</span><span class="highlight-n">f</span> <span class="highlight-n">Dockerfile</span><span class="highlight-o">.</span><span class="highlight-n">android</span>
+<pre><code class="language-python"># 切入到源码目录
+cd Paddle
+# 创建Docker容器
+docker build -t mypaddle/paddle-android:dev . -f Dockerfile.android
 </code></pre>
-<h3 id="可能会出现的问题">可能会出现的问题</h3>
-<p>值得注意的是如果读者的电脑不能科学上网的，会在下载<a href="https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz" target="_blank">https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz</a>的时候报错，可以修改其下载路径。使用的文件是在Paddle目录下的<code>Dockerfile.android</code>，所以要在这个文件中修改，具体在25行，将其修改成<a href="https://dl.google.com/go/go1.8.1.linux-amd64.tar.gz" target="_blank">https://dl.google.com/go/go1.8.1.linux-amd64.tar.gz</a>，如果可以科学上网，就不必理会。<br>
+<h3 id="toc_h3_3">可能会出现的问题</h3>
+<p>值得注意的是如果读者的电脑不能科学上网的，会在下载<a href="https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz的时候报错，可以修改其下载路径。使用的文件是在Paddle目录下的" target="_blank">https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz的时候报错，可以修改其下载路径。使用的文件是在Paddle目录下的</a><code>Dockerfile.android</code>，所以要在这个文件中修改，具体在25行，将其修改成<a href="https://dl.google.com/go/go1.8.1.linux-amd64.tar.gz，如果可以科学上网，就不必理会。" target="_blank">https://dl.google.com/go/go1.8.1.linux-amd64.tar.gz，如果可以科学上网，就不必理会。</a><br>
 如果再不行就干脆去掉GO语言依赖，因为编译Android的PaddlePaddle库根本就不用GO语言依赖库，具体操作如下：<br>
 修改<code>Paddle/CMakeLists.txt</code>下的22行</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span> project(paddle CXX C Go) 
+<pre><code class="language-text"> project(paddle CXX C Go) 
 </code></pre>
 <p>去掉Go依赖，修改成如下</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>project(paddle CXX C)
+<pre><code class="language-text">project(paddle CXX C)
 </code></pre>
 <p>删除<code>Paddle/Dockerfile.android</code>的Go语言配置</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span># Install Go and glide
-<span class="highlight-ln">2</span>RUN wget -qO- go.tgz https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz | \
-<span class="highlight-ln">3</span>    tar -xz -C /usr/local &amp;&amp; \
-<span class="highlight-ln">4</span>    mkdir /root/gopath &amp;&amp; \
-<span class="highlight-ln">5</span>    mkdir /root/gopath/bin &amp;&amp; \
-<span class="highlight-ln">6</span>    mkdir /root/gopath/src
-<span class="highlight-ln">7</span>ENV GOROOT=/usr/local/go GOPATH=/root/gopath
-<span class="highlight-ln">8</span># should not be in the same line with GOROOT definition, otherwise docker build could not find GOROOT.
-<span class="highlight-ln">9</span>ENV PATH=${PATH}:${GOROOT}/bin:${GOPATH}/bin
+<pre><code class="language-text"># Install Go and glide
+RUN wget -qO- go.tgz https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz | \
+    tar -xz -C /usr/local &amp;&amp; \
+    mkdir /root/gopath &amp;&amp; \
+    mkdir /root/gopath/bin &amp;&amp; \
+    mkdir /root/gopath/src
+ENV GOROOT=/usr/local/go GOPATH=/root/gopath
+# should not be in the same line with GOROOT definition, otherwise docker build could not find GOROOT.
+ENV PATH=${PATH}:${GOROOT}/bin:${GOPATH}/bin
 </code></pre>
-<h3 id="使用官方的Docker容器">使用官方的Docker容器</h3>
+<h3 id="toc_h3_4">使用官方的Docker容器</h3>
 <p>如果读者不想使用源码创建Docker容器，PaddlePaddle官方也提供了创建好的Docker容器，读者可以直接拉到本地就可以使用了，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker pull paddlepaddle/paddle:latest-dev-android
+<pre><code class="language-text">docker pull paddlepaddle/paddle:latest-dev-android
 </code></pre>
 <p>以上是国外的镜像，如果pull的速度慢，可以使用国内的镜像</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker pull docker.paddlepaddlehub.com/paddle:latest-dev-android
+<pre><code class="language-text">docker pull docker.paddlepaddlehub.com/paddle:latest-dev-android
 </code></pre>
-<h3 id="开始编译PaddlePaddle库">开始编译PaddlePaddle库</h3>
+<h3 id="toc_h3_5">开始编译PaddlePaddle库</h3>
 <p>编译<code>armeabi-v7a</code>，<code>Android API 21</code>的PaddlePaddle库，命令如下，创建PaddlePaddle的配置可以使用<code>e</code>命令设置。在命令的最后可以看到使用的容器是我们自己创建的Docker容器<code>mypaddle/paddle-android:dev</code>，如果换成官方提供的，把Docker名称修改成<code>paddlepaddle/paddle:latest-dev-android</code>即可。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker run -it --rm -v $PWD:/paddle -e "ANDROID_ABI=armeabi-v7a" -e "ANDROID_API=21" mypaddle/paddle-android:dev
+<pre><code class="language-text">docker run -it --rm -v $PWD:/paddle -e "ANDROID_ABI=armeabi-v7a" -e "ANDROID_API=21" mypaddle/paddle-android:dev
 </code></pre>
 <p>当编译完成之后，在<code>$PWD/install_android</code>目录下创建以下三个目录，<code>$PWD</code>表示当前目录，笔者当前目录为<code>/home/work/android/docker/</code>。这些文件就是我们之后在Android的APP上会使用的的文件：</p>
 <ul>
@@ -272,76 +272,76 @@ var _hmt = _hmt || [];
 <li><code>third_party</code>是所依赖的所有第三方库</li>
 </ul>
 <p>上面的是编译<code>armeabi-v7a</code>，<code>Android API 21</code>的PaddlePaddle库，如果读者想编译<code>arm64-v8a</code>，<code>Android API 21</code>的PaddlePaddle库，只要修改命令参数就可以了，具体命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>docker run -it --rm -v $PWD:/paddle -e "ANDROID_ABI=arm64-v8a" -e "ANDROID_API=21" mypaddle/paddle-android:dev
+<pre><code class="language-text">docker run -it --rm -v $PWD:/paddle -e "ANDROID_ABI=arm64-v8a" -e "ANDROID_API=21" mypaddle/paddle-android:dev
 </code></pre>
-<h2 id="使用Linux编译PaddlePaddle库">使用Linux编译PaddlePaddle库</h2>
+<h2 id="toc_h2_6">使用Linux编译PaddlePaddle库</h2>
 <p>如果读者不习惯与使用Docker，或者想进一步了解编译PaddlePaddle库的流程，想使用Linux编译PaddlePaddle库，这也是没有问题的，只是步骤比较复杂一些。</p>
-<h3 id="安装依赖环境">安装依赖环境</h3>
+<h3 id="toc_h3_7">安装依赖环境</h3>
 <p>首先要安装编译的依赖库，安装<code>gcc 4.9</code>，命令如下。安装完成之后使用<code>gcc --version</code>查看安装是否安装成功。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sudo apt-get install gcc-4.9
+<pre><code class="language-text">sudo apt-get install gcc-4.9
 </code></pre>
 <p>安装<code>clang 3.8</code>命令如下。同样安装完成之后使用<code>clang --version</code>查看安装是否安装成功</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>apt install clang
+<pre><code class="language-text">apt install clang
 </code></pre>
 <p>安装GO语言环境</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>apt-get install golang
+<pre><code class="language-text">apt-get install golang
 </code></pre>
 <p>安装<code>CMake</code>，最好安装版本为3.8以上的。首先下载<code>CMake</code>源码。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>wget https://cmake.org/files/v3.8/cmake-3.8.0.tar.gz
+<pre><code class="language-text">wget https://cmake.org/files/v3.8/cmake-3.8.0.tar.gz
 </code></pre>
 <p>解压<code>CMake</code>源码</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>tar -zxvf cmake-3.8.0.tar.gz
+<pre><code class="language-text">tar -zxvf cmake-3.8.0.tar.gz
 </code></pre>
 <p>依次执行下面的代码</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 进入解压后的目录</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cd</span> <span class="highlight-n">cmake</span><span class="highlight-o">-</span><span class="highlight-mf">3.8</span><span class="highlight-o">.</span><span class="highlight-mi">0</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 执行当前目录的bootstrap程序</span>
-<span class="highlight-ln">4</span><span class="highlight-o">./</span><span class="highlight-n">bootstrap</span>
-<span class="highlight-ln">5</span><span class="highlight-c1"># make一下，使用12个线程</span>
-<span class="highlight-ln">6</span><span class="highlight-n">make</span> <span class="highlight-o">-</span><span class="highlight-n">j12</span>
-<span class="highlight-ln">7</span><span class="highlight-c1"># 开始安装</span>
-<span class="highlight-ln">8</span><span class="highlight-n">sudo</span> <span class="highlight-n">make</span> <span class="highlight-n">install</span>
+<pre><code class="language-python"># 进入解压后的目录
+cd cmake-3.8.0
+# 执行当前目录的bootstrap程序
+./bootstrap
+# make一下，使用12个线程
+make -j12
+# 开始安装
+sudo make install
 </code></pre>
-<h3 id="配置编译环境">配置编译环境</h3>
+<h3 id="toc_h3_8">配置编译环境</h3>
 <p>下载<code>Android NDK</code>，<code>Android NDK</code>是Android平台上使用的C/C++交叉编译工具链，<code>Android NDK</code>中包含了所有Android API级别、所有架构（arm/arm64/x86/mips）需要用到的编译工具和系统库。下载命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip
+<pre><code class="language-text">wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip
 </code></pre>
 <p>笔者当前的目录为<code>/home/work/android/linux/</code>，然后让它解压到当前目录，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>unzip android-ndk-r14b-linux-x86_64.zip
+<pre><code class="language-text">unzip android-ndk-r14b-linux-x86_64.zip
 </code></pre>
 <p>如果读者没有安装解压工具，还要先安装解压工具<code>unzip</code>，安装命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>apt install unzip
+<pre><code class="language-text">apt install unzip
 </code></pre>
 <p>然后构建<code>armeabi-v7a</code>、 <code>Android API 21</code>的独立工具链，命令如下，使用的脚步是刚下载的<code>Android NDK</code>的<code>android-ndk-r14b/build/tools/make-standalone-toolchain.sh</code>，生成的独立工具链存放在<code>/home/work/android/linux/arm_standalone_toolchain</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>/home/work/android/linux/android-ndk-r14b/build/tools/make-standalone-toolchain.sh \
-<span class="highlight-ln">2</span>        --arch=arm --platform=android-21 --install-dir=/home/work/android/linux/arm_standalone_toolchain
+<pre><code class="language-text">/home/work/android/linux/android-ndk-r14b/build/tools/make-standalone-toolchain.sh \
+        --arch=arm --platform=android-21 --install-dir=/home/work/android/linux/arm_standalone_toolchain
 </code></pre>
 <p>切入到Paddle目录下，并创建build目录</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 切入到Paddle源码中</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cd</span> <span class="highlight-n">Paddle</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 创建一个build目录，在此编译</span>
-<span class="highlight-ln">4</span><span class="highlight-n">mkdir</span> <span class="highlight-n">build</span>
-<span class="highlight-ln">5</span><span class="highlight-c1"># 切入到build目录</span>
-<span class="highlight-ln">6</span><span class="highlight-n">cd</span> <span class="highlight-n">build</span>
+<pre><code class="language-python"># 切入到Paddle源码中
+cd Paddle
+# 创建一个build目录，在此编译
+mkdir build
+# 切入到build目录
+cd build
 </code></pre>
 <p>在<code>build</code>目录下配置交叉编译参数，编译的<code>Android ABI</code>是<code>armeabi-v7a</code>，使用的工具链是上一面生成的工具链<code>/home/work/android/linux/arm_standalone_toolchain</code>，设置存放编译好的文件存放在<code>/home/work/android/linux/install</code>，具体命令如下，不要少了最后的<code>..</code>，这个是说在上一个目录使用<code>CMake</code>文件：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>cmake -DCMAKE_SYSTEM_NAME=Android \
-<span class="highlight-ln"> 2</span>      -DANDROID_STANDALONE_TOOLCHAIN=/home/work/android/linux/arm_standalone_toolchain \
-<span class="highlight-ln"> 3</span>      -DANDROID_ABI=armeabi-v7a \
-<span class="highlight-ln"> 4</span>      -DANDROID_ARM_NEON=ON \
-<span class="highlight-ln"> 5</span>      -DANDROID_ARM_MODE=ON \
-<span class="highlight-ln"> 6</span>      -DUSE_EIGEN_FOR_BLAS=ON \
-<span class="highlight-ln"> 7</span>      -DCMAKE_INSTALL_PREFIX=/home/work/android/linux/install \
-<span class="highlight-ln"> 8</span>      -DWITH_C_API=ON \
-<span class="highlight-ln"> 9</span>      -DWITH_SWIG_PY=OFF \
-<span class="highlight-ln">10</span>      ..
+<pre><code class="language-text">cmake -DCMAKE_SYSTEM_NAME=Android \
+      -DANDROID_STANDALONE_TOOLCHAIN=/home/work/android/linux/arm_standalone_toolchain \
+      -DANDROID_ABI=armeabi-v7a \
+      -DANDROID_ARM_NEON=ON \
+      -DANDROID_ARM_MODE=ON \
+      -DUSE_EIGEN_FOR_BLAS=ON \
+      -DCMAKE_INSTALL_PREFIX=/home/work/android/linux/install \
+      -DWITH_C_API=ON \
+      -DWITH_SWIG_PY=OFF \
+      ..
 </code></pre>
-<h3 id="编译和安装">编译和安装</h3>
+<h3 id="toc_h3_9">编译和安装</h3>
 <p>CMake配置完成后，执行以下命令，PaddlePaddle将自动下载和编译所有第三方依赖库、编译和安装PaddlePaddle预测库。在<code>make</code>前应保证PaddlePaddle的源码目录是干净的，也就是没有编译过其他平台的PaddlePaddle库，又或者已经删除了之前编译生成的文件。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 使用12线程make</span>
-<span class="highlight-ln">2</span><span class="highlight-n">make</span> <span class="highlight-o">-</span><span class="highlight-n">j12</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 开始安装</span>
-<span class="highlight-ln">4</span><span class="highlight-n">make</span> <span class="highlight-n">install</span>
+<pre><code class="language-python"># 使用12线程make
+make -j12
+# 开始安装
+make install
 </code></pre>
 <p>当编译完成之后，在<code>/home/work/android/linux/install</code>目录下创建以下三个目录。这些文件就是我们之后在Android的APP上会使用的的文件，这些文件跟我们之前使用Docker编译的结果是一样的：</p>
 <ul>
@@ -351,401 +351,401 @@ var _hmt = _hmt || [];
 </ul>
 <p>同样，上面的流程是生成<code>armeabi-v7a</code>，<code>Android API 21</code>的PaddlePaddle库。如果要编译<code>arm64-v8a</code>，<code>Android API 21</code>的PaddlePaddle库要修改两处的参数。<br>
 第一处构建独立工具链的时候：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>/home/work/android/linux/android-ndk-r14b/build/tools/make-standalone-toolchain.sh \
-<span class="highlight-ln">2</span>        --arch=arm64 --platform=android-21 --install-dir=/home/work/android/linux/arm64_standalone_toolchain
+<pre><code class="language-text">/home/work/android/linux/android-ndk-r14b/build/tools/make-standalone-toolchain.sh \
+        --arch=arm64 --platform=android-21 --install-dir=/home/work/android/linux/arm64_standalone_toolchain
 </code></pre>
 <p>第二处是配置交叉编译参数的时候：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cmake -DCMAKE_SYSTEM_NAME=Android \
-<span class="highlight-ln">2</span>      -DANDROID_STANDALONE_TOOLCHAIN=/home/work/android/linux/arm64_standalone_toolchain \
-<span class="highlight-ln">3</span>      -DANDROID_ABI=arm64-v8a \
-<span class="highlight-ln">4</span>      -DUSE_EIGEN_FOR_BLAS=OFF \
-<span class="highlight-ln">5</span>      -DCMAKE_INSTALL_PREFIX=/home/work/android/linux/install \
-<span class="highlight-ln">6</span>      -DWITH_C_API=ON \
-<span class="highlight-ln">7</span>      -DWITH_SWIG_PY=OFF \
-<span class="highlight-ln">8</span>      ..
+<pre><code class="language-text">cmake -DCMAKE_SYSTEM_NAME=Android \
+      -DANDROID_STANDALONE_TOOLCHAIN=/home/work/android/linux/arm64_standalone_toolchain \
+      -DANDROID_ABI=arm64-v8a \
+      -DUSE_EIGEN_FOR_BLAS=OFF \
+      -DCMAKE_INSTALL_PREFIX=/home/work/android/linux/install \
+      -DWITH_C_API=ON \
+      -DWITH_SWIG_PY=OFF \
+      ..
 </code></pre>
 <p>如果读者不想操作以上的步骤，也可以直接下载官方编译好的PaddlePaddle库，可以在PaddlePaddle开源社区的<a href="https://github.com/PaddlePaddle/Mobile/wiki" target="_blank">wiki</a>下载</p>
-<h1 id="训练模型">训练模型</h1>
+<h1 id="toc_h1_10">训练模型</h1>
 <hr>
 <p>我们要使用PaddlePadad预先训练我们的神经网络模型才能进行下一步操作。我们这次使用的是mobilenet神经网络，这个网络更它的名字一样，是为了移植到移动设备上的一个神经网络，虽然我们第三章的<a href="http://blog.csdn.net/qq_33200967/article/details/79095224" target="_blank">CIFAR彩色图像识别</a>使用的是VGG神经模型，但是使用的流程基本上是一样的。</p>
-<h2 id="定义神经网络">定义神经网络</h2>
+<h2 id="toc_h2_11">定义神经网络</h2>
 <p>创建一个<code>mobilenet.py</code>的Python文件，来定义我的mobilenet神经网络模型。mobilenet是Google针对手机等嵌入式设备提出的一种轻量级的深层神经网络，它的核心思想就是卷积核的巧妙分解，可以有效减少网络参数，从而达到减小训练时网络的模型。因为太大的模型参数是不利于移植到移动设备上的，比如我们使用的VGG在训练CIFAR10的时候，模型会有58M那么大，这样的模型如下移植到Android应用上，那会大大增加apk的大小，这样是不利于应用的推广的。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-c1"># edit-mode: -*- python -*-</span>
-<span class="highlight-ln">  2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln">  3</span>
-<span class="highlight-ln">  4</span>
-<span class="highlight-ln">  5</span><span class="highlight-k">def</span> <span class="highlight-nf">conv_bn_layer</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-p">,</span>
-<span class="highlight-ln">  6</span>                  <span class="highlight-n">filter_size</span><span class="highlight-p">,</span>
-<span class="highlight-ln">  7</span>                  <span class="highlight-n">num_filters</span><span class="highlight-p">,</span>
-<span class="highlight-ln">  8</span>                  <span class="highlight-n">stride</span><span class="highlight-p">,</span>
-<span class="highlight-ln">  9</span>                  <span class="highlight-n">padding</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 10</span>                  <span class="highlight-n">channels</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 11</span>                  <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 12</span>                  <span class="highlight-n">active_type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">(),</span>
-<span class="highlight-ln"> 13</span>                  <span class="highlight-n">layer_type</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 14</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 15</span><span class="highlight-s2">    A wrapper for conv layer with batch normalization layers.
-</span><span class="highlight-ln"> 16</span><span class="highlight-s2">    Note:
-</span><span class="highlight-ln"> 17</span><span class="highlight-s2">    conv layer has no activation.
-</span><span class="highlight-ln"> 18</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 19</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">img_conv</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 20</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-nb">input</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 21</span>        <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-n">filter_size</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 22</span>        <span class="highlight-n">num_channels</span><span class="highlight-o">=</span><span class="highlight-n">channels</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 23</span>        <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-n">num_filters</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 24</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-n">stride</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 25</span>        <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-n">padding</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 26</span>        <span class="highlight-n">groups</span><span class="highlight-o">=</span><span class="highlight-n">num_groups</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 27</span>        <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Linear</span><span class="highlight-p">(),</span>
-<span class="highlight-ln"> 28</span>        <span class="highlight-n">bias_attr</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 29</span>        <span class="highlight-n">layer_type</span><span class="highlight-o">=</span><span class="highlight-n">layer_type</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 30</span>    <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">batch_norm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">active_type</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 31</span>
-<span class="highlight-ln"> 32</span>
-<span class="highlight-ln"> 33</span><span class="highlight-k">def</span> <span class="highlight-nf">depthwise_separable</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-p">,</span> <span class="highlight-n">num_filters1</span><span class="highlight-p">,</span> <span class="highlight-n">num_filters2</span><span class="highlight-p">,</span> <span class="highlight-n">num_groups</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 34</span>                        <span class="highlight-n">scale</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 35</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 36</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 37</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_bn_layer</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 38</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-nb">input</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 39</span>        <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 40</span>        <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">num_filters1</span> <span class="highlight-o">*</span> <span class="highlight-n">scale</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 41</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-n">stride</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 42</span>        <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 43</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">num_groups</span> <span class="highlight-o">*</span> <span class="highlight-n">scale</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 44</span>        <span class="highlight-n">layer_type</span><span class="highlight-o">=</span><span class="highlight-s1">'exconv'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 45</span>
-<span class="highlight-ln"> 46</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_bn_layer</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 47</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 48</span>        <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 49</span>        <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">num_filters2</span> <span class="highlight-o">*</span> <span class="highlight-n">scale</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 50</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 51</span>        <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 52</span>    <span class="highlight-k">return</span> <span class="highlight-n">tmp</span>
-<span class="highlight-ln"> 53</span>
-<span class="highlight-ln"> 54</span>
-<span class="highlight-ln"> 55</span><span class="highlight-k">def</span> <span class="highlight-nf">mobile_net</span><span class="highlight-p">(</span><span class="highlight-n">img_size</span><span class="highlight-p">,</span> <span class="highlight-n">class_num</span><span class="highlight-p">,</span> <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-mf">1.0</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 56</span>
-<span class="highlight-ln"> 57</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 58</span>        <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"image"</span><span class="highlight-p">,</span> <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">dense_vector</span><span class="highlight-p">(</span><span class="highlight-n">img_size</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 59</span>
-<span class="highlight-ln"> 60</span>    <span class="highlight-c1"># conv1: 112x112</span>
-<span class="highlight-ln"> 61</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_bn_layer</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 62</span>        <span class="highlight-n">img</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 63</span>        <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 64</span>        <span class="highlight-n">channels</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 65</span>        <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-mi">32</span> <span class="highlight-o">*</span> <span class="highlight-n">scale</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 66</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 67</span>        <span class="highlight-n">padding</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 68</span>
-<span class="highlight-ln"> 69</span>    <span class="highlight-c1"># 56x56</span>
-<span class="highlight-ln"> 70</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 71</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 72</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">32</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 73</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">64</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 74</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">32</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 75</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 76</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 77</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 78</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 79</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">64</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 80</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 81</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">64</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 82</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 83</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 84</span>    <span class="highlight-c1"># 28x28</span>
-<span class="highlight-ln"> 85</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 86</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 87</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 88</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 89</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 90</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 91</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 92</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 93</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 94</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 95</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">256</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 96</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 97</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 98</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 99</span>    <span class="highlight-c1"># 14x14</span>
-<span class="highlight-ln">100</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln">101</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln">102</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">256</span><span class="highlight-p">,</span>
-<span class="highlight-ln">103</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">256</span><span class="highlight-p">,</span>
-<span class="highlight-ln">104</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">256</span><span class="highlight-p">,</span>
-<span class="highlight-ln">105</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">106</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln">107</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln">108</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln">109</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">256</span><span class="highlight-p">,</span>
-<span class="highlight-ln">110</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span>
-<span class="highlight-ln">111</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">256</span><span class="highlight-p">,</span>
-<span class="highlight-ln">112</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">113</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln">114</span>    <span class="highlight-c1"># 14x14</span>
-<span class="highlight-ln">115</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">5</span><span class="highlight-p">):</span>
-<span class="highlight-ln">116</span>        <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln">117</span>            <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln">118</span>            <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span>
-<span class="highlight-ln">119</span>            <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span>
-<span class="highlight-ln">120</span>            <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span>
-<span class="highlight-ln">121</span>            <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">122</span>            <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln">123</span>    <span class="highlight-c1"># 7x7</span>
-<span class="highlight-ln">124</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln">125</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln">126</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span>
-<span class="highlight-ln">127</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">,</span>
-<span class="highlight-ln">128</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span>
-<span class="highlight-ln">129</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">130</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln">131</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">depthwise_separable</span><span class="highlight-p">(</span>
-<span class="highlight-ln">132</span>        <span class="highlight-n">tmp</span><span class="highlight-p">,</span>
-<span class="highlight-ln">133</span>        <span class="highlight-n">num_filters1</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">,</span>
-<span class="highlight-ln">134</span>        <span class="highlight-n">num_filters2</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">,</span>
-<span class="highlight-ln">135</span>        <span class="highlight-n">num_groups</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">,</span>
-<span class="highlight-ln">136</span>        <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">137</span>        <span class="highlight-n">scale</span><span class="highlight-o">=</span><span class="highlight-n">scale</span><span class="highlight-p">)</span>
-<span class="highlight-ln">138</span>
-<span class="highlight-ln">139</span>    <span class="highlight-n">tmp</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">img_pool</span><span class="highlight-p">(</span>
-<span class="highlight-ln">140</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span> <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">7</span><span class="highlight-p">,</span> <span class="highlight-n">stride</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">pooling</span><span class="highlight-o">.</span><span class="highlight-n">Avg</span><span class="highlight-p">())</span>
-<span class="highlight-ln">141</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span>
-<span class="highlight-ln">142</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">tmp</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">class_num</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Softmax</span><span class="highlight-p">())</span>
-<span class="highlight-ln">143</span>
-<span class="highlight-ln">144</span>    <span class="highlight-k">return</span> <span class="highlight-n">out</span>
-<span class="highlight-ln">145</span>
-<span class="highlight-ln">146</span>
-<span class="highlight-ln">147</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">148</span>    <span class="highlight-n">img_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">3</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span>
-<span class="highlight-ln">149</span>    <span class="highlight-n">data_dim</span> <span class="highlight-o">=</span> <span class="highlight-mi">10</span>
-<span class="highlight-ln">150</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">mobile_net</span><span class="highlight-p">(</span><span class="highlight-n">img_size</span><span class="highlight-p">,</span> <span class="highlight-n">data_dim</span><span class="highlight-p">,</span> <span class="highlight-mf">1.0</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># edit-mode: -*- python -*-
+import paddle.v2 as paddle
+
+
+def conv_bn_layer(input,
+                  filter_size,
+                  num_filters,
+                  stride,
+                  padding,
+                  channels=None,
+                  num_groups=1,
+                  active_type=paddle.activation.Relu(),
+                  layer_type=None):
+    """
+    A wrapper for conv layer with batch normalization layers.
+    Note:
+    conv layer has no activation.
+    """
+    tmp = paddle.layer.img_conv(
+        input=input,
+        filter_size=filter_size,
+        num_channels=channels,
+        num_filters=num_filters,
+        stride=stride,
+        padding=padding,
+        groups=num_groups,
+        act=paddle.activation.Linear(),
+        bias_attr=False,
+        layer_type=layer_type)
+    return paddle.layer.batch_norm(input=tmp, act=active_type)
+
+
+def depthwise_separable(input, num_filters1, num_filters2, num_groups, stride,
+                        scale):
+    """
+    """
+    tmp = conv_bn_layer(
+        input=input,
+        filter_size=3,
+        num_filters=int(num_filters1 * scale),
+        stride=stride,
+        padding=1,
+        num_groups=int(num_groups * scale),
+        layer_type='exconv')
+
+    tmp = conv_bn_layer(
+        input=tmp,
+        filter_size=1,
+        num_filters=int(num_filters2 * scale),
+        stride=1,
+        padding=0)
+    return tmp
+
+
+def mobile_net(img_size, class_num, scale=1.0):
+
+    img = paddle.layer.data(
+        name="image", type=paddle.data_type.dense_vector(img_size))
+
+    # conv1: 112x112
+    tmp = conv_bn_layer(
+        img,
+        filter_size=3,
+        channels=3,
+        num_filters=int(32 * scale),
+        stride=2,
+        padding=1)
+
+    # 56x56
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=32,
+        num_filters2=64,
+        num_groups=32,
+        stride=1,
+        scale=scale)
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=64,
+        num_filters2=128,
+        num_groups=64,
+        stride=2,
+        scale=scale)
+    # 28x28
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=128,
+        num_filters2=128,
+        num_groups=128,
+        stride=1,
+        scale=scale)
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=128,
+        num_filters2=256,
+        num_groups=128,
+        stride=2,
+        scale=scale)
+    # 14x14
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=256,
+        num_filters2=256,
+        num_groups=256,
+        stride=1,
+        scale=scale)
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=256,
+        num_filters2=512,
+        num_groups=256,
+        stride=2,
+        scale=scale)
+    # 14x14
+    for i in range(5):
+        tmp = depthwise_separable(
+            tmp,
+            num_filters1=512,
+            num_filters2=512,
+            num_groups=512,
+            stride=1,
+            scale=scale)
+    # 7x7
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=512,
+        num_filters2=1024,
+        num_groups=512,
+        stride=2,
+        scale=scale)
+    tmp = depthwise_separable(
+        tmp,
+        num_filters1=1024,
+        num_filters2=1024,
+        num_groups=1024,
+        stride=1,
+        scale=scale)
+
+    tmp = paddle.layer.img_pool(
+        input=tmp, pool_size=7, stride=1, pool_type=paddle.pooling.Avg())
+    out = paddle.layer.fc(
+        input=tmp, size=class_num, act=paddle.activation.Softmax())
+
+    return out
+
+
+if __name__ == '__main__':
+    img_size = 3 * 32 * 32
+    data_dim = 10
+    out = mobile_net(img_size, data_dim, 1.0)
 </code></pre>
-<h2 id="编写训练代码">编写训练代码</h2>
+<h2 id="toc_h2_12">编写训练代码</h2>
 <p>然后我们编写一个<code>trian.py</code>的文件来编写接下来的Python代码。</p>
-<h3 id="初始化PaddlePaddle">初始化PaddlePaddle</h3>
+<h3 id="toc_h3_13">初始化PaddlePaddle</h3>
 <p>我们创建一个<code>TestCIFAR</code>的类来做我们的训练，在初始化的时候，我们就让PaddlePaddle初始化，这里使用4个GPU来训练，在PaddlePaddle使用之前，都要初始化PaddlePaddle，但是不能重复初始化。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">class</span> <span class="highlight-nc">TestCIFAR</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">3</span>        <span class="highlight-c1"># 初始化paddpaddle,</span>
-<span class="highlight-ln">4</span>        <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">init</span><span class="highlight-p">(</span><span class="highlight-n">use_gpu</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_count</span><span class="highlight-o">=</span><span class="highlight-mi">4</span><span class="highlight-p">)</span>
+<pre><code class="language-python">class TestCIFAR:
+    def __init__(self):
+        # 初始化paddpaddle,
+        paddle.init(use_gpu=True, trainer_count=4)
 </code></pre>
-<h3 id="获取训练参数">获取训练参数</h3>
+<h3 id="toc_h3_14">获取训练参数</h3>
 <p>然后是编写获取训练参数的代码，这个提供了两个获取参数的方法，一个是从损失函数中创建一个训练参数，另一个是使用之前训练好的训练参数：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">get_parameters</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">parameters_path</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-c1"># 使用cost创建parameters</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">cost</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 5</span>            <span class="highlight-k">print</span> <span class="highlight-s2">"请输入cost参数"</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-c1"># 根据损失函数创建参数</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">create</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">11</span>        <span class="highlight-c1"># 使用之前训练好的参数</span>
-<span class="highlight-ln">12</span>        <span class="highlight-k">try</span><span class="highlight-p">:</span>
-<span class="highlight-ln">13</span>            <span class="highlight-c1"># 使用训练好的参数</span>
-<span class="highlight-ln">14</span>            <span class="highlight-k">with</span> <span class="highlight-n">gzip</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">15</span>                <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">Parameters</span><span class="highlight-o">.</span><span class="highlight-n">from_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>            <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln">17</span>        <span class="highlight-k">except</span> <span class="highlight-ne">Exception</span> <span class="highlight-k">as</span> <span class="highlight-n">e</span><span class="highlight-p">:</span>
-<span class="highlight-ln">18</span>            <span class="highlight-k">raise</span> <span class="highlight-ne">NameError</span><span class="highlight-p">(</span><span class="highlight-s2">"你的参数文件错误,具体问题是:</span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">e</span><span class="highlight-p">)</span>
+<pre><code class="language-python">def get_parameters(self, parameters_path=None, cost=None):
+    if not parameters_path:
+        # 使用cost创建parameters
+        if not cost:
+            print "请输入cost参数"
+        else:
+            # 根据损失函数创建参数
+            parameters = paddle.parameters.create(cost)
+            return parameters
+    else:
+        # 使用之前训练好的参数
+        try:
+            # 使用训练好的参数
+            with gzip.open(parameters_path, 'r') as f:
+                parameters = paddle.parameters.Parameters.from_tar(f)
+            return parameters
+        except Exception as e:
+            raise NameError("你的参数文件错误,具体问题是:%s" % e)
 </code></pre>
-<h3 id="获取训练器">获取训练器</h3>
+<h3 id="toc_h3_15">获取训练器</h3>
 <p>通过损失函数、训练参数、优化方法可以创建一个训练器。</p>
 <ul>
 <li><code>cost</code>，损失函数，通过神经网络的分类器和分类的标签可以获取损失函数。</li>
 <li><code>parameters</code>，训练参数，这个在上已经讲过了，这里就不重复了。</li>
 <li><code>optimizer</code>，优化方法，这个优化方法是设置学习率和加正则的。</li>
 </ul>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">get_trainer</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 数据大小</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">datadim</span> <span class="highlight-o">=</span> <span class="highlight-mi">3</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 获得图片对于的信息标签</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">lbl</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"label"</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 7</span>                            <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">integer_value</span><span class="highlight-p">(</span><span class="highlight-mi">10</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-c1"># 获取全连接层,也就是分类器</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">mobile_net</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-mf">1.0</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>    <span class="highlight-c1"># 获得损失函数</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">classification_cost</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">lbl</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1"># 使用之前保存好的参数文件获得参数</span>
-<span class="highlight-ln">16</span>    <span class="highlight-c1"># parameters = self.get_parameters(parameters_path="../model/mobile_net.tar.gz")</span>
-<span class="highlight-ln">17</span>    <span class="highlight-c1"># 使用损失函数生成参数</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>    <span class="highlight-s1">'''
-</span><span class="highlight-ln">21</span><span class="highlight-s1">    定义优化方法
-</span><span class="highlight-ln">22</span><span class="highlight-s1">    learning_rate 迭代的速度
-</span><span class="highlight-ln">23</span><span class="highlight-s1">    momentum 跟前面动量优化的比例
-</span><span class="highlight-ln">24</span><span class="highlight-s1">    regularzation 正则化,防止过拟合
-</span><span class="highlight-ln">25</span><span class="highlight-s1">    '''</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">momentum_optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">Momentum</span><span class="highlight-p">(</span>
-<span class="highlight-ln">27</span>        <span class="highlight-n">momentum</span><span class="highlight-o">=</span><span class="highlight-mf">0.9</span><span class="highlight-p">,</span>
-<span class="highlight-ln">28</span>        <span class="highlight-n">regularization</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">L2Regularization</span><span class="highlight-p">(</span><span class="highlight-n">rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.0002</span> <span class="highlight-o">*</span> <span class="highlight-mi">128</span><span class="highlight-p">),</span>
-<span class="highlight-ln">29</span>        <span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.1</span> <span class="highlight-o">/</span> <span class="highlight-mf">128.0</span><span class="highlight-p">,</span>
-<span class="highlight-ln">30</span>        <span class="highlight-n">learning_rate_decay_a</span><span class="highlight-o">=</span><span class="highlight-mf">0.1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">31</span>        <span class="highlight-n">learning_rate_decay_b</span><span class="highlight-o">=</span><span class="highlight-mi">50000</span> <span class="highlight-o">*</span> <span class="highlight-mi">100</span><span class="highlight-p">,</span>
-<span class="highlight-ln">32</span>        <span class="highlight-n">learning_rate_schedule</span><span class="highlight-o">=</span><span class="highlight-s2">"discexp"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">33</span>
-<span class="highlight-ln">34</span>    <span class="highlight-s1">'''
-</span><span class="highlight-ln">35</span><span class="highlight-s1">    创建训练器
-</span><span class="highlight-ln">36</span><span class="highlight-s1">    cost 分类器
-</span><span class="highlight-ln">37</span><span class="highlight-s1">    parameters 训练参数,可以通过创建,也可以使用之前训练好的参数
-</span><span class="highlight-ln">38</span><span class="highlight-s1">    update_equation 优化方法
-</span><span class="highlight-ln">39</span><span class="highlight-s1">    '''</span>
-<span class="highlight-ln">40</span>    <span class="highlight-n">trainer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">SGD</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">cost</span><span class="highlight-p">,</span>
-<span class="highlight-ln">41</span>                                 <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span>
-<span class="highlight-ln">42</span>                                 <span class="highlight-n">update_equation</span><span class="highlight-o">=</span><span class="highlight-n">momentum_optimizer</span><span class="highlight-p">)</span>
-<span class="highlight-ln">43</span>    <span class="highlight-k">return</span> <span class="highlight-n">trainer</span>
+<pre><code class="language-python">def get_trainer(self):
+    # 数据大小
+    datadim = 3 * 32 * 32
+
+    # 获得图片对于的信息标签
+    lbl = paddle.layer.data(name="label",
+                            type=paddle.data_type.integer_value(10))
+
+    # 获取全连接层,也就是分类器
+    out = mobile_net(datadim, 10, 1.0)
+
+    # 获得损失函数
+    cost = paddle.layer.classification_cost(input=out, label=lbl)
+
+    # 使用之前保存好的参数文件获得参数
+    # parameters = self.get_parameters(parameters_path="../model/mobile_net.tar.gz")
+    # 使用损失函数生成参数
+    parameters = self.get_parameters(cost=cost)
+
+    '''
+    定义优化方法
+    learning_rate 迭代的速度
+    momentum 跟前面动量优化的比例
+    regularzation 正则化,防止过拟合
+    '''
+    momentum_optimizer = paddle.optimizer.Momentum(
+        momentum=0.9,
+        regularization=paddle.optimizer.L2Regularization(rate=0.0002 * 128),
+        learning_rate=0.1 / 128.0,
+        learning_rate_decay_a=0.1,
+        learning_rate_decay_b=50000 * 100,
+        learning_rate_schedule="discexp")
+
+    '''
+    创建训练器
+    cost 分类器
+    parameters 训练参数,可以通过创建,也可以使用之前训练好的参数
+    update_equation 优化方法
+    '''
+    trainer = paddle.trainer.SGD(cost=cost,
+                                 parameters=parameters,
+                                 update_equation=momentum_optimizer)
+    return trainer
 </code></pre>
-<h3 id="开始训练">开始训练</h3>
+<h3 id="toc_h3_16">开始训练</h3>
 <p>有了训练器之前，再加上训练数据就可以进行训练了，我们还是使用我们比较熟悉的CIFAR10数据集，PaddlePaddle提供了下载接口，只要调用PaddlePaddle的数据接口就可以了。</p>
 <p>同时我们也定义了一个训练事件，通过这个事件可以输出训练的日志，也可以保存我们训练的参数，比如我们在每一个Pass之后，都会保存训练参。同时也记录了训练和测试的cost和分类错误，方便输出图像观察训练效果。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-k">def</span> <span class="highlight-nf">start_trainer</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>        <span class="highlight-c1"># 获得数据</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-n">reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">cifar</span><span class="highlight-o">.</span><span class="highlight-n">train10</span><span class="highlight-p">(),</span>
-<span class="highlight-ln"> 4</span>                                                           <span class="highlight-n">buf_size</span><span class="highlight-o">=</span><span class="highlight-mi">50000</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 5</span>                              <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-c1"># 指定每条数据和padd.layer.data的对应关系</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-n">feeding</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"image"</span><span class="highlight-p">:</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-s2">"label"</span><span class="highlight-p">:</span> <span class="highlight-mi">1</span><span class="highlight-p">}</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>        <span class="highlight-n">saveCost</span> <span class="highlight-o">=</span> <span class="highlight-n">SaveCost</span><span class="highlight-p">()</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>        <span class="highlight-n">lists</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">13</span>        <span class="highlight-c1"># 定义训练事件，输出日志</span>
-<span class="highlight-ln">14</span>        <span class="highlight-k">def</span> <span class="highlight-nf">event_handler</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">):</span>
-<span class="highlight-ln">15</span>            <span class="highlight-k">if</span> <span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">EndIteration</span><span class="highlight-p">):</span>
-<span class="highlight-ln">16</span>                <span class="highlight-k">if</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">batch_id</span> <span class="highlight-o">%</span> <span class="highlight-mi">1</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">17</span>                    <span class="highlight-k">print</span> <span class="highlight-s2">"</span><span class="highlight-se">\n</span><span class="highlight-s2">Pass </span><span class="highlight-si">%d</span><span class="highlight-s2">, Batch </span><span class="highlight-si">%d</span><span class="highlight-s2">, Cost </span><span class="highlight-si">%f</span><span class="highlight-s2">, </span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span>
-<span class="highlight-ln">18</span>                        <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>                <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">20</span>                    <span class="highlight-n">sys</span><span class="highlight-o">.</span><span class="highlight-n">stdout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>                    <span class="highlight-n">sys</span><span class="highlight-o">.</span><span class="highlight-n">stdout</span><span class="highlight-o">.</span><span class="highlight-n">flush</span><span class="highlight-p">()</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>                <span class="highlight-c1"># 保存训练的cost,用于生成折线图,便于观察</span>
-<span class="highlight-ln">24</span>                <span class="highlight-n">saveCost</span><span class="highlight-o">.</span><span class="highlight-n">save_trainer_cost</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">25</span>                <span class="highlight-n">saveCost</span><span class="highlight-o">.</span><span class="highlight-n">save_trainer_classification_error</span><span class="highlight-p">(</span><span class="highlight-n">error</span><span class="highlight-o">=</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">[</span><span class="highlight-s1">'classification_error_evaluator'</span><span class="highlight-p">])</span>
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>            <span class="highlight-c1"># 每一轮训练完成之后</span>
-<span class="highlight-ln">28</span>            <span class="highlight-k">if</span> <span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">EndPass</span><span class="highlight-p">):</span>
-<span class="highlight-ln">29</span>                <span class="highlight-c1"># 保存训练好的参数</span>
-<span class="highlight-ln">30</span>                <span class="highlight-n">model_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../model'</span>
-<span class="highlight-ln">31</span>                <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">model_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">32</span>                    <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">model_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">33</span>                <span class="highlight-k">with</span> <span class="highlight-n">gzip</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">model_path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/mobile_net.tar.gz'</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">34</span>                    <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">save_parameter_to_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
-<span class="highlight-ln">35</span>
-<span class="highlight-ln">36</span>                <span class="highlight-c1"># 测试准确率</span>
-<span class="highlight-ln">37</span>                <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">test</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">dataset</span><span class="highlight-o">.</span><span class="highlight-n">cifar</span><span class="highlight-o">.</span><span class="highlight-n">test10</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">38</span>                                                          <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">),</span>
-<span class="highlight-ln">39</span>                                      <span class="highlight-n">feeding</span><span class="highlight-o">=</span><span class="highlight-n">feeding</span><span class="highlight-p">)</span>
-<span class="highlight-ln">40</span>                <span class="highlight-k">print</span> <span class="highlight-s2">"</span><span class="highlight-se">\n</span><span class="highlight-s2">Test with Pass </span><span class="highlight-si">%d</span><span class="highlight-s2">, </span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">)</span>
-<span class="highlight-ln">41</span>                <span class="highlight-n">lists</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">,</span>
-<span class="highlight-ln">42</span>                              <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">[</span><span class="highlight-s1">'classification_error_evaluator'</span><span class="highlight-p">]))</span>
-<span class="highlight-ln">43</span>                <span class="highlight-c1"># 保存训练的cost,用于生成折线图,便于观察</span>
-<span class="highlight-ln">44</span>                <span class="highlight-n">saveCost</span><span class="highlight-o">.</span><span class="highlight-n">save_test_cost</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">45</span>                <span class="highlight-n">saveCost</span><span class="highlight-o">.</span><span class="highlight-n">save_test_classification_error</span><span class="highlight-p">(</span><span class="highlight-n">error</span><span class="highlight-o">=</span><span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">[</span><span class="highlight-s1">'classification_error_evaluator'</span><span class="highlight-p">])</span>
-<span class="highlight-ln">46</span>
-<span class="highlight-ln">47</span>        <span class="highlight-c1"># 获取训练器</span>
-<span class="highlight-ln">48</span>        <span class="highlight-n">trainer</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">get_trainer</span><span class="highlight-p">()</span>
-<span class="highlight-ln">49</span>
-<span class="highlight-ln">50</span>        <span class="highlight-s1">'''
-</span><span class="highlight-ln">51</span><span class="highlight-s1">        开始训练
-</span><span class="highlight-ln">52</span><span class="highlight-s1">        reader 训练数据
-</span><span class="highlight-ln">53</span><span class="highlight-s1">        num_passes 训练的轮数
-</span><span class="highlight-ln">54</span><span class="highlight-s1">        event_handler 训练的事件,比如在训练的时候要做一些什么事情
-</span><span class="highlight-ln">55</span><span class="highlight-s1">        feeding 说明每条数据和padd.layer.data的对应关系
-</span><span class="highlight-ln">56</span><span class="highlight-s1">        '''</span>
-<span class="highlight-ln">57</span>        <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">reader</span><span class="highlight-p">,</span>
-<span class="highlight-ln">58</span>                      <span class="highlight-n">num_passes</span><span class="highlight-o">=</span><span class="highlight-mi">50</span><span class="highlight-p">,</span>
-<span class="highlight-ln">59</span>                      <span class="highlight-n">event_handler</span><span class="highlight-o">=</span><span class="highlight-n">event_handler</span><span class="highlight-p">,</span>
-<span class="highlight-ln">60</span>                      <span class="highlight-n">feeding</span><span class="highlight-o">=</span><span class="highlight-n">feeding</span><span class="highlight-p">)</span>
-<span class="highlight-ln">61</span>
-<span class="highlight-ln">62</span>        <span class="highlight-c1"># find the best pass</span>
-<span class="highlight-ln">63</span>        <span class="highlight-n">best</span> <span class="highlight-o">=</span> <span class="highlight-nb">sorted</span><span class="highlight-p">(</span><span class="highlight-n">lists</span><span class="highlight-p">,</span> <span class="highlight-n">key</span><span class="highlight-o">=</span><span class="highlight-k">lambda</span> <span class="highlight-nb">list</span><span class="highlight-p">:</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-nb">list</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]))[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">64</span>        <span class="highlight-k">print</span> <span class="highlight-s1">'Best pass is </span><span class="highlight-si">%s</span><span class="highlight-s1">, testing Avgcost is </span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">best</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">best</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">])</span>
-<span class="highlight-ln">65</span>        <span class="highlight-k">print</span> <span class="highlight-s1">'The classification accuracy is </span><span class="highlight-si">%.2f%%</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-mi">100</span> <span class="highlight-o">-</span> <span class="highlight-nb">float</span><span class="highlight-p">(</span><span class="highlight-n">best</span><span class="highlight-p">[</span><span class="highlight-mi">2</span><span class="highlight-p">])</span> <span class="highlight-o">*</span> <span class="highlight-mi">100</span><span class="highlight-p">)</span>
+<pre><code class="language-python">    def start_trainer(self):
+        # 获得数据
+        reader = paddle.batch(reader=paddle.reader.shuffle(reader=paddle.dataset.cifar.train10(),
+                                                           buf_size=50000),
+                              batch_size=128)
+
+        # 指定每条数据和padd.layer.data的对应关系
+        feeding = {"image": 0, "label": 1}
+
+        saveCost = SaveCost()
+
+        lists = []
+        # 定义训练事件，输出日志
+        def event_handler(event):
+            if isinstance(event, paddle.event.EndIteration):
+                if event.batch_id % 1 == 0:
+                    print "\nPass %d, Batch %d, Cost %f, %s" % (
+                        event.pass_id, event.batch_id, event.cost, event.metrics)
+                else:
+                    sys.stdout.write('.')
+                    sys.stdout.flush()
+
+                # 保存训练的cost,用于生成折线图,便于观察
+                saveCost.save_trainer_cost(cost=event.cost)
+                saveCost.save_trainer_classification_error(error=event.metrics['classification_error_evaluator'])
+
+            # 每一轮训练完成之后
+            if isinstance(event, paddle.event.EndPass):
+                # 保存训练好的参数
+                model_path = '../model'
+                if not os.path.exists(model_path):
+                    os.makedirs(model_path)
+                with gzip.open(model_path + '/mobile_net.tar.gz', 'w') as f:
+                    trainer.save_parameter_to_tar(f)
+
+                # 测试准确率
+                result = trainer.test(reader=paddle.batch(reader=paddle.dataset.cifar.test10(),
+                                                          batch_size=128),
+                                      feeding=feeding)
+                print "\nTest with Pass %d, %s" % (event.pass_id, result.metrics)
+                lists.append((event.pass_id, result.cost,
+                              result.metrics['classification_error_evaluator']))
+                # 保存训练的cost,用于生成折线图,便于观察
+                saveCost.save_test_cost(cost=result.cost)
+                saveCost.save_test_classification_error(error=result.metrics['classification_error_evaluator'])
+
+        # 获取训练器
+        trainer = self.get_trainer()
+
+        '''
+        开始训练
+        reader 训练数据
+        num_passes 训练的轮数
+        event_handler 训练的事件,比如在训练的时候要做一些什么事情
+        feeding 说明每条数据和padd.layer.data的对应关系
+        '''
+        trainer.train(reader=reader,
+                      num_passes=50,
+                      event_handler=event_handler,
+                      feeding=feeding)
+
+        # find the best pass
+        best = sorted(lists, key=lambda list: float(list[1]))[0]
+        print 'Best pass is %s, testing Avgcost is %s' % (best[0], best[1])
+        print 'The classification accuracy is %.2f%%' % (100 - float(best[2]) * 100)
 </code></pre>
 <p>我们启动训练，一共是训练50个Pass，训练次数还是比较少的，但是这个模型比较深，训练数据非常慢，笔者使用4个GPU训练，大约训练了39个小时才训练完成，可以说是非常久的。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-c1"># 开始训练</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">start_train</span> <span class="highlight-o">=</span> <span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">time</span><span class="highlight-p">()</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">testCIFAR</span> <span class="highlight-o">=</span> <span class="highlight-n">TestCIFAR</span><span class="highlight-p">()</span>
-<span class="highlight-ln">5</span>    <span class="highlight-c1"># 开始训练时间</span>
-<span class="highlight-ln">6</span>    <span class="highlight-n">testCIFAR</span><span class="highlight-o">.</span><span class="highlight-n">start_trainer</span><span class="highlight-p">()</span>
-<span class="highlight-ln">7</span>    <span class="highlight-c1"># 结束时间</span>
-<span class="highlight-ln">8</span>    <span class="highlight-n">end_train</span> <span class="highlight-o">=</span> <span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">time</span><span class="highlight-p">()</span>
-<span class="highlight-ln">9</span>    <span class="highlight-k">print</span> <span class="highlight-s1">'训练时间为：'</span><span class="highlight-p">,</span> <span class="highlight-n">end_train</span> <span class="highlight-o">-</span> <span class="highlight-n">start_train</span><span class="highlight-p">,</span> <span class="highlight-s1">'ms'</span>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 开始训练
+    start_train = time.time()
+    testCIFAR = TestCIFAR()
+    # 开始训练时间
+    testCIFAR.start_trainer()
+    # 结束时间
+    end_train = time.time()
+    print '训练时间为：', end_train - start_train, 'ms'
 </code></pre>
 <p>训练的时候会输出类似以下的日志：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>Pass 49, Batch 385, Cost 0.172634, {'classification_error_evaluator': 0.046875}
-<span class="highlight-ln">2</span>Pass 49, Batch 386, Cost 0.238134, {'classification_error_evaluator': 0.109375}
-<span class="highlight-ln">3</span>Pass 49, Batch 387, Cost 0.182165, {'classification_error_evaluator': 0.0546875}
-<span class="highlight-ln">4</span>Pass 49, Batch 388, Cost 0.259370, {'classification_error_evaluator': 0.1484375}
-<span class="highlight-ln">5</span>Pass 49, Batch 389, Cost 0.221146, {'classification_error_evaluator': 0.0859375}
+<pre><code class="language-text">Pass 49, Batch 385, Cost 0.172634, {'classification_error_evaluator': 0.046875}
+Pass 49, Batch 386, Cost 0.238134, {'classification_error_evaluator': 0.109375}
+Pass 49, Batch 387, Cost 0.182165, {'classification_error_evaluator': 0.0546875}
+Pass 49, Batch 388, Cost 0.259370, {'classification_error_evaluator': 0.1484375}
+Pass 49, Batch 389, Cost 0.221146, {'classification_error_evaluator': 0.0859375}
 </code></pre>
-<h2 id="编写预测代码">编写预测代码</h2>
+<h2 id="toc_h2_17">编写预测代码</h2>
 <p>我们这里预测不是真正这样应用，我们使用Python在电脑上测试预测的结果和预测时间，跟之后在Android上的预测做一些对比。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">out</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 获取图片</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-nb">file</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">im</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">float32</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-c1"># PIL打开图片存储顺序为H(高度)，W(宽度)，C(通道)。</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-c1"># PaddlePaddle要求数据顺序为CHW，所以需要转换顺序。</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">transpose</span><span class="highlight-p">((</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">10</span>        <span class="highlight-c1"># CIFAR训练图片通道顺序为B(蓝),G(绿),R(红),</span>
-<span class="highlight-ln">11</span>        <span class="highlight-c1"># 而PIL打开图片默认通道顺序为RGB,因为需要交换通道。</span>
-<span class="highlight-ln">12</span>        <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-p">[(</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">),</span> <span class="highlight-p">:,</span> <span class="highlight-p">:]</span>  <span class="highlight-c1"># BGR</span>
-<span class="highlight-ln">13</span>        <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">im</span> <span class="highlight-o">/</span> <span class="highlight-mf">255.0</span>
-<span class="highlight-ln">15</span>        <span class="highlight-k">return</span> <span class="highlight-n">im</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-c1"># 获得要预测的图片</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">test_data</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">test_data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">),))</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-c1"># 开始预测时间</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">start_infer</span> <span class="highlight-o">=</span> <span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">time</span><span class="highlight-p">()</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    <span class="highlight-c1"># 获得预测结果</span>
-<span class="highlight-ln">25</span>    <span class="highlight-n">probs</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">infer</span><span class="highlight-p">(</span><span class="highlight-n">output_layer</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">,</span>
-<span class="highlight-ln">26</span>                         <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span>
-<span class="highlight-ln">27</span>                         <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">test_data</span><span class="highlight-p">)</span>
-<span class="highlight-ln">28</span>    <span class="highlight-c1"># 结束预测时间</span>
-<span class="highlight-ln">29</span>    <span class="highlight-n">end_infer</span> <span class="highlight-o">=</span> <span class="highlight-n">time</span><span class="highlight-o">.</span><span class="highlight-n">time</span><span class="highlight-p">()</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>    <span class="highlight-k">print</span> <span class="highlight-s1">'预测时间：'</span><span class="highlight-p">,</span> <span class="highlight-n">end_infer</span> <span class="highlight-o">-</span> <span class="highlight-n">start_infer</span><span class="highlight-p">,</span> <span class="highlight-s1">'ms'</span>
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>    <span class="highlight-c1"># 处理预测结果</span>
-<span class="highlight-ln">34</span>    <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">probs</span><span class="highlight-p">)</span>
-<span class="highlight-ln">35</span>    <span class="highlight-c1"># 返回概率最大的值和其对应的概率值</span>
-<span class="highlight-ln">36</span>    <span class="highlight-k">return</span> <span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">probs</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][(</span><span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">])]</span>
+<pre><code class="language-python">def to_prediction(image_path, parameters, out):
+    # 获取图片
+    def load_image(file):
+        im = Image.open(file)
+        im = im.resize((32, 32), Image.ANTIALIAS)
+        im = np.array(im).astype(np.float32)
+        # PIL打开图片存储顺序为H(高度)，W(宽度)，C(通道)。
+        # PaddlePaddle要求数据顺序为CHW，所以需要转换顺序。
+        im = im.transpose((2, 0, 1))
+        # CIFAR训练图片通道顺序为B(蓝),G(绿),R(红),
+        # 而PIL打开图片默认通道顺序为RGB,因为需要交换通道。
+        im = im[(2, 1, 0), :, :]  # BGR
+        im = im.flatten()
+        im = im / 255.0
+        return im
+
+    # 获得要预测的图片
+    test_data = []
+    test_data.append((load_image(image_path),))
+
+    # 开始预测时间
+    start_infer = time.time()
+
+    # 获得预测结果
+    probs = paddle.infer(output_layer=out,
+                         parameters=parameters,
+                         input=test_data)
+    # 结束预测时间
+    end_infer = time.time()
+
+    print '预测时间：', end_infer - start_infer, 'ms'
+
+    # 处理预测结果
+    lab = np.argsort(-probs)
+    # 返回概率最大的值和其对应的概率值
+    return lab[0][0], probs[0][(lab[0][0])]
 </code></pre>
 <p>然后在程序入口处调用预测函数，别忘了在使用PaddlePaddle前要初始化PaddlePaddle，我们这里使用的是1一个CPU来预测，同时还要从神经网络中获取分类器和加载上一步训练好的模型参数：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">init</span><span class="highlight-p">(</span><span class="highlight-n">use_gpu</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_count</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span>    <span class="highlight-c1"># 开始预测</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">mobile_net</span><span class="highlight-p">(</span><span class="highlight-mi">3</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">10</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-k">with</span> <span class="highlight-n">gzip</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-s2">"../model/mobile_net.tar.gz"</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">6</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">Parameters</span><span class="highlight-o">.</span><span class="highlight-n">from_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
-<span class="highlight-ln">7</span>    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"../images/airplane1.png"</span>
-<span class="highlight-ln">8</span>    <span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-o">=</span><span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">out</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">9</span>    <span class="highlight-k">print</span> <span class="highlight-s1">'预测结果为:</span><span class="highlight-si">%d</span><span class="highlight-s1">,可信度为:</span><span class="highlight-si">%f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-n">probability</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == '__main__':
+    paddle.init(use_gpu=False, trainer_count=2)
+    # 开始预测
+    out = mobile_net(3 * 32 * 32, 10)
+    with gzip.open("../model/mobile_net.tar.gz", 'r') as f:
+        parameters = paddle.parameters.Parameters.from_tar(f)
+    image_path = "../images/airplane1.png"
+    result, probability = to_prediction(image_path=image_path, out=out, parameters=parameters)
+    print '预测结果为:%d,可信度为:%f' % (result, probability)
 </code></pre>
 <p>预测结果为，在电脑上预测可以说是相当快的，这里只是统计预测时间，不包括初始化PaddlePaddle和加载神经网络的时间：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>预测时间： 0.132810115814 ms
-<span class="highlight-ln">2</span>预测结果为:0,可信度为:0.868770
+<pre><code class="language-text">预测时间： 0.132810115814 ms
+预测结果为:0,可信度为:0.868770
 </code></pre>
-<h1 id="合并模型">合并模型</h1>
+<h1 id="toc_h1_18">合并模型</h1>
 <hr>
-<h2 id="准备文件">准备文件</h2>
+<h2 id="toc_h2_19">准备文件</h2>
 <p>合并模型是指把神经网络和训练好的模型参数合并生成一个可是直接使用的网络模型，合并模型需要两个文件：</p>
 <ul>
 <li>
@@ -755,34 +755,34 @@ var _hmt = _hmt || [];
 <p><strong>参数文件：</strong> 使用训练时保存的模型参数，因为<code>paddle.utils.merge_model</code>合并模型时只读取<code>.tar.gz</code>，所以保存网络参数是要注意保存的格式。如果保存的格式为<code>.tar</code>，也没有关系，可以把里面的所有文件提取出来再压缩为<code>.tar.gz</code>的文件，压缩的时候要注意不需要为这些参数文件创建文件夹，直接压缩就可以，否则程序会找不到参数文件。保存参数文件程序如下：</p>
 </li>
 </ul>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">model_path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/model.tar.gz'</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">save_parameter_to_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
+<pre><code class="language-python">with open(model_path + '/model.tar.gz', 'w') as f:
+    trainer.save_parameter_to_tar(f)
 </code></pre>
-<h2 id="开始合并">开始合并</h2>
+<h2 id="toc_h2_20">开始合并</h2>
 <p>编写一个Python程序文件<code>merge_model.py</code>来合并模型，代码如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">paddle.utils.merge_model</span> <span class="highlight-kn">import</span> <span class="highlight-n">merge_v2_model</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-c1"># 导入mobilenet神经网络</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">from</span> <span class="highlight-nn">mobilenet</span> <span class="highlight-kn">import</span> <span class="highlight-n">mobile_net</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 图像的大小</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">img_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">3</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 总分类数</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">class_dim</span> <span class="highlight-o">=</span> <span class="highlight-mi">10</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">net</span> <span class="highlight-o">=</span> <span class="highlight-n">mobile_net</span><span class="highlight-p">(</span><span class="highlight-n">img_size</span><span class="highlight-p">,</span> <span class="highlight-n">class_dim</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">param_file</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../model/mobile_net.tar.gz'</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">output_file</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../model/mobile_net.paddle'</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">merge_v2_model</span><span class="highlight-p">(</span><span class="highlight-n">net</span><span class="highlight-p">,</span> <span class="highlight-n">param_file</span><span class="highlight-p">,</span> <span class="highlight-n">output_file</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+from paddle.utils.merge_model import merge_v2_model
+
+# 导入mobilenet神经网络
+from mobilenet import mobile_net
+
+if __name__ == "__main__":
+    # 图像的大小
+    img_size = 3 * 32 * 32
+    # 总分类数
+    class_dim = 10
+    net = mobile_net(img_size, class_dim)
+    param_file = '../model/mobile_net.tar.gz'
+    output_file = '../model/mobile_net.paddle'
+    merge_v2_model(net, param_file, output_file)
 </code></pre>
 <p>成功合并模型后会输出一下日志，同时会生成<code>mobile_net.paddle</code>文件。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>Generate  ../model/mobile_net.paddle  success!
+<pre><code class="language-text">Generate  ../model/mobile_net.paddle  success!
 </code></pre>
-<h1 id="移植到Android">移植到Android</h1>
+<h1 id="toc_h1_21">移植到Android</h1>
 <hr>
 <p>使用最新的Android Studio创建一个可以支持C++开发的Android项目<code>TestPaddle2</code>。</p>
-<h2 id="加载PaddlePaddle库">加载PaddlePaddle库</h2>
+<h2 id="toc_h2_22">加载PaddlePaddle库</h2>
 <p>我们在<code>项目根目录/app/</code>下创建一个<code>paddle-android</code>文件夹，把第一步编译好的PaddlePaddle库的三个文件都存放在这里，它们分别是：<code>include</code>，<code>lib</code>，<code>third_party</code>。</p>
 <p>把文件存放在<code>paddle-android</code>这里之后，项目还不能直接使用，还要Android Studio把它们编译到项目中，我们使用的是<code>项目根目录/app/CMakeLists.txt</code>，我们介绍一下它都加载了哪些库：</p>
 <ul>
@@ -793,312 +793,312 @@ var _hmt = _hmt || [];
 <li><code>add_library(paddle_image_recognizer SHARED ${SRC_FILES})</code>：生成动态库即.so文件</li>
 </ul>
 <p>加载完成PaddlePaddle之后，我们还有加载一个文件，那就是我们第二步合并的模型，这个模型是我们要用来预测图像的，所以接下来我们就看看如何处理我们的合并的模型。</p>
-<h2 id="加载合并模型">加载合并模型</h2>
+<h2 id="toc_h2_23">加载合并模型</h2>
 <p>我们把合并的模型<code>mobile_net.paddle</code>存放在<code>项目根目录/app/src/main/assets/model.include</code>，然后通过调用PaddlePaddle的接口就可以加载完成合并模型，把路径<code>model/include/mobile_net.paddle</code>传入即可，还是听方便的。</p>
-<pre><code class="language-cpp highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kt">long</span> <span class="highlight-n">size</span><span class="highlight-p">;</span>
-<span class="highlight-ln">2</span><span class="highlight-kt">void</span><span class="highlight-o">*</span> <span class="highlight-n">buf</span> <span class="highlight-o">=</span> <span class="highlight-n">BinaryReader</span><span class="highlight-p">()(</span><span class="highlight-n">merged_model_path</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">size</span><span class="highlight-p">);</span>
-<span class="highlight-ln">3</span>
-<span class="highlight-ln">4</span><span class="highlight-n">ECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_gradient_machine_create_for_inference_with_parameters</span><span class="highlight-p">(</span>
-<span class="highlight-ln">5</span>      <span class="highlight-o">&amp;</span><span class="highlight-n">gradient_machine_</span><span class="highlight-p">,</span> <span class="highlight-n">buf</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-p">));</span>
+<pre><code class="language-cpp">long size;
+void* buf = BinaryReader()(merged_model_path, &amp;size);
+
+ECK(paddle_gradient_machine_create_for_inference_with_parameters(
+      &amp;gradient_machine_, buf, size));
 </code></pre>
 <p>为什么我们可以直接这样传路径，而不用带前面的路径呢，这是因为我们在<code>app</code>下的<code>build.gradle</code>做了一些设置，在<code>android</code>增加了这几行代码：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sourceSets {
-<span class="highlight-ln">2</span>        main {
-<span class="highlight-ln">3</span>            manifest.srcFile "src/main/AndroidManifest.xml"
-<span class="highlight-ln">4</span>            java.srcDirs = ["src/main/java"]
-<span class="highlight-ln">5</span>            assets.srcDirs = ["src/main/assets"]
-<span class="highlight-ln">6</span>            jni.srcDirs = ["src/main/cpp"]
-<span class="highlight-ln">7</span>            jniLibs.srcDirs = ["paddle-android/lib"]
-<span class="highlight-ln">8</span>        }
-<span class="highlight-ln">9</span>    }
+<pre><code class="language-text">sourceSets {
+        main {
+            manifest.srcFile "src/main/AndroidManifest.xml"
+            java.srcDirs = ["src/main/java"]
+            assets.srcDirs = ["src/main/assets"]
+            jni.srcDirs = ["src/main/cpp"]
+            jniLibs.srcDirs = ["paddle-android/lib"]
+        }
+    }
 </code></pre>
 <p>这样只要在传路径之前，把上下文传给<code>BinaryReader</code>即可：</p>
-<pre><code class="language-cpp highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">AAssetManager</span> <span class="highlight-o">*</span><span class="highlight-n">aasset_manager</span> <span class="highlight-o">=</span> <span class="highlight-n">AAssetManager_fromJava</span><span class="highlight-p">(</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">jasset_manager</span><span class="highlight-p">);</span>
-<span class="highlight-ln">2</span><span class="highlight-n">BinaryReader</span><span class="highlight-o">::</span><span class="highlight-n">set_aasset_manager</span><span class="highlight-p">(</span><span class="highlight-n">aasset_manager</span><span class="highlight-p">);</span>
+<pre><code class="language-cpp">AAssetManager *aasset_manager = AAssetManager_fromJava(env, jasset_manager);
+BinaryReader::set_aasset_manager(aasset_manager);
 </code></pre>
 <p>这个部分在这里不细讲，到下一部分笔者再把这个流程再讲一下。</p>
-<h2 id="开发Android程序">开发Android程序</h2>
+<h2 id="toc_h2_24">开发Android程序</h2>
 <p>加载完成PaddlePaddle库之后，就可以使用PaddlePaddle来做我们的Android开发了，接下来我们就开始开发Android应用吧。</p>
 <p>这里对于Android的开发笔者不会细讲，因为这里主要是讲在Android应用PaddlePaddle，所以笔者只会讲一些关键的代码。</p>
 <p>在应用启动是，我们就应该让它初始化和加载模型：</p>
-<h3 id="初始化PaddlePaddle">初始化PaddlePaddle</h3>
+<h3 id="toc_h3_25">初始化PaddlePaddle</h3>
 <p>这个跟我们在Python上的初始化是差不多的，在初始化是指定是否使用GPU，通过<code>paddle_init</code>CAPI接口初始化PaddlePaddle：</p>
-<pre><code class="language-c highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-n">JNIEXPORT</span> <span class="highlight-kt">void</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nf">Java_com_yeyupiaoling_testpaddle_ImageRecognition_initPaddle</span><span class="highlight-p">(</span><span class="highlight-n">JNIEnv</span> <span class="highlight-o">*</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">jobject</span> <span class="highlight-n">thiz</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-k">static</span> <span class="highlight-kt">bool</span> <span class="highlight-n">called</span> <span class="highlight-o">=</span> <span class="highlight-nb">false</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-k">if</span> <span class="highlight-p">(</span><span class="highlight-o">!</span><span class="highlight-n">called</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-c1">// Initalize Paddle
-</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>        <span class="highlight-kt">char</span><span class="highlight-o">*</span> <span class="highlight-n">argv</span><span class="highlight-p">[]</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-n">const_cast</span><span class="highlight-o">&lt;</span><span class="highlight-kt">char</span><span class="highlight-o">*&gt;</span><span class="highlight-p">(</span><span class="highlight-s">"--use_gpu=False"</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 7</span>                        <span class="highlight-n">const_cast</span><span class="highlight-o">&lt;</span><span class="highlight-kt">char</span><span class="highlight-o">*&gt;</span><span class="highlight-p">(</span><span class="highlight-s">"--pool_limit_size=0"</span><span class="highlight-p">)};</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_init</span><span class="highlight-p">(</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-kt">char</span><span class="highlight-o">**</span><span class="highlight-p">)</span><span class="highlight-n">argv</span><span class="highlight-p">));</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-n">called</span> <span class="highlight-o">=</span> <span class="highlight-nb">true</span><span class="highlight-p">;</span>
-<span class="highlight-ln">10</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln">11</span><span class="highlight-p">}</span>
+<pre><code class="language-c">JNIEXPORT void
+Java_com_yeyupiaoling_testpaddle_ImageRecognition_initPaddle(JNIEnv *env, jobject thiz) {
+    static bool called = false;
+    if (!called) {
+        // Initalize Paddle
+        char* argv[] = {const_cast&lt;char*&gt;("--use_gpu=False"),
+                        const_cast&lt;char*&gt;("--pool_limit_size=0")};
+        CHECK(paddle_init(2, (char**)argv));
+        called = true;
+    }
+}
 </code></pre>
 <p>这个C++的函数对应的是Java中<code>ImageRecognition</code>类的方法</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1">// CPP中初始化PaddlePaddle
-</span><span class="highlight-ln">2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">native</span> <span class="highlight-kt">void</span> <span class="highlight-nf">initPaddle</span><span class="highlight-o">();</span>
+<pre><code class="language-java">// CPP中初始化PaddlePaddle
+public native void initPaddle();
 </code></pre>
 <p>这个Java类主要是用来给<code>MainActivity.java</code>调用C++函数的，同<code>ImageRecognition</code>的<code>native</code>方法，其他的Java类就可以调用自己写的C++函数了，但是不要忘了，要在<code>ImageRecognition</code>这个列中加载我们编写的C++程序：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>static {
-<span class="highlight-ln">2</span>      System.loadLibrary("image_recognition");
-<span class="highlight-ln">3</span>}
+<pre><code>static {
+      System.loadLibrary("image_recognition");
+}
 </code></pre>
-<h3 id="加载合并模型">加载合并模型</h3>
+<h3 id="toc_h3_26">加载合并模型</h3>
 <p>因为我们使用的是合并模型，所以跟之前在Python上使用的有点不一样，在Python的时候，我们要使用到升级网络输出的分类器<code>out</code>和训练是保存的模型参数<code>parameters</code>。而在这里，我们使用到的是合并模型，这个合并模型已经包含了分类器和模型参数了，所以只要这一个文件就可以了。</p>
-<pre><code class="language-c highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-n">JNIEXPORT</span> <span class="highlight-kt">void</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nf">Java_com_yeyupiaoling_testpaddle_ImageRecognition_loadModel</span><span class="highlight-p">(</span><span class="highlight-n">JNIEnv</span> <span class="highlight-o">*</span><span class="highlight-n">env</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 3</span>                                                            <span class="highlight-n">jobject</span> <span class="highlight-n">thiz</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 4</span>                                                            <span class="highlight-n">jobject</span> <span class="highlight-n">jasset_manager</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 5</span>                                                            <span class="highlight-n">jstring</span> <span class="highlight-n">modelPath</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1">//加载上下文
-</span><span class="highlight-ln"> 7</span><span class="highlight-c1"></span>    <span class="highlight-n">AAssetManager</span> <span class="highlight-o">*</span><span class="highlight-n">aasset_manager</span> <span class="highlight-o">=</span> <span class="highlight-n">AAssetManager_fromJava</span><span class="highlight-p">(</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">jasset_manager</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">BinaryReader</span><span class="highlight-o">::</span><span class="highlight-n">set_aasset_manager</span><span class="highlight-p">(</span><span class="highlight-n">aasset_manager</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">const</span> <span class="highlight-kt">char</span> <span class="highlight-o">*</span><span class="highlight-n">merged_model_path</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">GetStringUTFChars</span><span class="highlight-p">(</span><span class="highlight-n">modelPath</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">);</span>
-<span class="highlight-ln">11</span>    <span class="highlight-c1">// Step 1: Reading merged model.
-</span><span class="highlight-ln">12</span><span class="highlight-c1"></span>    <span class="highlight-n">LOGI</span><span class="highlight-p">(</span><span class="highlight-s">"merged_model_path = %s"</span><span class="highlight-p">,</span> <span class="highlight-n">merged_model_path</span><span class="highlight-p">);</span>
-<span class="highlight-ln">13</span>    <span class="highlight-kt">long</span> <span class="highlight-n">size</span><span class="highlight-p">;</span>
-<span class="highlight-ln">14</span>    <span class="highlight-kt">void</span> <span class="highlight-o">*</span><span class="highlight-n">buf</span> <span class="highlight-o">=</span> <span class="highlight-n">BinaryReader</span><span class="highlight-p">()(</span><span class="highlight-n">merged_model_path</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">size</span><span class="highlight-p">);</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1">// Create a gradient machine for inference.
-</span><span class="highlight-ln">16</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_gradient_machine_create_for_inference_with_parameters</span><span class="highlight-p">(</span>
-<span class="highlight-ln">17</span>            <span class="highlight-o">&amp;</span><span class="highlight-n">gradient_machine_</span><span class="highlight-p">,</span> <span class="highlight-n">buf</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-p">));</span>
-<span class="highlight-ln">18</span>    <span class="highlight-c1">// 释放空间
-</span><span class="highlight-ln">19</span><span class="highlight-c1"></span>    <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">ReleaseStringUTFChars</span><span class="highlight-p">(</span><span class="highlight-n">modelPath</span><span class="highlight-p">,</span> <span class="highlight-n">merged_model_path</span><span class="highlight-p">);</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">LOGI</span><span class="highlight-p">(</span><span class="highlight-s">"加载模型成功"</span><span class="highlight-p">);</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">free</span><span class="highlight-p">(</span><span class="highlight-n">buf</span><span class="highlight-p">);</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">buf</span> <span class="highlight-o">=</span> <span class="highlight-n">nullptr</span><span class="highlight-p">;</span>
-<span class="highlight-ln">23</span><span class="highlight-p">}</span>
+<pre><code class="language-c">JNIEXPORT void
+Java_com_yeyupiaoling_testpaddle_ImageRecognition_loadModel(JNIEnv *env,
+                                                            jobject thiz,
+                                                            jobject jasset_manager,
+                                                            jstring modelPath) {
+    //加载上下文
+    AAssetManager *aasset_manager = AAssetManager_fromJava(env, jasset_manager);
+    BinaryReader::set_aasset_manager(aasset_manager);
+
+    const char *merged_model_path = env-&gt;GetStringUTFChars(modelPath, 0);
+    // Step 1: Reading merged model.
+    LOGI("merged_model_path = %s", merged_model_path);
+    long size;
+    void *buf = BinaryReader()(merged_model_path, &amp;size);
+    // Create a gradient machine for inference.
+    CHECK(paddle_gradient_machine_create_for_inference_with_parameters(
+            &amp;gradient_machine_, buf, size));
+    // 释放空间
+    env-&gt;ReleaseStringUTFChars(modelPath, merged_model_path);
+    LOGI("加载模型成功");
+    free(buf);
+    buf = nullptr;
+}
 </code></pre>
 <p>而这个方法就对应<code>ImageRecognition</code>类的方法：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1">// CPP中加载预测合并模型
-</span><span class="highlight-ln">2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">native</span> <span class="highlight-kt">void</span> <span class="highlight-nf">loadModel</span><span class="highlight-o">(</span><span class="highlight-n">AssetManager</span> <span class="highlight-n">assetManager</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">modelPath</span><span class="highlight-o">);</span>
+<pre><code class="language-java">// CPP中加载预测合并模型
+public native void loadModel(AssetManager assetManager, String modelPath);
 </code></pre>
 <p>这一步和上面的初始化PaddlePaddle都是要在<code>activity</code>加的时候就应该执行了：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">imageRecognition</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ImageRecognition</span><span class="highlight-o">();</span>
-<span class="highlight-ln">2</span><span class="highlight-n">imageRecognition</span><span class="highlight-o">.</span><span class="highlight-na">initPaddle</span><span class="highlight-o">();</span>
-<span class="highlight-ln">3</span><span class="highlight-n">imageRecognition</span><span class="highlight-o">.</span><span class="highlight-na">loadModel</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">.</span><span class="highlight-na">getAssets</span><span class="highlight-o">(),</span> <span class="highlight-s">"model/include/mobile_net.paddle"</span><span class="highlight-o">);</span>
+<pre><code class="language-java">imageRecognition = new ImageRecognition();
+imageRecognition.initPaddle();
+imageRecognition.loadModel(this.getAssets(), "model/include/mobile_net.paddle");
 </code></pre>
-<h3 id="预测图像">预测图像</h3>
+<h3 id="toc_h3_27">预测图像</h3>
 <p>这个是我们的预测CPP程序，这个调用了PaddlePaddle的CAPI，通过这些接口来让模型做一个向前的计算，通过这个计算来获取到我们的预测结果。<br>
 因为PaddlePaddle读取的数据是float数组，而我们传过来的只是字节数组，所以我们要对数据进行转换，加了一个把字节数的<code>jpixels</code>的转成float数组的<code>array</code>。最后我们获得的结果也是一个float数组的<code>array</code>，这个是每个类别对于的概率：</p>
-<pre><code class="language-c highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-n">JNIEXPORT</span> <span class="highlight-n">jfloatArray</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nf">Java_com_yeyupiaoling_testpaddle_ImageRecognition_infer</span><span class="highlight-p">(</span><span class="highlight-n">JNIEnv</span> <span class="highlight-o">*</span><span class="highlight-n">env</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 3</span>                                                        <span class="highlight-n">jobject</span> <span class="highlight-n">thiz</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 4</span>                                                        <span class="highlight-n">jbyteArray</span> <span class="highlight-n">jpixels</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1">//网络的输入和输出被组织为paddle_arguments对象
-</span><span class="highlight-ln"> 7</span><span class="highlight-c1"></span>    <span class="highlight-c1">//在C-API中。在下面的评论中，“argument”具体指的是一个输入
-</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>    <span class="highlight-c1">//PaddlePaddle C-API中的神经网络。
-</span><span class="highlight-ln"> 9</span><span class="highlight-c1"></span>    <span class="highlight-n">paddle_arguments</span> <span class="highlight-n">in_args</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle_arguments_create_none</span><span class="highlight-p">();</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-c1">//调用函数来创建一个参数。
-</span><span class="highlight-ln">12</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_arguments_resize</span><span class="highlight-p">(</span><span class="highlight-n">in_args</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">));</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-c1">//每个参数需要一个矩阵或一个ivector（整数向量，稀疏
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>    <span class="highlight-c1">//索引输入，通常用于NLP任务）来保存真实的输入数据。
-</span><span class="highlight-ln">16</span><span class="highlight-c1"></span>    <span class="highlight-c1">//在下面的评论中，“matrix”具体指的是需要的对象
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>    <span class="highlight-c1">//参数来保存数据。这里我们为上面创建的矩阵创建
-</span><span class="highlight-ln">18</span><span class="highlight-c1"></span>    <span class="highlight-c1">//储存测试样品的存量。
-</span><span class="highlight-ln">19</span><span class="highlight-c1"></span>    <span class="highlight-n">paddle_matrix</span> <span class="highlight-n">mat</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle_matrix_create</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-mi">3072</span><span class="highlight-p">,</span> <span class="highlight-nb">false</span><span class="highlight-p">);</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">paddle_real</span> <span class="highlight-o">*</span><span class="highlight-n">array</span><span class="highlight-p">;</span>
-<span class="highlight-ln">22</span>    <span class="highlight-c1">//获取指向第一行开始地址的指针
-</span><span class="highlight-ln">23</span><span class="highlight-c1"></span>    <span class="highlight-c1">//创建矩阵。
-</span><span class="highlight-ln">24</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_matrix_get_row</span><span class="highlight-p">(</span><span class="highlight-n">mat</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">array</span><span class="highlight-p">));</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-c1">//获取字节数组转换成浮点数组
-</span><span class="highlight-ln">27</span><span class="highlight-c1"></span>    <span class="highlight-kt">unsigned</span> <span class="highlight-kt">char</span> <span class="highlight-o">*</span><span class="highlight-n">pixels</span> <span class="highlight-o">=</span>
-<span class="highlight-ln">28</span>            <span class="highlight-p">(</span><span class="highlight-kt">unsigned</span> <span class="highlight-kt">char</span> <span class="highlight-o">*</span><span class="highlight-p">)</span> <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">GetByteArrayElements</span><span class="highlight-p">(</span><span class="highlight-n">jpixels</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">);</span>
-<span class="highlight-ln">29</span>    <span class="highlight-c1">// RGB/RGBA -&gt; RGB
-</span><span class="highlight-ln">30</span><span class="highlight-c1"></span>    <span class="highlight-n">size_t</span> <span class="highlight-n">index</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span><span class="highlight-p">;</span>
-<span class="highlight-ln">31</span>    <span class="highlight-n">std</span><span class="highlight-o">::</span><span class="highlight-n">vector</span><span class="highlight-o">&lt;</span><span class="highlight-kt">float</span><span class="highlight-o">&gt;</span> <span class="highlight-n">means</span><span class="highlight-p">;</span>
-<span class="highlight-ln">32</span>    <span class="highlight-n">means</span><span class="highlight-p">.</span><span class="highlight-n">clear</span><span class="highlight-p">();</span>
-<span class="highlight-ln">33</span>    <span class="highlight-k">for</span> <span class="highlight-p">(</span><span class="highlight-n">size_t</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span><span class="highlight-p">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-mi">3</span><span class="highlight-p">;</span> <span class="highlight-o">++</span><span class="highlight-n">i</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">34</span>        <span class="highlight-n">means</span><span class="highlight-p">.</span><span class="highlight-n">push_back</span><span class="highlight-p">(</span><span class="highlight-mf">0.0f</span><span class="highlight-p">);</span>
-<span class="highlight-ln">35</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln">36</span>    <span class="highlight-k">for</span> <span class="highlight-p">(</span><span class="highlight-n">size_t</span> <span class="highlight-n">c</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span><span class="highlight-p">;</span> <span class="highlight-n">c</span> <span class="highlight-o">&lt;</span> <span class="highlight-mi">3</span><span class="highlight-p">;</span> <span class="highlight-o">++</span><span class="highlight-n">c</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">37</span>        <span class="highlight-k">for</span> <span class="highlight-p">(</span><span class="highlight-n">size_t</span> <span class="highlight-n">h</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span><span class="highlight-p">;</span> <span class="highlight-n">h</span> <span class="highlight-o">&lt;</span> <span class="highlight-mi">32</span><span class="highlight-p">;</span> <span class="highlight-o">++</span><span class="highlight-n">h</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">38</span>            <span class="highlight-k">for</span> <span class="highlight-p">(</span><span class="highlight-n">size_t</span> <span class="highlight-n">w</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span><span class="highlight-p">;</span> <span class="highlight-n">w</span> <span class="highlight-o">&lt;</span> <span class="highlight-mi">32</span><span class="highlight-p">;</span> <span class="highlight-o">++</span><span class="highlight-n">w</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">39</span>                <span class="highlight-n">array</span><span class="highlight-p">[</span><span class="highlight-n">index</span><span class="highlight-p">]</span> <span class="highlight-o">=</span>
-<span class="highlight-ln">40</span>                        <span class="highlight-n">static_cast</span><span class="highlight-o">&lt;</span><span class="highlight-kt">float</span><span class="highlight-o">&gt;</span><span class="highlight-p">(</span>
-<span class="highlight-ln">41</span>                                <span class="highlight-n">pixels</span><span class="highlight-p">[(</span><span class="highlight-n">h</span> <span class="highlight-o">*</span> <span class="highlight-mi">32</span> <span class="highlight-o">+</span> <span class="highlight-n">w</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mi">3</span> <span class="highlight-o">+</span> <span class="highlight-n">c</span><span class="highlight-p">])</span> <span class="highlight-o">-</span> <span class="highlight-n">means</span><span class="highlight-p">[</span><span class="highlight-n">c</span><span class="highlight-p">];</span>
-<span class="highlight-ln">42</span>                <span class="highlight-n">index</span><span class="highlight-o">++</span><span class="highlight-p">;</span>
-<span class="highlight-ln">43</span>            <span class="highlight-p">}</span>
-<span class="highlight-ln">44</span>        <span class="highlight-p">}</span>
-<span class="highlight-ln">45</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln">46</span>    <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">ReleaseByteArrayElements</span><span class="highlight-p">(</span><span class="highlight-n">jpixels</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-n">jbyte</span> <span class="highlight-o">*</span><span class="highlight-p">)</span> <span class="highlight-n">pixels</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">);</span>
-<span class="highlight-ln">47</span>
-<span class="highlight-ln">48</span>    <span class="highlight-c1">//将矩阵分配给输入参数。
-</span><span class="highlight-ln">49</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_arguments_set_value</span><span class="highlight-p">(</span><span class="highlight-n">in_args</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">mat</span><span class="highlight-p">));</span>
-<span class="highlight-ln">50</span>
-<span class="highlight-ln">51</span>    <span class="highlight-c1">//创建输出参数。
-</span><span class="highlight-ln">52</span><span class="highlight-c1"></span>    <span class="highlight-n">paddle_arguments</span> <span class="highlight-n">out_args</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle_arguments_create_none</span><span class="highlight-p">();</span>
-<span class="highlight-ln">53</span>
-<span class="highlight-ln">54</span>    <span class="highlight-c1">//调用向前计算。
-</span><span class="highlight-ln">55</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_gradient_machine_forward</span><span class="highlight-p">(</span><span class="highlight-n">gradient_machine_</span><span class="highlight-p">,</span> <span class="highlight-n">in_args</span><span class="highlight-p">,</span> <span class="highlight-n">out_args</span><span class="highlight-p">,</span> <span class="highlight-nb">false</span><span class="highlight-p">));</span>
-<span class="highlight-ln">56</span>
-<span class="highlight-ln">57</span>    <span class="highlight-c1">//创建矩阵来保存神经网络的向前结果。
-</span><span class="highlight-ln">58</span><span class="highlight-c1"></span>    <span class="highlight-n">paddle_matrix</span> <span class="highlight-n">prob</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle_matrix_create_none</span><span class="highlight-p">();</span>
-<span class="highlight-ln">59</span>    <span class="highlight-c1">//访问输出参数的矩阵，预测结果存储在哪个。
-</span><span class="highlight-ln">60</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_arguments_get_value</span><span class="highlight-p">(</span><span class="highlight-n">out_args</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">prob</span><span class="highlight-p">));</span>
-<span class="highlight-ln">61</span>
-<span class="highlight-ln">62</span>    <span class="highlight-n">uint64_t</span> <span class="highlight-n">height</span><span class="highlight-p">;</span>
-<span class="highlight-ln">63</span>    <span class="highlight-n">uint64_t</span> <span class="highlight-n">width</span><span class="highlight-p">;</span>
-<span class="highlight-ln">64</span>    <span class="highlight-c1">//获取矩阵的大小
-</span><span class="highlight-ln">65</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_matrix_get_shape</span><span class="highlight-p">(</span><span class="highlight-n">prob</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">height</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">width</span><span class="highlight-p">));</span>
-<span class="highlight-ln">66</span>    <span class="highlight-c1">//获取预测结果矩阵
-</span><span class="highlight-ln">67</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_matrix_get_row</span><span class="highlight-p">(</span><span class="highlight-n">prob</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">array</span><span class="highlight-p">));</span>
-<span class="highlight-ln">68</span>
-<span class="highlight-ln">69</span>    <span class="highlight-n">jfloatArray</span> <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">NewFloatArray</span><span class="highlight-p">(</span><span class="highlight-n">height</span> <span class="highlight-o">*</span> <span class="highlight-n">width</span><span class="highlight-p">);</span>
-<span class="highlight-ln">70</span>    <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">SetFloatArrayRegion</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">height</span> <span class="highlight-o">*</span> <span class="highlight-n">width</span><span class="highlight-p">,</span> <span class="highlight-n">array</span><span class="highlight-p">);</span>
-<span class="highlight-ln">71</span>
-<span class="highlight-ln">72</span>    <span class="highlight-c1">// 清空内存
-</span><span class="highlight-ln">73</span><span class="highlight-c1"></span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_matrix_destroy</span><span class="highlight-p">(</span><span class="highlight-n">prob</span><span class="highlight-p">));</span>
-<span class="highlight-ln">74</span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_arguments_destroy</span><span class="highlight-p">(</span><span class="highlight-n">out_args</span><span class="highlight-p">));</span>
-<span class="highlight-ln">75</span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_matrix_destroy</span><span class="highlight-p">(</span><span class="highlight-n">mat</span><span class="highlight-p">));</span>
-<span class="highlight-ln">76</span>    <span class="highlight-n">CHECK</span><span class="highlight-p">(</span><span class="highlight-n">paddle_arguments_destroy</span><span class="highlight-p">(</span><span class="highlight-n">in_args</span><span class="highlight-p">));</span>
-<span class="highlight-ln">77</span>
-<span class="highlight-ln">78</span>    <span class="highlight-k">return</span> <span class="highlight-n">result</span><span class="highlight-p">;</span>
-<span class="highlight-ln">79</span><span class="highlight-p">}</span>
+<pre><code class="language-c">JNIEXPORT jfloatArray
+Java_com_yeyupiaoling_testpaddle_ImageRecognition_infer(JNIEnv *env,
+                                                        jobject thiz,
+                                                        jbyteArray jpixels) {
+
+    //网络的输入和输出被组织为paddle_arguments对象
+    //在C-API中。在下面的评论中，“argument”具体指的是一个输入
+    //PaddlePaddle C-API中的神经网络。
+    paddle_arguments in_args = paddle_arguments_create_none();
+
+    //调用函数来创建一个参数。
+    CHECK(paddle_arguments_resize(in_args, 1));
+
+    //每个参数需要一个矩阵或一个ivector（整数向量，稀疏
+    //索引输入，通常用于NLP任务）来保存真实的输入数据。
+    //在下面的评论中，“matrix”具体指的是需要的对象
+    //参数来保存数据。这里我们为上面创建的矩阵创建
+    //储存测试样品的存量。
+    paddle_matrix mat = paddle_matrix_create(1, 3072, false);
+
+    paddle_real *array;
+    //获取指向第一行开始地址的指针
+    //创建矩阵。
+    CHECK(paddle_matrix_get_row(mat, 0, &amp;array));
+
+    //获取字节数组转换成浮点数组
+    unsigned char *pixels =
+            (unsigned char *) env-&gt;GetByteArrayElements(jpixels, 0);
+    // RGB/RGBA -&gt; RGB
+    size_t index = 0;
+    std::vector&lt;float&gt; means;
+    means.clear();
+    for (size_t i = 0; i &lt; 3; ++i) {
+        means.push_back(0.0f);
+    }
+    for (size_t c = 0; c &lt; 3; ++c) {
+        for (size_t h = 0; h &lt; 32; ++h) {
+            for (size_t w = 0; w &lt; 32; ++w) {
+                array[index] =
+                        static_cast&lt;float&gt;(
+                                pixels[(h * 32 + w) * 3 + c]) - means[c];
+                index++;
+            }
+        }
+    }
+    env-&gt;ReleaseByteArrayElements(jpixels, (jbyte *) pixels, 0);
+
+    //将矩阵分配给输入参数。
+    CHECK(paddle_arguments_set_value(in_args, 0, mat));
+
+    //创建输出参数。
+    paddle_arguments out_args = paddle_arguments_create_none();
+
+    //调用向前计算。
+    CHECK(paddle_gradient_machine_forward(gradient_machine_, in_args, out_args, false));
+
+    //创建矩阵来保存神经网络的向前结果。
+    paddle_matrix prob = paddle_matrix_create_none();
+    //访问输出参数的矩阵，预测结果存储在哪个。
+    CHECK(paddle_arguments_get_value(out_args, 0, prob));
+
+    uint64_t height;
+    uint64_t width;
+    //获取矩阵的大小
+    CHECK(paddle_matrix_get_shape(prob, &amp;height, &amp;width));
+    //获取预测结果矩阵
+    CHECK(paddle_matrix_get_row(prob, 0, &amp;array));
+
+    jfloatArray result = env-&gt;NewFloatArray(height * width);
+    env-&gt;SetFloatArrayRegion(result, 0, height * width, array);
+
+    // 清空内存
+    CHECK(paddle_matrix_destroy(prob));
+    CHECK(paddle_arguments_destroy(out_args));
+    CHECK(paddle_matrix_destroy(mat));
+    CHECK(paddle_arguments_destroy(in_args));
+
+    return result;
+}
 </code></pre>
 <p>这个方法对应<code>ImageRecognition</code>类的方法：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1">// CPP中获取预测结果
-</span><span class="highlight-ln">2</span><span class="highlight-c1"></span><span class="highlight-kd">private</span> <span class="highlight-kd">native</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">infer</span><span class="highlight-o">(</span><span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">pixels</span><span class="highlight-o">);</span>
+<pre><code class="language-java">// CPP中获取预测结果
+private native float[] infer(byte[] pixels);
 </code></pre>
 <p>在Java中，我们要获取到图像数据，我们从相册中获取图像：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1">//打开相册
-</span><span class="highlight-ln">2</span><span class="highlight-c1"></span><span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">getPhoto</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">Intent</span> <span class="highlight-n">intent</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Intent</span><span class="highlight-o">(</span><span class="highlight-n">Intent</span><span class="highlight-o">.</span><span class="highlight-na">ACTION_PICK</span><span class="highlight-o">);</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">setType</span><span class="highlight-o">(</span><span class="highlight-s">"image/*"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">5</span>    <span class="highlight-n">startActivityForResult</span><span class="highlight-o">(</span><span class="highlight-n">intent</span><span class="highlight-o">,</span> <span class="highlight-n">1</span><span class="highlight-o">);</span>
-<span class="highlight-ln">6</span><span class="highlight-o">}</span>
+<pre><code class="language-java">//打开相册
+private void getPhoto() {
+    Intent intent = new Intent(Intent.ACTION_PICK);
+    intent.setType("image/*");
+    startActivityForResult(intent, 1);
+}
 </code></pre>
 <p>如果读者的手机是Android 6.0以上的，我们还有做一个动态获取权限的操作：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">//从相册获取照片
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-n">getPhotoBtn</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 6</span>                <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-n">ActivityCompat</span><span class="highlight-o">.</span><span class="highlight-na">requestPermissions</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 8</span>                    <span class="highlight-k">new</span> <span class="highlight-n">String</span><span class="highlight-o">[]{</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">},</span> <span class="highlight-n">1</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">10</span>            <span class="highlight-n">getPhoto</span><span class="highlight-o">();</span>
-<span class="highlight-ln">11</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">12</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">13</span><span class="highlight-o">});</span>
+<pre><code class="language-java">//从相册获取照片
+getPhotoBtn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        } else {
+            getPhoto();
+        }
+    }
+});
 </code></pre>
 <p>然后要在权限回调中也要做相应的操作，比如申请权限成功之后要打开相册，申请权限失败要提示用户打开相册失败：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">// 动态申请权限回调
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onRequestPermissionsResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-nd">@NonNull</span> <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">permissions</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 4</span>                                       <span class="highlight-nd">@NonNull</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">grantResults</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-k">case</span> <span class="highlight-n">1</span><span class="highlight-o">:</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">grantResults</span><span class="highlight-o">.</span><span class="highlight-na">length</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">grantResults</span><span class="highlight-o">[</span><span class="highlight-n">0</span><span class="highlight-o">]</span> <span class="highlight-o">==</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 8</span>                <span class="highlight-n">getPhoto</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">10</span>                <span class="highlight-n">toastUtil</span><span class="highlight-o">.</span><span class="highlight-na">showToast</span><span class="highlight-o">(</span><span class="highlight-s">"你拒绝了授权"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">11</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">12</span>            <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">13</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">14</span><span class="highlight-o">}</span>
+<pre><code class="language-java">// 动态申请权限回调
+@Override
+public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                       @NonNull int[] grantResults) {
+    switch (requestCode) {
+        case 1:
+            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getPhoto();
+            } else {
+                toastUtil.showToast("你拒绝了授权");
+            }
+            break;
+    }
+}
 </code></pre>
 <p>最后当用户选择图像只是，在回调中可以获取该图像的URI：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">// 相册获取照片回调
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onActivityResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">resultCode</span><span class="highlight-o">,</span> <span class="highlight-n">Intent</span> <span class="highlight-n">data</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">resultCode</span> <span class="highlight-o">==</span> <span class="highlight-n">Activity</span><span class="highlight-o">.</span><span class="highlight-na">RESULT_OK</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>            <span class="highlight-k">case</span> <span class="highlight-n">1</span><span class="highlight-o">:</span>
-<span class="highlight-ln"> 7</span>                <span class="highlight-n">Uri</span> <span class="highlight-n">uri</span> <span class="highlight-o">=</span> <span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-na">getData</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 8</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">10</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">11</span><span class="highlight-o">}</span>
+<pre><code class="language-java">// 相册获取照片回调
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (resultCode == Activity.RESULT_OK) {
+        switch (requestCode) {
+            case 1:
+                Uri uri = data.getData();
+                break;
+        }
+    }
+}
 </code></pre>
 <p>然后编写一个工具类来把URI转成图像的路径：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">//获取图片的路径
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">String</span> <span class="highlight-nf">getRealPathFromURI</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">Uri</span> <span class="highlight-n">uri</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">String</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">Cursor</span> <span class="highlight-n">cursor</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getContentResolver</span><span class="highlight-o">().</span><span class="highlight-na">query</span><span class="highlight-o">(</span><span class="highlight-n">uri</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">cursor</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">uri</span><span class="highlight-o">.</span><span class="highlight-na">getPath</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">moveToFirst</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-kt">int</span> <span class="highlight-n">idx</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getColumnIndex</span><span class="highlight-o">(</span><span class="highlight-n">MediaStore</span><span class="highlight-o">.</span><span class="highlight-na">Images</span><span class="highlight-o">.</span><span class="highlight-na">ImageColumns</span><span class="highlight-o">.</span><span class="highlight-na">DATA</span><span class="highlight-o">);</span>
-<span class="highlight-ln">10</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-n">idx</span><span class="highlight-o">);</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">12</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">return</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
-<span class="highlight-ln">14</span><span class="highlight-o">}</span>
+<pre><code class="language-java">//获取图片的路径
+public static String getRealPathFromURI(Context context, Uri uri) {
+    String result;
+    Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+    if (cursor == null) {
+        result = uri.getPath();
+    } else {
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        result = cursor.getString(idx);
+        cursor.close();
+    }
+    return result;
+}
 </code></pre>
 <p>之后通过调用这个方法就可以获取到图像的路径了：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">String</span> <span class="highlight-n">imagePath</span> <span class="highlight-o">=</span> <span class="highlight-n">CameraUtil</span><span class="highlight-o">.</span><span class="highlight-na">getRealPathFromURI</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">uri</span><span class="highlight-o">);</span>
+<pre><code class="language-java">String imagePath = CameraUtil.getRealPathFromURI(MainActivity.this, uri);
 </code></pre>
 <p>最后在调用预测方法，获取到预测结果：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">String</span> <span class="highlight-n">resutl</span> <span class="highlight-o">=</span> <span class="highlight-n">imageRecognition</span><span class="highlight-o">.</span><span class="highlight-na">infer</span><span class="highlight-o">(</span><span class="highlight-n">imagePath</span><span class="highlight-o">);</span>
+<pre><code class="language-java">String resutl = imageRecognition.infer(imagePath);
 </code></pre>
 <p>这里要注意，这个的<code>infer</code>方法不是我们的真正调用C++函数的方法，我们C++的预测函数传入的是一个字节数组：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">private</span> <span class="highlight-kd">native</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">infer</span><span class="highlight-o">(</span><span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">pixels</span><span class="highlight-o">);</span>
+<pre><code class="language-java">private native float[] infer(byte[] pixels);
 </code></pre>
 <p>所以我们要把获得的图像转换成字节数组，再去调用预测的C++接口：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kd">public</span> <span class="highlight-n">String</span> <span class="highlight-nf">infer</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">img_path</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>	<span class="highlight-c1">//把图像读取成一个Bitmap对象
-</span><span class="highlight-ln"> 3</span><span class="highlight-c1"></span>	<span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeFile</span><span class="highlight-o">(</span><span class="highlight-n">img_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 4</span>	<span class="highlight-n">Bitmap</span> <span class="highlight-n">mBitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">.</span><span class="highlight-na">copy</span><span class="highlight-o">(</span><span class="highlight-n">Bitmap</span><span class="highlight-o">.</span><span class="highlight-na">Config</span><span class="highlight-o">.</span><span class="highlight-na">ARGB_8888</span><span class="highlight-o">,</span> <span class="highlight-kc">true</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 5</span>	<span class="highlight-n">mBitmap</span><span class="highlight-o">.</span><span class="highlight-na">setWidth</span><span class="highlight-o">(</span><span class="highlight-n">32</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 6</span>	<span class="highlight-n">mBitmap</span><span class="highlight-o">.</span><span class="highlight-na">setHeight</span><span class="highlight-o">(</span><span class="highlight-n">32</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 7</span>	<span class="highlight-kt">int</span> <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">mBitmap</span><span class="highlight-o">.</span><span class="highlight-na">getWidth</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 8</span>	<span class="highlight-kt">int</span> <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">mBitmap</span><span class="highlight-o">.</span><span class="highlight-na">getHeight</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 9</span>	<span class="highlight-kt">int</span> <span class="highlight-n">channel</span> <span class="highlight-o">=</span> <span class="highlight-n">3</span><span class="highlight-o">;</span>
-<span class="highlight-ln">10</span>	<span class="highlight-c1">//把图像生成一个数组
-</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>	<span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">pixels</span> <span class="highlight-o">=</span> <span class="highlight-n">getPixelsBGR</span><span class="highlight-o">(</span><span class="highlight-n">mBitmap</span><span class="highlight-o">);</span>
-<span class="highlight-ln">12</span>	<span class="highlight-c1">// 获取预测结果
-</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>	<span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">infer</span><span class="highlight-o">(</span><span class="highlight-n">pixels</span><span class="highlight-o">,</span> <span class="highlight-n">width</span><span class="highlight-o">,</span> <span class="highlight-n">height</span><span class="highlight-o">,</span> <span class="highlight-n">channel</span><span class="highlight-o">);</span>
-<span class="highlight-ln">14</span>	<span class="highlight-c1">// 把概率最大的结果提取出来
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>	<span class="highlight-kt">float</span> <span class="highlight-n">max</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
-<span class="highlight-ln">16</span>	<span class="highlight-kt">int</span> <span class="highlight-n">number</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
-<span class="highlight-ln">17</span>	<span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">18</span>		<span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">]</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">max</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">19</span>			<span class="highlight-n">max</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln">20</span>			<span class="highlight-n">number</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span><span class="highlight-o">;</span>
-<span class="highlight-ln">21</span>		<span class="highlight-o">}</span>
-<span class="highlight-ln">22</span>	<span class="highlight-o">}</span>
-<span class="highlight-ln">23</span>	<span class="highlight-n">String</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-s">"类别为："</span> <span class="highlight-o">+</span> <span class="highlight-n">clasName</span><span class="highlight-o">[</span><span class="highlight-n">number</span><span class="highlight-o">]</span> <span class="highlight-o">+</span> <span class="highlight-s">"，可信度为："</span> <span class="highlight-o">+</span> <span class="highlight-n">max</span><span class="highlight-o">;</span>
-<span class="highlight-ln">24</span>	<span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">i</span><span class="highlight-o">(</span><span class="highlight-s">"ImageRecognition"</span><span class="highlight-o">,</span> <span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">25</span>	<span class="highlight-k">return</span> <span class="highlight-n">msg</span><span class="highlight-o">;</span>
-<span class="highlight-ln">26</span><span class="highlight-o">}</span>
+<pre><code class="language-java">public String infer(String img_path) {
+	//把图像读取成一个Bitmap对象
+	Bitmap bitmap = BitmapFactory.decodeFile(img_path);
+	Bitmap mBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+	mBitmap.setWidth(32);
+	mBitmap.setHeight(32);
+	int width = mBitmap.getWidth();
+	int height = mBitmap.getHeight();
+	int channel = 3;
+	//把图像生成一个数组
+	byte[] pixels = getPixelsBGR(mBitmap);
+	// 获取预测结果
+	float[] result = infer(pixels, width, height, channel);
+	// 把概率最大的结果提取出来
+	float max = 0;
+	int number = 0;
+	for (int i = 0; i &lt; result.length; i++) {
+		if (result[i] &gt; max) {
+			max = result[i];
+			number = i;
+		}
+	}
+	String msg = "类别为：" + clasName[number] + "，可信度为：" + max;
+	Log.i("ImageRecognition", msg);
+	return msg;
+}
 </code></pre>
 <p>其中我们调用了一个<code>getPixelsBGR()</code>方法，这个CIFAR图片在训练时的通道顺序为B(蓝)、G(绿)、R(红)，而我们使用Bitmap读取图像的通道是RGB顺序的，所以我们还有转换一下它们的通道顺序，转换方法如下：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kd">public</span> <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-nf">getPixelsBGR</span><span class="highlight-o">(</span><span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>	<span class="highlight-c1">// 计算我们的图像包含多少字节
-</span><span class="highlight-ln"> 3</span><span class="highlight-c1"></span>	<span class="highlight-kt">int</span> <span class="highlight-n">bytes</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">.</span><span class="highlight-na">getByteCount</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>	<span class="highlight-n">ByteBuffer</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-n">ByteBuffer</span><span class="highlight-o">.</span><span class="highlight-na">allocate</span><span class="highlight-o">(</span><span class="highlight-n">bytes</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 6</span>	<span class="highlight-c1">// 将字节数据移动到缓冲区
-</span><span class="highlight-ln"> 7</span><span class="highlight-c1"></span>	<span class="highlight-n">bitmap</span><span class="highlight-o">.</span><span class="highlight-na">copyPixelsToBuffer</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>	<span class="highlight-c1">// 获取包含数据的基础数组
-</span><span class="highlight-ln">10</span><span class="highlight-c1"></span>	<span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">temp</span> <span class="highlight-o">=</span> <span class="highlight-n">buffer</span><span class="highlight-o">.</span><span class="highlight-na">array</span><span class="highlight-o">();</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>	<span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">pixels</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[(</span><span class="highlight-n">temp</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">/</span><span class="highlight-n">4</span><span class="highlight-o">)</span> <span class="highlight-o">*</span> <span class="highlight-n">3</span><span class="highlight-o">];</span>
-<span class="highlight-ln">13</span>	<span class="highlight-c1">// 进行像素复制
-</span><span class="highlight-ln">14</span><span class="highlight-c1"></span>	<span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">temp</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">/</span><span class="highlight-n">4</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">15</span>		<span class="highlight-n">pixels</span><span class="highlight-o">[</span><span class="highlight-n">i</span> <span class="highlight-o">*</span> <span class="highlight-n">3</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-n">temp</span><span class="highlight-o">[</span><span class="highlight-n">i</span> <span class="highlight-o">*</span> <span class="highlight-n">4</span> <span class="highlight-o">+</span> <span class="highlight-n">2</span><span class="highlight-o">];</span> <span class="highlight-c1">//B
-</span><span class="highlight-ln">16</span><span class="highlight-c1"></span>		<span class="highlight-n">pixels</span><span class="highlight-o">[</span><span class="highlight-n">i</span> <span class="highlight-o">*</span> <span class="highlight-n">3</span> <span class="highlight-o">+</span> <span class="highlight-n">1</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-n">temp</span><span class="highlight-o">[</span><span class="highlight-n">i</span> <span class="highlight-o">*</span> <span class="highlight-n">4</span> <span class="highlight-o">+</span> <span class="highlight-n">1</span><span class="highlight-o">];</span> <span class="highlight-c1">//G
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>		<span class="highlight-n">pixels</span><span class="highlight-o">[</span><span class="highlight-n">i</span> <span class="highlight-o">*</span> <span class="highlight-n">3</span> <span class="highlight-o">+</span> <span class="highlight-n">2</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-n">temp</span><span class="highlight-o">[</span><span class="highlight-n">i</span> <span class="highlight-o">*</span> <span class="highlight-n">4</span> <span class="highlight-o">];</span> <span class="highlight-c1">//R
-</span><span class="highlight-ln">18</span><span class="highlight-c1"></span>	<span class="highlight-o">}</span>
-<span class="highlight-ln">19</span>	<span class="highlight-k">return</span> <span class="highlight-n">pixels</span><span class="highlight-o">;</span>
-<span class="highlight-ln">20</span><span class="highlight-o">}</span>
+<pre><code class="language-java">public byte[] getPixelsBGR(Bitmap bitmap) {
+	// 计算我们的图像包含多少字节
+	int bytes = bitmap.getByteCount();
+
+	ByteBuffer buffer = ByteBuffer.allocate(bytes);
+	// 将字节数据移动到缓冲区
+	bitmap.copyPixelsToBuffer(buffer);
+
+	// 获取包含数据的基础数组
+	byte[] temp = buffer.array();
+
+	byte[] pixels = new byte[(temp.length/4) * 3];
+	// 进行像素复制
+	for (int i = 0; i &lt; temp.length/4; i++) {
+		pixels[i * 3] = temp[i * 4 + 2]; //B
+		pixels[i * 3 + 1] = temp[i * 4 + 1]; //G
+		pixels[i * 3 + 2] = temp[i * 4 ]; //R
+	}
+	return pixels;
+}
 </code></pre>
 <p>这个我们的预测结果的截图：<br>
 <img src="https://s1.ax1x.com/2020/04/04/GdW5K1.png" alt="这里写图片描述"></p>
-<h1 id="项目代码">项目代码</h1>
+<h1 id="toc_h1_28">项目代码</h1>
 <hr>
 <p>GitHub地址:<a href="https://github.com/yeyupiaoling/LearnPaddle" target="_blank">https://github.com/yeyupiaoling/LearnPaddle</a></p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_29">参考资料</h1>
 <hr>
 <ol>
 <li><a href="http://paddlepaddle.org/" target="_blank">http://paddlepaddle.org/</a></li>
@@ -1181,7 +1181,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -1190,7 +1190,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -1198,11 +1198,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466422847",
@@ -1220,4 +1220,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 88ms, 2020/04/07 11:38:48 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 36ms, 2020/04/07 14:57:08 -->

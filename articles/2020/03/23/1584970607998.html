@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记二——MNIST手写数字识别 - 夜雨飘零</title><meta name="description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集的介绍 如题目所示,本次训练使用到的是MNIST数据库的手写数字,这个数据集包含60,000个示例的训练集以及10,000个示例的测试集.图片是28x28的像素矩阵，标签则对应着0~9的10个数字。每张图片都经过了大小归一化和居中处理.该数据集的图片是一个黑白的单通道图片,其中图片如下: 该数据集非常小,很适合图像识别的入门使用,该数据集一共有4个文件,分别是训练数据和其对应的标签,测试数据和其对应的标签.文件如表所示: |文件名称 |大小|说明| | :---: |:---:| :---:| |train-images-idx3-ubyte|9.9M|训练数据图片，60,000条数据| |train-labels-idx1-ubyte|28.9K|训练数据标签，60,000条数据| |t10k-images-idx3-ubyte|1.6M|测试数据图片，10,000条数据| |t10k-labels-idx1-ubyte|4.5K|测试数据标签，10,000条数据| 这个数据集针对170多M...."/><meta property="og:description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集的介绍 如题目所示,本次训练使用到的是MNIST数据库的手写数字,这个数据集包含60,000个示例的训练集以及10,000个示例的测试集.图片是28x28的像素矩阵，标签则对应着0~9的10个数字。每张图片都经过了大小归一化和居中处理.该数据集的图片是一个黑白的单通道图片,其中图片如下: 该数据集非常小,很适合图像识别的入门使用,该数据集一共有4个文件,分别是训练数据和其对应的标签,测试数据和其对应的标签.文件如表所示: |文件名称 |大小|说明| | :---: |:---:| :---:| |train-images-idx3-ubyte|9.9M|训练数据图片，60,000条数据| |train-labels-idx1-ubyte|28.9K|训练数据标签，60,000条数据| |t10k-images-idx3-ubyte|1.6M|测试数据图片，10,000条数据| |t10k-labels-idx1-ubyte|4.5K|测试数据标签，10,000条数据| 这个数据集针对170多M...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记二——MNIST手写数字识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584970607998.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记二——MNIST手写数字识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970607998.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记二——MNIST手写数字识别 - 夜雨飘零</title><meta name="description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集的介绍 如题目所示,本次训练使用到的是MNIST数据库的手写数字,这个数据集包含60,000个示例的训练集以及10,000个示例的测试集.图片是28x28的像素矩阵，标签则对应着0~9的10个数字。每张图片都经过了大小归一化和居中处理.该数据集的图片是一个黑白的单通道图片,其中图片如下: 该数据集非常小,很适合图像识别的入门使用,该数据集一共有4个文件,分别是训练数据和其对应的标签,测试数据和其对应的标签.文件如表所示: |文件名称 |大小|说明| | :---: |:---:| :---:| |train-images-idx3-ubyte|9.9M|训练数据图片，60,000条数据| |train-labels-idx1-ubyte|28.9K|训练数据标签，60,000条数据| |t10k-images-idx3-ubyte|1.6M|测试数据图片，10,000条数据| |t10k-labels-idx1-ubyte|4.5K|测试数据标签，10,000条数据| 这个数据集针对170多M...."/><meta property="og:description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集的介绍 如题目所示,本次训练使用到的是MNIST数据库的手写数字,这个数据集包含60,000个示例的训练集以及10,000个示例的测试集.图片是28x28的像素矩阵，标签则对应着0~9的10个数字。每张图片都经过了大小归一化和居中处理.该数据集的图片是一个黑白的单通道图片,其中图片如下: 该数据集非常小,很适合图像识别的入门使用,该数据集一共有4个文件,分别是训练数据和其对应的标签,测试数据和其对应的标签.文件如表所示: |文件名称 |大小|说明| | :---: |:---:| :---:| |train-images-idx3-ubyte|9.9M|训练数据图片，60,000条数据| |train-labels-idx1-ubyte|28.9K|训练数据标签，60,000条数据| |t10k-images-idx3-ubyte|1.6M|测试数据图片，10,000条数据| |t10k-labels-idx1-ubyte|4.5K|测试数据标签，10,000条数据| 这个数据集针对170多M...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记二——MNIST手写数字识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584970607998.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记二——MNIST手写数字识别 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970607998.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《我的PaddlePaddle学习之路》笔记一——PaddlePaddle的安装" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970440134.html">
             <link rel="next" title="《我的PaddlePaddle学习之路》笔记三——CIFAR彩色图像识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970674468.html">
     <!-- 百度统计 -->
@@ -667,7 +667,7 @@ if __name__ == "__main__":
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -676,7 +676,7 @@ if __name__ == "__main__":
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -684,11 +684,11 @@ if __name__ == "__main__":
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466410833",
@@ -706,4 +706,4 @@ if __name__ == "__main__":
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 495ms, 2020/04/07 11:38:49 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 36ms, 2020/04/07 14:57:08 -->

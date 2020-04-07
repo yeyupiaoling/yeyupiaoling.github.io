@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 - 夜雨飘零</title><meta name="description" content="*本篇文章基于 PaddlePaddle 0.10.0、Python 2.7 前言 在上一篇文章中介绍了验证码的识别，但是使用的传统的验证码分割，然后通过图像分类的方法来实现验证码的识别的，这中方法比较繁琐，工作量比较多。在本篇文章会介绍验证码端到端的识别，直接一步到位，不用图像分割那么麻烦了。好吧，现在开始吧！ 数据集介绍 在本篇文章中同样是使用方正系统的验证码，该数据集在上一篇文章《我的PaddlePaddle学习之路》笔记五——验证码的识别已有介绍，在这里我就不介绍了，需要了解的可以点击链接去到上一篇文章查看。 获取验证码 下载验证码和修改验证码同样在上一篇文章有介绍，如果读者需要同样可以回到上一篇文章查看。 验证码我们有了，有看过上一篇文章的读者会第一反应说还缺图像列表。没错，训练和测试都需要一个图像列表 把图像转成灰度图 在生成列表之前，我们还有对图像做一些处理，就是把图像灰度化。 **注意：**在此之前应该把图像文件命名，文件名为验证码对应的字符，并把所有的验证码放在data_temp 然后执行以下的程序批量处理 # coding=utf-8 import os f...."/><meta property="og:description" content="*本篇文章基于 PaddlePaddle 0.10.0、Python 2.7 前言 在上一篇文章中介绍了验证码的识别，但是使用的传统的验证码分割，然后通过图像分类的方法来实现验证码的识别的，这中方法比较繁琐，工作量比较多。在本篇文章会介绍验证码端到端的识别，直接一步到位，不用图像分割那么麻烦了。好吧，现在开始吧！ 数据集介绍 在本篇文章中同样是使用方正系统的验证码，该数据集在上一篇文章《我的PaddlePaddle学习之路》笔记五——验证码的识别已有介绍，在这里我就不介绍了，需要了解的可以点击链接去到上一篇文章查看。 获取验证码 下载验证码和修改验证码同样在上一篇文章有介绍，如果读者需要同样可以回到上一篇文章查看。 验证码我们有了，有看过上一篇文章的读者会第一反应说还缺图像列表。没错，训练和测试都需要一个图像列表 把图像转成灰度图 在生成列表之前，我们还有对图像做一些处理，就是把图像灰度化。 **注意：**在此之前应该把图像文件命名，文件名为验证码对应的字符，并把所有的验证码放在data_temp 然后执行以下的程序批量处理 # coding=utf-8 import os f...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 - 夜雨飘零</title><meta name="description" content="*本篇文章基于 PaddlePaddle 0.10.0、Python 2.7 前言 在上一篇文章中介绍了验证码的识别，但是使用的传统的验证码分割，然后通过图像分类的方法来实现验证码的识别的，这中方法比较繁琐，工作量比较多。在本篇文章会介绍验证码端到端的识别，直接一步到位，不用图像分割那么麻烦了。好吧，现在开始吧！ 数据集介绍 在本篇文章中同样是使用方正系统的验证码，该数据集在上一篇文章《我的PaddlePaddle学习之路》笔记五——验证码的识别已有介绍，在这里我就不介绍了，需要了解的可以点击链接去到上一篇文章查看。 获取验证码 下载验证码和修改验证码同样在上一篇文章有介绍，如果读者需要同样可以回到上一篇文章查看。 验证码我们有了，有看过上一篇文章的读者会第一反应说还缺图像列表。没错，训练和测试都需要一个图像列表 把图像转成灰度图 在生成列表之前，我们还有对图像做一些处理，就是把图像灰度化。 **注意：**在此之前应该把图像文件命名，文件名为验证码对应的字符，并把所有的验证码放在data_temp 然后执行以下的程序批量处理 # coding=utf-8 import os f...."/><meta property="og:description" content="*本篇文章基于 PaddlePaddle 0.10.0、Python 2.7 前言 在上一篇文章中介绍了验证码的识别，但是使用的传统的验证码分割，然后通过图像分类的方法来实现验证码的识别的，这中方法比较繁琐，工作量比较多。在本篇文章会介绍验证码端到端的识别，直接一步到位，不用图像分割那么麻烦了。好吧，现在开始吧！ 数据集介绍 在本篇文章中同样是使用方正系统的验证码，该数据集在上一篇文章《我的PaddlePaddle学习之路》笔记五——验证码的识别已有介绍，在这里我就不介绍了，需要了解的可以点击链接去到上一篇文章查看。 获取验证码 下载验证码和修改验证码同样在上一篇文章有介绍，如果读者需要同样可以回到上一篇文章查看。 验证码我们有了，有看过上一篇文章的读者会第一反应说还缺图像列表。没错，训练和测试都需要一个图像列表 把图像转成灰度图 在生成列表之前，我们还有对图像做一些处理，就是把图像灰度化。 **注意：**在此之前应该把图像文件命名，文件名为验证码对应的字符，并把所有的验证码放在data_temp 然后执行以下的程序批量处理 # coding=utf-8 import os f...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《我的PaddlePaddle学习之路》笔记五——验证码的识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html">
             <link rel="next" title="《我的PaddlePaddle学习之路》笔记七——车牌端到端的识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970992783.html">
     <!-- 百度统计 -->
@@ -78,58 +78,58 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#数据集介绍">数据集介绍</a>
+            <a href="#toc_h1_1">数据集介绍</a>
         </li>
         <li class="toc__h1">
-            <a href="#获取验证码">获取验证码</a>
+            <a href="#toc_h1_2">获取验证码</a>
         </li>
         <li class="toc__h1">
-            <a href="#把图像转成灰度图">把图像转成灰度图</a>
+            <a href="#toc_h1_3">把图像转成灰度图</a>
         </li>
         <li class="toc__h1">
-            <a href="#生成图像列表">生成图像列表</a>
+            <a href="#toc_h1_4">生成图像列表</a>
         </li>
         <li class="toc__h1">
-            <a href="#数据的读取">数据的读取</a>
+            <a href="#toc_h1_5">数据的读取</a>
         </li>
         <li class="toc__h2">
-            <a href="#读取数据成list">读取数据成list</a>
+            <a href="#toc_h2_6">读取数据成list</a>
         </li>
         <li class="toc__h2">
-            <a href="#生成和读取标签字典">生成和读取标签字典</a>
+            <a href="#toc_h2_7">生成和读取标签字典</a>
         </li>
         <li class="toc__h2">
-            <a href="#读取训练和测试的数据">读取训练和测试的数据</a>
+            <a href="#toc_h2_8">读取训练和测试的数据</a>
         </li>
         <li class="toc__h1">
-            <a href="#定义网络模型">定义网络模型</a>
+            <a href="#toc_h1_9">定义网络模型</a>
         </li>
         <li class="toc__h1">
-            <a href="#生成训练器">生成训练器</a>
+            <a href="#toc_h1_10">生成训练器</a>
         </li>
         <li class="toc__h1">
-            <a href="#定义训练">定义训练</a>
+            <a href="#toc_h1_11">定义训练</a>
         </li>
         <li class="toc__h1">
-            <a href="#启动训练">启动训练</a>
+            <a href="#toc_h1_12">启动训练</a>
         </li>
         <li class="toc__h2">
-            <a href="#安装libwarpctc-so库">安装libwarpctc.so库</a>
+            <a href="#toc_h2_13">安装libwarpctc.so库</a>
         </li>
         <li class="toc__h2">
-            <a href="#执行训练main方法">执行训练main方法</a>
+            <a href="#toc_h2_14">执行训练main方法</a>
         </li>
         <li class="toc__h1">
-            <a href="#开始预测">开始预测</a>
+            <a href="#toc_h1_15">开始预测</a>
         </li>
         <li class="toc__h1">
-            <a href="#项目代码">项目代码</a>
+            <a href="#toc_h1_16">项目代码</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_17">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -178,273 +178,273 @@ var _hmt = _hmt || [];
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20171211.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
 <p>*本篇文章基于 PaddlePaddle 0.10.0、Python 2.7</p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <hr>
 <p>在上一篇文章中介绍了验证码的识别，但是使用的传统的验证码分割，然后通过图像分类的方法来实现验证码的识别的，这中方法比较繁琐，工作量比较多。在本篇文章会介绍验证码端到端的识别，直接一步到位，不用图像分割那么麻烦了。好吧，现在开始吧！</p>
-<h1 id="数据集介绍">数据集介绍</h1>
+<h1 id="toc_h1_1">数据集介绍</h1>
 <hr>
 <p>在本篇文章中同样是使用方正系统的验证码，该数据集在上一篇文章<a href="http://blog.csdn.net/qq_33200967/article/details/79095295#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%BB%8B%E7%BB%8D" target="_blank">《我的PaddlePaddle学习之路》笔记五——验证码的识别</a>已有介绍，在这里我就不介绍了，需要了解的可以点击链接去到上一篇文章查看。</p>
-<h1 id="获取验证码">获取验证码</h1>
+<h1 id="toc_h1_2">获取验证码</h1>
 <hr>
 <p>下载验证码和修改验证码同样在上一篇文章有介绍，如果读者需要同样可以回到上一篇文章查看。<br>
 验证码我们有了，有看过上一篇文章的读者会第一反应说还缺图像列表。没错，训练和测试都需要一个图像列表</p>
-<h1 id="把图像转成灰度图">把图像转成灰度图</h1>
+<h1 id="toc_h1_3">把图像转成灰度图</h1>
 <hr>
 <p>在生成列表之前，我们还有对图像做一些处理，就是把图像灰度化。<br>
 **注意：**在此之前应该把图像文件命名，文件名为验证码对应的字符，并把所有的验证码放在<code>data_temp</code><br>
 然后执行以下的程序批量处理</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span><span class="highlight-k">def</span> <span class="highlight-nf">Image2GRAY</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 获取临时文件夹中的所有图像路径</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">imgs</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">for</span> <span class="highlight-n">img</span> <span class="highlight-ow">in</span> <span class="highlight-n">imgs</span><span class="highlight-p">:</span>
-<span class="highlight-ln">10</span>        <span class="highlight-c1"># 每10个数据取一个作为测试数据，剩下的作为训练数据</span>
-<span class="highlight-ln">11</span>        <span class="highlight-k">if</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-mi">10</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">12</span>            <span class="highlight-c1"># 使图像灰度化并保存</span>
-<span class="highlight-ln">13</span>            <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/'</span> <span class="highlight-o">+</span> <span class="highlight-n">img</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">convert</span><span class="highlight-p">(</span><span class="highlight-s1">'L'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span>            <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-s1">'data/test_data/'</span> <span class="highlight-o">+</span> <span class="highlight-n">img</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">16</span>            <span class="highlight-c1"># 使图像灰度化并保存</span>
-<span class="highlight-ln">17</span>            <span class="highlight-n">im</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/'</span> <span class="highlight-o">+</span> <span class="highlight-n">img</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">convert</span><span class="highlight-p">(</span><span class="highlight-s1">'L'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>            <span class="highlight-n">im</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-s1">'data/train_data/'</span> <span class="highlight-o">+</span> <span class="highlight-n">img</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">22</span>    <span class="highlight-c1"># 临时数据存放路径</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'data/data_temp'</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">Image2GRAY</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+import os
+from PIL import Image
+
+def Image2GRAY(path):
+    # 获取临时文件夹中的所有图像路径
+    imgs = os.listdir(path)
+    i = 0
+    for img in imgs:
+        # 每10个数据取一个作为测试数据，剩下的作为训练数据
+        if i % 10 == 0:
+            # 使图像灰度化并保存
+            im = Image.open(path + '/' + img).convert('L')
+            im.save('data/test_data/' + img)
+        else:
+            # 使图像灰度化并保存
+            im = Image.open(path + '/' + img).convert('L')
+            im.save('data/train_data/' + img)
+        i = i + 1
+
+if __name__ == '__main__':
+    # 临时数据存放路径
+    path = 'data/data_temp'
+    Image2GRAY(path)
 </code></pre>
-<h1 id="生成图像列表">生成图像列表</h1>
+<h1 id="toc_h1_4">生成图像列表</h1>
 <hr>
 <p>经过上面一步，在<code>data/train_data</code>我们有了训练数据集，<code>data/test_data</code>测试数据集。然后就在这两个文件夹下生成对应的图像列表。<br>
 首先我们要了解图像列表的格式要求，我们来看看它的格式是怎样的</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>10iw.png	10iw
-<span class="highlight-ln">2</span>218j.png	218j
-<span class="highlight-ln">3</span>28hi.png	28hi
-<span class="highlight-ln">4</span>3n1g.png	3n1g
-<span class="highlight-ln">5</span>47q7.png	47q7
-<span class="highlight-ln">6</span>4ju5.png	4ju5
-<span class="highlight-ln">7</span>4uqh.png	4uqh
+<pre><code class="language-text">10iw.png	10iw
+218j.png	218j
+28hi.png	28hi
+3n1g.png	3n1g
+47q7.png	47q7
+4ju5.png	4ju5
+4uqh.png	4uqh
 </code></pre>
 <p>这个图像类别是以Tab键区分路径和label的，了解图像列表的格式要求之后，那么我们就编写一个程序来生成这样格式的一个图像列表。代码如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-k">class</span> <span class="highlight-nc">CreateDataList</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-k">pass</span>
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-k">def</span> <span class="highlight-nf">createDataList</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-n">isTrain</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-c1"># 判断生成的列表是训练图像列表还是测试图像列表</span>
-<span class="highlight-ln">10</span>        <span class="highlight-k">if</span> <span class="highlight-n">isTrain</span><span class="highlight-p">:</span>
-<span class="highlight-ln">11</span>            <span class="highlight-n">list_name</span> <span class="highlight-o">=</span> <span class="highlight-s1">'trainer.list'</span>
-<span class="highlight-ln">12</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">13</span>            <span class="highlight-n">list_name</span> <span class="highlight-o">=</span> <span class="highlight-s1">'test.list'</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">list_path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">,</span> <span class="highlight-n">list_name</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>        <span class="highlight-c1"># 判断该列表是否存在，如果存在就删除，避免在生成图像列表时把该路径也写进去了</span>
-<span class="highlight-ln">16</span>        <span class="highlight-k">if</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">list_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">17</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">remove</span><span class="highlight-p">(</span><span class="highlight-n">list_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>        <span class="highlight-c1"># 读取所有的图像路径，此时图像列表不存在，就不用担心写入非图像文件路径了</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">imgs</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">data_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>        <span class="highlight-k">for</span> <span class="highlight-n">img</span> <span class="highlight-ow">in</span> <span class="highlight-n">imgs</span><span class="highlight-p">:</span>
-<span class="highlight-ln">21</span>            <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">22</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">list_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'a'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">23</span>                <span class="highlight-c1"># 写入图像路径和label，用Tab隔开</span>
-<span class="highlight-ln">24</span>                <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">img</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span> <span class="highlight-o">+</span> <span class="highlight-n">name</span> <span class="highlight-o">+</span> <span class="highlight-s1">'</span><span class="highlight-se">\n</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">27</span>    <span class="highlight-n">createDataList</span> <span class="highlight-o">=</span> <span class="highlight-n">CreateDataList</span><span class="highlight-p">()</span>
-<span class="highlight-ln">28</span>    <span class="highlight-c1"># 生成训练图像列表</span>
-<span class="highlight-ln">29</span>    <span class="highlight-n">createDataList</span><span class="highlight-o">.</span><span class="highlight-n">createDataList</span><span class="highlight-p">(</span><span class="highlight-s1">'data/train_data/'</span><span class="highlight-p">,</span> <span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">30</span>    <span class="highlight-c1"># 生成测试图像列表</span>
-<span class="highlight-ln">31</span>    <span class="highlight-n">createDataList</span><span class="highlight-o">.</span><span class="highlight-n">createDataList</span><span class="highlight-p">(</span><span class="highlight-s1">'data/test_data/'</span><span class="highlight-p">,</span> <span class="highlight-bp">False</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+import os
+
+class CreateDataList:
+    def __init__(self):
+        pass
+
+    def createDataList(self, data_path, isTrain):
+        # 判断生成的列表是训练图像列表还是测试图像列表
+        if isTrain:
+            list_name = 'trainer.list'
+        else:
+            list_name = 'test.list'
+        list_path = os.path.join(data_path, list_name)
+        # 判断该列表是否存在，如果存在就删除，避免在生成图像列表时把该路径也写进去了
+        if os.path.exists(list_path):
+            os.remove(list_path)
+        # 读取所有的图像路径，此时图像列表不存在，就不用担心写入非图像文件路径了
+        imgs = os.listdir(data_path)
+        for img in imgs:
+            name = img.split('.')[0]
+            with open(list_path, 'a') as f:
+                # 写入图像路径和label，用Tab隔开
+                f.write(img + '\t' + name + '\n')
+
+if __name__ == '__main__':
+    createDataList = CreateDataList()
+    # 生成训练图像列表
+    createDataList.createDataList('data/train_data/', True)
+    # 生成测试图像列表
+    createDataList.createDataList('data/test_data/', False)
 </code></pre>
 <p>经过上面的程序，会在<code>data/train_data</code>生成图像列表<code>trainer.list</code>，会在<code>data/test_data</code>生成图像列表<code>test.list</code>。到这里，我们的数据集已经准备好了，准备开始使用数据集训练了。</p>
-<h1 id="数据的读取">数据的读取</h1>
+<h1 id="toc_h1_5">数据的读取</h1>
 <hr>
-<h2 id="读取数据成list">读取数据成list</h2>
+<h2 id="toc_h2_6">读取数据成list</h2>
 <p>数据列表是有了，但是我们使用它就要用到文件读取，生成一个我们方便使用的的数据格式。在本例子项目中，我把图像的路径和label生成是一个list。读取方式如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">get_file_list</span><span class="highlight-p">(</span><span class="highlight-n">image_file_list</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s1">'''
-</span><span class="highlight-ln"> 3</span><span class="highlight-s1">    生成用于训练和测试数据的文件列表。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s1">    :param image_file_list: 图像文件和列表文件的路径
-</span><span class="highlight-ln"> 5</span><span class="highlight-s1">    :type image_file_list: str
-</span><span class="highlight-ln"> 6</span><span class="highlight-s1">    '''</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">dirname</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">dirname</span><span class="highlight-p">(</span><span class="highlight-n">image_file_list</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">path_list</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">image_file_list</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">10</span>        <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">11</span>            <span class="highlight-c1"># 使用Tab键分离路径和label</span>
-<span class="highlight-ln">12</span>            <span class="highlight-n">line_split</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>            <span class="highlight-n">filename</span> <span class="highlight-o">=</span> <span class="highlight-n">line_split</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span>
-<span class="highlight-ln">14</span>            <span class="highlight-n">path</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">dirname</span><span class="highlight-p">,</span> <span class="highlight-n">filename</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>            <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">line_split</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span>
-<span class="highlight-ln">16</span>            <span class="highlight-k">if</span> <span class="highlight-n">label</span><span class="highlight-p">:</span>
-<span class="highlight-ln">17</span>                <span class="highlight-n">path_list</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">path</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-p">))</span>
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>    <span class="highlight-k">return</span> <span class="highlight-n">path_list</span>
+<pre><code class="language-python">def get_file_list(image_file_list):
+    '''
+    生成用于训练和测试数据的文件列表。
+    :param image_file_list: 图像文件和列表文件的路径
+    :type image_file_list: str
+    '''
+    dirname = os.path.dirname(image_file_list)
+    path_list = []
+    with open(image_file_list) as f:
+        for line in f:
+            # 使用Tab键分离路径和label
+            line_split = line.strip().split('\t')
+            filename = line_split[0].strip()
+            path = os.path.join(dirname, filename)
+            label = line_split[1].strip()
+            if label:
+                path_list.append((path, label))
+
+    return path_list
 </code></pre>
 <p>有了这个程序，我们就可以轻松拿到训练数据和测试数据的list了，如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取训练列表</span>
-<span class="highlight-ln">2</span><span class="highlight-n">train_file_list</span> <span class="highlight-o">=</span> <span class="highlight-n">get_file_list</span><span class="highlight-p">(</span><span class="highlight-n">train_file_list_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 获取测试列表</span>
-<span class="highlight-ln">4</span><span class="highlight-n">test_file_list</span> <span class="highlight-o">=</span> <span class="highlight-n">get_file_list</span><span class="highlight-p">(</span><span class="highlight-n">test_file_list_path</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取训练列表
+train_file_list = get_file_list(train_file_list_path)
+# 获取测试列表
+test_file_list = get_file_list(test_file_list_path)
 </code></pre>
-<h2 id="生成和读取标签字典">生成和读取标签字典</h2>
+<h2 id="toc_h2_7">生成和读取标签字典</h2>
 <p>在这个项目中，要使用到我们之前没有使用过的文件：标签字典。这个标签字典是训练数据集中出现的字符，如：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>r	81
-<span class="highlight-ln">2</span>4	77
-<span class="highlight-ln">3</span>h	75
-<span class="highlight-ln">4</span>i	74
-<span class="highlight-ln">5</span>2	72
+<pre><code>r	81
+4	77
+h	75
+i	74
+2	72
 </code></pre>
 <p>通过每个字符的key就可以找到对应的字符了。<br>
 我们要编写一个从训练数据集的list中获取所有的字符，并生成一个标签字典</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">build_label_dict</span><span class="highlight-p">(</span><span class="highlight-n">file_list</span><span class="highlight-p">,</span> <span class="highlight-n">save_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    从训练数据建立标签字典
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    :param file_list: 包含标签的训练数据列表
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :type file_list: list
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    :params save_path: 保存标签字典的路径
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    :type save_path: str
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">values</span> <span class="highlight-o">=</span> <span class="highlight-n">defaultdict</span><span class="highlight-p">(</span><span class="highlight-nb">int</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">for</span> <span class="highlight-n">path</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-ow">in</span> <span class="highlight-n">file_list</span><span class="highlight-p">:</span>
-<span class="highlight-ln">11</span>        <span class="highlight-k">for</span> <span class="highlight-n">c</span> <span class="highlight-ow">in</span> <span class="highlight-n">label</span><span class="highlight-p">:</span>
-<span class="highlight-ln">12</span>            <span class="highlight-k">if</span> <span class="highlight-n">c</span><span class="highlight-p">:</span>
-<span class="highlight-ln">13</span>                <span class="highlight-n">values</span><span class="highlight-p">[</span><span class="highlight-n">c</span><span class="highlight-p">]</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">values</span><span class="highlight-p">[</span><span class="highlight-s1">'&lt;unk&gt;'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">16</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">save_path</span><span class="highlight-p">,</span> <span class="highlight-s2">"w"</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">17</span>        <span class="highlight-k">for</span> <span class="highlight-n">v</span><span class="highlight-p">,</span> <span class="highlight-n">count</span> <span class="highlight-ow">in</span> <span class="highlight-nb">sorted</span><span class="highlight-p">(</span>
-<span class="highlight-ln">18</span>                <span class="highlight-n">values</span><span class="highlight-o">.</span><span class="highlight-n">iteritems</span><span class="highlight-p">(),</span> <span class="highlight-n">key</span><span class="highlight-o">=</span><span class="highlight-k">lambda</span> <span class="highlight-n">x</span><span class="highlight-p">:</span> <span class="highlight-n">x</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span> <span class="highlight-n">reverse</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>            <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s2">"</span><span class="highlight-si">%s</span><span class="highlight-se">\t</span><span class="highlight-si">%d</span><span class="highlight-se">\n</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">v</span><span class="highlight-p">,</span> <span class="highlight-n">count</span><span class="highlight-p">))</span>
+<pre><code class="language-python">def build_label_dict(file_list, save_path):
+    """
+    从训练数据建立标签字典
+    :param file_list: 包含标签的训练数据列表
+    :type file_list: list
+    :params save_path: 保存标签字典的路径
+    :type save_path: str
+    """
+    values = defaultdict(int)
+    for path, label in file_list:
+        for c in label:
+            if c:
+                values[c] += 1
+
+    values['&lt;unk&gt;'] = 0
+    with open(save_path, "w") as f:
+        for v, count in sorted(
+                values.iteritems(), key=lambda x: x[1], reverse=True):
+            f.write("%s\t%d\n" % (v, count))
 </code></pre>
 <p>然后只要传入在上一步读取到的<code>train_file_list</code>和保存标签字典的路径就可以生成标签字典了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">build_label_dict</span><span class="highlight-p">(</span><span class="highlight-n">train_file_list</span><span class="highlight-p">,</span> <span class="highlight-n">label_dict_path</span><span class="highlight-p">)</span>
+<pre><code class="language-python">build_label_dict(train_file_list, label_dict_path)
 </code></pre>
 <p>保存字典之后，我们还要使用到这个字典。所以我们还要编写一个程序来读取标签字典，代码如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">def</span> <span class="highlight-nf">load_dict</span><span class="highlight-p">(</span><span class="highlight-n">dict_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln">3</span><span class="highlight-s2">    从字典路径加载标签字典
-</span><span class="highlight-ln">4</span><span class="highlight-s2">    :param dict_path: 标签字典的路径
-</span><span class="highlight-ln">5</span><span class="highlight-s2">    :type dict_path: str
-</span><span class="highlight-ln">6</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">7</span>    <span class="highlight-k">return</span> <span class="highlight-nb">dict</span><span class="highlight-p">((</span><span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s2">"</span><span class="highlight-se">\t</span><span class="highlight-s2">"</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">idx</span><span class="highlight-p">)</span>
-<span class="highlight-ln">8</span>                <span class="highlight-k">for</span> <span class="highlight-n">idx</span><span class="highlight-p">,</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">dict_path</span><span class="highlight-p">,</span> <span class="highlight-s2">"r"</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()))</span>
+<pre><code class="language-python">def load_dict(dict_path):
+    """
+    从字典路径加载标签字典
+    :param dict_path: 标签字典的路径
+    :type dict_path: str
+    """
+    return dict((line.strip().split("\t")[0], idx)
+                for idx, line in enumerate(open(dict_path, "r").readlines()))
 </code></pre>
 <p>然后通过传入标签字典的路径就可以读取标签字典内容了，如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取标签字典</span>
-<span class="highlight-ln">2</span><span class="highlight-n">char_dict</span> <span class="highlight-o">=</span> <span class="highlight-n">load_dict</span><span class="highlight-p">(</span><span class="highlight-n">label_dict_path</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取标签字典
+char_dict = load_dict(label_dict_path)
 </code></pre>
-<h2 id="读取训练和测试的数据">读取训练和测试的数据</h2>
+<h2 id="toc_h2_8">读取训练和测试的数据</h2>
 <p>如果学习前面几个例子的，应该会知道trainer传入的数据是<code>reader</code>的，在上面获取的训练数据和测试数据都是list类型的，我们要把它转成<code>reader</code>类型的。同下面的程序，把训练和测试的数据根据其路径来加载成一维向量</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">cv2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span><span class="highlight-k">class</span> <span class="highlight-nc">Reader</span><span class="highlight-p">(</span><span class="highlight-nb">object</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">char_dict</span><span class="highlight-p">,</span> <span class="highlight-n">image_shape</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-s1">'''
-</span><span class="highlight-ln"> 8</span><span class="highlight-s1">        :param char_dict: 标签的字典类
-</span><span class="highlight-ln"> 9</span><span class="highlight-s1">        :type char_dict: class
-</span><span class="highlight-ln">10</span><span class="highlight-s1">        :param image_shape: 图像的固定形状
-</span><span class="highlight-ln">11</span><span class="highlight-s1">        :type image_shape: tuple
-</span><span class="highlight-ln">12</span><span class="highlight-s1">        '''</span>
-<span class="highlight-ln">13</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">image_shape</span> <span class="highlight-o">=</span> <span class="highlight-n">image_shape</span>
-<span class="highlight-ln">14</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">char_dict</span> <span class="highlight-o">=</span> <span class="highlight-n">char_dict</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    <span class="highlight-k">def</span> <span class="highlight-nf">train_reader</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">file_list</span><span class="highlight-p">):</span>
-<span class="highlight-ln">17</span>        <span class="highlight-s1">'''
-</span><span class="highlight-ln">18</span><span class="highlight-s1">        训练读取数据
-</span><span class="highlight-ln">19</span><span class="highlight-s1">        :param file_list: 用预训练的图像列表，包含标签和图像路径
-</span><span class="highlight-ln">20</span><span class="highlight-s1">        :type file_list: list
-</span><span class="highlight-ln">21</span><span class="highlight-s1">        '''</span>
-<span class="highlight-ln">22</span>        <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
-<span class="highlight-ln">23</span>            <span class="highlight-n">UNK_ID</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">char_dict</span><span class="highlight-p">[</span><span class="highlight-s1">'&lt;unk&gt;'</span><span class="highlight-p">]</span>
-<span class="highlight-ln">24</span>            <span class="highlight-k">for</span> <span class="highlight-n">image_path</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-ow">in</span> <span class="highlight-n">file_list</span><span class="highlight-p">:</span>
-<span class="highlight-ln">25</span>                <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">char_dict</span><span class="highlight-o">.</span><span class="highlight-n">get</span><span class="highlight-p">(</span><span class="highlight-n">c</span><span class="highlight-p">,</span> <span class="highlight-n">UNK_ID</span><span class="highlight-p">)</span> <span class="highlight-k">for</span> <span class="highlight-n">c</span> <span class="highlight-ow">in</span> <span class="highlight-n">label</span><span class="highlight-p">]</span>
-<span class="highlight-ln">26</span>                <span class="highlight-k">yield</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">image_path</span><span class="highlight-p">),</span> <span class="highlight-n">label</span>
-<span class="highlight-ln">27</span>        <span class="highlight-k">return</span> <span class="highlight-n">reader</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>    <span class="highlight-k">def</span> <span class="highlight-nf">load_image</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">30</span>        <span class="highlight-s1">'''
-</span><span class="highlight-ln">31</span><span class="highlight-s1">        加载图像并将其转换为1维矢量
-</span><span class="highlight-ln">32</span><span class="highlight-s1">        :param path: 图像数据的路径
-</span><span class="highlight-ln">33</span><span class="highlight-s1">        :type path: str
-</span><span class="highlight-ln">34</span><span class="highlight-s1">        '''</span>
-<span class="highlight-ln">35</span>        <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">,</span><span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">36</span>        <span class="highlight-c1"># 将所有图像调整为固定形状</span>
-<span class="highlight-ln">37</span>        <span class="highlight-k">if</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">image_shape</span><span class="highlight-p">:</span>
-<span class="highlight-ln">38</span>            <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">(</span>
-<span class="highlight-ln">39</span>                <span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">image_shape</span><span class="highlight-p">,</span> <span class="highlight-n">interpolation</span><span class="highlight-o">=</span><span class="highlight-n">cv2</span><span class="highlight-o">.</span><span class="highlight-n">INTER_CUBIC</span><span class="highlight-p">)</span>
-<span class="highlight-ln">40</span>        <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span> <span class="highlight-o">/</span> <span class="highlight-mf">255.</span>
-<span class="highlight-ln">41</span>        <span class="highlight-k">return</span> <span class="highlight-n">image</span>
+<pre><code class="language-python"># coding=utf-8
+import cv2
+import paddle.v2 as paddle
+
+class Reader(object):
+    def __init__(self, char_dict, image_shape):
+        '''
+        :param char_dict: 标签的字典类
+        :type char_dict: class
+        :param image_shape: 图像的固定形状
+        :type image_shape: tuple
+        '''
+        self.image_shape = image_shape
+        self.char_dict = char_dict
+
+    def train_reader(self, file_list):
+        '''
+        训练读取数据
+        :param file_list: 用预训练的图像列表，包含标签和图像路径
+        :type file_list: list
+        '''
+        def reader():
+            UNK_ID = self.char_dict['&lt;unk&gt;']
+            for image_path, label in file_list:
+                label = [self.char_dict.get(c, UNK_ID) for c in label]
+                yield self.load_image(image_path), label
+        return reader
+
+    def load_image(self, path):
+        '''
+        加载图像并将其转换为1维矢量
+        :param path: 图像数据的路径
+        :type path: str
+        '''
+        image = paddle.image.load_image(path,is_color=False)
+        # 将所有图像调整为固定形状
+        if self.image_shape:
+            image = cv2.resize(
+                image, self.image_shape, interpolation=cv2.INTER_CUBIC)
+        image = image.flatten() / 255.
+        return image
 </code></pre>
 <p>我们通过传入标签字典和图像的大小(宽度,高度)获取reader</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">my_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">Reader</span><span class="highlight-p">(</span><span class="highlight-n">char_dict</span><span class="highlight-o">=</span><span class="highlight-n">char_dict</span><span class="highlight-p">,</span> <span class="highlight-n">image_shape</span><span class="highlight-o">=</span><span class="highlight-n">IMAGE_SHAPE</span><span class="highlight-p">)</span>
+<pre><code class="language-python">my_reader = Reader(char_dict=char_dict, image_shape=IMAGE_SHAPE)
 </code></pre>
 <p>然后通过执行下面的方法，同时传入训练的list：<code>train_file_list</code>和测试的list：<code>test_file_list</code>就可以生成reader了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 获取测试数据的reader</span>
-<span class="highlight-ln"> 2</span><span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">my_reader</span><span class="highlight-o">.</span><span class="highlight-n">train_reader</span><span class="highlight-p">(</span><span class="highlight-n">test_file_list</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-n">BATCH_SIZE</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span><span class="highlight-c1"># 获取训练数据的reader</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">train_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-n">my_reader</span><span class="highlight-o">.</span><span class="highlight-n">train_reader</span><span class="highlight-p">(</span><span class="highlight-n">train_file_list</span><span class="highlight-p">),</span>
-<span class="highlight-ln">10</span>        <span class="highlight-n">buf_size</span><span class="highlight-o">=</span><span class="highlight-mi">1000</span><span class="highlight-p">),</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-n">BATCH_SIZE</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取测试数据的reader
+test_reader = paddle.batch(
+    my_reader.train_reader(test_file_list),
+    batch_size=BATCH_SIZE)
+
+# 获取训练数据的reader
+train_reader = paddle.batch(
+    paddle.reader.shuffle(
+        my_reader.train_reader(train_file_list),
+        buf_size=1000),
+    batch_size=BATCH_SIZE)
 </code></pre>
-<h1 id="定义网络模型">定义网络模型</h1>
+<h1 id="toc_h1_9">定义网络模型</h1>
 <hr>
 <p>这次使用的网络模型不是单纯的CNN模型了，还有结合了RNN来映射字符的分布和使用CTC来计算CTC任务的成本，具体是如何定义的呢，请往下细看。<br>
 跟之前一样，我们同样要定义数据的和label，更之前不一样的是这次我们定义数据的时候指定了宽度和高度，因为我们这个数据集只长方形的。<br>
 在定义label的时候，之前我们要传入类别的总数，我们这次还是同样的道理。还记得上一步获得的标签字典吧，标签字典就是我们训练集的所有出现过字符，只要获取字符的大小就可以了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 获取字典大小</span>
-<span class="highlight-ln">2</span><span class="highlight-n">dict_size</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">char_dict</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 获取字典大小
+dict_size = len(char_dict)
 </code></pre>
 <p>以下就是类初始化的数据和定义数据和label的操作：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">class</span> <span class="highlight-nc">Model</span><span class="highlight-p">(</span><span class="highlight-nb">object</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">num_classes</span><span class="highlight-p">,</span> <span class="highlight-n">shape</span><span class="highlight-p">,</span> <span class="highlight-n">is_infer</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-s1">'''
-</span><span class="highlight-ln"> 4</span><span class="highlight-s1">        :param num_classes: 字符字典的大小
-</span><span class="highlight-ln"> 5</span><span class="highlight-s1">        :type num_classes: int
-</span><span class="highlight-ln"> 6</span><span class="highlight-s1">        :param shape: 输入图像的大小
-</span><span class="highlight-ln"> 7</span><span class="highlight-s1">        :type shape: tuple of 2 int
-</span><span class="highlight-ln"> 8</span><span class="highlight-s1">        :param is_infer: 是否用于预测
-</span><span class="highlight-ln"> 9</span><span class="highlight-s1">        :type shape: bool
-</span><span class="highlight-ln">10</span><span class="highlight-s1">        '''</span>
-<span class="highlight-ln">11</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">num_classes</span> <span class="highlight-o">=</span> <span class="highlight-n">num_classes</span>
-<span class="highlight-ln">12</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">shape</span> <span class="highlight-o">=</span> <span class="highlight-n">shape</span>
-<span class="highlight-ln">13</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">is_infer</span> <span class="highlight-o">=</span> <span class="highlight-n">is_infer</span>
-<span class="highlight-ln">14</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">image_vector_size</span> <span class="highlight-o">=</span> <span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span> <span class="highlight-o">*</span> <span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">__declare_input_layers__</span><span class="highlight-p">()</span>
-<span class="highlight-ln">17</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">__build_nn__</span><span class="highlight-p">()</span>
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>    <span class="highlight-k">def</span> <span class="highlight-nf">__declare_input_layers__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">20</span>        <span class="highlight-s1">'''
-</span><span class="highlight-ln">21</span><span class="highlight-s1">        定义输入层
-</span><span class="highlight-ln">22</span><span class="highlight-s1">        '''</span>
-<span class="highlight-ln">23</span>        <span class="highlight-c1"># 图像输入为一个浮动向量</span>
-<span class="highlight-ln">24</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span>
-<span class="highlight-ln">25</span>            <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'image'</span><span class="highlight-p">,</span>
-<span class="highlight-ln">26</span>            <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">dense_vector</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">image_vector_size</span><span class="highlight-p">),</span>
-<span class="highlight-ln">27</span>            <span class="highlight-c1"># shape是(宽度,高度)</span>
-<span class="highlight-ln">28</span>            <span class="highlight-n">height</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">],</span>
-<span class="highlight-ln">29</span>            <span class="highlight-n">width</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>        <span class="highlight-c1"># 将标签输入为ID列表</span>
-<span class="highlight-ln">32</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">is_infer</span><span class="highlight-p">:</span>
-<span class="highlight-ln">33</span>            <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span>
-<span class="highlight-ln">34</span>                <span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s1">'label'</span><span class="highlight-p">,</span>
-<span class="highlight-ln">35</span>                <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">integer_value_sequence</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">num_classes</span><span class="highlight-p">))</span>
+<pre><code class="language-python">class Model(object):
+    def __init__(self, num_classes, shape, is_infer=False):
+        '''
+        :param num_classes: 字符字典的大小
+        :type num_classes: int
+        :param shape: 输入图像的大小
+        :type shape: tuple of 2 int
+        :param is_infer: 是否用于预测
+        :type shape: bool
+        '''
+        self.num_classes = num_classes
+        self.shape = shape
+        self.is_infer = is_infer
+        self.image_vector_size = shape[0] * shape[1]
+
+        self.__declare_input_layers__()
+        self.__build_nn__()
+
+    def __declare_input_layers__(self):
+        '''
+        定义输入层
+        '''
+        # 图像输入为一个浮动向量
+        self.image = paddle.layer.data(
+            name='image',
+            type=paddle.data_type.dense_vector(self.image_vector_size),
+            # shape是(宽度,高度)
+            height=self.shape[1],
+            width=self.shape[0])
+
+        # 将标签输入为ID列表
+        if not self.is_infer:
+            self.label = paddle.layer.data(
+                name='label',
+                type=paddle.data_type.integer_value_sequence(self.num_classes))
 </code></pre>
 <p>定义网络模型，该网络模型<br>
 首先是通过CNN获取图像的特征，<br>
@@ -452,279 +452,279 @@ var _hmt = _hmt || [];
 然后使用RNN向前和向后捕获序列信息，<br>
 然后将RNN的输出映射到字符分布，<br>
 最后使用扭曲CTC来计算CTC任务的成本，获得了cost和额外层。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">__build_nn__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s1">'''
-</span><span class="highlight-ln"> 3</span><span class="highlight-s1">    建立网络拓扑
-</span><span class="highlight-ln"> 4</span><span class="highlight-s1">    '''</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 通过CNN获取图像特征</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-k">def</span> <span class="highlight-nf">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">num_filter</span><span class="highlight-p">,</span> <span class="highlight-n">groups</span><span class="highlight-p">,</span> <span class="highlight-n">num_channels</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">networks</span><span class="highlight-o">.</span><span class="highlight-n">img_conv_group</span><span class="highlight-p">(</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-n">num_channels</span><span class="highlight-o">=</span><span class="highlight-n">num_channels</span><span class="highlight-p">,</span>
-<span class="highlight-ln">10</span>            <span class="highlight-n">conv_padding</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">11</span>            <span class="highlight-n">conv_num_filter</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">num_filter</span><span class="highlight-p">]</span> <span class="highlight-o">*</span> <span class="highlight-n">groups</span><span class="highlight-p">,</span>
-<span class="highlight-ln">12</span>            <span class="highlight-n">conv_filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln">13</span>            <span class="highlight-n">conv_act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">14</span>            <span class="highlight-n">conv_with_batchnorm</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span>
-<span class="highlight-ln">15</span>            <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">16</span>            <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>    <span class="highlight-c1"># 因为是灰度图所以最后一个参数是1</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">conv1</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-mi">16</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">conv2</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">conv1</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">conv3</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">conv2</span><span class="highlight-p">,</span> <span class="highlight-mi">64</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">conv_features</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">conv3</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    <span class="highlight-c1"># 将CNN的输出展开成一系列特征向量。</span>
-<span class="highlight-ln">25</span>    <span class="highlight-n">sliced_feature</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">block_expand</span><span class="highlight-p">(</span>
-<span class="highlight-ln">26</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv_features</span><span class="highlight-p">,</span>
-<span class="highlight-ln">27</span>        <span class="highlight-n">num_channels</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln">28</span>        <span class="highlight-n">stride_x</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">29</span>        <span class="highlight-n">stride_y</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">30</span>        <span class="highlight-n">block_x</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">31</span>        <span class="highlight-n">block_y</span><span class="highlight-o">=</span><span class="highlight-mi">11</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>    <span class="highlight-c1"># 使用RNN向前和向后捕获序列信息。</span>
-<span class="highlight-ln">34</span>    <span class="highlight-n">gru_forward</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">networks</span><span class="highlight-o">.</span><span class="highlight-n">simple_gru</span><span class="highlight-p">(</span>
-<span class="highlight-ln">35</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">sliced_feature</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">())</span>
-<span class="highlight-ln">36</span>    <span class="highlight-n">gru_backward</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">networks</span><span class="highlight-o">.</span><span class="highlight-n">simple_gru</span><span class="highlight-p">(</span>
-<span class="highlight-ln">37</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">sliced_feature</span><span class="highlight-p">,</span>
-<span class="highlight-ln">38</span>        <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln">39</span>        <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">40</span>        <span class="highlight-n">reverse</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">41</span>
-<span class="highlight-ln">42</span>    <span class="highlight-c1"># 将RNN的输出映射到字符分布。</span>
-<span class="highlight-ln">43</span>    <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">output</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">gru_forward</span><span class="highlight-p">,</span> <span class="highlight-n">gru_backward</span><span class="highlight-p">],</span>
-<span class="highlight-ln">44</span>                                  <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">num_classes</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">45</span>                                  <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Linear</span><span class="highlight-p">())</span>
-<span class="highlight-ln">46</span>
-<span class="highlight-ln">47</span>    <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">log_probs</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">mixed</span><span class="highlight-p">(</span>
-<span class="highlight-ln">48</span>        <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">identity_projection</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">output</span><span class="highlight-p">),</span>
-<span class="highlight-ln">49</span>        <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Softmax</span><span class="highlight-p">())</span>
-<span class="highlight-ln">50</span>
-<span class="highlight-ln">51</span>    <span class="highlight-c1"># 使用扭曲CTC来计算CTC任务的成本。</span>
-<span class="highlight-ln">52</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">is_infer</span><span class="highlight-p">:</span>
-<span class="highlight-ln">53</span>        <span class="highlight-c1"># 定义cost</span>
-<span class="highlight-ln">54</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">warp_ctc</span><span class="highlight-p">(</span>
-<span class="highlight-ln">55</span>            <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">output</span><span class="highlight-p">,</span>
-<span class="highlight-ln">56</span>            <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">label</span><span class="highlight-p">,</span>
-<span class="highlight-ln">57</span>            <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">num_classes</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">58</span>            <span class="highlight-n">norm_by_times</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span>
-<span class="highlight-ln">59</span>            <span class="highlight-n">blank</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">num_classes</span><span class="highlight-p">)</span>
-<span class="highlight-ln">60</span>        <span class="highlight-c1"># 定义额外层</span>
-<span class="highlight-ln">61</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">eval</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">evaluator</span><span class="highlight-o">.</span><span class="highlight-n">ctc_error</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">output</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
+<pre><code class="language-python">def __build_nn__(self):
+    '''
+    建立网络拓扑
+    '''
+    # 通过CNN获取图像特征
+    def conv_block(ipt, num_filter, groups, num_channels=None):
+        return paddle.networks.img_conv_group(
+            input=ipt,
+            num_channels=num_channels,
+            conv_padding=1,
+            conv_num_filter=[num_filter] * groups,
+            conv_filter_size=3,
+            conv_act=paddle.activation.Relu(),
+            conv_with_batchnorm=True,
+            pool_size=2,
+            pool_stride=2, )
+
+    # 因为是灰度图所以最后一个参数是1
+    conv1 = conv_block(self.image, 16, 2, 1)
+    conv2 = conv_block(conv1, 32, 2)
+    conv3 = conv_block(conv2, 64, 2)
+    conv_features = conv_block(conv3, 128, 2)
+
+    # 将CNN的输出展开成一系列特征向量。
+    sliced_feature = paddle.layer.block_expand(
+        input=conv_features,
+        num_channels=128,
+        stride_x=1,
+        stride_y=1,
+        block_x=1,
+        block_y=11)
+
+    # 使用RNN向前和向后捕获序列信息。
+    gru_forward = paddle.networks.simple_gru(
+        input=sliced_feature, size=128, act=paddle.activation.Relu())
+    gru_backward = paddle.networks.simple_gru(
+        input=sliced_feature,
+        size=128,
+        act=paddle.activation.Relu(),
+        reverse=True)
+
+    # 将RNN的输出映射到字符分布。
+    self.output = paddle.layer.fc(input=[gru_forward, gru_backward],
+                                  size=self.num_classes + 1,
+                                  act=paddle.activation.Linear())
+
+    self.log_probs = paddle.layer.mixed(
+        input=paddle.layer.identity_projection(input=self.output),
+        act=paddle.activation.Softmax())
+
+    # 使用扭曲CTC来计算CTC任务的成本。
+    if not self.is_infer:
+        # 定义cost
+        self.cost = paddle.layer.warp_ctc(
+            input=self.output,
+            label=self.label,
+            size=self.num_classes + 1,
+            norm_by_times=True,
+            blank=self.num_classes)
+        # 定义额外层
+        self.eval = paddle.evaluator.ctc_error(input=self.output, label=self.label)
 </code></pre>
 <p>最后通过调用该类就可以获取到模型了，传入的参数是<br>
 <code>dict_size</code>是标签字典的大小，在上面有介绍是用来生成label的<br>
 <code>IMAGE_SHAPE</code>这个是图像的宽度和高度，格式是：(宽度,高度)</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">model</span> <span class="highlight-o">=</span> <span class="highlight-n">Model</span><span class="highlight-p">(</span><span class="highlight-n">dict_size</span><span class="highlight-p">,</span> <span class="highlight-n">IMAGE_SHAPE</span><span class="highlight-p">,</span> <span class="highlight-n">is_infer</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
+<pre><code class="language-python">model = Model(dict_size, IMAGE_SHAPE, is_infer=False)
 </code></pre>
-<h1 id="生成训练器">生成训练器</h1>
+<h1 id="toc_h1_10">生成训练器</h1>
 <hr>
 <p>首先使用PaddlePaddle要先初始化PaddlePaddle，我们使用的是GPU，使用不了CPU，原因下面一部分会说到。</p>
-<pre><code class="language-python‘ highlight-chroma"><span class="highlight-ln">1</span># 初始化PaddlePaddle
-<span class="highlight-ln">2</span>paddle.init(use_gpu=True, trainer_count=1)
+<pre><code class="language-python‘"># 初始化PaddlePaddle
+paddle.init(use_gpu=True, trainer_count=1)
 </code></pre>
 <p>生成训练器在之前的例子中，我们知道要用到损失函数，训练参数和优化方法，这次我们多了一个额外层。<br>
 损失函数和额外层可以通过上一步的模型直接获取</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">model</span><span class="highlight-o">.</span><span class="highlight-n">cost</span>
-<span class="highlight-ln">2</span><span class="highlight-n">extra_layers</span> <span class="highlight-o">=</span> <span class="highlight-n">model</span><span class="highlight-o">.</span><span class="highlight-n">eval</span>
+<pre><code class="language-python">cost = model.cost
+extra_layers = model.eval
 </code></pre>
 <p>这次的优化方法非常简单</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">Momentum</span><span class="highlight-p">(</span><span class="highlight-n">momentum</span><span class="highlight-o">=</span><span class="highlight-mi">0</span><span class="highlight-p">)</span>
+<pre><code class="language-python">optimizer = paddle.optimizer.Momentum(momentum=0)
 </code></pre>
 <p>参数也可以通过上的损失函数生成</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">params</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">create</span><span class="highlight-p">(</span><span class="highlight-n">model</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
+<pre><code class="language-python">params = paddle.parameters.create(model.cost)
 </code></pre>
 <p>最后结合这四个就可以生成一个训练器了</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">trainer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">SGD</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">,</span>
-<span class="highlight-ln">2</span>                             <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">params</span><span class="highlight-p">,</span>
-<span class="highlight-ln">3</span>                             <span class="highlight-n">update_equation</span><span class="highlight-o">=</span><span class="highlight-n">optimizer</span><span class="highlight-p">,</span>
-<span class="highlight-ln">4</span>                             <span class="highlight-n">extra_layers</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-o">.</span><span class="highlight-n">eval</span><span class="highlight-p">)</span>
+<pre><code class="language-python">trainer = paddle.trainer.SGD(cost=model.cost,
+                             parameters=params,
+                             update_equation=optimizer,
+                             extra_layers=model.eval)
 </code></pre>
-<h1 id="定义训练">定义训练</h1>
+<h1 id="toc_h1_11">定义训练</h1>
 <hr>
 <p>经过上面获得的训练器，就可以开始训练了</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 开始训练</span>
-<span class="highlight-ln">2</span><span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">train_reader</span><span class="highlight-p">,</span>
-<span class="highlight-ln">3</span>              <span class="highlight-n">feeding</span><span class="highlight-o">=</span><span class="highlight-n">feeding</span><span class="highlight-p">,</span>
-<span class="highlight-ln">4</span>              <span class="highlight-n">event_handler</span><span class="highlight-o">=</span><span class="highlight-n">event_handler</span><span class="highlight-p">,</span>
-<span class="highlight-ln">5</span>              <span class="highlight-n">num_passes</span><span class="highlight-o">=</span><span class="highlight-mi">1000</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 开始训练
+trainer.train(reader=train_reader,
+              feeding=feeding,
+              event_handler=event_handler,
+              num_passes=1000)
 </code></pre>
 <p>这个用到的<code>train_reader</code>就是在数据读取的时候获得的reader。<br>
 <code>feeding</code>是说明数据层之间的关系，定义如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">feeding</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s1">'image'</span><span class="highlight-p">:</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-s1">'label'</span><span class="highlight-p">:</span> <span class="highlight-mi">1</span><span class="highlight-p">}</span>
+<pre><code class="language-python">feeding = {'image': 0, 'label': 1}
 </code></pre>
 <p>训练事件<code>event_handler</code>，通过这个训练事件我们可以在训练的时候处理一下事情，如输出训练日志用于观察训练的效果，方便分析模型的性能。还可以保持模型，用于之后可预测或者再训练。定义如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 训练事件</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">event_handler</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-k">if</span> <span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">EndIteration</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-k">if</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">batch_id</span> <span class="highlight-o">%</span> <span class="highlight-mi">100</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 5</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"Pass </span><span class="highlight-si">%d</span><span class="highlight-s2">, batch </span><span class="highlight-si">%d</span><span class="highlight-s2">, Samples </span><span class="highlight-si">%d</span><span class="highlight-s2">, Cost </span><span class="highlight-si">%f</span><span class="highlight-s2">, Eval </span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span>
-<span class="highlight-ln"> 6</span>                  <span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">batch_id</span> <span class="highlight-o">*</span>
-<span class="highlight-ln"> 7</span>                   <span class="highlight-n">BATCH_SIZE</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">if</span> <span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">EndPass</span><span class="highlight-p">):</span>
-<span class="highlight-ln">10</span>        <span class="highlight-c1"># 这里由于训练和测试数据共享相同的格式</span>
-<span class="highlight-ln">11</span>        <span class="highlight-c1"># 我们仍然使用reader.train_reader来读取测试数据</span>
-<span class="highlight-ln">12</span>        <span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span>
-<span class="highlight-ln">13</span>            <span class="highlight-n">my_reader</span><span class="highlight-o">.</span><span class="highlight-n">train_reader</span><span class="highlight-p">(</span><span class="highlight-n">test_file_list</span><span class="highlight-p">),</span>
-<span class="highlight-ln">14</span>            <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-n">BATCH_SIZE</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">test</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">test_reader</span><span class="highlight-p">,</span> <span class="highlight-n">feeding</span><span class="highlight-o">=</span><span class="highlight-n">feeding</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>        <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"Test </span><span class="highlight-si">%d</span><span class="highlight-s2">, Cost </span><span class="highlight-si">%f</span><span class="highlight-s2">, Eval </span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">))</span>
-<span class="highlight-ln">17</span>        <span class="highlight-c1"># 检查保存model的路径是否存在，如果不存在就创建</span>
-<span class="highlight-ln">18</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">model_save_dir</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">mkdir</span><span class="highlight-p">(</span><span class="highlight-n">model_save_dir</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>        <span class="highlight-k">with</span> <span class="highlight-n">gzip</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span>
-<span class="highlight-ln">21</span>                <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">(</span><span class="highlight-n">model_save_dir</span><span class="highlight-p">,</span> <span class="highlight-s2">"params_pass.tar.gz"</span><span class="highlight-p">),</span> <span class="highlight-s2">"w"</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">22</span>            <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">save_parameter_to_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># 训练事件
+def event_handler(event):
+    if isinstance(event, paddle.event.EndIteration):
+        if event.batch_id % 100 == 0:
+            print("Pass %d, batch %d, Samples %d, Cost %f, Eval %s" %
+                  (event.pass_id, event.batch_id, event.batch_id *
+                   BATCH_SIZE, event.cost, event.metrics))
+
+    if isinstance(event, paddle.event.EndPass):
+        # 这里由于训练和测试数据共享相同的格式
+        # 我们仍然使用reader.train_reader来读取测试数据
+        test_reader = paddle.batch(
+            my_reader.train_reader(test_file_list),
+            batch_size=BATCH_SIZE)
+        result = trainer.test(reader=test_reader, feeding=feeding)
+        print("Test %d, Cost %f, Eval %s" % (event.pass_id, result.cost, result.metrics))
+        # 检查保存model的路径是否存在，如果不存在就创建
+        if not os.path.exists(model_save_dir):
+            os.mkdir(model_save_dir)
+        with gzip.open(
+                os.path.join(model_save_dir, "params_pass.tar.gz"), "w") as f:
+            trainer.save_parameter_to_tar(f)
 </code></pre>
 <p>最后的<code>num_passes</code>就是训练轮数。</p>
-<h1 id="启动训练">启动训练</h1>
+<h1 id="toc_h1_12">启动训练</h1>
 <hr>
 <p>由官方文档可知，由于模型依赖的 warp CTC 只有CUDA的实现，本模型只支持 GPU 运行。所以读者要在自己的电脑安装paddlepaddle-gpu，如果读者的电脑是有GPU的话。<br>
 由于笔者的电脑没有GPU，所以不得不使用云服务器来训练我们的模型。笔者使用的是<a href="https://cloud.baidu.com/product/bdl.html" target="_blank">百度深度学习GPU集群</a>，这有个非常好的地方就是购买来的服务器就已经安装了PaddlePaddle，无需我们再安装了，这省去了很多时间。不过笔者在使用的时候，出现了找不到<code>libwarpctc.so</code>这个库，所以要自己动手去安装该库，如果读者没有报该错，请忽略以下操作：</p>
-<h2 id="安装libwarpctc-so库">安装libwarpctc.so库</h2>
+<h2 id="toc_h2_13">安装libwarpctc.so库</h2>
 <p>先从GitHub上获取源码</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/baidu-research/warp-ctc.git
-<span class="highlight-ln">2</span>cd warp-ctc
+<pre><code>git clone https://github.com/baidu-research/warp-ctc.git
+cd warp-ctc
 </code></pre>
 <p>创建build目录</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mkdir build
-<span class="highlight-ln">2</span>cd build
+<pre><code>mkdir build
+cd build
 </code></pre>
 <p>默认是没有安装<code>cmake</code>的，所以要先安装<code>cmake</code></p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>apt install cmake
+<pre><code>apt install cmake
 </code></pre>
 <p>安装完成之后就可以cmake和编译了，这里的编译笔者使用6个线程，这个会快一点</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cmake ../
-<span class="highlight-ln">2</span>make -j6
+<pre><code>cmake ../
+make -j6
 </code></pre>
 <p>编译完成之后，就生成了一个<code>libwarpctc.so</code>，这个就是我们需要的库，执行以下命令，将其复制到相应的目录</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cp libwarpctc.so /usr/lib/x86_64-linux-gnu/
+<pre><code>cp libwarpctc.so /usr/lib/x86_64-linux-gnu/
 </code></pre>
 <p>最后测试一下是否正常了</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>./test_gpu
+<pre><code>./test_gpu
 </code></pre>
-<h2 id="执行训练main方法">执行训练main方法</h2>
+<h2 id="toc_h2_14">执行训练main方法</h2>
 <p>通过上面的操作，训练的程序就已经完成了，可以启动训练了</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 训练列表的的路径</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">train_file_list_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../data/train_data/trainer.list'</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 测试列表的路径</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">test_file_list_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../data/test_data/test.list'</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 标签字典的路径</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">label_dict_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../data/label_dict.txt'</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 保存模型的路径</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">model_save_dir</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../models'</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">train</span><span class="highlight-p">(</span><span class="highlight-n">train_file_list_path</span><span class="highlight-p">,</span> <span class="highlight-n">test_file_list_path</span><span class="highlight-p">,</span> <span class="highlight-n">label_dict_path</span><span class="highlight-p">,</span> <span class="highlight-n">model_save_dir</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    # 训练列表的的路径
+    train_file_list_path = '../data/train_data/trainer.list'
+    # 测试列表的路径
+    test_file_list_path = '../data/test_data/test.list'
+    # 标签字典的路径
+    label_dict_path = '../data/label_dict.txt'
+    # 保存模型的路径
+    model_save_dir = '../models'
+    train(train_file_list_path, test_file_list_path, label_dict_path, model_save_dir)
 </code></pre>
 <p>输出的日志大概如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>Pass 0, batch 0, Samples 0, Cost 16.149542, Eval {}
-<span class="highlight-ln">2</span>Pass 0, batch 100, Samples 1000, Cost 15.090727, Eval {}
-<span class="highlight-ln">3</span>Test 0, Cost 15.079704, Eval {}
-<span class="highlight-ln">4</span>Pass 1, batch 0, Samples 0, Cost 14.775064, Eval {}
-<span class="highlight-ln">5</span>Pass 1, batch 100, Samples 1000, Cost 15.448521, Eval {}
-<span class="highlight-ln">6</span>Test 1, Cost 14.826180, Eval {}
+<pre><code class="language-text">Pass 0, batch 0, Samples 0, Cost 16.149542, Eval {}
+Pass 0, batch 100, Samples 1000, Cost 15.090727, Eval {}
+Test 0, Cost 15.079704, Eval {}
+Pass 1, batch 0, Samples 0, Cost 14.775064, Eval {}
+Pass 1, batch 100, Samples 1000, Cost 15.448521, Eval {}
+Test 1, Cost 14.826180, Eval {}
 </code></pre>
-<h1 id="开始预测">开始预测</h1>
+<h1 id="toc_h1_15">开始预测</h1>
 <hr>
 <p>通过之前的训练，我们有了训练参数，可以使用这些参数进行预测了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">infer</span><span class="highlight-p">(</span><span class="highlight-n">img_path</span><span class="highlight-p">,</span> <span class="highlight-n">model_path</span><span class="highlight-p">,</span> <span class="highlight-n">image_shape</span><span class="highlight-p">,</span> <span class="highlight-n">label_dict_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 获取标签字典</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">char_dict</span> <span class="highlight-o">=</span> <span class="highlight-n">load_dict</span><span class="highlight-p">(</span><span class="highlight-n">label_dict_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 获取反转的标签字典</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">reversed_char_dict</span> <span class="highlight-o">=</span> <span class="highlight-n">load_reverse_dict</span><span class="highlight-p">(</span><span class="highlight-n">label_dict_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 获取字典大小</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">dict_size</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">char_dict</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 获取reader</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">my_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">Reader</span><span class="highlight-p">(</span><span class="highlight-n">char_dict</span><span class="highlight-o">=</span><span class="highlight-n">char_dict</span><span class="highlight-p">,</span> <span class="highlight-n">image_shape</span><span class="highlight-o">=</span><span class="highlight-n">image_shape</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 初始化PaddlePaddle</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">init</span><span class="highlight-p">(</span><span class="highlight-n">use_gpu</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_count</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>    <span class="highlight-c1"># 加载训练好的参数</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">Parameters</span><span class="highlight-o">.</span><span class="highlight-n">from_tar</span><span class="highlight-p">(</span><span class="highlight-n">gzip</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">model_path</span><span class="highlight-p">))</span>
-<span class="highlight-ln">14</span>    <span class="highlight-c1"># 获取网络模型</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">model</span> <span class="highlight-o">=</span> <span class="highlight-n">Model</span><span class="highlight-p">(</span><span class="highlight-n">dict_size</span><span class="highlight-p">,</span> <span class="highlight-n">image_shape</span><span class="highlight-p">,</span> <span class="highlight-n">is_infer</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>    <span class="highlight-c1"># 获取预测器</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">inferer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">inference</span><span class="highlight-o">.</span><span class="highlight-n">Inference</span><span class="highlight-p">(</span><span class="highlight-n">output_layer</span><span class="highlight-o">=</span><span class="highlight-n">model</span><span class="highlight-o">.</span><span class="highlight-n">log_probs</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>    <span class="highlight-c1"># 加载数据</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">test_batch</span> <span class="highlight-o">=</span> <span class="highlight-p">[[</span><span class="highlight-n">my_reader</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">img_path</span><span class="highlight-p">)]]</span>
-<span class="highlight-ln">20</span>    <span class="highlight-c1"># 开始预测</span>
-<span class="highlight-ln">21</span>    <span class="highlight-k">return</span> <span class="highlight-n">start_infer</span><span class="highlight-p">(</span><span class="highlight-n">inferer</span><span class="highlight-p">,</span> <span class="highlight-n">test_batch</span><span class="highlight-p">,</span> <span class="highlight-n">reversed_char_dict</span><span class="highlight-p">)</span>
+<pre><code class="language-python">def infer(img_path, model_path, image_shape, label_dict_path):
+    # 获取标签字典
+    char_dict = load_dict(label_dict_path)
+    # 获取反转的标签字典
+    reversed_char_dict = load_reverse_dict(label_dict_path)
+    # 获取字典大小
+    dict_size = len(char_dict)
+    # 获取reader
+    my_reader = Reader(char_dict=char_dict, image_shape=image_shape)
+    # 初始化PaddlePaddle
+    paddle.init(use_gpu=True, trainer_count=1)
+    # 加载训练好的参数
+    parameters = paddle.parameters.Parameters.from_tar(gzip.open(model_path))
+    # 获取网络模型
+    model = Model(dict_size, image_shape, is_infer=True)
+    # 获取预测器
+    inferer = paddle.inference.Inference(output_layer=model.log_probs, parameters=parameters)
+    # 加载数据
+    test_batch = [[my_reader.load_image(img_path)]]
+    # 开始预测
+    return start_infer(inferer, test_batch, reversed_char_dict)
 </code></pre>
 <p>上面使用的反转的标签字典定义如下，通过标签字典的文件即可生成反转的标签字典</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">def</span> <span class="highlight-nf">load_reverse_dict</span><span class="highlight-p">(</span><span class="highlight-n">dict_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln">3</span><span class="highlight-s2">    从字典路径加载反转的标签字典
-</span><span class="highlight-ln">4</span><span class="highlight-s2">    :param dict_path: 标签字典的路径
-</span><span class="highlight-ln">5</span><span class="highlight-s2">    :type dict_path: str
-</span><span class="highlight-ln">6</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">7</span>    <span class="highlight-k">return</span> <span class="highlight-nb">dict</span><span class="highlight-p">((</span><span class="highlight-n">idx</span><span class="highlight-p">,</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s2">"</span><span class="highlight-se">\t</span><span class="highlight-s2">"</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">8</span>                <span class="highlight-k">for</span> <span class="highlight-n">idx</span><span class="highlight-p">,</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">dict_path</span><span class="highlight-p">,</span> <span class="highlight-s2">"r"</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">readlines</span><span class="highlight-p">()))</span>
+<pre><code class="language-python">def load_reverse_dict(dict_path):
+    """
+    从字典路径加载反转的标签字典
+    :param dict_path: 标签字典的路径
+    :type dict_path: str
+    """
+    return dict((idx, line.strip().split("\t")[0])
+                for idx, line in enumerate(open(dict_path, "r").readlines()))
 </code></pre>
 <p>通过传入上面获取是的inferer和图像的一维向量，还有反转的标签字典就可以进行预测了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">start_infer</span><span class="highlight-p">(</span><span class="highlight-n">inferer</span><span class="highlight-p">,</span> <span class="highlight-n">test_batch</span><span class="highlight-p">,</span> <span class="highlight-n">reversed_char_dict</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 获取初步预测结果</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">infer_results</span> <span class="highlight-o">=</span> <span class="highlight-n">inferer</span><span class="highlight-o">.</span><span class="highlight-n">infer</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">test_batch</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">num_steps</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">infer_results</span><span class="highlight-p">)</span> <span class="highlight-o">//</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_batch</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">probs_split</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-n">infer_results</span><span class="highlight-p">[</span><span class="highlight-n">i</span> <span class="highlight-o">*</span> <span class="highlight-n">num_steps</span><span class="highlight-p">:(</span><span class="highlight-n">i</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-n">num_steps</span><span class="highlight-p">]</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">test_batch</span><span class="highlight-p">))]</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 最佳路径解码</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-s1">''</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">probs</span> <span class="highlight-ow">in</span> <span class="highlight-nb">enumerate</span><span class="highlight-p">(</span><span class="highlight-n">probs_split</span><span class="highlight-p">):</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">ctc_greedy_decoder</span><span class="highlight-p">(</span>
-<span class="highlight-ln">12</span>            <span class="highlight-n">probs_seq</span><span class="highlight-o">=</span><span class="highlight-n">probs</span><span class="highlight-p">,</span> <span class="highlight-n">vocabulary</span><span class="highlight-o">=</span><span class="highlight-n">reversed_char_dict</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">return</span> <span class="highlight-n">result</span>
+<pre><code class="language-python">def start_infer(inferer, test_batch, reversed_char_dict):
+    # 获取初步预测结果
+    infer_results = inferer.infer(input=test_batch)
+    num_steps = len(infer_results) // len(test_batch)
+    probs_split = [
+        infer_results[i * num_steps:(i + 1) * num_steps]
+        for i in range(0, len(test_batch))]
+    # 最佳路径解码
+    result = ''
+    for i, probs in enumerate(probs_split):
+        result = ctc_greedy_decoder(
+            probs_seq=probs, vocabulary=reversed_char_dict)
+    return result
 </code></pre>
 <p>这个还使用到了最佳路径解码，使用的解码器如下：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">ctc_greedy_decoder</span><span class="highlight-p">(</span><span class="highlight-n">probs_seq</span><span class="highlight-p">,</span> <span class="highlight-n">vocabulary</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""CTC贪婪（最佳路径）解码器。
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    由最可能的令牌组成的路径被进一步后处理
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    删除连续的重复和所有的空白。
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    :param probs_seq: 每个词汇表上概率的二维列表字符。
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">                      每个元素都是浮点概率列表为一个字符。
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    :type probs_seq: list
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    :param vocabulary: 词汇表
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    :type vocabulary: list
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    :return: 解码结果字符串
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    :rtype: baseline
-</span><span class="highlight-ln">12</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">13</span>    <span class="highlight-c1"># 尺寸验证</span>
-<span class="highlight-ln">14</span>    <span class="highlight-k">for</span> <span class="highlight-n">probs</span> <span class="highlight-ow">in</span> <span class="highlight-n">probs_seq</span><span class="highlight-p">:</span>
-<span class="highlight-ln">15</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">probs</span><span class="highlight-p">)</span> <span class="highlight-o">==</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">vocabulary</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span><span class="highlight-p">:</span>
-<span class="highlight-ln">16</span>            <span class="highlight-k">raise</span> <span class="highlight-ne">ValueError</span><span class="highlight-p">(</span><span class="highlight-s2">"probs_seq dimension mismatchedd with vocabulary"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>    <span class="highlight-c1"># argmax以获得每个时间步长的最佳指标</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">max_index_list</span> <span class="highlight-o">=</span> <span class="highlight-nb">list</span><span class="highlight-p">(</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">array</span><span class="highlight-p">(</span><span class="highlight-n">probs_seq</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">argmax</span><span class="highlight-p">(</span><span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">19</span>    <span class="highlight-c1"># 删除连续的重复索引</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">index_list</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">index_group</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span> <span class="highlight-k">for</span> <span class="highlight-n">index_group</span> <span class="highlight-ow">in</span> <span class="highlight-n">groupby</span><span class="highlight-p">(</span><span class="highlight-n">max_index_list</span><span class="highlight-p">)]</span>
-<span class="highlight-ln">21</span>    <span class="highlight-c1"># 删除空白索引</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">blank_index</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">vocabulary</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">index_list</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">index</span> <span class="highlight-k">for</span> <span class="highlight-n">index</span> <span class="highlight-ow">in</span> <span class="highlight-n">index_list</span> <span class="highlight-k">if</span> <span class="highlight-n">index</span> <span class="highlight-o">!=</span> <span class="highlight-n">blank_index</span><span class="highlight-p">]</span>
-<span class="highlight-ln">24</span>    <span class="highlight-c1"># 将索引列表转换为字符串</span>
-<span class="highlight-ln">25</span>    <span class="highlight-k">return</span> <span class="highlight-s1">''</span><span class="highlight-o">.</span><span class="highlight-n">join</span><span class="highlight-p">([</span><span class="highlight-n">vocabulary</span><span class="highlight-p">[</span><span class="highlight-n">index</span><span class="highlight-p">]</span> <span class="highlight-k">for</span> <span class="highlight-n">index</span> <span class="highlight-ow">in</span> <span class="highlight-n">index_list</span><span class="highlight-p">])</span>
+<pre><code class="language-python">def ctc_greedy_decoder(probs_seq, vocabulary):
+    """CTC贪婪（最佳路径）解码器。
+    由最可能的令牌组成的路径被进一步后处理
+    删除连续的重复和所有的空白。
+    :param probs_seq: 每个词汇表上概率的二维列表字符。
+                      每个元素都是浮点概率列表为一个字符。
+    :type probs_seq: list
+    :param vocabulary: 词汇表
+    :type vocabulary: list
+    :return: 解码结果字符串
+    :rtype: baseline
+    """
+    # 尺寸验证
+    for probs in probs_seq:
+        if not len(probs) == len(vocabulary) + 1:
+            raise ValueError("probs_seq dimension mismatchedd with vocabulary")
+    # argmax以获得每个时间步长的最佳指标
+    max_index_list = list(np.array(probs_seq).argmax(axis=1))
+    # 删除连续的重复索引
+    index_list = [index_group[0] for index_group in groupby(max_index_list)]
+    # 删除空白索引
+    blank_index = len(vocabulary)
+    index_list = [index for index in index_list if index != blank_index]
+    # 将索引列表转换为字符串
+    return ''.join([vocabulary[index] for index in index_list])
 </code></pre>
 <p>最后在main方法中直接运行预测程序就可以了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 要预测的图像</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">img_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../data/test_data/4uqh.png'</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 模型的路径</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">model_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../models/params_pass.tar.gz'</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 图像的大小</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">image_shape</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">72</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 标签的路径</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">label_dict_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../data/label_dict.txt'</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 获取预测结果</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">infer</span><span class="highlight-p">(</span><span class="highlight-n">img_path</span><span class="highlight-p">,</span> <span class="highlight-n">model_path</span><span class="highlight-p">,</span> <span class="highlight-n">image_shape</span><span class="highlight-p">,</span> <span class="highlight-n">label_dict_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>    <span class="highlight-k">print</span> <span class="highlight-s1">'预测结果：</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">result</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    # 要预测的图像
+    img_path = '../data/test_data/4uqh.png'
+    # 模型的路径
+    model_path = '../models/params_pass.tar.gz'
+    # 图像的大小
+    image_shape = (72, 27)
+    # 标签的路径
+    label_dict_path = '../data/label_dict.txt'
+    # 获取预测结果
+    result = infer(img_path, model_path, image_shape, label_dict_path)
+    print '预测结果：%s' % result
 </code></pre>
 <p>预测输出</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>预测结果：4uqh
+<pre><code class="language-text">预测结果：4uqh
 </code></pre>
-<h1 id="项目代码">项目代码</h1>
+<h1 id="toc_h1_16">项目代码</h1>
 <hr>
 <p>GitHub地址:<a href="https://github.com/yeyupiaoling/LearnPaddle" target="_blank">https://github.com/yeyupiaoling/LearnPaddle</a></p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_17">参考资料</h1>
 <hr>
 <ol>
 <li><a href="http://paddlepaddle.org/" target="_blank">http://paddlepaddle.org/</a></li>
@@ -806,7 +806,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -815,7 +815,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -823,11 +823,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466410423",
@@ -845,4 +845,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 78ms, 2020/04/07 11:38:48 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 35ms, 2020/04/07 14:57:08 -->

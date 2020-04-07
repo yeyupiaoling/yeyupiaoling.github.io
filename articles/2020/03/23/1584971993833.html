@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《Improving Deep Neural Networks》的理论知识点 - 夜雨飘零</title><meta name="description" content="深度学习的实践方面 如果有10,000,000个例子，数据集拆分一般是98%训练，1%验证，1%测试。 验证和测试的数据集通常是来自同样的分配。 如果神经网络模型有很大的差异，一般的解决办法是增加数据集和添加正则。 当训练集错误较小，而验证集较大时，通常是增加正则lambda、增加数据集。 当增加正则化超参数lambda时，权重会被推向更小，接近0. 将参数keep_prob从（比如说）0.5增加到0.6可能会导致减少正则效应、最终导致更小的训练集数据的错误。 增加训练集、添加Dropout、加正则可以减少方差（减少过度拟合）。 权重衰减是一种正则化技术(如L2正规化), 导致梯度下降在每次迭代中收缩权重。 我们归一化输入的X，是因为这个可以使得损失函数更快地进行优化。 在测试使用反向dropout方法时，不要使用dropout（不要使用随机消除单位），也不要在训练中使用计算中保留的1/keep_prob因子。 优化算法 当输入是来自第8个小批次的第7个示例时，表示第3层的激活的符合是：a^{[3]{8}(7)}。 小批量梯度下降（在单个小批量上计算）的一次迭代比批量梯度下降...."/><meta property="og:description" content="深度学习的实践方面 如果有10,000,000个例子，数据集拆分一般是98%训练，1%验证，1%测试。 验证和测试的数据集通常是来自同样的分配。 如果神经网络模型有很大的差异，一般的解决办法是增加数据集和添加正则。 当训练集错误较小，而验证集较大时，通常是增加正则lambda、增加数据集。 当增加正则化超参数lambda时，权重会被推向更小，接近0. 将参数keep_prob从（比如说）0.5增加到0.6可能会导致减少正则效应、最终导致更小的训练集数据的错误。 增加训练集、添加Dropout、加正则可以减少方差（减少过度拟合）。 权重衰减是一种正则化技术(如L2正规化), 导致梯度下降在每次迭代中收缩权重。 我们归一化输入的X，是因为这个可以使得损失函数更快地进行优化。 在测试使用反向dropout方法时，不要使用dropout（不要使用随机消除单位），也不要在训练中使用计算中保留的1/keep_prob因子。 优化算法 当输入是来自第8个小批次的第7个示例时，表示第3层的激活的符合是：a^{[3]{8}(7)}。 小批量梯度下降（在单个小批量上计算）的一次迭代比批量梯度下降...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《Improving Deep Neural Networks》的理论知识点 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《Improving Deep Neural Networks》的理论知识点 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《Improving Deep Neural Networks》的理论知识点 - 夜雨飘零</title><meta name="description" content="深度学习的实践方面 如果有10,000,000个例子，数据集拆分一般是98%训练，1%验证，1%测试。 验证和测试的数据集通常是来自同样的分配。 如果神经网络模型有很大的差异，一般的解决办法是增加数据集和添加正则。 当训练集错误较小，而验证集较大时，通常是增加正则lambda、增加数据集。 当增加正则化超参数lambda时，权重会被推向更小，接近0. 将参数keep_prob从（比如说）0.5增加到0.6可能会导致减少正则效应、最终导致更小的训练集数据的错误。 增加训练集、添加Dropout、加正则可以减少方差（减少过度拟合）。 权重衰减是一种正则化技术(如L2正规化), 导致梯度下降在每次迭代中收缩权重。 我们归一化输入的X，是因为这个可以使得损失函数更快地进行优化。 在测试使用反向dropout方法时，不要使用dropout（不要使用随机消除单位），也不要在训练中使用计算中保留的1/keep_prob因子。 优化算法 当输入是来自第8个小批次的第7个示例时，表示第3层的激活的符合是：$a^{[3]{8}(7)}$。 小批量梯度下降（在单个小批量上计算）的一次迭代比批量梯度下降...."/><meta property="og:description" content="深度学习的实践方面 如果有10,000,000个例子，数据集拆分一般是98%训练，1%验证，1%测试。 验证和测试的数据集通常是来自同样的分配。 如果神经网络模型有很大的差异，一般的解决办法是增加数据集和添加正则。 当训练集错误较小，而验证集较大时，通常是增加正则lambda、增加数据集。 当增加正则化超参数lambda时，权重会被推向更小，接近0. 将参数keep_prob从（比如说）0.5增加到0.6可能会导致减少正则效应、最终导致更小的训练集数据的错误。 增加训练集、添加Dropout、加正则可以减少方差（减少过度拟合）。 权重衰减是一种正则化技术(如L2正规化), 导致梯度下降在每次迭代中收缩权重。 我们归一化输入的X，是因为这个可以使得损失函数更快地进行优化。 在测试使用反向dropout方法时，不要使用dropout（不要使用随机消除单位），也不要在训练中使用计算中保留的1/keep_prob因子。 优化算法 当输入是来自第8个小批次的第7个示例时，表示第3层的激活的符合是：$a^{[3]{8}(7)}$。 小批量梯度下降（在单个小批量上计算）的一次迭代比批量梯度下降...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《Improving Deep Neural Networks》的理论知识点 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《Improving Deep Neural Networks》的理论知识点 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Python2实现简单的爬虫" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971916912.html">
             <link rel="next" title="深度学习神经网络中权重的初始化" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html">
     <!-- 百度统计 -->
@@ -78,13 +78,13 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#深度学习的实践方面">深度学习的实践方面</a>
+            <a href="#toc_h1_0">深度学习的实践方面</a>
         </li>
         <li class="toc__h1">
-            <a href="#优化算法">优化算法</a>
+            <a href="#toc_h1_1">优化算法</a>
         </li>
         <li class="toc__h1">
-            <a href="#超参数调整-批量标准化-编程框架">超参数调整，批量标准化，编程框架</a>
+            <a href="#toc_h1_2">超参数调整，批量标准化，编程框架</a>
         </li>
 </ul>        </div>
 </div>
@@ -130,7 +130,7 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20190624.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="深度学习的实践方面">深度学习的实践方面</h1>
+<h1 id="toc_h1_0">深度学习的实践方面</h1>
 <ol>
 <li>如果有10,000,000个例子，数据集拆分一般是98%训练，1%验证，1%测试。</li>
 <li>验证和测试的数据集通常是来自同样的分配。</li>
@@ -143,38 +143,38 @@ var _hmt = _hmt || [];
 <li>我们归一化输入的X，是因为这个可以使得损失函数更快地进行优化。</li>
 <li>在测试使用反向dropout方法时，不要使用dropout（不要使用随机消除单位），也不要在训练中使用计算中保留的1/keep_prob因子。</li>
 </ol>
-<h1 id="优化算法">优化算法</h1>
+<h1 id="toc_h1_1">优化算法</h1>
 <ol>
-<li>当输入是来自第8个小批次的第7个示例时，表示第3层的激活的符合是：<span class="vditor-math">a^{[3]\{8\}(7)}</span>。</li>
+<li>当输入是来自第8个小批次的第7个示例时，表示第3层的激活的符合是：$a^{[3]{8}(7)}$。</li>
 <li>小批量梯度下降（在单个小批量上计算）的一次迭代比批量梯度下降的迭代快。</li>
 <li>最好的小批量大小通常不是1而不是m，而是介于两者之间。一、如果最小批量为1，则会小批量样本中失去向量化的好处。二、如果最小批量为m，则最终会产生批量梯度下降，该批量梯度下降处理完成之前必须处理整个训练集。</li>
-<li>假设学习算法的成本<span class="vditor-math">J</span>，绘制为迭代次数的函数，如下所示：<br><img src="https://s1.ax1x.com/2020/04/02/GG3Vm9.png" alt="这里写图片描述"><br>从图中可以得知如果是使用小批量梯度下降法，看来是可以接受的，如果是使用批量梯度下降，有些事情是错误的。</li>
+<li>假设学习算法的成本$J$，绘制为迭代次数的函数，如下所示：<br><img src="https://s1.ax1x.com/2020/04/02/GG3Vm9.png" alt="这里写图片描述"><br>从图中可以得知如果是使用小批量梯度下降法，看来是可以接受的，如果是使用批量梯度下降，有些事情是错误的。</li>
 <li>假设1月前三天卡萨布兰卡的气温相同：<br>
-1月1日：<span class="vditor-math">\theta_1 = 10^o C</span><br>
-1月2日： <span class="vditor-math">\theta_2 = 10^o C</span><br>
-假设使用指数加权平均<span class="vditor-math">\beta=0.5</span>跟踪温度：<span class="vditor-math">v_0 = 0, v_t = \beta v_{t-1} +(1-\beta)\theta_t</span>。可以得到2天后的值：<span class="vditor-math">v_2 = 7.5</span>，以及其修正偏差的值是：<span class="vditor-math">v_2^{corrected} = 10</span>。</li>
-<li><span class="vditor-math">\alpha = e^t \alpha_0</span>不是一个好的学习率衰退的方法，其中t是epoch号码。比较好的方法有：<span class="vditor-math">\alpha = 0.95^t \alpha_0</span>，<span class="vditor-math">\alpha = \frac{1}{\sqrt{t}} \alpha_0</span>，<span class="vditor-math">\alpha = \frac{1}{1+2*t} \alpha_0</span> 这些。</li>
-<li>伦敦温度数据集上使用指数加权平均值。使用以下来跟踪温度：<span class="vditor-math">v_{t} = \beta v_{t-1} + (1-\beta)\theta_t</span>。下面的红线是用来计算的<span class="vditor-math">\beta=0.9</span>。<br><img src="https://s1.ax1x.com/2020/03/31/Gln8bD.png" alt="这里写图片描述"><br>增加<span class="vditor-math">\beta</span>会将红线稍微向右移；降低<span class="vditor-math">\beta</span>将在红线内产生更多的振荡。</li>
-<li>图中：<br><img src="https://s1.ax1x.com/2020/04/03/GaAaIf.png" alt="这里写图片描述"><br>这个图是梯度下降、动量梯度下降（<span class="vditor-math">\beta = 0.5</span>）和动量梯度下降（<span class="vditor-math">\beta= 0.9</span>）产生的。其中（1）是梯度下降。（2）是动量梯度下降（小<span class="vditor-math">\beta</span>）。（3）是动量梯度下降（大<span class="vditor-math">\beta</span>)</li>
-<li>假设深度网络中的批量梯度下降时间过长，为找到对于成本函数实现较小值的参数值<span class="vditor-math">\mathcal{J}(W^{[1]},b^{[1]},..., W^{[L]},b^{[L]})</span>。可以使用以下技术找到取得较小值的参数值<span class="vditor-math">\mathcal{J}</span>：一、尝试调整学习率<span class="vditor-math">\alpha</span>；二、尝试更好的随机初始化权重；三、尝试使用小批量梯度下降；四、尝试使用Adam。</li>
-<li>关于Adam的一些正确的说法：一、学习速率超参数<span class="vditor-math">\alpha</span>在Adam通常需要调整；二、我们通常使用<span class="vditor-math">\beta_1,\beta_2</span>和<span class="vditor-math">\varepsilon</span>作为Adam (<span class="vditor-math">\beta_1=0.9, \beta_2=0.999, \varepsilon = 10^{-8}</span>)超参数的默认值；三、Adam结合了RMSProp的优点和动量。</li>
+1月1日：$\theta_1 = 10^o C$<br>
+1月2日： $\theta_2 = 10^o C$<br>
+假设使用指数加权平均$\beta=0.5$跟踪温度：$v_0 = 0, v_t = \beta v_{t-1} +(1-\beta)\theta_t$。可以得到2天后的值：$v_2 = 7.5$，以及其修正偏差的值是：$v_2^{corrected} = 10$。</li>
+<li>$\alpha = e^t \alpha_0$不是一个好的学习率衰退的方法，其中t是epoch号码。比较好的方法有：$\alpha = 0.95^t \alpha_0$，$\alpha = \frac{1}{\sqrt{t}} \alpha_0$，$\alpha = \frac{1}{1+2*t} \alpha_0$ 这些。</li>
+<li>伦敦温度数据集上使用指数加权平均值。使用以下来跟踪温度：$v_{t} = \beta v_{t-1} + (1-\beta)\theta_t$。下面的红线是用来计算的$\beta=0.9$。<br><img src="https://s1.ax1x.com/2020/03/31/Gln8bD.png" alt="这里写图片描述"><br>增加$\beta$会将红线稍微向右移；降低$\beta$将在红线内产生更多的振荡。</li>
+<li>图中：<br><img src="https://s1.ax1x.com/2020/04/03/GaAaIf.png" alt="这里写图片描述"><br>这个图是梯度下降、动量梯度下降（$\beta = 0.5$）和动量梯度下降（$\beta= 0.9$）产生的。其中（1）是梯度下降。（2）是动量梯度下降（小$\beta$）。（3）是动量梯度下降（大$\beta$)</li>
+<li>假设深度网络中的批量梯度下降时间过长，为找到对于成本函数实现较小值的参数值$\mathcal{J}(W^{[1]},b^{[1]},..., W^{[L]},b^{[L]})$。可以使用以下技术找到取得较小值的参数值$\mathcal{J}$：一、尝试调整学习率$\alpha$；二、尝试更好的随机初始化权重；三、尝试使用小批量梯度下降；四、尝试使用Adam。</li>
+<li>关于Adam的一些正确的说法：一、学习速率超参数$\alpha$在Adam通常需要调整；二、我们通常使用$\beta_1,\beta_2$和$\varepsilon$作为Adam ($\beta_1=0.9, \beta_2=0.999, \varepsilon = 10^{-8}$)超参数的默认值；三、Adam结合了RMSProp的优点和动量。</li>
 </ol>
-<h1 id="超参数调整-批量标准化-编程框架">超参数调整，批量标准化，编程框架</h1>
+<h1 id="toc_h1_2">超参数调整，批量标准化，编程框架</h1>
 <ol>
 <li>在大量超参数中进行搜索，通常使用随机值而不是网格中的值。</li>
 <li>不是每个超参数都会对训练产生巨大的负面影响，比如学习率，比其他参数更重要。</li>
 <li>在超参数搜索过程中，无论您是尝试照顾一个模型（“熊猫”策略）还是平行训练大量模型（“鱼子酱”），主要取决于可以访问的计算能力的数量。</li>
-<li>如果<span class="vditor-math">\beta</span>（动量超参数）介于0.9和0.99之间，推荐使用以下方法用于对<span class="vditor-math">\beta</span>值进行抽样：</li>
+<li>如果$\beta$（动量超参数）介于0.9和0.99之间，推荐使用以下方法用于对$\beta$值进行抽样：</li>
 </ol>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">rand</span><span class="highlight-p">()</span>
-<span class="highlight-ln">2</span><span class="highlight-n">beta</span> <span class="highlight-o">=</span> <span class="highlight-mi">1</span><span class="highlight-o">-</span><span class="highlight-mi">10</span><span class="highlight-o">**</span><span class="highlight-p">(</span><span class="highlight-o">-</span> <span class="highlight-n">r</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
+<pre><code class="language-python">r = np.random.rand()
+beta = 1-10**(- r - 1)
 </code></pre>
 <ol start="5">
 <li>当找到非常好的超参数之后，并不是一劳永逸的，当网络或者其他超参数改变之后，还要再次重新调整它们的。</li>
-<li>在批量标准化中，如果将其应用于<span class="vditor-math">l</span>你的神经网络的第一层，<span class="vditor-math">z^{[l]}</span>是规范化的公式。</li>
-<li>在规范化公式中<span class="vditor-math">z_{norm}^{(i)} = \frac{z^{(i)} - \mu}{\sqrt{\sigma^2 + \varepsilon}}</span>，使用epsilon是避免<span class="vditor-math">z^{(i)} - \mu</span>被零除。</li>
-<li>在关于<span class="vditor-math">gamma</span>和<span class="vditor-math">beta</span>在批准规范中，他们可以使用Adam，动量梯度下降或RMSprop，而不仅仅是渐变下降来学习；他们设置线性变量的均值和方差是从<span class="vditor-math">z^{[l]}</span>的给定图层。</li>
-<li>执行必要的规范化时，使用<span class="vditor-math">\mu</span><code>和</code><span class="vditor-math">\sigma^2</span>估计在训练期间的小批量的指数加权平均。</li>
+<li>在批量标准化中，如果将其应用于$l$你的神经网络的第一层，$z^{[l]}$是规范化的公式。</li>
+<li>在规范化公式中$z_{norm}^{(i)} = \frac{z^{(i)} - \mu}{\sqrt{\sigma^2 + \varepsilon}}$，使用epsilon是避免$z^{(i)} - \mu$被零除。</li>
+<li>在关于$gamma$和$beta$在批准规范中，他们可以使用Adam，动量梯度下降或RMSprop，而不仅仅是渐变下降来学习；他们设置线性变量的均值和方差是从$z^{[l]}$的给定图层。</li>
+<li>执行必要的规范化时，使用$\mu$<code>和</code>$\sigma^2$估计在训练期间的小批量的指数加权平均。</li>
 <li>在深度学习框架中，即使项目目前是开源的，项目的良好治理也有助于确保项目长期保持开放，而不是被封闭或修改为只有一家公司受益；通过编程框架，用户可以使用比高级级语言（如Python）更少的代码行编写深度学习算法。</li>
 </ol>
                 <div>
@@ -252,7 +252,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -261,7 +261,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -269,11 +269,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466409370",
@@ -291,4 +291,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 62ms, 2020/04/07 11:38:48 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 29ms, 2020/04/07 14:57:08 -->

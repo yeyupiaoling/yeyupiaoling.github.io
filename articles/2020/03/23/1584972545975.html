@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>CentOS搭建云服务平台 - 夜雨飘零</title><meta name="description" content="前言 最近在学习在centOS上搭建一个云服务平台，所以写下该文章当做笔者的学习笔记，提供给大家一起学习。虽然我们没有办法实现像百度云、腾讯云、阿里云那么强大的云服务平台，但是可以学习它们这些思维，做一个简单的云平台给自己的团队或公司使用。 创建主机 我们的云服务器平台的结构是这样的： 这个平台是在一个主机，然后在主机中创建多个虚拟机给用户使用，所以我们首先要有一个主机。这个主机理论上是真正的物理机，同时有着非常多的物理资源，比如内存，磁盘，CPU等等。为了学习，我们在VMware中创建一个机器当做我们的主机，使用的系统是CentOS6.5。我们先要下载这个镜像，笔者使用的镜像是CentOS-6.5-x86_64-minimal.iso这个镜像，其下载地址是：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso 。 我们在VMware创建一个新的虚拟机，操作如小： 然后选择经典模型开始创建： 接下来是选择第三个的稍后安装操作系统： 选择的系统类型是Linux，具体的是CentOS 64位： ...."/><meta property="og:description" content="前言 最近在学习在centOS上搭建一个云服务平台，所以写下该文章当做笔者的学习笔记，提供给大家一起学习。虽然我们没有办法实现像百度云、腾讯云、阿里云那么强大的云服务平台，但是可以学习它们这些思维，做一个简单的云平台给自己的团队或公司使用。 创建主机 我们的云服务器平台的结构是这样的： 这个平台是在一个主机，然后在主机中创建多个虚拟机给用户使用，所以我们首先要有一个主机。这个主机理论上是真正的物理机，同时有着非常多的物理资源，比如内存，磁盘，CPU等等。为了学习，我们在VMware中创建一个机器当做我们的主机，使用的系统是CentOS6.5。我们先要下载这个镜像，笔者使用的镜像是CentOS-6.5-x86_64-minimal.iso这个镜像，其下载地址是：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso 。 我们在VMware创建一个新的虚拟机，操作如小： 然后选择经典模型开始创建： 接下来是选择第三个的稍后安装操作系统： 选择的系统类型是Linux，具体的是CentOS 64位： ...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="CentOS搭建云服务平台 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972545975.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="CentOS搭建云服务平台 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972545975.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>CentOS搭建云服务平台 - 夜雨飘零</title><meta name="description" content="前言 最近在学习在centOS上搭建一个云服务平台，所以写下该文章当做笔者的学习笔记，提供给大家一起学习。虽然我们没有办法实现像百度云、腾讯云、阿里云那么强大的云服务平台，但是可以学习它们这些思维，做一个简单的云平台给自己的团队或公司使用。 创建主机 我们的云服务器平台的结构是这样的： 这个平台是在一个主机，然后在主机中创建多个虚拟机给用户使用，所以我们首先要有一个主机。这个主机理论上是真正的物理机，同时有着非常多的物理资源，比如内存，磁盘，CPU等等。为了学习，我们在VMware中创建一个机器当做我们的主机，使用的系统是CentOS6.5。我们先要下载这个镜像，笔者使用的镜像是CentOS-6.5-x86_64-minimal.iso这个镜像，其下载地址是：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso 。 我们在VMware创建一个新的虚拟机，操作如小： 然后选择经典模型开始创建： 接下来是选择第三个的稍后安装操作系统： 选择的系统类型是Linux，具体的是CentOS 64位： ...."/><meta property="og:description" content="前言 最近在学习在centOS上搭建一个云服务平台，所以写下该文章当做笔者的学习笔记，提供给大家一起学习。虽然我们没有办法实现像百度云、腾讯云、阿里云那么强大的云服务平台，但是可以学习它们这些思维，做一个简单的云平台给自己的团队或公司使用。 创建主机 我们的云服务器平台的结构是这样的： 这个平台是在一个主机，然后在主机中创建多个虚拟机给用户使用，所以我们首先要有一个主机。这个主机理论上是真正的物理机，同时有着非常多的物理资源，比如内存，磁盘，CPU等等。为了学习，我们在VMware中创建一个机器当做我们的主机，使用的系统是CentOS6.5。我们先要下载这个镜像，笔者使用的镜像是CentOS-6.5-x86_64-minimal.iso这个镜像，其下载地址是：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso 。 我们在VMware创建一个新的虚拟机，操作如小： 然后选择经典模型开始创建： 接下来是选择第三个的稍后安装操作系统： 选择的系统类型是Linux，具体的是CentOS 64位： ...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="CentOS搭建云服务平台 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972545975.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="CentOS搭建云服务平台 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972545975.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="初步了解TensorFlow" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972380996.html">
             <link rel="next" title="Ubuntu安装和卸载CUDA和CUDNN" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972613663.html">
     <!-- 百度统计 -->
@@ -78,49 +78,49 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#创建主机">创建主机</a>
+            <a href="#toc_h1_1">创建主机</a>
         </li>
         <li class="toc__h1">
-            <a href="#配置主机网络">配置主机网络</a>
+            <a href="#toc_h1_2">配置主机网络</a>
         </li>
         <li class="toc__h1">
-            <a href="#安装环境">安装环境</a>
+            <a href="#toc_h1_3">安装环境</a>
         </li>
         <li class="toc__h2">
-            <a href="#使用Xshell">使用Xshell</a>
+            <a href="#toc_h2_4">使用Xshell</a>
         </li>
         <li class="toc__h2">
-            <a href="#修改系统镜像源">修改系统镜像源</a>
+            <a href="#toc_h2_5">修改系统镜像源</a>
         </li>
         <li class="toc__h2">
-            <a href="#开始安装环境">开始安装环境</a>
+            <a href="#toc_h2_6">开始安装环境</a>
         </li>
         <li class="toc__h1">
-            <a href="#安装虚拟机">安装虚拟机</a>
+            <a href="#toc_h1_7">安装虚拟机</a>
         </li>
         <li class="toc__h1">
-            <a href="#配置虚拟机网络">配置虚拟机网络</a>
+            <a href="#toc_h1_8">配置虚拟机网络</a>
         </li>
         <li class="toc__h1">
-            <a href="#克隆虚拟机">克隆虚拟机</a>
+            <a href="#toc_h1_9">克隆虚拟机</a>
         </li>
         <li class="toc__h1">
-            <a href="#网络桥接">网络桥接</a>
+            <a href="#toc_h1_10">网络桥接</a>
         </li>
         <li class="toc__h2">
-            <a href="#修改主机网络配置">修改主机网络配置</a>
+            <a href="#toc_h2_11">修改主机网络配置</a>
         </li>
         <li class="toc__h2">
-            <a href="#修改虚拟机网络配置">修改虚拟机网络配置</a>
+            <a href="#toc_h2_12">修改虚拟机网络配置</a>
         </li>
         <li class="toc__h1">
-            <a href="#注意">注意</a>
+            <a href="#toc_h1_13">注意</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_14">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -164,9 +164,9 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20190927.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>最近在学习在centOS上搭建一个云服务平台，所以写下该文章当做笔者的学习笔记，提供给大家一起学习。虽然我们没有办法实现像百度云、腾讯云、阿里云那么强大的云服务平台，但是可以学习它们这些思维，做一个简单的云平台给自己的团队或公司使用。</p>
-<h1 id="创建主机">创建主机</h1>
+<h1 id="toc_h1_1">创建主机</h1>
 <p>我们的云服务器平台的结构是这样的：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GMKMX8.png" alt="这里写图片描述"></p>
 <p>这个平台是在一个主机，然后在主机中创建多个虚拟机给用户使用，所以我们首先要有一个主机。这个主机理论上是真正的物理机，同时有着非常多的物理资源，比如内存，磁盘，CPU等等。为了学习，我们在VMware中创建一个机器当做我们的主机，使用的系统是CentOS6.5。我们先要下载这个镜像，笔者使用的镜像是CentOS-6.5-x86_64-minimal.iso这个镜像，其下载地址是：<a href="http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso" target="_blank">http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso</a> 。</p>
@@ -214,24 +214,24 @@ var _hmt = _hmt || [];
 <img src="https://s1.ax1x.com/2020/03/31/Gln1KK.png" alt="这里写图片描述"></p>
 <p>等待安装，一段时间后就可以安装成功了：<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYOjDs.png" alt="这里写图片描述"></p>
-<h1 id="配置主机网络">配置主机网络</h1>
+<h1 id="toc_h1_2">配置主机网络</h1>
 <p>安装完成之后，还不能连接网络，所以我们要配置网络，首先我要先看看虚拟机的网段：<br>
 <img src="https://s1.ax1x.com/2020/04/03/GaAVM9.png" alt="这里写图片描述"></p>
 <p>在这里可以看到VMnet8的网段为：<code>192.168.204.0</code><br>
 <img src="https://s1.ax1x.com/2020/04/02/GYOc9O.png" alt="这里写图片描述"></p>
 <p>然后在系统的终端输入以下命令，编辑网络配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vi /etc/sysconfig/network-scripts/ifcfg-eth0
+<pre><code class="language-text">vi /etc/sysconfig/network-scripts/ifcfg-eth0
 </code></pre>
 <p>修改内容如下，修改ONBOOT=yes，BOOTPROTO=static，增加IP地址、子网掩码、网关地址、DNS1：<br>
 <img src="https://s1.ax1x.com/2020/04/03/GakvKs.png" alt="这里写图片描述"></p>
 <p>最后重启一下网络：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service network restart
+<pre><code class="language-text">service network restart
 </code></pre>
 <p>最后可以使用<code>ping</code>测试网络是否正常：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>ping www.baidu.com
+<pre><code class="language-text">ping www.baidu.com
 </code></pre>
-<h1 id="安装环境">安装环境</h1>
-<h2 id="使用Xshell">使用Xshell</h2>
+<h1 id="toc_h1_3">安装环境</h1>
+<h2 id="toc_h2_4">使用Xshell</h2>
 <p>为了方便操作，笔者使用Xshell连接CentOS，可以直接在Xshell上操作CentOS，操作如下：</p>
 <ul>
 <li>
@@ -245,65 +245,65 @@ var _hmt = _hmt || [];
 <p>输入账号和密码就可以连接成功了，在Xshell上跟在原系统的终端是一样的</p>
 </li>
 </ul>
-<h2 id="修改系统镜像源">修改系统镜像源</h2>
+<h2 id="toc_h2_5">修改系统镜像源</h2>
 <p>为了加快下载资源的速度，笔者把下载资源的地址改成阿里巴巴的镜像源，操作如下：</p>
 <ol>
 <li>首先备份原来的CentOS-Base.repo</li>
 </ol>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+<pre><code class="language-text">mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
 </code></pre>
 <ol start="2">
 <li>安装wget命令，命令如下：</li>
 </ol>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install wget
+<pre><code class="language-text">yum -y install wget
 </code></pre>
 <ol start="3">
 <li>下载镜像源，命令如下：</li>
 </ol>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+<pre><code class="language-text">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
 </code></pre>
 <ol start="4">
 <li>最后生成缓存，命令如下：</li>
 </ol>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum makecache
+<pre><code class="language-text">yum makecache
 </code></pre>
-<h2 id="开始安装环境">开始安装环境</h2>
+<h2 id="toc_h2_6">开始安装环境</h2>
 <p>安装依赖环境，只需要一条命令，命令入下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install qemu-kvm  virt-manager libvirt libvirt-python python-virtinst bridge-utils
+<pre><code class="language-text">yum -y install qemu-kvm  virt-manager libvirt libvirt-python python-virtinst bridge-utils
 </code></pre>
 <p>安装完成之后，需求启动一个服务方便之后的安装虚拟机：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service libvirtd restart
+<pre><code class="language-text">service libvirtd restart
 </code></pre>
 <p>然后关闭防火墙，方便之后连接虚拟机，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+<pre><code class="language-text">service iptables stop
 </code></pre>
 <p>创建一个文件夹用来保存虚拟机的镜像和虚拟磁盘的，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mkdir /kvmtest
+<pre><code class="language-text">mkdir /kvmtest
 </code></pre>
 <p>安装一个上传下载的工具，用于上传CentOS镜像，安装命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install lrzsz
+<pre><code class="language-text">yum -y install lrzsz
 </code></pre>
 <p>然后使用命令<code>rz</code>把CentOS镜像上传到<code>/kvmtest</code>，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cd /kvmtest
-<span class="highlight-ln">2</span>rz
+<pre><code class="language-text">cd /kvmtest
+rz
 </code></pre>
-<h1 id="安装虚拟机">安装虚拟机</h1>
+<h1 id="toc_h1_7">安装虚拟机</h1>
 <p>现在安装虚拟机是在CentOS系统上安装的虚拟机，这个才是真正的云服务器。</p>
 <ul>
 <li>创建虚拟磁盘，命令如下：</li>
 </ul>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>qemu-img create -f qcow2 /kvmtest/centos-6.5.qcow2  10G
+<pre><code class="language-text">qemu-img create -f qcow2 /kvmtest/centos-6.5.qcow2  10G
 </code></pre>
 <ul>
 <li>然后就可以创建虚拟机，第一行是指定虚拟机的名称和内存大小；第二行是指定CPU个数；第三行是指定系统镜像；第四行是指定虚拟磁盘的位置，也就是上一步创建的虚拟磁盘。</li>
 </ul>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>virt-install --virt-type kvm --name centos-6.5 --ram 1024 \
-<span class="highlight-ln">2</span>--vcpus 1 \
-<span class="highlight-ln">3</span>--cdrom=/kvmtest/CentOS-6.5-x86_64-minimal.iso \
-<span class="highlight-ln">4</span>--disk /kvmtest/centos-6.5.qcow2,format=qcow2 \
-<span class="highlight-ln">5</span>--network network=default \
-<span class="highlight-ln">6</span>--graphics vnc,listen=0.0.0.0 --noautoconsole \
-<span class="highlight-ln">7</span>--os-type=linux --os-variant=rhel6
+<pre><code class="language-text">virt-install --virt-type kvm --name centos-6.5 --ram 1024 \
+--vcpus 1 \
+--cdrom=/kvmtest/CentOS-6.5-x86_64-minimal.iso \
+--disk /kvmtest/centos-6.5.qcow2,format=qcow2 \
+--network network=default \
+--graphics vnc,listen=0.0.0.0 --noautoconsole \
+--os-type=linux --os-variant=rhel6
 </code></pre>
 <ul>
 <li>
@@ -316,51 +316,51 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <p>安装完成之后，还要重新启动，启动命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>virsh start centos-6.5
+<pre><code class="language-text">virsh start centos-6.5
 </code></pre>
 <p>既然说到virsh命令，那就说说virsh命令的使用：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-n">virsh</span> <span class="highlight-nb">list</span> <span class="highlight-o">--</span><span class="highlight-nb">all</span>             <span class="highlight-c1"># 显示本地活动虚拟机</span>
-<span class="highlight-ln"> 2</span><span class="highlight-n">virsh</span> <span class="highlight-n">start</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span>      <span class="highlight-c1"># 启动名字为ubuntu的非活动虚拟机</span>
-<span class="highlight-ln"> 3</span><span class="highlight-n">virsh</span> <span class="highlight-n">create</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">.</span><span class="highlight-n">xml</span><span class="highlight-o">&gt;</span> <span class="highlight-c1"># 创建虚拟机（创建后，虚拟机立即启动）</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">virsh</span> <span class="highlight-n">resume</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span>     <span class="highlight-c1"># 启动暂停的虚拟机</span>
-<span class="highlight-ln"> 5</span><span class="highlight-n">virsh</span> <span class="highlight-n">shutdown</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span>   <span class="highlight-c1"># 正常关闭虚拟机</span>
-<span class="highlight-ln"> 6</span><span class="highlight-n">virsh</span> <span class="highlight-n">destroy</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span>    <span class="highlight-c1"># 强制关闭虚拟机</span>
-<span class="highlight-ln"> 7</span><span class="highlight-n">virsh</span> <span class="highlight-n">dominfo</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span>    <span class="highlight-c1"># 显示虚拟机的基本信息</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">virsh</span> <span class="highlight-n">dumpxml</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span>    <span class="highlight-c1"># 显示虚拟机的当前配置文件</span>
-<span class="highlight-ln"> 9</span><span class="highlight-n">virsh</span> <span class="highlight-n">setmem</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span> <span class="highlight-mi">51200</span> <span class="highlight-c1"># 给不活动虚拟机设置内存大小</span>
-<span class="highlight-ln">10</span><span class="highlight-n">virsh</span> <span class="highlight-n">setvcpus</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span> <span class="highlight-mi">4</span> <span class="highlight-c1"># 给不活动虚拟机设置cpu个数</span>
-<span class="highlight-ln">11</span><span class="highlight-n">virsh</span> <span class="highlight-n">edit</span> <span class="highlight-o">&lt;</span><span class="highlight-err">虚拟机名称</span><span class="highlight-o">&gt;</span>       <span class="highlight-c1"># 编辑配置文件（一般用在刚定义完VM）</span>
+<pre><code class="language-python">virsh list --all             # 显示本地活动虚拟机
+virsh start &lt;虚拟机名称&gt;      # 启动名字为ubuntu的非活动虚拟机
+virsh create &lt;虚拟机名称.xml&gt; # 创建虚拟机（创建后，虚拟机立即启动）
+virsh resume &lt;虚拟机名称&gt;     # 启动暂停的虚拟机
+virsh shutdown &lt;虚拟机名称&gt;   # 正常关闭虚拟机
+virsh destroy &lt;虚拟机名称&gt;    # 强制关闭虚拟机
+virsh dominfo &lt;虚拟机名称&gt;    # 显示虚拟机的基本信息
+virsh dumpxml &lt;虚拟机名称&gt;    # 显示虚拟机的当前配置文件
+virsh setmem &lt;虚拟机名称&gt; 51200 # 给不活动虚拟机设置内存大小
+virsh setvcpus &lt;虚拟机名称&gt; 4 # 给不活动虚拟机设置cpu个数
+virsh edit &lt;虚拟机名称&gt;       # 编辑配置文件（一般用在刚定义完VM）
 </code></pre>
-<h1 id="配置虚拟机网络">配置虚拟机网络</h1>
+<h1 id="toc_h1_8">配置虚拟机网络</h1>
 <p>同样使用vi编辑网络配置文件：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vi /etc/sysconfig/network-scripts/ifcfg-eth0
+<pre><code class="language-text">vi /etc/sysconfig/network-scripts/ifcfg-eth0
 </code></pre>
 <p>然后删除物理地址和UUID，并修改ONBOOT=yes，修改后如下：<br>
 <img src="https://s1.ax1x.com/2020/03/30/GnCVfA.png" alt="这里写图片描述"></p>
 <p>最后重启一下网络，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service network restart
+<pre><code class="language-text">service network restart
 </code></pre>
 <p>测试网络是否可以正常使用，使用<code>ping</code>测试：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>ping www.baidu.com
+<pre><code class="language-text">ping www.baidu.com
 </code></pre>
 <p>到这里就完成了虚拟机的安装，我们可以使用vnc连接我们的虚拟机，使用我们的虚拟机。</p>
 <p>在介绍virsh命令的时候，有介绍到使用<code>shutdown</code>在主机上关闭虚拟机，但是并不能直接使用，还需要在虚拟机中安装acpid，并启动acpid，同时还添加到开机服务中。命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum install acpid
-<span class="highlight-ln">2</span>service acpid start
-<span class="highlight-ln">3</span>chkconfig acpid on
+<pre><code class="language-text">yum install acpid
+service acpid start
+chkconfig acpid on
 </code></pre>
 <p>这样就可以在主机上使用<code>shutdown</code>关闭虚拟机了。</p>
-<h1 id="克隆虚拟机">克隆虚拟机</h1>
+<h1 id="toc_h1_9">克隆虚拟机</h1>
 <p>如果需要多个虚拟机，但有想一个一个安装，可以复制之前文件，然后做适当的修改就可以快速创建一个新的虚拟机了。</p>
 <ul>
 <li>复杂虚拟磁盘，在<code>/kvmtest/</code>下我们有创建一个虚拟磁盘centos-6.5.qcow2，我们可以复制这个文件并改名，命令如下：</li>
 </ul>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cp centos-6.5.qcow2 centos-6.5-2.qcow2
+<pre><code class="language-text">cp centos-6.5.qcow2 centos-6.5-2.qcow2
 </code></pre>
 <ul>
 <li>然后进入到<code>/etc/libvirt/qemu</code>目录下，复制centos-6.5.xml并改名，命令如下：</li>
 </ul>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cp centos-6.5.xml centos-6.5-2.xml
+<pre><code class="language-text">cp centos-6.5.xml centos-6.5-2.xml
 </code></pre>
 <ul>
 <li>
@@ -373,93 +373,93 @@ var _hmt = _hmt || [];
 <p>最后创建虚拟机，命令如下：</p>
 </li>
 </ul>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>virsh create centos-6.5-2.xml
+<pre><code class="language-text">virsh create centos-6.5-2.xml
 </code></pre>
 <p>这样就已经创建一个虚拟机了，使用命令<code>virsh list --all</code>查看：<br>
 <img src="https://s1.ax1x.com/2020/03/30/Gmcq9P.png" alt="这里写图片描述"></p>
 <p>不过还不能正常连接网络，还要删除一个文件并重启网络服务：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rm -rf /etc/udev/rules.d/70-persistent-net.rules
-<span class="highlight-ln">2</span>service network restart
+<pre><code class="language-text">rm -rf /etc/udev/rules.d/70-persistent-net.rules
+service network restart
 </code></pre>
 <p>这样就完整克隆了一个虚拟机了。</p>
-<h1 id="网络桥接">网络桥接</h1>
+<h1 id="toc_h1_10">网络桥接</h1>
 <p>我们在使用虚拟机的时候，是使用vnc连接主机IP地址加端口号，通过主机来映射到虚拟机的。这是很不合理的，比如现在的腾讯云等的云服务器都是直接连接服务器的IP地址的，所以我们要对虚拟机的网络进行处理，使得它可以在外界直接访问。因为虚拟机现在是通过路由转换的，所以外界是不能够直接访问到虚拟机的，我们要把它的网络修改成桥接的方式，这才能在外界直接访问和连接这个虚拟机。</p>
-<h2 id="修改主机网络配置">修改主机网络配置</h2>
+<h2 id="toc_h2_11">修改主机网络配置</h2>
 <p>进入到该目录下，准备对网络文件进行配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cd /etc/sysconfig/network-scripts/
+<pre><code class="language-text">cd /etc/sysconfig/network-scripts/
 </code></pre>
 <p>然后复制原来的网络配置文件，方便之后的修改：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cp ifcfg-eth0 ifcfg-br100
+<pre><code class="language-text">cp ifcfg-eth0 ifcfg-br100
 </code></pre>
 <p>然后编辑原来的网络配置文件<code>vi ifcfg-eth0</code>，修改如下，注销无用的配置，注意添加了<code>BRIDGE</code>和修改了<code>BOOTPROTO=none</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>DEVICE=eth0
-<span class="highlight-ln"> 2</span>TYPE=Ethernet
-<span class="highlight-ln"> 3</span>ONBOOT=yes
-<span class="highlight-ln"> 4</span># NM_CONTROLLED=yes
-<span class="highlight-ln"> 5</span>BOOTPROTO=none
-<span class="highlight-ln"> 6</span>BRIDGE=br100
-<span class="highlight-ln"> 7</span># IPADDR=192.168.171.127
-<span class="highlight-ln"> 8</span># NETNASK=255.255.255.0
-<span class="highlight-ln"> 9</span># GATEWAY=192.168.171.2
-<span class="highlight-ln">10</span># DNS1=192.168.171.2
+<pre><code class="language-text">DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+# NM_CONTROLLED=yes
+BOOTPROTO=none
+BRIDGE=br100
+# IPADDR=192.168.171.127
+# NETNASK=255.255.255.0
+# GATEWAY=192.168.171.2
+# DNS1=192.168.171.2
 </code></pre>
 <p>然后编辑原来的网络配置文件<code>vi ifcfg-br100</code>，注意笔者修改了<code>DEVICE</code>和<code>TYPE</code>，IP地址还是原来的IP地址，不用修改：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>DEVICE=br100
-<span class="highlight-ln">2</span>TYPE=Bridge
-<span class="highlight-ln">3</span>ONBOOT=yes
-<span class="highlight-ln">4</span># NM_CONTROLLED=yes
-<span class="highlight-ln">5</span>BOOTPROTO=static
-<span class="highlight-ln">6</span>IPADDR=192.168.171.127
-<span class="highlight-ln">7</span>NETNASK=255.255.255.0
-<span class="highlight-ln">8</span>GATEWAY=192.168.171.2
-<span class="highlight-ln">9</span>DNS1=192.168.171.2
+<pre><code class="language-text">DEVICE=br100
+TYPE=Bridge
+ONBOOT=yes
+# NM_CONTROLLED=yes
+BOOTPROTO=static
+IPADDR=192.168.171.127
+NETNASK=255.255.255.0
+GATEWAY=192.168.171.2
+DNS1=192.168.171.2
 </code></pre>
 <p>然后重启网络服务，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service network restart
+<pre><code class="language-text">service network restart
 </code></pre>
 <p>最后可以使用命令<code>ifconfig</code>查看网络是否配置成功。</p>
-<h2 id="修改虚拟机网络配置">修改虚拟机网络配置</h2>
+<h2 id="toc_h2_12">修改虚拟机网络配置</h2>
 <p>在主机上编辑虚拟机的配置文件，主要是修改网络配置，在虚拟机关闭后操作。命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>virsh edit centos-6.5
+<pre><code class="language-text">virsh edit centos-6.5
 </code></pre>
 <p>主要是修改以下这些配置文件，其中修改<code>type='bridge'</code>，然后删除mac地址，这里为了方便读者观察，显示在这里，实际是删除的了，每次重启虚拟机都会自动生成的。最后修改<code>&lt;source bridge='br100'/&gt;</code>，修改后如下：</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln">1</span>    <span class="highlight-nt">&lt;interface</span> <span class="highlight-na">type=</span><span class="highlight-s">'bridge'</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">2</span>      <span class="highlight-nt">&lt;mac</span> <span class="highlight-na">address=</span><span class="highlight-s">'52:54:00:27:5a:65'</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">3</span>      <span class="highlight-nt">&lt;source</span> <span class="highlight-na">bridge=</span><span class="highlight-s">'br100'</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">4</span>      <span class="highlight-nt">&lt;model</span> <span class="highlight-na">type=</span><span class="highlight-s">'virtio'</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">5</span>      <span class="highlight-nt">&lt;address</span> <span class="highlight-na">type=</span><span class="highlight-s">'pci'</span> <span class="highlight-na">domain=</span><span class="highlight-s">'0x0000'</span> <span class="highlight-na">bus=</span><span class="highlight-s">'0x00'</span> <span class="highlight-na">slot=</span><span class="highlight-s">'0x03'</span> <span class="highlight-na">function=</span><span class="highlight-s">'0x0'</span><span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">6</span>    <span class="highlight-nt">&lt;/interface&gt;</span>
+<pre><code class="language-xml">    &lt;interface type='bridge'&gt;
+      &lt;mac address='52:54:00:27:5a:65'/&gt;
+      &lt;source bridge='br100'/&gt;
+      &lt;model type='virtio'/&gt;
+      &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/&gt;
+    &lt;/interface&gt;
 </code></pre>
 <p>修改完成之后，启动虚拟机，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>virsh start centos-6.5
+<pre><code class="language-text">virsh start centos-6.5
 </code></pre>
 <p>然后关闭防火墙，因为接下来还要使用vnc来连接虚拟机，关闭防火墙命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+<pre><code class="language-text">service iptables stop
 </code></pre>
 <p>之后使用vnc连接虚拟机，主要主机的IP地址和端口号。连接之后，删除虚拟机的网络规则，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rm -rf /etc/udev/rules.d/70-persistent-net.rules
+<pre><code class="language-text">rm -rf /etc/udev/rules.d/70-persistent-net.rules
 </code></pre>
 <p>删除这个文件之后，可以重启一下虚拟机，使用命令<code>init 6</code>进行重启。</p>
 <p>重启虚拟机之后，使用<code>ifconfig</code>查看网络是否配置成功，然后使用<code>ping</code>命令尝试<code>ping</code>外网，如：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>ping www.baidu.com
+<pre><code class="language-text">ping www.baidu.com
 </code></pre>
 <p>如果访问外网正常，那使用Xshell连接我们所创建的虚拟机，如何成功连接，那就达到我们的需求了，真正创建一个云服务器了。</p>
 <p>多个云服务器到底有什么用呢，在下一篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80707616" target="_blank">《在CentOS上使用Nginx和Tomcat搭建高可用高并发网站》</a>介绍如何使用多个机器搭建一个高可用高并发的网站服务器，这种情况下就需要多个服务器了，这种情况下就可以使用云服务平台了。</p>
-<h1 id="注意">注意</h1>
+<h1 id="toc_h1_13">注意</h1>
 <p>这里要说一下的是，我们为了方便外界可以访问到服务器的端口，我们把防火墙关闭了，但是这种是非常不安全的。所以我们可以单独开放某一端口，比如我们要开放MySQL数据库的3306端口号，操作如下：</p>
 <p>编辑防火墙配置文件：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim /etc/sysconfig/iptables
+<pre><code class="language-text">vim /etc/sysconfig/iptables
 </code></pre>
 <p>添加以下信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
+<pre><code class="language-text">-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
 </code></pre>
 <p>如下图所示：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GM2fYQ.png" alt="这里写图片描述"></p>
 <p>保存退出，最后重启防火墙：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service iptables restart
+<pre><code class="language-text">service iptables restart
 </code></pre>
 <p>开放其他端口也是同样的操作。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_14">参考资料</h1>
 <ol>
 <li><a href="https://opsx.alibaba.com/mirror" target="_blank">https://opsx.alibaba.com/mirror</a></li>
 </ol>
@@ -538,7 +538,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -547,7 +547,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -555,11 +555,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466400683",
@@ -577,4 +577,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 51ms, 2020/04/07 11:38:46 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 24ms, 2020/04/07 14:57:08 -->

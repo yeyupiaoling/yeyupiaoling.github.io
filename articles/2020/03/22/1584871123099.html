@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android的cookie的接收和发送 - 夜雨飘零</title><meta name="description" content="我在做自动登录的时候遇到的坑，特写此文以提醒各位不要把自己绕进去了。 我们都知道在web端的cookie是可以通过服务器端设置保存的，默认是关闭浏览器就清除cookie的，但是可以在服务器端设置cookie的有效期，浏览器就会自动保存cookie，而在Android上是不会自动保存cookie，我用的是Okhttp3，我找不到response.addCookie(cookie)和request.getCookies()的方法（Java web的操作），如果没有保存和重发cookie给服务器的话，是不会自动登录的。搞了大半天才知道这一切都在head里。 如果是Okhttp3的话是这样的 在日志输出的cookie 通过这样的方法我们已经拿到了cookie，接下来就是保存cookie了，写以下的静态方法来将cookie保存到SharedPreferces，我的设计思想是尽量少操作数据库。 public static final String ISLOGINED = &quot;islogined&quot;; public static final String COOKIE = &quot;cookie&quot;; pub...."/><meta property="og:description" content="我在做自动登录的时候遇到的坑，特写此文以提醒各位不要把自己绕进去了。 我们都知道在web端的cookie是可以通过服务器端设置保存的，默认是关闭浏览器就清除cookie的，但是可以在服务器端设置cookie的有效期，浏览器就会自动保存cookie，而在Android上是不会自动保存cookie，我用的是Okhttp3，我找不到response.addCookie(cookie)和request.getCookies()的方法（Java web的操作），如果没有保存和重发cookie给服务器的话，是不会自动登录的。搞了大半天才知道这一切都在head里。 如果是Okhttp3的话是这样的 在日志输出的cookie 通过这样的方法我们已经拿到了cookie，接下来就是保存cookie了，写以下的静态方法来将cookie保存到SharedPreferces，我的设计思想是尽量少操作数据库。 public static final String ISLOGINED = &quot;islogined&quot;; public static final String COOKIE = &quot;cookie&quot;; pub...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android的cookie的接收和发送 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584871123099.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android的cookie的接收和发送 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871123099.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android的cookie的接收和发送 - 夜雨飘零</title><meta name="description" content="我在做自动登录的时候遇到的坑，特写此文以提醒各位不要把自己绕进去了。 我们都知道在web端的cookie是可以通过服务器端设置保存的，默认是关闭浏览器就清除cookie的，但是可以在服务器端设置cookie的有效期，浏览器就会自动保存cookie，而在Android上是不会自动保存cookie，我用的是Okhttp3，我找不到response.addCookie(cookie)和request.getCookies()的方法（Java web的操作），如果没有保存和重发cookie给服务器的话，是不会自动登录的。搞了大半天才知道这一切都在head里。 如果是Okhttp3的话是这样的 在日志输出的cookie 通过这样的方法我们已经拿到了cookie，接下来就是保存cookie了，写以下的静态方法来将cookie保存到SharedPreferces，我的设计思想是尽量少操作数据库。 public static final String ISLOGINED = &quot;islogined&quot;; public static final String COOKIE = &quot;cookie&quot;; pub...."/><meta property="og:description" content="我在做自动登录的时候遇到的坑，特写此文以提醒各位不要把自己绕进去了。 我们都知道在web端的cookie是可以通过服务器端设置保存的，默认是关闭浏览器就清除cookie的，但是可以在服务器端设置cookie的有效期，浏览器就会自动保存cookie，而在Android上是不会自动保存cookie，我用的是Okhttp3，我找不到response.addCookie(cookie)和request.getCookies()的方法（Java web的操作），如果没有保存和重发cookie给服务器的话，是不会自动登录的。搞了大半天才知道这一切都在head里。 如果是Okhttp3的话是这样的 在日志输出的cookie 通过这样的方法我们已经拿到了cookie，接下来就是保存cookie了，写以下的静态方法来将cookie保存到SharedPreferces，我的设计思想是尽量少操作数据库。 public static final String ISLOGINED = &quot;islogined&quot;; public static final String COOKIE = &quot;cookie&quot;; pub...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android的cookie的接收和发送 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584871123099.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android的cookie的接收和发送 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871123099.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Ubuntu server搭建Java web服务器" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584870807269.html">
             <link rel="next" title="Android调试的Log.d()没有输出" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584871469374.html">
     <!-- 百度统计 -->
@@ -122,24 +122,24 @@ var _hmt = _hmt || [];
 <p>在日志输出的cookie</p>
 <p><img src="https://s1.ax1x.com/2020/03/30/GecbPx.png" alt=""></p>
 <p>通过这样的方法我们已经拿到了cookie，接下来就是保存cookie了，写以下的静态方法来将cookie保存到SharedPreferces，我的设计思想是尽量少操作数据库。</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">ISLOGINED</span> <span class="highlight-o">=</span> <span class="highlight-s">"islogined"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">COOKIE</span> <span class="highlight-o">=</span> <span class="highlight-s">"cookie"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">3</span>  
-<span class="highlight-ln">4</span> <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kt">void</span> <span class="highlight-nf">saveCookiePreference</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">value</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">5</span>    <span class="highlight-n">SharedPreferences</span> <span class="highlight-n">preference</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getSharedPreferences</span><span class="highlight-o">(</span><span class="highlight-n">ISLOGINED</span><span class="highlight-o">,</span> <span class="highlight-n">Context</span><span class="highlight-o">.</span><span class="highlight-na">MODE_PRIVATE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">6</span>     <span class="highlight-n">SharedPreferences</span><span class="highlight-o">.</span><span class="highlight-na">Editor</span> <span class="highlight-n">editor</span> <span class="highlight-o">=</span> <span class="highlight-n">preference</span><span class="highlight-o">.</span><span class="highlight-na">edit</span><span class="highlight-o">();</span>
-<span class="highlight-ln">7</span>     <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">putString</span><span class="highlight-o">(</span><span class="highlight-n">COOKIE</span><span class="highlight-o">,</span> <span class="highlight-n">value</span><span class="highlight-o">);</span>
-<span class="highlight-ln">8</span>     <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">apply</span><span class="highlight-o">();</span>
-<span class="highlight-ln">9</span><span class="highlight-o">}</span>
+<pre><code class="language-java">public static final String ISLOGINED = "islogined";
+public static final String COOKIE = "cookie";
+  
+ public static void saveCookiePreference(Context context, String value) {
+    SharedPreferences preference = context.getSharedPreferences(ISLOGINED, Context.MODE_PRIVATE);
+     SharedPreferences.Editor editor = preference.edit();
+     editor.putString(COOKIE, value);
+     editor.apply();
+}
 </code></pre>
 <p>然后调用该方法保存cookie</p>
 <p><img src="https://s1.ax1x.com/2020/04/02/GYdb4g.png" alt=""></p>
 <p>然后再写一个方法来在SharedPreferces获取cookie的值</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">String</span> <span class="highlight-nf">getCookiePreference</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">SharedPreferences</span> <span class="highlight-n">preference</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getSharedPreferences</span><span class="highlight-o">(</span><span class="highlight-n">ISLOGINED</span><span class="highlight-o">,</span> <span class="highlight-n">Context</span><span class="highlight-o">.</span><span class="highlight-na">MODE_PRIVATE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">String</span> <span class="highlight-n">s</span> <span class="highlight-o">=</span> <span class="highlight-n">preference</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-n">COOKIE</span><span class="highlight-o">,</span> <span class="highlight-s">""</span><span class="highlight-o">);</span>
-<span class="highlight-ln">4</span>    <span class="highlight-k">return</span> <span class="highlight-n">s</span><span class="highlight-o">;</span>
-<span class="highlight-ln">5</span><span class="highlight-o">}</span>
+<pre><code class="language-java">public static String getCookiePreference(Context context) {
+    SharedPreferences preference = context.getSharedPreferences(ISLOGINED, Context.MODE_PRIVATE);
+    String s = preference.getString(COOKIE, "");
+    return s;
+}
 </code></pre>
 <p>最后要做的是在每次的请求时带上cookie，这cookie是放在head里。</p>
 <p><img src="https://s1.ax1x.com/2020/04/03/GaAnVx.png" alt=""></p>
@@ -219,7 +219,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -228,7 +228,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -236,11 +236,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466416044",
@@ -258,4 +258,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 41ms, 2020/04/07 11:38:51 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

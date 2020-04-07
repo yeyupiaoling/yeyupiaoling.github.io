@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>深度学习神经网络中的梯度检查 - 夜雨飘零</title><meta name="description" content="前言 反向传播计算梯度\frac{\partial J}{\partial \theta}， \theta表示模型的参数。 J是使用正向传播和损失函数来计算的。 计算公式如下： \frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{1} 因为向前传播相对容易实现，所以比较容易获得正确的结果，确定要计算成本J 正确。因此，可以通过计算J 验证计算\frac{\partial J}{\partial \theta} 。 一维梯度检查 一维线性函数J(\theta) = \theta x。该模型只包含一个实值参数\theta，并采取x作为输入。 一维线性模型 上图显示了关键的计算步骤：首先从开始x，然后评估该功能 J(x)（“前向传播”）。然后计算导数 $\frac{\partial J}{\partial \thet...."/><meta property="og:description" content="前言 反向传播计算梯度\frac{\partial J}{\partial \theta}， \theta表示模型的参数。 J是使用正向传播和损失函数来计算的。 计算公式如下： \frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{1} 因为向前传播相对容易实现，所以比较容易获得正确的结果，确定要计算成本J 正确。因此，可以通过计算J 验证计算\frac{\partial J}{\partial \theta} 。 一维梯度检查 一维线性函数J(\theta) = \theta x。该模型只包含一个实值参数\theta，并采取x作为输入。 一维线性模型 上图显示了关键的计算步骤：首先从开始x，然后评估该功能 J(x)（“前向传播”）。然后计算导数 $\frac{\partial J}{\partial \thet...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="深度学习神经网络中的梯度检查 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="深度学习神经网络中的梯度检查 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>深度学习神经网络中的梯度检查 - 夜雨飘零</title><meta name="description" content="前言 反向传播计算梯度$\frac{\partial J}{\partial \theta}$， $\theta$表示模型的参数。 $J$是使用正向传播和损失函数来计算的。 计算公式如下： $$ \frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{1} $$ 因为向前传播相对容易实现，所以比较容易获得正确的结果，确定要计算成本$J$ 正确。因此，可以通过计算$J$ 验证计算$\frac{\partial J}{\partial \theta}$ 。 一维梯度检查 一维线性函数$J(\theta) = \theta x$。该模型只包含一个实值参数$\theta$，并采取x作为输入。 一维线性模型 上图显示了关键的计算步骤：首先从开始$x$，然后评估该功能 $J(x)$（“前向传播”）。然后计算导数 $\frac{\partial J}{\partial \thet...."/><meta property="og:description" content="前言 反向传播计算梯度$\frac{\partial J}{\partial \theta}$， $\theta$表示模型的参数。 $J$是使用正向传播和损失函数来计算的。 计算公式如下： $$ \frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{1} $$ 因为向前传播相对容易实现，所以比较容易获得正确的结果，确定要计算成本$J$ 正确。因此，可以通过计算$J$ 验证计算$\frac{\partial J}{\partial \theta}$ 。 一维梯度检查 一维线性函数$J(\theta) = \theta x$。该模型只包含一个实值参数$\theta$，并采取x作为输入。 一维线性模型 上图显示了关键的计算步骤：首先从开始$x$，然后评估该功能 $J(x)$（“前向传播”）。然后计算导数 $\frac{\partial J}{\partial \thet...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="深度学习神经网络中的梯度检查 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="深度学习神经网络中的梯度检查 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972275571.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="深度学习神经网络中正则化的使用" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972209709.html">
             <link rel="next" title="初步了解TensorFlow" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972380996.html">
     <!-- 百度统计 -->
@@ -78,37 +78,37 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#一维梯度检查">一维梯度检查</a>
+            <a href="#toc_h1_1">一维梯度检查</a>
         </li>
         <li class="toc__h2">
-            <a href="#导入依赖包">导入依赖包</a>
+            <a href="#toc_h2_2">导入依赖包</a>
         </li>
         <li class="toc__h2">
-            <a href="#正向传播">正向传播</a>
+            <a href="#toc_h2_3">正向传播</a>
         </li>
         <li class="toc__h2">
-            <a href="#反向传播">反向传播</a>
+            <a href="#toc_h2_4">反向传播</a>
         </li>
         <li class="toc__h2">
-            <a href="#开始检查">开始检查</a>
+            <a href="#toc_h2_5">开始检查</a>
         </li>
         <li class="toc__h1">
-            <a href="#多维梯度检查">多维梯度检查</a>
+            <a href="#toc_h1_6">多维梯度检查</a>
         </li>
         <li class="toc__h2">
-            <a href="#向前传播">向前传播</a>
+            <a href="#toc_h2_7">向前传播</a>
         </li>
         <li class="toc__h2">
-            <a href="#反向传播">反向传播</a>
+            <a href="#toc_h2_8">反向传播</a>
         </li>
         <li class="toc__h2">
-            <a href="#开始检查">开始检查</a>
+            <a href="#toc_h2_9">开始检查</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_10">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -154,301 +154,309 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20200222.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
-<p>反向传播计算梯度<span class="vditor-math">\frac{\partial J}{\partial \theta}</span>， <span class="vditor-math">\theta</span>表示模型的参数。 <span class="vditor-math">J</span>是使用正向传播和损失函数来计算的。<br>
-计算公式如下：</p>
-<div class="vditor-math">\frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{1}</div>
-<p>因为向前传播相对容易实现，所以比较容易获得正确的结果，确定要计算成本<span class="vditor-math">J</span> 正确。因此，可以通过计算<span class="vditor-math">J</span> 验证计算<span class="vditor-math">\frac{\partial J}{\partial \theta}</span> 。</p>
-<h1 id="一维梯度检查">一维梯度检查</h1>
-<p>一维线性函数<span class="vditor-math">J(\theta) = \theta x</span>。该模型只包含一个实值参数<span class="vditor-math">\theta</span>，并采取x作为输入。<br>
+<h1 id="toc_h1_0">前言</h1>
+<p>反向传播计算梯度$\frac{\partial J}{\partial \theta}$， $\theta$表示模型的参数。 $J$是使用正向传播和损失函数来计算的。<br>
+计算公式如下：<br>
+$$<br>
+\frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{1}<br>
+$$<br>
+因为向前传播相对容易实现，所以比较容易获得正确的结果，确定要计算成本$J$ 正确。因此，可以通过计算$J$ 验证计算$\frac{\partial J}{\partial \theta}$ 。</p>
+<h1 id="toc_h1_1">一维梯度检查</h1>
+<p>一维线性函数$J(\theta) = \theta x$。该模型只包含一个实值参数$\theta$，并采取x作为输入。<br>
 <img src="https://s1.ax1x.com/2020/04/03/GakIbt.png" alt="这里写图片描述"></p>
 <center>一维线性模型</center>
-<p>上图显示了关键的计算步骤：首先从开始<span class="vditor-math">x</span>，然后评估该功能 <span class="vditor-math">J(x)</span>（“前向传播”）。然后计算导数 <span class="vditor-math">\frac{\partial J}{\partial \theta}</span>（“反向传播”）。下面就用代码来实现。</p>
-<h2 id="导入依赖包">导入依赖包</h2>
+<p>上图显示了关键的计算步骤：首先从开始$x$，然后评估该功能 $J(x)$（“前向传播”）。然后计算导数 $\frac{\partial J}{\partial \theta}$（“反向传播”）。下面就用代码来实现。</p>
+<h2 id="toc_h2_2">导入依赖包</h2>
 <p>首先我们要导入相应的依赖包，其中一些工具类可以在<a href="https://download.csdn.net/download/qq_33200967/10350347" target="_blank">这里下载</a>。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">from</span> <span class="highlight-nn">testCases</span> <span class="highlight-kn">import</span> <span class="highlight-o">*</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">from</span> <span class="highlight-nn">gc_utils</span> <span class="highlight-kn">import</span> <span class="highlight-n">sigmoid</span><span class="highlight-p">,</span> <span class="highlight-n">relu</span><span class="highlight-p">,</span> <span class="highlight-n">dictionary_to_vector</span><span class="highlight-p">,</span> <span class="highlight-n">vector_to_dictionary</span><span class="highlight-p">,</span> <span class="highlight-n">gradients_to_vector</span>
+<pre><code class="language-python"># coding=utf-8
+from testCases import *
+from gc_utils import sigmoid, relu, dictionary_to_vector, vector_to_dictionary, gradients_to_vector
 </code></pre>
-<h2 id="正向传播">正向传播</h2>
+<h2 id="toc_h2_3">正向传播</h2>
 <p>下面是线性前向传播函数代码：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">theta</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    实现线性向前传播(计算J) (J(theta) = theta * x)
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    x -- 一个实值输入
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    theta -- 我们的参数，一个实数。
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    J -- 函数J的值, 计算使用公式 J(theta) = theta * x
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">J</span> <span class="highlight-o">=</span> <span class="highlight-n">theta</span> <span class="highlight-o">*</span> <span class="highlight-n">x</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">return</span> <span class="highlight-n">J</span>
+<pre><code class="language-python">def forward_propagation(x, theta):
+    """
+    实现线性向前传播(计算J) (J(theta) = theta * x)
+
+    Arguments:
+    x -- 一个实值输入
+    theta -- 我们的参数，一个实数。
+
+    Returns:
+    J -- 函数J的值, 计算使用公式 J(theta) = theta * x
+    """
+    J = theta * x
+    return J
 </code></pre>
-<h2 id="反向传播">反向传播</h2>
-<p>线性反向传播函数，计算公式是 <span class="vditor-math">dtheta = \frac { \partial J }{ \partial \theta} = x</span>：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">backward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">theta</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    计算J对的导数
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    x -- 一个实值输入
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    theta -- 我们的参数，一个实数。
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    dtheta -- 成本的梯度。
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">dtheta</span> <span class="highlight-o">=</span> <span class="highlight-n">x</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-k">return</span> <span class="highlight-n">dtheta</span>
+<h2 id="toc_h2_4">反向传播</h2>
+<p>线性反向传播函数，计算公式是 $dtheta = \frac { \partial J }{ \partial \theta} = x$：</p>
+<pre><code class="language-python">def backward_propagation(x, theta):
+    """
+    计算J对的导数
+
+    Arguments:
+    x -- 一个实值输入
+    theta -- 我们的参数，一个实数。
+
+    Returns:
+    dtheta -- 成本的梯度。
+    """
+
+    dtheta = x
+
+    return dtheta
 </code></pre>
-<h2 id="开始检查">开始检查</h2>
+<h2 id="toc_h2_5">开始检查</h2>
 <ul>
-<li>在检查梯度之前首先要求<span class="vditor-math">gradapprox</span>：</li>
+<li>在检查梯度之前首先要求$gradapprox$：</li>
 </ul>
 <ol>
-<li><span class="vditor-math">\theta^{+} = \theta + \varepsilon</span></li>
-<li><span class="vditor-math">\theta^{-} = \theta - \varepsilon</span></li>
-<li><span class="vditor-math">J^{+} = J(\theta^{+})</span></li>
-<li><span class="vditor-math">J^{-} = J(\theta^{-})</span></li>
-<li><span class="vditor-math">gradapprox = \frac{J^{+} - J^{-}}{2  \varepsilon}</span></li>
+<li>$\theta^{+} = \theta + \varepsilon$</li>
+<li>$\theta^{-} = \theta - \varepsilon$</li>
+<li>$J^{+} = J(\theta^{+})$</li>
+<li>$J^{-} = J(\theta^{-})$</li>
+<li>$gradapprox = \frac{J^{+} - J^{-}}{2  \varepsilon}$</li>
 </ol>
 <ul>
 <li>然后使用反向传播计算梯度，并将结果存储在一个变量“grad”中。</li>
-<li>最后，使用以下公式计算“gradapprox”和“grad”之间的相对差异：</li>
+<li>最后，使用以下公式计算“gradapprox”和“grad”之间的相对差异：<br>
+$$<br>
+difference = \frac {\mid\mid grad - gradapprox \mid\mid_2}{\mid\mid grad \mid\mid_2 + \mid\mid gradapprox \mid\mid_2} \tag{2}<br>
+$$</li>
 </ul>
-<div class="vditor-math">difference = \frac {\mid\mid grad - gradapprox \mid\mid_2}{\mid\mid grad \mid\mid_2 + \mid\mid gradapprox \mid\mid_2} \tag{2}</div>
 <p>如果计算得到的结果足够小，就证明是梯度没问题了，以下是梯度检查代码：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">gradient_check</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">theta</span><span class="highlight-p">,</span> <span class="highlight-n">epsilon</span><span class="highlight-o">=</span><span class="highlight-mf">1e-7</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    实现反向传播
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    x -- 一个实值输入
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    theta -- 我们的参数，一个实数
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    epsilon -- 用公式对输入进行微小位移计算近似梯度
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    difference -- 近似梯度与反向传播梯度之间的差异。
-</span><span class="highlight-ln">12</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-c1"># 用公式的左边来计算gradapprox(1)</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">thetaplus</span> <span class="highlight-o">=</span> <span class="highlight-n">theta</span> <span class="highlight-o">+</span> <span class="highlight-n">epsilon</span>  <span class="highlight-c1"># Step 1</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">thetaminus</span> <span class="highlight-o">=</span> <span class="highlight-n">theta</span> <span class="highlight-o">-</span> <span class="highlight-n">epsilon</span>  <span class="highlight-c1"># Step 2</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">J_plus</span> <span class="highlight-o">=</span> <span class="highlight-n">thetaplus</span> <span class="highlight-o">*</span> <span class="highlight-n">x</span>  <span class="highlight-c1"># Step 3</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">J_minus</span> <span class="highlight-o">=</span> <span class="highlight-n">thetaminus</span> <span class="highlight-o">*</span> <span class="highlight-n">x</span>  <span class="highlight-c1"># Step 4</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">gradapprox</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-n">J_plus</span> <span class="highlight-o">-</span> <span class="highlight-n">J_minus</span><span class="highlight-p">)</span> <span class="highlight-o">/</span> <span class="highlight-p">(</span><span class="highlight-mi">2</span> <span class="highlight-o">*</span> <span class="highlight-n">epsilon</span><span class="highlight-p">)</span>  <span class="highlight-c1"># Step 5</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-c1"># ：检查gradapprox是否足够接近backward_propagation()的输出</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">grad</span> <span class="highlight-o">=</span> <span class="highlight-n">backward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">theta</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">numerator</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">grad</span> <span class="highlight-o">-</span> <span class="highlight-n">gradapprox</span><span class="highlight-p">)</span>  <span class="highlight-c1"># Step 1'</span>
-<span class="highlight-ln">25</span>    <span class="highlight-n">denominator</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">grad</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">gradapprox</span><span class="highlight-p">)</span>  <span class="highlight-c1"># Step 2'</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">difference</span> <span class="highlight-o">=</span> <span class="highlight-n">numerator</span> <span class="highlight-o">/</span> <span class="highlight-n">denominator</span>  <span class="highlight-c1"># Step 3'</span>
-<span class="highlight-ln">27</span>
-<span class="highlight-ln">28</span>    <span class="highlight-k">if</span> <span class="highlight-n">difference</span> <span class="highlight-o">&lt;</span> <span class="highlight-mf">1e-7</span><span class="highlight-p">:</span>
-<span class="highlight-ln">29</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"梯度是正确的!"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">30</span>    <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">31</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"梯度是错误的!"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>    <span class="highlight-k">return</span> <span class="highlight-n">difference</span>
+<pre><code class="language-python">def gradient_check(x, theta, epsilon=1e-7):
+    """
+    实现反向传播
+
+    Arguments:
+    x -- 一个实值输入
+    theta -- 我们的参数，一个实数
+    epsilon -- 用公式对输入进行微小位移计算近似梯度
+
+    Returns:
+    difference -- 近似梯度与反向传播梯度之间的差异。
+    """
+
+    # 用公式的左边来计算gradapprox(1)
+    thetaplus = theta + epsilon  # Step 1
+    thetaminus = theta - epsilon  # Step 2
+    J_plus = thetaplus * x  # Step 3
+    J_minus = thetaminus * x  # Step 4
+    gradapprox = (J_plus - J_minus) / (2 * epsilon)  # Step 5
+
+    # ：检查gradapprox是否足够接近backward_propagation()的输出
+    grad = backward_propagation(x, theta)
+
+    numerator = np.linalg.norm(grad - gradapprox)  # Step 1'
+    denominator = np.linalg.norm(grad) + np.linalg.norm(gradapprox)  # Step 2'
+    difference = numerator / denominator  # Step 3'
+
+    if difference &lt; 1e-7:
+        print ("梯度是正确的!")
+    else:
+        print ("梯度是错误的!")
+
+    return difference
 </code></pre>
 <p>然后执行这一段代码，看看梯度是否正确：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">theta</span> <span class="highlight-o">=</span> <span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-mi">4</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">difference</span> <span class="highlight-o">=</span> <span class="highlight-n">gradient_check</span><span class="highlight-p">(</span><span class="highlight-n">x</span><span class="highlight-p">,</span> <span class="highlight-n">theta</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"difference = "</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">difference</span><span class="highlight-p">))</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    x, theta = 2, 4
+    difference = gradient_check(x, theta)
+    print("difference = " + str(difference))
 </code></pre>
 <p>当结果满足<code>difference &lt; 1e-7</code>，梯度是正确的。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>梯度是正确的!
-<span class="highlight-ln">2</span>difference = 2.91933588329e-10
+<pre><code class="language-text">梯度是正确的!
+difference = 2.91933588329e-10
 </code></pre>
-<h1 id="多维梯度检查">多维梯度检查</h1>
+<h1 id="toc_h1_6">多维梯度检查</h1>
 <p>多维梯度模型的向前和向后传播如下图：<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYXCCT.png" alt="这里写图片描述"></p>
 <center>多维梯度</center>
 <p>LINEAR - &gt; RELU - &gt; LINEAR - &gt; RELU - &gt; LINEAR - &gt; SIGMOID<br>
 <br></p>
-<h2 id="向前传播">向前传播</h2>
+<h2 id="toc_h2_7">向前传播</h2>
 <p>多维梯度的向前传播：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">forward_propagation_n</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    实现前面的传播(并计算成本)，如图3所示。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    X -- m例的训练集。
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    Y -- m的样本的标签
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    parameters -- 包含参数的python字典 "W1", "b1", "W2", "b2", "W3", "b3":
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">                    W1 -- 权重矩阵的形状(5, 4)
-</span><span class="highlight-ln">10</span><span class="highlight-s2">                    b1 -- 偏差的矢量形状(5, 1)
-</span><span class="highlight-ln">11</span><span class="highlight-s2">                    W2 -- 权重矩阵的形状(3, 5)
-</span><span class="highlight-ln">12</span><span class="highlight-s2">                    b2 -- 偏差的矢量形状(3, 1)
-</span><span class="highlight-ln">13</span><span class="highlight-s2">                    W3 -- 权重矩阵的形状(1, 3)
-</span><span class="highlight-ln">14</span><span class="highlight-s2">                    b3 -- 偏差的矢量形状(1, 1)
-</span><span class="highlight-ln">15</span><span class="highlight-s2">
-</span><span class="highlight-ln">16</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">17</span><span class="highlight-s2">    cost -- 成本函数(一个样本的逻辑成本)
-</span><span class="highlight-ln">18</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>    <span class="highlight-c1"># 检索参数</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">W1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">b1</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b1"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">W2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">25</span>    <span class="highlight-n">b2</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b2"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">W3</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"W3"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">27</span>    <span class="highlight-n">b3</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s2">"b3"</span><span class="highlight-p">]</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>    <span class="highlight-c1"># LINEAR -&gt; RELU -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID</span>
-<span class="highlight-ln">30</span>    <span class="highlight-n">Z1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b1</span>
-<span class="highlight-ln">31</span>    <span class="highlight-n">A1</span> <span class="highlight-o">=</span> <span class="highlight-n">relu</span><span class="highlight-p">(</span><span class="highlight-n">Z1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>    <span class="highlight-n">Z2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b2</span>
-<span class="highlight-ln">33</span>    <span class="highlight-n">A2</span> <span class="highlight-o">=</span> <span class="highlight-n">relu</span><span class="highlight-p">(</span><span class="highlight-n">Z2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">34</span>    <span class="highlight-n">Z3</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W3</span><span class="highlight-p">,</span> <span class="highlight-n">A2</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">b3</span>
-<span class="highlight-ln">35</span>    <span class="highlight-n">A3</span> <span class="highlight-o">=</span> <span class="highlight-n">sigmoid</span><span class="highlight-p">(</span><span class="highlight-n">Z3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>    <span class="highlight-c1"># Cost</span>
-<span class="highlight-ln">38</span>    <span class="highlight-n">logprobs</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-n">A3</span><span class="highlight-p">),</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">log</span><span class="highlight-p">(</span><span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">A3</span><span class="highlight-p">),</span> <span class="highlight-mi">1</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">39</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">logprobs</span><span class="highlight-p">)</span>
-<span class="highlight-ln">40</span>
-<span class="highlight-ln">41</span>    <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-n">Z1</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-p">,</span> <span class="highlight-n">W1</span><span class="highlight-p">,</span> <span class="highlight-n">b1</span><span class="highlight-p">,</span> <span class="highlight-n">Z2</span><span class="highlight-p">,</span> <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">W2</span><span class="highlight-p">,</span> <span class="highlight-n">b2</span><span class="highlight-p">,</span> <span class="highlight-n">Z3</span><span class="highlight-p">,</span> <span class="highlight-n">A3</span><span class="highlight-p">,</span> <span class="highlight-n">W3</span><span class="highlight-p">,</span> <span class="highlight-n">b3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>    <span class="highlight-k">return</span> <span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span>
+<pre><code class="language-python">def forward_propagation_n(X, Y, parameters):
+    """
+    实现前面的传播(并计算成本)，如图3所示。
+
+    Arguments:
+    X -- m例的训练集。
+    Y -- m的样本的标签
+    parameters -- 包含参数的python字典 "W1", "b1", "W2", "b2", "W3", "b3":
+                    W1 -- 权重矩阵的形状(5, 4)
+                    b1 -- 偏差的矢量形状(5, 1)
+                    W2 -- 权重矩阵的形状(3, 5)
+                    b2 -- 偏差的矢量形状(3, 1)
+                    W3 -- 权重矩阵的形状(1, 3)
+                    b3 -- 偏差的矢量形状(1, 1)
+
+    Returns:
+    cost -- 成本函数(一个样本的逻辑成本)
+    """
+
+    # 检索参数
+    m = X.shape[1]
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
+    W2 = parameters["W2"]
+    b2 = parameters["b2"]
+    W3 = parameters["W3"]
+    b3 = parameters["b3"]
+
+    # LINEAR -&gt; RELU -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID
+    Z1 = np.dot(W1, X) + b1
+    A1 = relu(Z1)
+    Z2 = np.dot(W2, A1) + b2
+    A2 = relu(Z2)
+    Z3 = np.dot(W3, A2) + b3
+    A3 = sigmoid(Z3)
+
+    # Cost
+    logprobs = np.multiply(-np.log(A3), Y) + np.multiply(-np.log(1 - A3), 1 - Y)
+    cost = 1. / m * np.sum(logprobs)
+
+    cache = (Z1, A1, W1, b1, Z2, A2, W2, b2, Z3, A3, W3, b3)
+
+    return cost, cache
 </code></pre>
-<h2 id="反向传播">反向传播</h2>
+<h2 id="toc_h2_8">反向传播</h2>
 <p>多维梯度的反向传播：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">backward_propagation_n</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    实现反向传播。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    X -- 输入数据点，形状(输入大小，1)
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    Y -- true "label"
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    cache -- 缓存输出forward_propagation_n()
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    gradients -- 一个字典，它包含了每个参数、激活和预激活变量的成本梯度。
-</span><span class="highlight-ln">12</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">15</span>    <span class="highlight-p">(</span><span class="highlight-n">Z1</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-p">,</span> <span class="highlight-n">W1</span><span class="highlight-p">,</span> <span class="highlight-n">b1</span><span class="highlight-p">,</span> <span class="highlight-n">Z2</span><span class="highlight-p">,</span> <span class="highlight-n">A2</span><span class="highlight-p">,</span> <span class="highlight-n">W2</span><span class="highlight-p">,</span> <span class="highlight-n">b2</span><span class="highlight-p">,</span> <span class="highlight-n">Z3</span><span class="highlight-p">,</span> <span class="highlight-n">A3</span><span class="highlight-p">,</span> <span class="highlight-n">W3</span><span class="highlight-p">,</span> <span class="highlight-n">b3</span><span class="highlight-p">)</span> <span class="highlight-o">=</span> <span class="highlight-n">cache</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">dZ3</span> <span class="highlight-o">=</span> <span class="highlight-n">A3</span> <span class="highlight-o">-</span> <span class="highlight-n">Y</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">dW3</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ3</span><span class="highlight-p">,</span> <span class="highlight-n">A2</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">db3</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ3</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">dA2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W3</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">,</span> <span class="highlight-n">dZ3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">dZ2</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-n">dA2</span><span class="highlight-p">,</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">int64</span><span class="highlight-p">(</span><span class="highlight-n">A2</span> <span class="highlight-o">&gt;</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">23</span>    <span class="highlight-n">dW2</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mi">2</span> <span class="highlight-c1"># 这有个错误</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">db2</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">dA1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">W2</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">,</span> <span class="highlight-n">dZ2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">27</span>    <span class="highlight-n">dZ1</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">multiply</span><span class="highlight-p">(</span><span class="highlight-n">dA1</span><span class="highlight-p">,</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">int64</span><span class="highlight-p">(</span><span class="highlight-n">A1</span> <span class="highlight-o">&gt;</span> <span class="highlight-mi">0</span><span class="highlight-p">))</span>
-<span class="highlight-ln">28</span>    <span class="highlight-n">dW1</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span>
-<span class="highlight-ln">29</span>    <span class="highlight-n">db1</span> <span class="highlight-o">=</span> <span class="highlight-mf">4.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span> <span class="highlight-c1"># 这有个错误</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>    <span class="highlight-n">gradients</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"dZ3"</span><span class="highlight-p">:</span> <span class="highlight-n">dZ3</span><span class="highlight-p">,</span> <span class="highlight-s2">"dW3"</span><span class="highlight-p">:</span> <span class="highlight-n">dW3</span><span class="highlight-p">,</span> <span class="highlight-s2">"db3"</span><span class="highlight-p">:</span> <span class="highlight-n">db3</span><span class="highlight-p">,</span>
-<span class="highlight-ln">32</span>                 <span class="highlight-s2">"dA2"</span><span class="highlight-p">:</span> <span class="highlight-n">dA2</span><span class="highlight-p">,</span> <span class="highlight-s2">"dZ2"</span><span class="highlight-p">:</span> <span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-s2">"dW2"</span><span class="highlight-p">:</span> <span class="highlight-n">dW2</span><span class="highlight-p">,</span> <span class="highlight-s2">"db2"</span><span class="highlight-p">:</span> <span class="highlight-n">db2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">33</span>                 <span class="highlight-s2">"dA1"</span><span class="highlight-p">:</span> <span class="highlight-n">dA1</span><span class="highlight-p">,</span> <span class="highlight-s2">"dZ1"</span><span class="highlight-p">:</span> <span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-s2">"dW1"</span><span class="highlight-p">:</span> <span class="highlight-n">dW1</span><span class="highlight-p">,</span> <span class="highlight-s2">"db1"</span><span class="highlight-p">:</span> <span class="highlight-n">db1</span><span class="highlight-p">}</span>
-<span class="highlight-ln">34</span>
-<span class="highlight-ln">35</span>    <span class="highlight-k">return</span> <span class="highlight-n">gradients</span>
+<pre><code class="language-python">def backward_propagation_n(X, Y, cache):
+    """
+    实现反向传播。
+
+    Arguments:
+    X -- 输入数据点，形状(输入大小，1)
+    Y -- true "label"
+    cache -- 缓存输出forward_propagation_n()
+
+    Returns:
+    gradients -- 一个字典，它包含了每个参数、激活和预激活变量的成本梯度。
+    """
+
+    m = X.shape[1]
+    (Z1, A1, W1, b1, Z2, A2, W2, b2, Z3, A3, W3, b3) = cache
+
+    dZ3 = A3 - Y
+    dW3 = 1. / m * np.dot(dZ3, A2.T)
+    db3 = 1. / m * np.sum(dZ3, axis=1, keepdims=True)
+
+    dA2 = np.dot(W3.T, dZ3)
+    dZ2 = np.multiply(dA2, np.int64(A2 &gt; 0))
+    dW2 = 1. / m * np.dot(dZ2, A1.T) * 2 # 这有个错误
+    db2 = 1. / m * np.sum(dZ2, axis=1, keepdims=True)
+
+    dA1 = np.dot(W2.T, dZ2)
+    dZ1 = np.multiply(dA1, np.int64(A1 &gt; 0))
+    dW1 = 1. / m * np.dot(dZ1, X.T)
+    db1 = 4. / m * np.sum(dZ1, axis=1, keepdims=True) # 这有个错误
+
+    gradients = {"dZ3": dZ3, "dW3": dW3, "db3": db3,
+                 "dA2": dA2, "dZ2": dZ2, "dW2": dW2, "db2": db2,
+                 "dA1": dA1, "dZ1": dZ1, "dW1": dW1, "db1": db1}
+
+    return gradients
 </code></pre>
-<h2 id="开始检查">开始检查</h2>
-<p>同样这个还是用回来之前的公式：</p>
-<div class="vditor-math">\frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{3}</div>
-<p>但有一些不同的是，<span class="vditor-math">\theta</span> 不再是一个标量。这是一个叫做“参数”的字典。<br>
+<h2 id="toc_h2_9">开始检查</h2>
+<p>同样这个还是用回来之前的公式：<br>
+$$<br>
+\frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} \tag{3}<br>
+$$<br>
+但有一些不同的是，$\theta$ 不再是一个标量。这是一个叫做“参数”的字典。<br>
 其中函数是“ vector_to_dictionary”，它输出“参数”字典，操如下图：<br>
 <img src="https://s1.ax1x.com/2020/04/03/GaADzQ.png" alt="这里写图片描述"></p>
 <p>For each i in num_parameters:</p>
 <ul>
 <li>计算 <code>J_plus[i]</code>:
 <ol>
-<li>Set <span class="vditor-math">\theta^{+}</span> to <code>np.copy(parameters_values)</code></li>
-<li>Set <span class="vditor-math">\theta^{+}_i</span> to <span class="vditor-math">\theta^{+}_i + \varepsilon</span></li>
-<li>使用 <code>forward_propagation_n(x, y, vector_to_dictionary(</code><span class="vditor-math">\theta^{+}</span> <code>))</code>计算<span class="vditor-math">J^{+}_i</span></li>
+<li>Set $\theta^{+}$ to <code>np.copy(parameters_values)</code></li>
+<li>Set $\theta^{+}_i$ to $\theta^{+}_i + \varepsilon$</li>
+<li>使用 <code>forward_propagation_n(x, y, vector_to_dictionary(</code>$\theta^{+}$ <code>))</code>计算$J^{+}_i$</li>
 </ol>
 </li>
-<li>计算 <code>J_minus[i]</code>：同样计算<span class="vditor-math">\theta^{-}</span></li>
-<li>计算<span class="vditor-math">gradapprox[i] = \frac{J^{+}_i - J^{-}_i}{2 \varepsilon}</span></li>
+<li>计算 <code>J_minus[i]</code>：同样计算$\theta^{-}$</li>
+<li>计算$gradapprox[i] = \frac{J^{+}_i - J^{-}_i}{2 \varepsilon}$</li>
 </ul>
-<p>最后使用以下的公式计算结果差异：</p>
-<div class="vditor-math">difference = \frac {\| grad - gradapprox \|_2}{\| grad \|_2 + \| gradapprox \|_2 } \tag{4}</div>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">gradient_check_n</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">gradients</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">epsilon</span><span class="highlight-o">=</span><span class="highlight-mf">1e-7</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    检查backward_propagation_n是否正确地计算了正向传播的成本输出的梯度。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    parameters --包含参数的python字典 "W1", "b1", "W2", "b2", "W3", "b3":
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    grad -- backward_propagation_n的输出包含参数的成本梯度。
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    x -- 输入数据点，形状(输入大小，1)
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    y -- true "label"
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    epsilon -- 用公式对输入进行微小位移计算近似梯度
-</span><span class="highlight-ln">11</span><span class="highlight-s2">
-</span><span class="highlight-ln">12</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">13</span><span class="highlight-s2">    difference -- 近似梯度与反向传播梯度之间的差异。
-</span><span class="highlight-ln">14</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    <span class="highlight-c1"># Set-up variables</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">parameters_values</span><span class="highlight-p">,</span> <span class="highlight-n">_</span> <span class="highlight-o">=</span> <span class="highlight-n">dictionary_to_vector</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">grad</span> <span class="highlight-o">=</span> <span class="highlight-n">gradients_to_vector</span><span class="highlight-p">(</span><span class="highlight-n">gradients</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">num_parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">parameters_values</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">J_plus</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">num_parameters</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">J_minus</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">num_parameters</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">gradapprox</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">num_parameters</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    <span class="highlight-c1"># Compute gradapprox</span>
-<span class="highlight-ln">25</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-n">num_parameters</span><span class="highlight-p">):</span>
-<span class="highlight-ln">26</span>        <span class="highlight-n">thetaplus</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">copy</span><span class="highlight-p">(</span><span class="highlight-n">parameters_values</span><span class="highlight-p">)</span>  <span class="highlight-c1"># Step 1</span>
-<span class="highlight-ln">27</span>        <span class="highlight-n">thetaplus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">thetaplus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">]</span> <span class="highlight-o">+</span> <span class="highlight-n">epsilon</span>  <span class="highlight-c1"># Step 2</span>
-<span class="highlight-ln">28</span>        <span class="highlight-n">J_plus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-n">_</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation_n</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">vector_to_dictionary</span><span class="highlight-p">(</span><span class="highlight-n">thetaplus</span><span class="highlight-p">))</span>  <span class="highlight-c1"># Step 3</span>
-<span class="highlight-ln">29</span>
-<span class="highlight-ln">30</span>        <span class="highlight-n">thetaminus</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">copy</span><span class="highlight-p">(</span><span class="highlight-n">parameters_values</span><span class="highlight-p">)</span>  <span class="highlight-c1"># Step 1</span>
-<span class="highlight-ln">31</span>        <span class="highlight-n">thetaminus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">thetaminus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">]</span> <span class="highlight-o">-</span> <span class="highlight-n">epsilon</span>  <span class="highlight-c1"># Step 2</span>
-<span class="highlight-ln">32</span>        <span class="highlight-n">J_minus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">],</span> <span class="highlight-n">_</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation_n</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">vector_to_dictionary</span><span class="highlight-p">(</span><span class="highlight-n">thetaminus</span><span class="highlight-p">))</span>  <span class="highlight-c1"># Step 3</span>
-<span class="highlight-ln">33</span>
-<span class="highlight-ln">34</span>        <span class="highlight-c1"># Compute gradapprox[i]</span>
-<span class="highlight-ln">35</span>        <span class="highlight-n">gradapprox</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-n">J_plus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">]</span> <span class="highlight-o">-</span> <span class="highlight-n">J_minus</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">])</span> <span class="highlight-o">/</span> <span class="highlight-p">(</span><span class="highlight-mi">2</span> <span class="highlight-o">*</span> <span class="highlight-n">epsilon</span><span class="highlight-p">)</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>    <span class="highlight-c1"># 通过计算与反向传播梯度比较差异。</span>
-<span class="highlight-ln">38</span>    <span class="highlight-n">numerator</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">grad</span> <span class="highlight-o">-</span> <span class="highlight-n">gradapprox</span><span class="highlight-p">)</span>  <span class="highlight-c1"># Step 1'</span>
-<span class="highlight-ln">39</span>    <span class="highlight-n">denominator</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">grad</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">linalg</span><span class="highlight-o">.</span><span class="highlight-n">norm</span><span class="highlight-p">(</span><span class="highlight-n">gradapprox</span><span class="highlight-p">)</span>  <span class="highlight-c1"># Step 2'</span>
-<span class="highlight-ln">40</span>    <span class="highlight-n">difference</span> <span class="highlight-o">=</span> <span class="highlight-n">numerator</span> <span class="highlight-o">/</span> <span class="highlight-n">denominator</span>  <span class="highlight-c1"># Step 3'</span>
-<span class="highlight-ln">41</span>
-<span class="highlight-ln">42</span>    <span class="highlight-k">if</span> <span class="highlight-n">difference</span> <span class="highlight-o">&gt;</span> <span class="highlight-mf">2e-7</span><span class="highlight-p">:</span>
-<span class="highlight-ln">43</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span>
-<span class="highlight-ln">44</span>            <span class="highlight-s2">"</span><span class="highlight-se">\033</span><span class="highlight-s2">[93m"</span> <span class="highlight-o">+</span> <span class="highlight-s2">"反向传播有一个错误! difference = "</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">difference</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\033</span><span class="highlight-s2">[0m"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">45</span>    <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">46</span>        <span class="highlight-k">print</span> <span class="highlight-p">(</span>
-<span class="highlight-ln">47</span>            <span class="highlight-s2">"</span><span class="highlight-se">\033</span><span class="highlight-s2">[92m"</span> <span class="highlight-o">+</span> <span class="highlight-s2">"你的反向传播效果非常好! difference = "</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">difference</span><span class="highlight-p">)</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\033</span><span class="highlight-s2">[0m"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">48</span>
-<span class="highlight-ln">49</span>    <span class="highlight-k">return</span> <span class="highlight-n">difference</span>
+<p>最后使用以下的公式计算结果差异：<br>
+$$<br>
+difference = \frac {| grad - gradapprox |_2}{| grad |_2 + | gradapprox |_2 } \tag{4}<br>
+$$</p>
+<pre><code class="language-python">def gradient_check_n(parameters, gradients, X, Y, epsilon=1e-7):
+    """
+    检查backward_propagation_n是否正确地计算了正向传播的成本输出的梯度。
+
+    Arguments:
+    parameters --包含参数的python字典 "W1", "b1", "W2", "b2", "W3", "b3":
+    grad -- backward_propagation_n的输出包含参数的成本梯度。
+    x -- 输入数据点，形状(输入大小，1)
+    y -- true "label"
+    epsilon -- 用公式对输入进行微小位移计算近似梯度
+
+    Returns:
+    difference -- 近似梯度与反向传播梯度之间的差异。
+    """
+
+    # Set-up variables
+    parameters_values, _ = dictionary_to_vector(parameters)
+    grad = gradients_to_vector(gradients)
+    num_parameters = parameters_values.shape[0]
+    J_plus = np.zeros((num_parameters, 1))
+    J_minus = np.zeros((num_parameters, 1))
+    gradapprox = np.zeros((num_parameters, 1))
+
+    # Compute gradapprox
+    for i in range(num_parameters):
+        thetaplus = np.copy(parameters_values)  # Step 1
+        thetaplus[i][0] = thetaplus[i][0] + epsilon  # Step 2
+        J_plus[i], _ = forward_propagation_n(X, Y, vector_to_dictionary(thetaplus))  # Step 3
+
+        thetaminus = np.copy(parameters_values)  # Step 1
+        thetaminus[i][0] = thetaminus[i][0] - epsilon  # Step 2
+        J_minus[i], _ = forward_propagation_n(X, Y, vector_to_dictionary(thetaminus))  # Step 3
+
+        # Compute gradapprox[i]
+        gradapprox[i] = (J_plus[i] - J_minus[i]) / (2 * epsilon)
+
+    # 通过计算与反向传播梯度比较差异。
+    numerator = np.linalg.norm(grad - gradapprox)  # Step 1'
+    denominator = np.linalg.norm(grad) + np.linalg.norm(gradapprox)  # Step 2'
+    difference = numerator / denominator  # Step 3'
+
+    if difference &gt; 2e-7:
+        print (
+            "\033[93m" + "反向传播有一个错误! difference = " + str(difference) + "\033[0m")
+    else:
+        print (
+            "\033[92m" + "你的反向传播效果非常好! difference = " + str(difference) + "\033[0m")
+
+    return difference
 </code></pre>
 <p>最后运行一下这个多维梯度检测：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">gradient_check_n_test_case</span><span class="highlight-p">()</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation_n</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">gradients</span> <span class="highlight-o">=</span> <span class="highlight-n">backward_propagation_n</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-n">difference</span> <span class="highlight-o">=</span> <span class="highlight-n">gradient_check_n</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">gradients</span><span class="highlight-p">,</span> <span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    X, Y, parameters = gradient_check_n_test_case()
+    cost, cache = forward_propagation_n(X, Y, parameters)
+    gradients = backward_propagation_n(X, Y, cache)
+    difference = gradient_check_n(parameters, gradients, X, Y)
 </code></pre>
 <p>以下是输出结果，可以看到已经超过最低的误差了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>反向传播有一个错误! difference = 0.285093156781
+<pre><code class="language-text">反向传播有一个错误! difference = 0.285093156781
 </code></pre>
 <p>所以我们知道<code>backward_propagation_n</code>的代码有错误！这时我们可以去检查<code>backward_propagation</code>并尝试查找/更正错误，最后我们找到以下的代码出了错误：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">dW2</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span> <span class="highlight-o">*</span> <span class="highlight-mi">2</span>
-<span class="highlight-ln">2</span><span class="highlight-n">db1</span> <span class="highlight-o">=</span> <span class="highlight-mf">4.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<pre><code class="language-python">dW2 = 1. / m * np.dot(dZ2, A1.T) * 2
+db1 = 4. / m * np.sum(dZ1, axis=1, keepdims=True)
 </code></pre>
 <p>然后我们修改正确的代码：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">dW2</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">dot</span><span class="highlight-p">(</span><span class="highlight-n">dZ2</span><span class="highlight-p">,</span> <span class="highlight-n">A1</span><span class="highlight-o">.</span><span class="highlight-n">T</span><span class="highlight-p">)</span>
-<span class="highlight-ln">2</span><span class="highlight-n">db1</span> <span class="highlight-o">=</span> <span class="highlight-mf">1.</span> <span class="highlight-o">/</span> <span class="highlight-n">m</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sum</span><span class="highlight-p">(</span><span class="highlight-n">dZ1</span><span class="highlight-p">,</span> <span class="highlight-n">axis</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">keepdims</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">)</span>
+<pre><code class="language-python">dW2 = 1. / m * np.dot(dZ2, A1.T)
+db1 = 1. / m * np.sum(dZ1, axis=1, keepdims=True)
 </code></pre>
 <p>我们再检查一遍的结果是：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>你的反向传播效果非常好! difference = 1.18904178766e-07
+<pre><code class="language-text">你的反向传播效果非常好! difference = 1.18904178766e-07
 </code></pre>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_10">参考资料</h1>
 <ol>
-<li>http://deeplearning.ai/</li>
+<li><a href="http://deeplearning.ai/" target="_blank">http://deeplearning.ai/</a></li>
 </ol>
 <p><br><br><br></p>
 <blockquote>
@@ -529,7 +537,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -538,7 +546,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -546,11 +554,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466412156",
@@ -568,4 +576,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 41ms, 2020/04/07 11:38:46 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 22ms, 2020/04/07 14:57:08 -->

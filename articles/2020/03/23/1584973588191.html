@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零</title><meta name="description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。 ncnn的GitHub地址：https://github.com/Tencent/ncnn 使用Ubuntu编译ncnn库 1、首先要下载和解压NDK。 wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip unzip android-ndk-r17b-linux-x86_64.zip 2、设置NDK环境变量，目录是NDK的解压目录。 export NDK_ROOT=&quot;/home/test/paddlepaddle/android-ndk-r17b&quot; 设置好之后，可以使用以下的命令查看配置情况。 root@test:/home/test/paddlepaddle# echo $NDK_ROOT /hom...."/><meta property="og:description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。 ncnn的GitHub地址：https://github.com/Tencent/ncnn 使用Ubuntu编译ncnn库 1、首先要下载和解压NDK。 wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip unzip android-ndk-r17b-linux-x86_64.zip 2、设置NDK环境变量，目录是NDK的解压目录。 export NDK_ROOT=&quot;/home/test/paddlepaddle/android-ndk-r17b&quot; 设置好之后，可以使用以下的命令查看配置情况。 root@test:/home/test/paddlepaddle# echo $NDK_ROOT /hom...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973588191.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973588191.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零</title><meta name="description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。 ncnn的GitHub地址：https://github.com/Tencent/ncnn 使用Ubuntu编译ncnn库 1、首先要下载和解压NDK。 wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip unzip android-ndk-r17b-linux-x86_64.zip 2、设置NDK环境变量，目录是NDK的解压目录。 export NDK_ROOT=&quot;/home/test/paddlepaddle/android-ndk-r17b&quot; 设置好之后，可以使用以下的命令查看配置情况。 root@test:/home/test/paddlepaddle# echo $NDK_ROOT /hom...."/><meta property="og:description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。 ncnn的GitHub地址：https://github.com/Tencent/ncnn 使用Ubuntu编译ncnn库 1、首先要下载和解压NDK。 wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip unzip android-ndk-r17b-linux-x86_64.zip 2、设置NDK环境变量，目录是NDK的解压目录。 export NDK_ROOT=&quot;/home/test/paddlepaddle/android-ndk-r17b&quot; 设置好之后，可以使用以下的命令查看配置情况。 root@test:/home/test/paddlepaddle# echo $NDK_ROOT /hom...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973588191.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973588191.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="在Android手机上使用MACE实现图像分类" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973497621.html">
             <link rel="next" title="在Ubuntu上安装CPU版本的Caffe" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973667027.html">
     <!-- 百度统计 -->
@@ -78,19 +78,19 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#使用Ubuntu编译ncnn库">使用Ubuntu编译ncnn库</a>
+            <a href="#toc_h1_1">使用Ubuntu编译ncnn库</a>
         </li>
         <li class="toc__h1">
-            <a href="#转换预测模型">转换预测模型</a>
+            <a href="#toc_h1_2">转换预测模型</a>
         </li>
         <li class="toc__h1">
-            <a href="#开发Android项目">开发Android项目</a>
+            <a href="#toc_h1_3">开发Android项目</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_4">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -138,122 +138,122 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20190909.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>在之前笔者有介绍过<a href="https://blog.csdn.net/qq_33200967/article/details/81066970" target="_blank">《在Android设备上使用PaddleMobile实现图像分类》</a>，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。</p>
 <p>ncnn的GitHub地址：<a href="https://github.com/Tencent/ncnn" target="_blank">https://github.com/Tencent/ncnn</a></p>
-<h1 id="使用Ubuntu编译ncnn库">使用Ubuntu编译ncnn库</h1>
+<h1 id="toc_h1_1">使用Ubuntu编译ncnn库</h1>
 <p>1、首先要下载和解压NDK。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
-<span class="highlight-ln">2</span>unzip android-ndk-r17b-linux-x86_64.zip
+<pre><code>wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
+unzip android-ndk-r17b-linux-x86_64.zip
 </code></pre>
 <p>2、设置NDK环境变量，目录是NDK的解压目录。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>export NDK_ROOT="/home/test/paddlepaddle/android-ndk-r17b"
+<pre><code>export NDK_ROOT="/home/test/paddlepaddle/android-ndk-r17b"
 </code></pre>
 <p>设置好之后，可以使用以下的命令查看配置情况。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddlepaddle# echo $NDK_ROOT
-<span class="highlight-ln">2</span>/home/test/paddlepaddle/android-ndk-r17b
+<pre><code>root@test:/home/test/paddlepaddle# echo $NDK_ROOT
+/home/test/paddlepaddle/android-ndk-r17b
 </code></pre>
 <p>3、安装cmake，需要安装较高版本的，笔者的cmake版本是3.11.2。</p>
 <p>下载cmake源码</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>wget https://cmake.org/files/v3.11/cmake-3.11.2.tar.gz
+<pre><code>wget https://cmake.org/files/v3.11/cmake-3.11.2.tar.gz
 </code></pre>
 <p>解压cmake源码</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>tar -zxvf cmake-3.11.2.tar.gz
+<pre><code>tar -zxvf cmake-3.11.2.tar.gz
 </code></pre>
 <p>进入到cmake源码根目录，并执行bootstrap。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd cmake-3.11.2
-<span class="highlight-ln">2</span>./bootstrap
+<pre><code>cd cmake-3.11.2
+./bootstrap
 </code></pre>
 <p>最后执行以下两条命令开始安装cmake。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>make
-<span class="highlight-ln">2</span>make install
+<pre><code>make
+make install
 </code></pre>
 <p>安装完成之后，可以使用cmake --version是否安装成功。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddlepaddle# cmake --version
-<span class="highlight-ln">2</span>cmake version 3.11.2
-<span class="highlight-ln">3</span>
-<span class="highlight-ln">4</span>CMake suite maintained and supported by Kitware (kitware.com/cmake).
+<pre><code>root@test:/home/test/paddlepaddle# cmake --version
+cmake version 3.11.2
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
 </code></pre>
 <p>4、克隆ncnn源码。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/Tencent/ncnn.git
+<pre><code>git clone https://github.com/Tencent/ncnn.git
 </code></pre>
 <p>5、编译源码。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 进入到ncnn源码根目录下</span>
-<span class="highlight-ln"> 2</span><span class="highlight-n">cd</span> <span class="highlight-n">ncnn</span>
-<span class="highlight-ln"> 3</span><span class="highlight-c1"># 创建一个新的文件夹</span>
-<span class="highlight-ln"> 4</span><span class="highlight-n">mkdir</span> <span class="highlight-o">-</span><span class="highlight-n">p</span> <span class="highlight-n">build</span><span class="highlight-o">-</span><span class="highlight-n">android</span><span class="highlight-o">-</span><span class="highlight-n">armv7</span>
-<span class="highlight-ln"> 5</span><span class="highlight-c1"># 进入到该文件夹中</span>
-<span class="highlight-ln"> 6</span><span class="highlight-n">cd</span> <span class="highlight-n">build</span><span class="highlight-o">-</span><span class="highlight-n">android</span><span class="highlight-o">-</span><span class="highlight-n">armv7</span>
-<span class="highlight-ln"> 7</span><span class="highlight-c1"># 执行编译命令</span>
-<span class="highlight-ln"> 8</span><span class="highlight-n">cmake</span> <span class="highlight-o">-</span><span class="highlight-n">DCMAKE_TOOLCHAIN_FILE</span><span class="highlight-o">=</span><span class="highlight-err">$</span><span class="highlight-n">ANDROID_NDK</span><span class="highlight-o">/</span><span class="highlight-n">build</span><span class="highlight-o">/</span><span class="highlight-n">cmake</span><span class="highlight-o">/</span><span class="highlight-n">android</span><span class="highlight-o">.</span><span class="highlight-n">toolchain</span><span class="highlight-o">.</span><span class="highlight-n">cmake</span> \
-<span class="highlight-ln"> 9</span>    <span class="highlight-o">-</span><span class="highlight-n">DANDROID_ABI</span><span class="highlight-o">=</span><span class="highlight-s2">"armeabi-v7a"</span> <span class="highlight-o">-</span><span class="highlight-n">DANDROID_ARM_NEON</span><span class="highlight-o">=</span><span class="highlight-n">ON</span> \
-<span class="highlight-ln">10</span>    <span class="highlight-o">-</span><span class="highlight-n">DANDROID_PLATFORM</span><span class="highlight-o">=</span><span class="highlight-n">android</span><span class="highlight-o">-</span><span class="highlight-mi">14</span> <span class="highlight-o">..</span>
-<span class="highlight-ln">11</span><span class="highlight-c1"># 这里笔者使用4个行程并行编译</span>
-<span class="highlight-ln">12</span><span class="highlight-n">make</span> <span class="highlight-o">-</span><span class="highlight-n">j4</span>
-<span class="highlight-ln">13</span><span class="highlight-n">make</span> <span class="highlight-n">install</span>
+<pre><code class="language-python"># 进入到ncnn源码根目录下
+cd ncnn
+# 创建一个新的文件夹
+mkdir -p build-android-armv7
+# 进入到该文件夹中
+cd build-android-armv7
+# 执行编译命令
+cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
+    -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
+    -DANDROID_PLATFORM=android-14 ..
+# 这里笔者使用4个行程并行编译
+make -j4
+make install
 </code></pre>
 <p>6、编译完成，会在<code>build-android-armv7</code>目录下生成一个<code>install</code>目录，我们编译得到的文件都在该文件夹下：</p>
 <ul>
 <li><code>include</code> 调用ncnn所需的头文件，该文件夹会存放在Android项目的<code>src/main/cpp</code>目录下；</li>
 <li><code>lib</code> 编译得到的ncnn库<code>libncnn.a</code>，之后会存放在Android项目的<code>src/main/jniLibs/armeabi-v7a/libncnn.a</code></li>
 </ul>
-<h1 id="转换预测模型">转换预测模型</h1>
+<h1 id="toc_h1_2">转换预测模型</h1>
 <p>1、克隆Caffe源码。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/BVLC/caffe.git
+<pre><code>git clone https://github.com/BVLC/caffe.git
 </code></pre>
 <p>2、编译Caffe源码。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 切换到Caffe目录</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cd</span> <span class="highlight-n">caffe</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 在当前目录执行cmake</span>
-<span class="highlight-ln">4</span><span class="highlight-n">cmake</span> <span class="highlight-o">.</span>
-<span class="highlight-ln">5</span><span class="highlight-c1"># 使用4个线程编译</span>
-<span class="highlight-ln">6</span><span class="highlight-n">make</span> <span class="highlight-o">-</span><span class="highlight-n">j4</span>
-<span class="highlight-ln">7</span><span class="highlight-n">make</span> <span class="highlight-n">install</span>
+<pre><code class="language-python"># 切换到Caffe目录
+cd caffe
+# 在当前目录执行cmake
+cmake .
+# 使用4个线程编译
+make -j4
+make install
 </code></pre>
 <p>3、升级Caffe模型。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 把需要转换的模型复制到caffe/tools，并切入到该目录</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cd</span> <span class="highlight-n">tools</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 升级Caffe模型</span>
-<span class="highlight-ln">4</span><span class="highlight-o">./</span><span class="highlight-n">upgrade_net_proto_text</span> <span class="highlight-n">mobilenet_v2_deploy</span><span class="highlight-o">.</span><span class="highlight-n">prototxt</span> <span class="highlight-n">mobilenet_v2_deploy_new</span><span class="highlight-o">.</span><span class="highlight-n">prototxt</span>
-<span class="highlight-ln">5</span><span class="highlight-o">./</span><span class="highlight-n">upgrade_net_proto_binary</span> <span class="highlight-n">mobilenet_v2</span><span class="highlight-o">.</span><span class="highlight-n">caffemodel</span> <span class="highlight-n">mobilenet_v2_new</span><span class="highlight-o">.</span><span class="highlight-n">caffemodel</span>
+<pre><code class="language-python"># 把需要转换的模型复制到caffe/tools，并切入到该目录
+cd tools
+# 升级Caffe模型
+./upgrade_net_proto_text mobilenet_v2_deploy.prototxt mobilenet_v2_deploy_new.prototxt
+./upgrade_net_proto_binary mobilenet_v2.caffemodel mobilenet_v2_new.caffemodel
 </code></pre>
 <p>4、检查模型配置文件，因为只能一张一张图片预测，所以输入要设置为<code>dim: 1</code>。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>name: "MOBILENET_V2"
-<span class="highlight-ln"> 2</span>layer {
-<span class="highlight-ln"> 3</span>  name: "input"
-<span class="highlight-ln"> 4</span>  type: "Input"
-<span class="highlight-ln"> 5</span>  top: "data"
-<span class="highlight-ln"> 6</span>  input_param {
-<span class="highlight-ln"> 7</span>    shape {
-<span class="highlight-ln"> 8</span>      dim: 1
-<span class="highlight-ln"> 9</span>      dim: 3
-<span class="highlight-ln">10</span>      dim: 224
-<span class="highlight-ln">11</span>      dim: 224
-<span class="highlight-ln">12</span>    }
-<span class="highlight-ln">13</span>  }
-<span class="highlight-ln">14</span>}
+<pre><code>name: "MOBILENET_V2"
+layer {
+  name: "input"
+  type: "Input"
+  top: "data"
+  input_param {
+    shape {
+      dim: 1
+      dim: 3
+      dim: 224
+      dim: 224
+    }
+  }
+}
 </code></pre>
 <p>5、切换到ncnn的根目录，就是我们上一部分克隆的ncnn源码。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd ncnn/
+<pre><code>cd ncnn/
 </code></pre>
 <p>6、在根目录下编译ncnn源码。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mkdir -p build
-<span class="highlight-ln">2</span>cd build
-<span class="highlight-ln">3</span>cmake ..
-<span class="highlight-ln">4</span>make -j4
-<span class="highlight-ln">5</span>make install
+<pre><code>mkdir -p build
+cd build
+cmake ..
+make -j4
+make install
 </code></pre>
 <p>7、把新的Caffe模型转换成NCNN模型。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 经过上一步，会生产一个tools，我们进入到以下目录</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cd</span> <span class="highlight-n">tools</span><span class="highlight-o">/</span><span class="highlight-n">caffe</span><span class="highlight-o">/</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 把已经升级的网络定义文件和权重文件复制到当目录，并执行以下命令</span>
-<span class="highlight-ln">4</span><span class="highlight-o">./</span><span class="highlight-n">caffe2ncnn</span> <span class="highlight-n">mobilenet_v2_deploy_new</span><span class="highlight-o">.</span><span class="highlight-n">prototxt</span> <span class="highlight-n">mobilenet_v2_new</span><span class="highlight-o">.</span><span class="highlight-n">caffemodel</span> <span class="highlight-n">mobilenet_v2</span><span class="highlight-o">.</span><span class="highlight-n">param</span> <span class="highlight-n">mobilenet_v2</span><span class="highlight-o">.</span><span class="highlight-n">bin</span>
+<pre><code class="language-python"># 经过上一步，会生产一个tools，我们进入到以下目录
+cd tools/caffe/
+# 把已经升级的网络定义文件和权重文件复制到当目录，并执行以下命令
+./caffe2ncnn mobilenet_v2_deploy_new.prototxt mobilenet_v2_new.caffemodel mobilenet_v2.param mobilenet_v2.bin
 </code></pre>
 <p>8、对象模型参数进行加密，这样就算别人反编译我们的apk也用不了我们的模型文件。把上一步获得的<code>mobilenet_v2.param</code>、<code>mobilenet_v2.bin</code>复制到该目录的上一个目录，也就是tools目录。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 切换到上一个目录</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cd</span> <span class="highlight-o">../</span>
-<span class="highlight-ln">3</span><span class="highlight-c1"># 执行命令之后会生成mobilenet_v2.param、mobilenet_v2.id.h、mobilenet_v2.mem.h</span>
-<span class="highlight-ln">4</span><span class="highlight-o">./</span><span class="highlight-n">ncnn2mem</span> <span class="highlight-n">mobilenet_v2</span><span class="highlight-o">.</span><span class="highlight-n">param</span> <span class="highlight-n">mobilenet_v2</span><span class="highlight-o">.</span><span class="highlight-n">bin</span> <span class="highlight-n">mobilenet_v2</span><span class="highlight-o">.</span><span class="highlight-n">id</span><span class="highlight-o">.</span><span class="highlight-n">h</span> <span class="highlight-n">mobilenet_v2</span><span class="highlight-o">.</span><span class="highlight-n">mem</span><span class="highlight-o">.</span><span class="highlight-n">h</span>
+<pre><code class="language-python"># 切换到上一个目录
+cd ../
+# 执行命令之后会生成mobilenet_v2.param、mobilenet_v2.id.h、mobilenet_v2.mem.h
+./ncnn2mem mobilenet_v2.param mobilenet_v2.bin mobilenet_v2.id.h mobilenet_v2.mem.h
 </code></pre>
 <p>经过上面的步骤，得到的文件中，以下文件时需要的：</p>
 <ul>
@@ -261,7 +261,7 @@ var _hmt = _hmt || [];
 <li><code>mobilenet_v2.bin</code> 网络的权重；</li>
 <li><code>mobilenet_v2.id.h</code> 在预测图片的时候使用到。</li>
 </ul>
-<h1 id="开发Android项目">开发Android项目</h1>
+<h1 id="toc_h1_3">开发Android项目</h1>
 <ul>
 <li>我们在Android Studio上创建一个NCNN1的项目，别忘了选择C++支持。<br>
 <img src="https://s1.ax1x.com/2020/04/03/GaAk24.png" alt="这里写图片描述"></li>
@@ -279,7 +279,7 @@ var _hmt = _hmt || [];
 <p><code>mobilenet_v2.bin</code> 上一步获取网络的权重；</p>
 </li>
 <li>
-<p><code>synset.txt</code> label对应的名称，下载地址：<a href="https://github.com/shicai/MobileNet-Caffe/blob/master/synset.txt" target="_blank">https://github.com/shicai/MobileNet-Caffe/blob/master/synset.txt</a>。</p>
+<p><code>synset.txt</code> label对应的名称，下载地址：<a href="https://github.com/shicai/MobileNet-Caffe/blob/master/synset.txt。" target="_blank">https://github.com/shicai/MobileNet-Caffe/blob/master/synset.txt。</a></p>
 </li>
 <li>
 <p>在<code>cpp</code>目录下复制在<code>使用Ubuntu编译NCNN库</code>部分编译得到的<code>include</code>文件夹，包括里面的C++头文件。</p>
@@ -294,584 +294,584 @@ var _hmt = _hmt || [];
 <p>在<code>cpp</code>目录下创建一个C++文件，并编写以下代码，这段代码是用于加载模型和预测图片的：</p>
 </li>
 </ul>
-<pre><code class="language-cpp highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">&lt;android/bitmap.h&gt;</span><span class="highlight-cp">
-</span><span class="highlight-ln">  2</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">&lt;android/log.h&gt;</span><span class="highlight-cp">
-</span><span class="highlight-ln">  3</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">&lt;jni.h&gt;</span><span class="highlight-cp">
-</span><span class="highlight-ln">  4</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">&lt;string&gt;</span><span class="highlight-cp">
-</span><span class="highlight-ln">  5</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">&lt;vector&gt;</span><span class="highlight-cp">
-</span><span class="highlight-ln">  6</span><span class="highlight-cp"></span><span class="highlight-c1">// ncnn
-</span><span class="highlight-ln">  7</span><span class="highlight-c1"></span><span class="highlight-cp">#include</span> <span class="highlight-cpf">"include/net.h"</span><span class="highlight-cp">
-</span><span class="highlight-ln">  8</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">"mobilenet_v2.id.h"</span><span class="highlight-cp">
-</span><span class="highlight-ln">  9</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">&lt;sys/time.h&gt;</span><span class="highlight-cp">
-</span><span class="highlight-ln"> 10</span><span class="highlight-cp">#include</span> <span class="highlight-cpf">&lt;unistd.h&gt;</span><span class="highlight-cp">
-</span><span class="highlight-ln"> 11</span><span class="highlight-cp"></span>
-<span class="highlight-ln"> 12</span><span class="highlight-k">static</span> <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">UnlockedPoolAllocator</span> <span class="highlight-n">g_blob_pool_allocator</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 13</span><span class="highlight-k">static</span> <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">PoolAllocator</span> <span class="highlight-n">g_workspace_pool_allocator</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 14</span>
-<span class="highlight-ln"> 15</span><span class="highlight-k">static</span> <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Mat</span> <span class="highlight-n">ncnn_param</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 16</span><span class="highlight-k">static</span> <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Mat</span> <span class="highlight-n">ncnn_bin</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 17</span><span class="highlight-k">static</span> <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Net</span> <span class="highlight-n">ncnn_net</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 18</span>
-<span class="highlight-ln"> 19</span>
-<span class="highlight-ln"> 20</span><span class="highlight-k">extern</span> <span class="highlight-s">"C"</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 21</span>
-<span class="highlight-ln"> 22</span><span class="highlight-c1">// public native boolean Init(byte[] param, byte[] bin, byte[] words);
-</span><span class="highlight-ln"> 23</span><span class="highlight-c1"></span><span class="highlight-n">JNIEXPORT</span> <span class="highlight-n">jboolean</span> <span class="highlight-n">JNICALL</span>
-<span class="highlight-ln"> 24</span><span class="highlight-nf">Java_com_example_ncnn1_NcnnJni_Init</span><span class="highlight-p">(</span><span class="highlight-n">JNIEnv</span> <span class="highlight-o">*</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">jobject</span> <span class="highlight-n">thiz</span><span class="highlight-p">,</span> <span class="highlight-n">jbyteArray</span> <span class="highlight-n">param</span><span class="highlight-p">,</span> <span class="highlight-n">jbyteArray</span> <span class="highlight-n">bin</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 25</span>    <span class="highlight-c1">// init param
-</span><span class="highlight-ln"> 26</span><span class="highlight-c1"></span>    <span class="highlight-p">{</span>
-<span class="highlight-ln"> 27</span>        <span class="highlight-kt">int</span> <span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">GetArrayLength</span><span class="highlight-p">(</span><span class="highlight-n">param</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 28</span>        <span class="highlight-n">ncnn_param</span><span class="highlight-p">.</span><span class="highlight-n">create</span><span class="highlight-p">(</span><span class="highlight-n">len</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-n">size_t</span><span class="highlight-p">)</span> <span class="highlight-mi">1u</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 29</span>        <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">GetByteArrayRegion</span><span class="highlight-p">(</span><span class="highlight-n">param</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">len</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-n">jbyte</span> <span class="highlight-o">*</span><span class="highlight-p">)</span> <span class="highlight-n">ncnn_param</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 30</span>        <span class="highlight-kt">int</span> <span class="highlight-n">ret</span> <span class="highlight-o">=</span> <span class="highlight-n">ncnn_net</span><span class="highlight-p">.</span><span class="highlight-n">load_param</span><span class="highlight-p">((</span><span class="highlight-k">const</span> <span class="highlight-kt">unsigned</span> <span class="highlight-kt">char</span> <span class="highlight-o">*</span><span class="highlight-p">)</span> <span class="highlight-n">ncnn_param</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 31</span>        <span class="highlight-n">__android_log_print</span><span class="highlight-p">(</span><span class="highlight-n">ANDROID_LOG_DEBUG</span><span class="highlight-p">,</span> <span class="highlight-s">"NcnnJni"</span><span class="highlight-p">,</span> <span class="highlight-s">"load_param %d %d"</span><span class="highlight-p">,</span> <span class="highlight-n">ret</span><span class="highlight-p">,</span> <span class="highlight-n">len</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 32</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln"> 33</span>
-<span class="highlight-ln"> 34</span>    <span class="highlight-c1">// init bin
-</span><span class="highlight-ln"> 35</span><span class="highlight-c1"></span>    <span class="highlight-p">{</span>
-<span class="highlight-ln"> 36</span>        <span class="highlight-kt">int</span> <span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">GetArrayLength</span><span class="highlight-p">(</span><span class="highlight-n">bin</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 37</span>        <span class="highlight-n">ncnn_bin</span><span class="highlight-p">.</span><span class="highlight-n">create</span><span class="highlight-p">(</span><span class="highlight-n">len</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-n">size_t</span><span class="highlight-p">)</span> <span class="highlight-mi">1u</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 38</span>        <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">GetByteArrayRegion</span><span class="highlight-p">(</span><span class="highlight-n">bin</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">len</span><span class="highlight-p">,</span> <span class="highlight-p">(</span><span class="highlight-n">jbyte</span> <span class="highlight-o">*</span><span class="highlight-p">)</span> <span class="highlight-n">ncnn_bin</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 39</span>        <span class="highlight-kt">int</span> <span class="highlight-n">ret</span> <span class="highlight-o">=</span> <span class="highlight-n">ncnn_net</span><span class="highlight-p">.</span><span class="highlight-n">load_model</span><span class="highlight-p">((</span><span class="highlight-k">const</span> <span class="highlight-kt">unsigned</span> <span class="highlight-kt">char</span> <span class="highlight-o">*</span><span class="highlight-p">)</span> <span class="highlight-n">ncnn_bin</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 40</span>        <span class="highlight-n">__android_log_print</span><span class="highlight-p">(</span><span class="highlight-n">ANDROID_LOG_DEBUG</span><span class="highlight-p">,</span> <span class="highlight-s">"NcnnJni"</span><span class="highlight-p">,</span> <span class="highlight-s">"load_model %d %d"</span><span class="highlight-p">,</span> <span class="highlight-n">ret</span><span class="highlight-p">,</span> <span class="highlight-n">len</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 41</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln"> 42</span>
-<span class="highlight-ln"> 43</span>    <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Option</span> <span class="highlight-n">opt</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 44</span>    <span class="highlight-n">opt</span><span class="highlight-p">.</span><span class="highlight-n">lightmode</span> <span class="highlight-o">=</span> <span class="highlight-nb">true</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 45</span>    <span class="highlight-n">opt</span><span class="highlight-p">.</span><span class="highlight-n">num_threads</span> <span class="highlight-o">=</span> <span class="highlight-mi">4</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 46</span>    <span class="highlight-n">opt</span><span class="highlight-p">.</span><span class="highlight-n">blob_allocator</span> <span class="highlight-o">=</span> <span class="highlight-o">&amp;</span><span class="highlight-n">g_blob_pool_allocator</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 47</span>    <span class="highlight-n">opt</span><span class="highlight-p">.</span><span class="highlight-n">workspace_allocator</span> <span class="highlight-o">=</span> <span class="highlight-o">&amp;</span><span class="highlight-n">g_workspace_pool_allocator</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 48</span>
-<span class="highlight-ln"> 49</span>    <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">set_default_option</span><span class="highlight-p">(</span><span class="highlight-n">opt</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 50</span>
-<span class="highlight-ln"> 51</span>    <span class="highlight-k">return</span> <span class="highlight-n">JNI_TRUE</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 52</span><span class="highlight-p">}</span>
-<span class="highlight-ln"> 53</span>
-<span class="highlight-ln"> 54</span><span class="highlight-c1">// public native String Detect(Bitmap bitmap);
-</span><span class="highlight-ln"> 55</span><span class="highlight-c1"></span><span class="highlight-n">JNIEXPORT</span> <span class="highlight-n">jfloatArray</span> <span class="highlight-n">JNICALL</span> <span class="highlight-nf">Java_com_example_ncnn1_NcnnJni_Detect</span><span class="highlight-p">(</span><span class="highlight-n">JNIEnv</span><span class="highlight-o">*</span> <span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">jobject</span> <span class="highlight-n">thiz</span><span class="highlight-p">,</span> <span class="highlight-n">jobject</span> <span class="highlight-n">bitmap</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 56</span><span class="highlight-p">{</span>
-<span class="highlight-ln"> 57</span>    <span class="highlight-c1">// ncnn from bitmap
-</span><span class="highlight-ln"> 58</span><span class="highlight-c1"></span>    <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Mat</span> <span class="highlight-n">in</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 59</span>    <span class="highlight-p">{</span>
-<span class="highlight-ln"> 60</span>        <span class="highlight-n">AndroidBitmapInfo</span> <span class="highlight-n">info</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 61</span>        <span class="highlight-n">AndroidBitmap_getInfo</span><span class="highlight-p">(</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">bitmap</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">info</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 62</span>        <span class="highlight-kt">int</span> <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">info</span><span class="highlight-p">.</span><span class="highlight-n">width</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 63</span>        <span class="highlight-kt">int</span> <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">info</span><span class="highlight-p">.</span><span class="highlight-n">height</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 64</span>        <span class="highlight-k">if</span> <span class="highlight-p">(</span><span class="highlight-n">info</span><span class="highlight-p">.</span><span class="highlight-n">format</span> <span class="highlight-o">!=</span> <span class="highlight-n">ANDROID_BITMAP_FORMAT_RGBA_8888</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 65</span>            <span class="highlight-k">return</span> <span class="highlight-nb">NULL</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 66</span>
-<span class="highlight-ln"> 67</span>        <span class="highlight-kt">void</span><span class="highlight-o">*</span> <span class="highlight-n">indata</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 68</span>        <span class="highlight-n">AndroidBitmap_lockPixels</span><span class="highlight-p">(</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">bitmap</span><span class="highlight-p">,</span> <span class="highlight-o">&amp;</span><span class="highlight-n">indata</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 69</span>        <span class="highlight-c1">// 把像素转换成data，并指定通道顺序
-</span><span class="highlight-ln"> 70</span><span class="highlight-c1"></span>        <span class="highlight-n">in</span> <span class="highlight-o">=</span> <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Mat</span><span class="highlight-o">::</span><span class="highlight-n">from_pixels</span><span class="highlight-p">((</span><span class="highlight-k">const</span> <span class="highlight-kt">unsigned</span> <span class="highlight-kt">char</span><span class="highlight-o">*</span><span class="highlight-p">)</span><span class="highlight-n">indata</span><span class="highlight-p">,</span> <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Mat</span><span class="highlight-o">::</span><span class="highlight-n">PIXEL_RGBA2BGR</span><span class="highlight-p">,</span> <span class="highlight-n">width</span><span class="highlight-p">,</span> <span class="highlight-n">height</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 71</span>
-<span class="highlight-ln"> 72</span>        <span class="highlight-n">AndroidBitmap_unlockPixels</span><span class="highlight-p">(</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">bitmap</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 73</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln"> 74</span>
-<span class="highlight-ln"> 75</span>    <span class="highlight-c1">// ncnn_net
-</span><span class="highlight-ln"> 76</span><span class="highlight-c1"></span>    <span class="highlight-n">std</span><span class="highlight-o">::</span><span class="highlight-n">vector</span><span class="highlight-o">&lt;</span><span class="highlight-kt">float</span><span class="highlight-o">&gt;</span> <span class="highlight-n">cls_scores</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 77</span>    <span class="highlight-p">{</span>
-<span class="highlight-ln"> 78</span>        <span class="highlight-c1">// 减去均值和乘上比例
-</span><span class="highlight-ln"> 79</span><span class="highlight-c1"></span>        <span class="highlight-k">const</span> <span class="highlight-kt">float</span> <span class="highlight-n">mean_vals</span><span class="highlight-p">[</span><span class="highlight-mi">3</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-mf">103.94f</span><span class="highlight-p">,</span> <span class="highlight-mf">116.78f</span><span class="highlight-p">,</span> <span class="highlight-mf">123.68f</span><span class="highlight-p">};</span>
-<span class="highlight-ln"> 80</span>        <span class="highlight-k">const</span> <span class="highlight-kt">float</span> <span class="highlight-n">scale</span><span class="highlight-p">[</span><span class="highlight-mi">3</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-mf">0.017f</span><span class="highlight-p">,</span> <span class="highlight-mf">0.017f</span><span class="highlight-p">,</span> <span class="highlight-mf">0.017f</span><span class="highlight-p">};</span>
-<span class="highlight-ln"> 81</span>
-<span class="highlight-ln"> 82</span>        <span class="highlight-n">in</span><span class="highlight-p">.</span><span class="highlight-n">substract_mean_normalize</span><span class="highlight-p">(</span><span class="highlight-n">mean_vals</span><span class="highlight-p">,</span> <span class="highlight-n">scale</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 83</span>
-<span class="highlight-ln"> 84</span>        <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Extractor</span> <span class="highlight-n">ex</span> <span class="highlight-o">=</span> <span class="highlight-n">ncnn_net</span><span class="highlight-p">.</span><span class="highlight-n">create_extractor</span><span class="highlight-p">();</span>
-<span class="highlight-ln"> 85</span>        <span class="highlight-c1">// 如果时不加密是使用ex.input("data", in);
-</span><span class="highlight-ln"> 86</span><span class="highlight-c1"></span>        <span class="highlight-n">ex</span><span class="highlight-p">.</span><span class="highlight-n">input</span><span class="highlight-p">(</span><span class="highlight-n">mobilenet_v2_param_id</span><span class="highlight-o">::</span><span class="highlight-n">BLOB_data</span><span class="highlight-p">,</span> <span class="highlight-n">in</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 87</span>
-<span class="highlight-ln"> 88</span>        <span class="highlight-n">ncnn</span><span class="highlight-o">::</span><span class="highlight-n">Mat</span> <span class="highlight-n">out</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 89</span>        <span class="highlight-c1">// 如果时不加密是使用ex.extract("prob", out);
-</span><span class="highlight-ln"> 90</span><span class="highlight-c1"></span>        <span class="highlight-n">ex</span><span class="highlight-p">.</span><span class="highlight-n">extract</span><span class="highlight-p">(</span><span class="highlight-n">mobilenet_v2_param_id</span><span class="highlight-o">::</span><span class="highlight-n">BLOB_prob</span><span class="highlight-p">,</span> <span class="highlight-n">out</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 91</span>
-<span class="highlight-ln"> 92</span>        <span class="highlight-kt">int</span> <span class="highlight-n">output_size</span> <span class="highlight-o">=</span> <span class="highlight-n">out</span><span class="highlight-p">.</span><span class="highlight-n">w</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 93</span>        <span class="highlight-n">jfloat</span> <span class="highlight-o">*</span><span class="highlight-n">output</span><span class="highlight-p">[</span><span class="highlight-n">output_size</span><span class="highlight-p">];</span>
-<span class="highlight-ln"> 94</span>        <span class="highlight-k">for</span> <span class="highlight-p">(</span><span class="highlight-kt">int</span> <span class="highlight-n">j</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span><span class="highlight-p">;</span> <span class="highlight-n">j</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">out</span><span class="highlight-p">.</span><span class="highlight-n">w</span><span class="highlight-p">;</span> <span class="highlight-n">j</span><span class="highlight-o">++</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 95</span>            <span class="highlight-n">output</span><span class="highlight-p">[</span><span class="highlight-n">j</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-o">&amp;</span><span class="highlight-n">out</span><span class="highlight-p">[</span><span class="highlight-n">j</span><span class="highlight-p">];</span>
-<span class="highlight-ln"> 96</span>        <span class="highlight-p">}</span>
-<span class="highlight-ln"> 97</span>
-<span class="highlight-ln"> 98</span>        <span class="highlight-n">jfloatArray</span> <span class="highlight-n">jOutputData</span> <span class="highlight-o">=</span> <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">NewFloatArray</span><span class="highlight-p">(</span><span class="highlight-n">output_size</span><span class="highlight-p">);</span>
-<span class="highlight-ln"> 99</span>        <span class="highlight-k">if</span> <span class="highlight-p">(</span><span class="highlight-n">jOutputData</span> <span class="highlight-o">==</span> <span class="highlight-k">nullptr</span><span class="highlight-p">)</span> <span class="highlight-k">return</span> <span class="highlight-k">nullptr</span><span class="highlight-p">;</span>
-<span class="highlight-ln">100</span>        <span class="highlight-n">env</span><span class="highlight-o">-&gt;</span><span class="highlight-n">SetFloatArrayRegion</span><span class="highlight-p">(</span><span class="highlight-n">jOutputData</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">output_size</span><span class="highlight-p">,</span>
-<span class="highlight-ln">101</span>                                 <span class="highlight-k">reinterpret_cast</span><span class="highlight-o">&lt;</span><span class="highlight-k">const</span> <span class="highlight-n">jfloat</span> <span class="highlight-o">*&gt;</span><span class="highlight-p">(</span><span class="highlight-o">*</span><span class="highlight-n">output</span><span class="highlight-p">));</span>  <span class="highlight-c1">// copy
-</span><span class="highlight-ln">102</span><span class="highlight-c1"></span>
-<span class="highlight-ln">103</span>        <span class="highlight-k">return</span> <span class="highlight-n">jOutputData</span><span class="highlight-p">;</span>
-<span class="highlight-ln">104</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln">105</span><span class="highlight-p">}</span>
-<span class="highlight-ln">106</span><span class="highlight-p">}</span>
+<pre><code class="language-cpp">#include &lt;android/bitmap.h&gt;
+#include &lt;android/log.h&gt;
+#include &lt;jni.h&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+// ncnn
+#include "include/net.h"
+#include "mobilenet_v2.id.h"
+#include &lt;sys/time.h&gt;
+#include &lt;unistd.h&gt;
+
+static ncnn::UnlockedPoolAllocator g_blob_pool_allocator;
+static ncnn::PoolAllocator g_workspace_pool_allocator;
+
+static ncnn::Mat ncnn_param;
+static ncnn::Mat ncnn_bin;
+static ncnn::Net ncnn_net;
+
+
+extern "C" {
+
+// public native boolean Init(byte[] param, byte[] bin, byte[] words);
+JNIEXPORT jboolean JNICALL
+Java_com_example_ncnn1_NcnnJni_Init(JNIEnv *env, jobject thiz, jbyteArray param, jbyteArray bin) {
+    // init param
+    {
+        int len = env-&gt;GetArrayLength(param);
+        ncnn_param.create(len, (size_t) 1u);
+        env-&gt;GetByteArrayRegion(param, 0, len, (jbyte *) ncnn_param);
+        int ret = ncnn_net.load_param((const unsigned char *) ncnn_param);
+        __android_log_print(ANDROID_LOG_DEBUG, "NcnnJni", "load_param %d %d", ret, len);
+    }
+
+    // init bin
+    {
+        int len = env-&gt;GetArrayLength(bin);
+        ncnn_bin.create(len, (size_t) 1u);
+        env-&gt;GetByteArrayRegion(bin, 0, len, (jbyte *) ncnn_bin);
+        int ret = ncnn_net.load_model((const unsigned char *) ncnn_bin);
+        __android_log_print(ANDROID_LOG_DEBUG, "NcnnJni", "load_model %d %d", ret, len);
+    }
+
+    ncnn::Option opt;
+    opt.lightmode = true;
+    opt.num_threads = 4;
+    opt.blob_allocator = &amp;g_blob_pool_allocator;
+    opt.workspace_allocator = &amp;g_workspace_pool_allocator;
+
+    ncnn::set_default_option(opt);
+
+    return JNI_TRUE;
+}
+
+// public native String Detect(Bitmap bitmap);
+JNIEXPORT jfloatArray JNICALL Java_com_example_ncnn1_NcnnJni_Detect(JNIEnv* env, jobject thiz, jobject bitmap)
+{
+    // ncnn from bitmap
+    ncnn::Mat in;
+    {
+        AndroidBitmapInfo info;
+        AndroidBitmap_getInfo(env, bitmap, &amp;info);
+        int width = info.width;
+        int height = info.height;
+        if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
+            return NULL;
+
+        void* indata;
+        AndroidBitmap_lockPixels(env, bitmap, &amp;indata);
+        // 把像素转换成data，并指定通道顺序
+        in = ncnn::Mat::from_pixels((const unsigned char*)indata, ncnn::Mat::PIXEL_RGBA2BGR, width, height);
+
+        AndroidBitmap_unlockPixels(env, bitmap);
+    }
+
+    // ncnn_net
+    std::vector&lt;float&gt; cls_scores;
+    {
+        // 减去均值和乘上比例
+        const float mean_vals[3] = {103.94f, 116.78f, 123.68f};
+        const float scale[3] = {0.017f, 0.017f, 0.017f};
+
+        in.substract_mean_normalize(mean_vals, scale);
+
+        ncnn::Extractor ex = ncnn_net.create_extractor();
+        // 如果时不加密是使用ex.input("data", in);
+        ex.input(mobilenet_v2_param_id::BLOB_data, in);
+
+        ncnn::Mat out;
+        // 如果时不加密是使用ex.extract("prob", out);
+        ex.extract(mobilenet_v2_param_id::BLOB_prob, out);
+
+        int output_size = out.w;
+        jfloat *output[output_size];
+        for (int j = 0; j &lt; out.w; j++) {
+            output[j] = &amp;out[j];
+        }
+
+        jfloatArray jOutputData = env-&gt;NewFloatArray(output_size);
+        if (jOutputData == nullptr) return nullptr;
+        env-&gt;SetFloatArrayRegion(jOutputData, 0, output_size,
+                                 reinterpret_cast&lt;const jfloat *&gt;(*output));  // copy
+
+        return jOutputData;
+    }
+}
+}
 </code></pre>
 <ul>
 <li>在项目包<code>com.example.ncnn1</code>下，修改<code>MainActivity.java</code>中的代码，修改如下：</li>
 </ul>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.ncnn1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  2</span>
-<span class="highlight-ln">  3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.Manifest</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Activity</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Intent</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.pm.PackageManager</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.res.AssetManager</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.Bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.BitmapFactory</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 10</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.net.Uri</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 11</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 12</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.annotation.NonNull</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 13</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.annotation.Nullable</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 14</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v4.app.ActivityCompat</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 15</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v4.content.ContextCompat</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 16</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.text.method.ScrollingMovementMethod</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 17</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.Log</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 18</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 19</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Button</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 20</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.ImageView</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 21</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.TextView</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 22</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 23</span>
-<span class="highlight-ln"> 24</span><span class="highlight-kn">import</span> <span class="highlight-nn">com.bumptech.glide.Glide</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 25</span><span class="highlight-kn">import</span> <span class="highlight-nn">com.bumptech.glide.load.engine.DiskCacheStrategy</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 26</span><span class="highlight-kn">import</span> <span class="highlight-nn">com.bumptech.glide.request.RequestOptions</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 27</span>
-<span class="highlight-ln"> 28</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.BufferedReader</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 29</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.FileNotFoundException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 30</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.IOException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 31</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.InputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 32</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.InputStreamReader</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 33</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.util.ArrayList</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 34</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.util.Arrays</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 35</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.util.List</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 36</span>
-<span class="highlight-ln"> 37</span>
-<span class="highlight-ln"> 38</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MainActivity</span> <span class="highlight-kd">extends</span> <span class="highlight-n">Activity</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 39</span>    <span class="highlight-kd">private</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">TAG</span> <span class="highlight-o">=</span> <span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">class</span><span class="highlight-o">.</span><span class="highlight-na">getName</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 40</span>    <span class="highlight-kd">private</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">USE_PHOTO</span> <span class="highlight-o">=</span> <span class="highlight-n">1001</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 41</span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">camera_image_path</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 42</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ImageView</span> <span class="highlight-n">show_image</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 43</span>    <span class="highlight-kd">private</span> <span class="highlight-n">TextView</span> <span class="highlight-n">result_text</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 44</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">load_result</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 45</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">ddims</span> <span class="highlight-o">=</span> <span class="highlight-o">{</span><span class="highlight-n">1</span><span class="highlight-o">,</span> <span class="highlight-n">3</span><span class="highlight-o">,</span> <span class="highlight-n">224</span><span class="highlight-o">,</span> <span class="highlight-n">224</span><span class="highlight-o">};</span>
-<span class="highlight-ln"> 46</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">int</span> <span class="highlight-n">model_index</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 47</span>    <span class="highlight-kd">private</span> <span class="highlight-n">List</span><span class="highlight-o">&lt;</span><span class="highlight-n">String</span><span class="highlight-o">&gt;</span> <span class="highlight-n">resultLabel</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ArrayList</span><span class="highlight-o">&lt;&gt;();</span>
-<span class="highlight-ln"> 48</span>    <span class="highlight-kd">private</span> <span class="highlight-n">NcnnJni</span> <span class="highlight-n">squeezencnn</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">NcnnJni</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 49</span>
-<span class="highlight-ln"> 50</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 51</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 52</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">savedInstanceState</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 53</span>        <span class="highlight-n">setContentView</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">activity_main</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 54</span>
-<span class="highlight-ln"> 55</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 56</span>            <span class="highlight-n">initSqueezeNcnn</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 57</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 58</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MainActivity"</span><span class="highlight-o">,</span> <span class="highlight-s">"initSqueezeNcnn error"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 59</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 60</span>
-<span class="highlight-ln"> 61</span>        <span class="highlight-n">init_view</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 62</span>        <span class="highlight-n">readCacheLabelFromLocalFile</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 63</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 64</span>
-<span class="highlight-ln"> 65</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">initSqueezeNcnn</span><span class="highlight-o">()</span> <span class="highlight-kd">throws</span> <span class="highlight-n">IOException</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 66</span>        <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">param</span> <span class="highlight-o">=</span> <span class="highlight-kc">null</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 67</span>        <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">bin</span> <span class="highlight-o">=</span> <span class="highlight-kc">null</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 68</span>
-<span class="highlight-ln"> 69</span>        <span class="highlight-o">{</span>
-<span class="highlight-ln"> 70</span>            <span class="highlight-n">InputStream</span> <span class="highlight-n">assetsInputStream</span> <span class="highlight-o">=</span> <span class="highlight-n">getAssets</span><span class="highlight-o">().</span><span class="highlight-na">open</span><span class="highlight-o">(</span><span class="highlight-s">"mobilenet_v2.param.bin"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 71</span>            <span class="highlight-kt">int</span> <span class="highlight-n">available</span> <span class="highlight-o">=</span> <span class="highlight-n">assetsInputStream</span><span class="highlight-o">.</span><span class="highlight-na">available</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 72</span>            <span class="highlight-n">param</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">available</span><span class="highlight-o">];</span>
-<span class="highlight-ln"> 73</span>            <span class="highlight-kt">int</span> <span class="highlight-n">byteCode</span> <span class="highlight-o">=</span> <span class="highlight-n">assetsInputStream</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">param</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 74</span>            <span class="highlight-n">assetsInputStream</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 75</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 76</span>        <span class="highlight-o">{</span>
-<span class="highlight-ln"> 77</span>            <span class="highlight-n">InputStream</span> <span class="highlight-n">assetsInputStream</span> <span class="highlight-o">=</span> <span class="highlight-n">getAssets</span><span class="highlight-o">().</span><span class="highlight-na">open</span><span class="highlight-o">(</span><span class="highlight-s">"mobilenet_v2.bin"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 78</span>            <span class="highlight-kt">int</span> <span class="highlight-n">available</span> <span class="highlight-o">=</span> <span class="highlight-n">assetsInputStream</span><span class="highlight-o">.</span><span class="highlight-na">available</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 79</span>            <span class="highlight-n">bin</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">available</span><span class="highlight-o">];</span>
-<span class="highlight-ln"> 80</span>            <span class="highlight-kt">int</span> <span class="highlight-n">byteCode</span> <span class="highlight-o">=</span> <span class="highlight-n">assetsInputStream</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">bin</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 81</span>            <span class="highlight-n">assetsInputStream</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 82</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 83</span>
-<span class="highlight-ln"> 84</span>        <span class="highlight-n">load_result</span> <span class="highlight-o">=</span> <span class="highlight-n">squeezencnn</span><span class="highlight-o">.</span><span class="highlight-na">Init</span><span class="highlight-o">(</span><span class="highlight-n">param</span><span class="highlight-o">,</span> <span class="highlight-n">bin</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 85</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"load model"</span><span class="highlight-o">,</span> <span class="highlight-s">"result:"</span> <span class="highlight-o">+</span> <span class="highlight-n">load_result</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 86</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 87</span>
-<span class="highlight-ln"> 88</span>    <span class="highlight-c1">// initialize view
-</span><span class="highlight-ln"> 89</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">init_view</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 90</span>        <span class="highlight-n">request_permissions</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 91</span>        <span class="highlight-n">show_image</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">ImageView</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">show_image</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 92</span>        <span class="highlight-n">result_text</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">TextView</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">result_text</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 93</span>        <span class="highlight-n">result_text</span><span class="highlight-o">.</span><span class="highlight-na">setMovementMethod</span><span class="highlight-o">(</span><span class="highlight-n">ScrollingMovementMethod</span><span class="highlight-o">.</span><span class="highlight-na">getInstance</span><span class="highlight-o">());</span>
-<span class="highlight-ln"> 94</span>        <span class="highlight-n">Button</span> <span class="highlight-n">use_photo</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">use_photo</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 95</span>
-<span class="highlight-ln"> 96</span>        <span class="highlight-c1">// use photo click
-</span><span class="highlight-ln"> 97</span><span class="highlight-c1"></span>        <span class="highlight-n">use_photo</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 98</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 99</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">view</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">100</span>                <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">load_result</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">101</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-s">"never load model"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">102</span>                    <span class="highlight-k">return</span><span class="highlight-o">;</span>
-<span class="highlight-ln">103</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">104</span>                <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">use_photo</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">USE_PHOTO</span><span class="highlight-o">);</span>
-<span class="highlight-ln">105</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">106</span>        <span class="highlight-o">});</span>
-<span class="highlight-ln">107</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">108</span>
-<span class="highlight-ln">109</span>	<span class="highlight-c1">// load label's name
-</span><span class="highlight-ln">110</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">readCacheLabelFromLocalFile</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">111</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">112</span>            <span class="highlight-n">AssetManager</span> <span class="highlight-n">assetManager</span> <span class="highlight-o">=</span> <span class="highlight-n">getApplicationContext</span><span class="highlight-o">().</span><span class="highlight-na">getAssets</span><span class="highlight-o">();</span>
-<span class="highlight-ln">113</span>            <span class="highlight-n">BufferedReader</span> <span class="highlight-n">reader</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">BufferedReader</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">InputStreamReader</span><span class="highlight-o">(</span><span class="highlight-n">assetManager</span><span class="highlight-o">.</span><span class="highlight-na">open</span><span class="highlight-o">(</span><span class="highlight-s">"synset.txt"</span><span class="highlight-o">)));</span>
-<span class="highlight-ln">114</span>            <span class="highlight-n">String</span> <span class="highlight-n">readLine</span> <span class="highlight-o">=</span> <span class="highlight-kc">null</span><span class="highlight-o">;</span>
-<span class="highlight-ln">115</span>            <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">readLine</span> <span class="highlight-o">=</span> <span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-na">readLine</span><span class="highlight-o">())</span> <span class="highlight-o">!=</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">116</span>                <span class="highlight-n">resultLabel</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">readLine</span><span class="highlight-o">);</span>
-<span class="highlight-ln">117</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">118</span>            <span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">119</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">Exception</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">120</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"labelCache"</span><span class="highlight-o">,</span> <span class="highlight-s">"error "</span> <span class="highlight-o">+</span> <span class="highlight-n">e</span><span class="highlight-o">);</span>
-<span class="highlight-ln">121</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">122</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">123</span>
-<span class="highlight-ln">124</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">125</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onActivityResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">resultCode</span><span class="highlight-o">,</span> <span class="highlight-nd">@Nullable</span> <span class="highlight-n">Intent</span> <span class="highlight-n">data</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">126</span>        <span class="highlight-n">String</span> <span class="highlight-n">image_path</span><span class="highlight-o">;</span>
-<span class="highlight-ln">127</span>        <span class="highlight-n">RequestOptions</span> <span class="highlight-n">options</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">RequestOptions</span><span class="highlight-o">().</span><span class="highlight-na">skipMemoryCache</span><span class="highlight-o">(</span><span class="highlight-kc">true</span><span class="highlight-o">).</span><span class="highlight-na">diskCacheStrategy</span><span class="highlight-o">(</span><span class="highlight-n">DiskCacheStrategy</span><span class="highlight-o">.</span><span class="highlight-na">NONE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">128</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">resultCode</span> <span class="highlight-o">==</span> <span class="highlight-n">Activity</span><span class="highlight-o">.</span><span class="highlight-na">RESULT_OK</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">129</span>            <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">130</span>                <span class="highlight-k">case</span> <span class="highlight-n">USE_PHOTO</span><span class="highlight-o">:</span>
-<span class="highlight-ln">131</span>                    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">data</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">132</span>                        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">w</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"user photo data is null"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">133</span>                        <span class="highlight-k">return</span><span class="highlight-o">;</span>
-<span class="highlight-ln">134</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">135</span>                    <span class="highlight-n">Uri</span> <span class="highlight-n">image_uri</span> <span class="highlight-o">=</span> <span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-na">getData</span><span class="highlight-o">();</span>
-<span class="highlight-ln">136</span>                    <span class="highlight-n">Glide</span><span class="highlight-o">.</span><span class="highlight-na">with</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">).</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">image_uri</span><span class="highlight-o">).</span><span class="highlight-na">apply</span><span class="highlight-o">(</span><span class="highlight-n">options</span><span class="highlight-o">).</span><span class="highlight-na">into</span><span class="highlight-o">(</span><span class="highlight-n">show_image</span><span class="highlight-o">);</span>
-<span class="highlight-ln">137</span>                    <span class="highlight-c1">// get image path from uri
-</span><span class="highlight-ln">138</span><span class="highlight-c1"></span>                    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">get_path_from_URI</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">image_uri</span><span class="highlight-o">);</span>
-<span class="highlight-ln">139</span>                    <span class="highlight-c1">// predict image
-</span><span class="highlight-ln">140</span><span class="highlight-c1"></span>                    <span class="highlight-n">predict_image</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">141</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">142</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">143</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">144</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">145</span>
-<span class="highlight-ln">146</span>    <span class="highlight-c1">//  predict image
-</span><span class="highlight-ln">147</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">predict_image</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">image_path</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">148</span>        <span class="highlight-c1">// picture to float array
-</span><span class="highlight-ln">149</span><span class="highlight-c1"></span>        <span class="highlight-n">Bitmap</span> <span class="highlight-n">bmp</span> <span class="highlight-o">=</span> <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">getScaleBitmap</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">150</span>        <span class="highlight-n">Bitmap</span> <span class="highlight-n">rgba</span> <span class="highlight-o">=</span> <span class="highlight-n">bmp</span><span class="highlight-o">.</span><span class="highlight-na">copy</span><span class="highlight-o">(</span><span class="highlight-n">Bitmap</span><span class="highlight-o">.</span><span class="highlight-na">Config</span><span class="highlight-o">.</span><span class="highlight-na">ARGB_8888</span><span class="highlight-o">,</span> <span class="highlight-kc">true</span><span class="highlight-o">);</span>
-<span class="highlight-ln">151</span>
-<span class="highlight-ln">152</span>        <span class="highlight-c1">// resize to 227x227
-</span><span class="highlight-ln">153</span><span class="highlight-c1"></span>        <span class="highlight-n">Bitmap</span> <span class="highlight-n">input_bmp</span> <span class="highlight-o">=</span> <span class="highlight-n">Bitmap</span><span class="highlight-o">.</span><span class="highlight-na">createScaledBitmap</span><span class="highlight-o">(</span><span class="highlight-n">rgba</span><span class="highlight-o">,</span> <span class="highlight-n">ddims</span><span class="highlight-o">[</span><span class="highlight-n">2</span><span class="highlight-o">],</span> <span class="highlight-n">ddims</span><span class="highlight-o">[</span><span class="highlight-n">3</span><span class="highlight-o">],</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
-<span class="highlight-ln">154</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">155</span>            <span class="highlight-c1">// Data format conversion takes too long
-</span><span class="highlight-ln">156</span><span class="highlight-c1"></span>            <span class="highlight-c1">// Log.d("inputData", Arrays.toString(inputData));
-</span><span class="highlight-ln">157</span><span class="highlight-c1"></span>            <span class="highlight-kt">long</span> <span class="highlight-n">start</span> <span class="highlight-o">=</span> <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">currentTimeMillis</span><span class="highlight-o">();</span>
-<span class="highlight-ln">158</span>            <span class="highlight-c1">// get predict result
-</span><span class="highlight-ln">159</span><span class="highlight-c1"></span>            <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">squeezencnn</span><span class="highlight-o">.</span><span class="highlight-na">Detect</span><span class="highlight-o">(</span><span class="highlight-n">input_bmp</span><span class="highlight-o">);</span>
-<span class="highlight-ln">160</span>            <span class="highlight-kt">long</span> <span class="highlight-n">end</span> <span class="highlight-o">=</span> <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">currentTimeMillis</span><span class="highlight-o">();</span>
-<span class="highlight-ln">161</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"origin predict result:"</span> <span class="highlight-o">+</span> <span class="highlight-n">Arrays</span><span class="highlight-o">.</span><span class="highlight-na">toString</span><span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">));</span>
-<span class="highlight-ln">162</span>            <span class="highlight-kt">long</span> <span class="highlight-n">time</span> <span class="highlight-o">=</span> <span class="highlight-n">end</span> <span class="highlight-o">-</span> <span class="highlight-n">start</span><span class="highlight-o">;</span>
-<span class="highlight-ln">163</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"result length"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">));</span>
-<span class="highlight-ln">164</span>            <span class="highlight-c1">// show predict result and time
-</span><span class="highlight-ln">165</span><span class="highlight-c1"></span>            <span class="highlight-kt">int</span> <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">get_max_result</span><span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">);</span>
-<span class="highlight-ln">166</span>            <span class="highlight-n">String</span> <span class="highlight-n">show_text</span> <span class="highlight-o">=</span> <span class="highlight-s">"result："</span> <span class="highlight-o">+</span> <span class="highlight-n">r</span> <span class="highlight-o">+</span> <span class="highlight-s">"\nname："</span> <span class="highlight-o">+</span> <span class="highlight-n">resultLabel</span><span class="highlight-o">.</span><span class="highlight-na">get</span><span class="highlight-o">(</span><span class="highlight-n">r</span><span class="highlight-o">)</span> <span class="highlight-o">+</span> <span class="highlight-s">"\nprobability："</span> <span class="highlight-o">+</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">r</span><span class="highlight-o">]</span> <span class="highlight-o">+</span> <span class="highlight-s">"\ntime："</span> <span class="highlight-o">+</span> <span class="highlight-n">time</span> <span class="highlight-o">+</span> <span class="highlight-s">"ms"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">167</span>            <span class="highlight-n">result_text</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">show_text</span><span class="highlight-o">);</span>
-<span class="highlight-ln">168</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">Exception</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">169</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">170</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">171</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">172</span>
-<span class="highlight-ln">173</span>    <span class="highlight-c1">// get max probability label
-</span><span class="highlight-ln">174</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">int</span> <span class="highlight-nf">get_max_result</span><span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">result</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">175</span>        <span class="highlight-kt">float</span> <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">0</span><span class="highlight-o">];</span>
-<span class="highlight-ln">176</span>        <span class="highlight-kt">int</span> <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
-<span class="highlight-ln">177</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">178</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">probability</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">])</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">179</span>                <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln">180</span>                <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span><span class="highlight-o">;</span>
-<span class="highlight-ln">181</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">182</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">183</span>        <span class="highlight-k">return</span> <span class="highlight-n">r</span><span class="highlight-o">;</span>
-<span class="highlight-ln">184</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">185</span>
-<span class="highlight-ln">186</span>    <span class="highlight-c1">// request permissions
-</span><span class="highlight-ln">187</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">request_permissions</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">188</span>
-<span class="highlight-ln">189</span>        <span class="highlight-n">List</span><span class="highlight-o">&lt;</span><span class="highlight-n">String</span><span class="highlight-o">&gt;</span> <span class="highlight-n">permissionList</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ArrayList</span><span class="highlight-o">&lt;&gt;();</span>
-<span class="highlight-ln">190</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">CAMERA</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">191</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">CAMERA</span><span class="highlight-o">);</span>
-<span class="highlight-ln">192</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">193</span>
-<span class="highlight-ln">194</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">WRITE_EXTERNAL_STORAGE</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">195</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">WRITE_EXTERNAL_STORAGE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">196</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">197</span>
-<span class="highlight-ln">198</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">199</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">200</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">201</span>
-<span class="highlight-ln">202</span>        <span class="highlight-c1">// if list is not empty will request permissions
-</span><span class="highlight-ln">203</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">isEmpty</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">204</span>            <span class="highlight-n">ActivityCompat</span><span class="highlight-o">.</span><span class="highlight-na">requestPermissions</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">toArray</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">String</span><span class="highlight-o">[</span><span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">size</span><span class="highlight-o">()]),</span> <span class="highlight-n">1</span><span class="highlight-o">);</span>
-<span class="highlight-ln">205</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">206</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">207</span>
-<span class="highlight-ln">208</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">209</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onRequestPermissionsResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-nd">@NonNull</span> <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">permissions</span><span class="highlight-o">,</span> <span class="highlight-nd">@NonNull</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">grantResults</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">210</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onRequestPermissionsResult</span><span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-n">permissions</span><span class="highlight-o">,</span> <span class="highlight-n">grantResults</span><span class="highlight-o">);</span>
-<span class="highlight-ln">211</span>        <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">212</span>            <span class="highlight-k">case</span> <span class="highlight-n">1</span><span class="highlight-o">:</span>
-<span class="highlight-ln">213</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">grantResults</span><span class="highlight-o">.</span><span class="highlight-na">length</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">214</span>                    <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">grantResults</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">215</span>
-<span class="highlight-ln">216</span>                        <span class="highlight-kt">int</span> <span class="highlight-n">grantResult</span> <span class="highlight-o">=</span> <span class="highlight-n">grantResults</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln">217</span>                        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">grantResult</span> <span class="highlight-o">==</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_DENIED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">218</span>                            <span class="highlight-n">String</span> <span class="highlight-n">s</span> <span class="highlight-o">=</span> <span class="highlight-n">permissions</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln">219</span>                            <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">s</span> <span class="highlight-o">+</span> <span class="highlight-s">" permission was denied"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">220</span>                        <span class="highlight-o">}</span>
-<span class="highlight-ln">221</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">222</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">223</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">224</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">225</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">226</span><span class="highlight-o">}</span>
+<pre><code class="language-java">package com.example.ncnn1;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+public class MainActivity extends Activity {
+    private static final String TAG = MainActivity.class.getName();
+    private static final int USE_PHOTO = 1001;
+    private String camera_image_path;
+    private ImageView show_image;
+    private TextView result_text;
+    private boolean load_result = false;
+    private int[] ddims = {1, 3, 224, 224};
+    private int model_index = 1;
+    private List&lt;String&gt; resultLabel = new ArrayList&lt;&gt;();
+    private NcnnJni squeezencnn = new NcnnJni();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        try {
+            initSqueezeNcnn();
+        } catch (IOException e) {
+            Log.e("MainActivity", "initSqueezeNcnn error");
+        }
+
+        init_view();
+        readCacheLabelFromLocalFile();
+    }
+
+    private void initSqueezeNcnn() throws IOException {
+        byte[] param = null;
+        byte[] bin = null;
+
+        {
+            InputStream assetsInputStream = getAssets().open("mobilenet_v2.param.bin");
+            int available = assetsInputStream.available();
+            param = new byte[available];
+            int byteCode = assetsInputStream.read(param);
+            assetsInputStream.close();
+        }
+        {
+            InputStream assetsInputStream = getAssets().open("mobilenet_v2.bin");
+            int available = assetsInputStream.available();
+            bin = new byte[available];
+            int byteCode = assetsInputStream.read(bin);
+            assetsInputStream.close();
+        }
+
+        load_result = squeezencnn.Init(param, bin);
+        Log.d("load model", "result:" + load_result);
+    }
+
+    // initialize view
+    private void init_view() {
+        request_permissions();
+        show_image = (ImageView) findViewById(R.id.show_image);
+        result_text = (TextView) findViewById(R.id.result_text);
+        result_text.setMovementMethod(ScrollingMovementMethod.getInstance());
+        Button use_photo = (Button) findViewById(R.id.use_photo);
+
+        // use photo click
+        use_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!load_result) {
+                    Toast.makeText(MainActivity.this, "never load model", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                PhotoUtil.use_photo(MainActivity.this, USE_PHOTO);
+            }
+        });
+    }
+
+	// load label's name
+    private void readCacheLabelFromLocalFile() {
+        try {
+            AssetManager assetManager = getApplicationContext().getAssets();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("synset.txt")));
+            String readLine = null;
+            while ((readLine = reader.readLine()) != null) {
+                resultLabel.add(readLine);
+            }
+            reader.close();
+        } catch (Exception e) {
+            Log.e("labelCache", "error " + e);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String image_path;
+        RequestOptions options = new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case USE_PHOTO:
+                    if (data == null) {
+                        Log.w(TAG, "user photo data is null");
+                        return;
+                    }
+                    Uri image_uri = data.getData();
+                    Glide.with(MainActivity.this).load(image_uri).apply(options).into(show_image);
+                    // get image path from uri
+                    image_path = PhotoUtil.get_path_from_URI(MainActivity.this, image_uri);
+                    // predict image
+                    predict_image(image_path);
+                    break;
+            }
+        }
+    }
+
+    //  predict image
+    private void predict_image(String image_path) {
+        // picture to float array
+        Bitmap bmp = PhotoUtil.getScaleBitmap(image_path);
+        Bitmap rgba = bmp.copy(Bitmap.Config.ARGB_8888, true);
+
+        // resize to 227x227
+        Bitmap input_bmp = Bitmap.createScaledBitmap(rgba, ddims[2], ddims[3], false);
+        try {
+            // Data format conversion takes too long
+            // Log.d("inputData", Arrays.toString(inputData));
+            long start = System.currentTimeMillis();
+            // get predict result
+            float[] result = squeezencnn.Detect(input_bmp);
+            long end = System.currentTimeMillis();
+            Log.d(TAG, "origin predict result:" + Arrays.toString(result));
+            long time = end - start;
+            Log.d("result length", String.valueOf(result.length));
+            // show predict result and time
+            int r = get_max_result(result);
+            String show_text = "result：" + r + "\nname：" + resultLabel.get(r) + "\nprobability：" + result[r] + "\ntime：" + time + "ms";
+            result_text.setText(show_text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // get max probability label
+    private int get_max_result(float[] result) {
+        float probability = result[0];
+        int r = 0;
+        for (int i = 0; i &lt; result.length; i++) {
+            if (probability &lt; result[i]) {
+                probability = result[i];
+                r = i;
+            }
+        }
+        return r;
+    }
+
+    // request permissions
+    private void request_permissions() {
+
+        List&lt;String&gt; permissionList = new ArrayList&lt;&gt;();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.CAMERA);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        // if list is not empty will request permissions
+        if (!permissionList.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length &gt; 0) {
+                    for (int i = 0; i &lt; grantResults.length; i++) {
+
+                        int grantResult = grantResults[i];
+                        if (grantResult == PackageManager.PERMISSION_DENIED) {
+                            String s = permissions[i];
+                            Toast.makeText(this, s + " permission was denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+}
 </code></pre>
 <ul>
 <li>同样在项目的包<code>com.example.ncnn1</code>下，创建一个<code>NcnnJni.java</code>类，用于提供JNI接口，代码如下：</li>
 </ul>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.ncnn1</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.Bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">NcnnJni</span>
-<span class="highlight-ln"> 6</span><span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">Init</span><span class="highlight-o">(</span><span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">param</span><span class="highlight-o">,</span> <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">bin</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">native</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">Detect</span><span class="highlight-o">(</span><span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span><span class="highlight-o">);</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-kd">static</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">12</span>        <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">loadLibrary</span><span class="highlight-o">(</span><span class="highlight-s">"ncnn_jni"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">13</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">14</span><span class="highlight-o">}</span>
+<pre><code class="language-java">package com.example.ncnn1;
+
+import android.graphics.Bitmap;
+
+public class NcnnJni
+{
+    public native boolean Init(byte[] param, byte[] bin);
+
+    public native float[] Detect(Bitmap bitmap);
+
+    static {
+        System.loadLibrary("ncnn_jni");
+    }
+}
 </code></pre>
 <ul>
 <li>还是在项目的包<code>com.example.ncnn1</code>下，创建一个<code>PhotoUtil.java</code>类，这个是图片的工具类，代码如下：</li>
 </ul>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.ncnn1</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Activity</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Context</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Intent</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.database.Cursor</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.Bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.BitmapFactory</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.net.Uri</span><span class="highlight-o">;</span>
-<span class="highlight-ln">10</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.provider.MediaStore</span><span class="highlight-o">;</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.nio.FloatBuffer</span><span class="highlight-o">;</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">PhotoUtil</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1">// get picture in photo
-</span><span class="highlight-ln">16</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kt">void</span> <span class="highlight-nf">use_photo</span><span class="highlight-o">(</span><span class="highlight-n">Activity</span> <span class="highlight-n">activity</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">Intent</span> <span class="highlight-n">intent</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Intent</span><span class="highlight-o">(</span><span class="highlight-n">Intent</span><span class="highlight-o">.</span><span class="highlight-na">ACTION_PICK</span><span class="highlight-o">);</span>
-<span class="highlight-ln">18</span>        <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">setType</span><span class="highlight-o">(</span><span class="highlight-s">"image/*"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">activity</span><span class="highlight-o">.</span><span class="highlight-na">startActivityForResult</span><span class="highlight-o">(</span><span class="highlight-n">intent</span><span class="highlight-o">,</span> <span class="highlight-n">requestCode</span><span class="highlight-o">);</span>
-<span class="highlight-ln">20</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">21</span>
-<span class="highlight-ln">22</span>    <span class="highlight-c1">// get photo from Uri
-</span><span class="highlight-ln">23</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">String</span> <span class="highlight-nf">get_path_from_URI</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">Uri</span> <span class="highlight-n">uri</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">24</span>        <span class="highlight-n">String</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
-<span class="highlight-ln">25</span>        <span class="highlight-n">Cursor</span> <span class="highlight-n">cursor</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getContentResolver</span><span class="highlight-o">().</span><span class="highlight-na">query</span><span class="highlight-o">(</span><span class="highlight-n">uri</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">);</span>
-<span class="highlight-ln">26</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">cursor</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">27</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">uri</span><span class="highlight-o">.</span><span class="highlight-na">getPath</span><span class="highlight-o">();</span>
-<span class="highlight-ln">28</span>        <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">29</span>            <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">moveToFirst</span><span class="highlight-o">();</span>
-<span class="highlight-ln">30</span>            <span class="highlight-kt">int</span> <span class="highlight-n">idx</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getColumnIndex</span><span class="highlight-o">(</span><span class="highlight-n">MediaStore</span><span class="highlight-o">.</span><span class="highlight-na">Images</span><span class="highlight-o">.</span><span class="highlight-na">ImageColumns</span><span class="highlight-o">.</span><span class="highlight-na">DATA</span><span class="highlight-o">);</span>
-<span class="highlight-ln">31</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-n">idx</span><span class="highlight-o">);</span>
-<span class="highlight-ln">32</span>            <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">33</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">34</span>        <span class="highlight-k">return</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
-<span class="highlight-ln">35</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>    <span class="highlight-c1">// compress picture
-</span><span class="highlight-ln">38</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">Bitmap</span> <span class="highlight-nf">getScaleBitmap</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">filePath</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">39</span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span> <span class="highlight-n">opt</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span><span class="highlight-o">();</span>
-<span class="highlight-ln">40</span>        <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">true</span><span class="highlight-o">;</span>
-<span class="highlight-ln">41</span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeFile</span><span class="highlight-o">(</span><span class="highlight-n">filePath</span><span class="highlight-o">,</span> <span class="highlight-n">opt</span><span class="highlight-o">);</span>
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>        <span class="highlight-kt">int</span> <span class="highlight-n">bmpWidth</span> <span class="highlight-o">=</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">outWidth</span><span class="highlight-o">;</span>
-<span class="highlight-ln">44</span>        <span class="highlight-kt">int</span> <span class="highlight-n">bmpHeight</span> <span class="highlight-o">=</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">outHeight</span><span class="highlight-o">;</span>
-<span class="highlight-ln">45</span>
-<span class="highlight-ln">46</span>        <span class="highlight-kt">int</span> <span class="highlight-n">maxSize</span> <span class="highlight-o">=</span> <span class="highlight-n">500</span><span class="highlight-o">;</span>
-<span class="highlight-ln">47</span>
-<span class="highlight-ln">48</span>        <span class="highlight-c1">// compress picture with inSampleSize
-</span><span class="highlight-ln">49</span><span class="highlight-c1"></span>        <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">50</span>        <span class="highlight-k">while</span> <span class="highlight-o">(</span><span class="highlight-kc">true</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">51</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">bmpWidth</span> <span class="highlight-o">/</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">maxSize</span> <span class="highlight-o">||</span> <span class="highlight-n">bmpHeight</span> <span class="highlight-o">/</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">maxSize</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">52</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">53</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">54</span>            <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">*=</span> <span class="highlight-n">2</span><span class="highlight-o">;</span>
-<span class="highlight-ln">55</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">56</span>        <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln">57</span>        <span class="highlight-k">return</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeFile</span><span class="highlight-o">(</span><span class="highlight-n">filePath</span><span class="highlight-o">,</span> <span class="highlight-n">opt</span><span class="highlight-o">);</span>
-<span class="highlight-ln">58</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">59</span><span class="highlight-o">}</span>
+<pre><code class="language-java">package com.example.ncnn1;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
+
+import java.nio.FloatBuffer;
+
+public class PhotoUtil {
+    // get picture in photo
+    public static void use_photo(Activity activity, int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    // get photo from Uri
+    public static String get_path_from_URI(Context context, Uri uri) {
+        String result;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor == null) {
+            result = uri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
+
+    // compress picture
+    public static Bitmap getScaleBitmap(String filePath) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, opt);
+
+        int bmpWidth = opt.outWidth;
+        int bmpHeight = opt.outHeight;
+
+        int maxSize = 500;
+
+        // compress picture with inSampleSize
+        opt.inSampleSize = 1;
+        while (true) {
+            if (bmpWidth / opt.inSampleSize &lt; maxSize || bmpHeight / opt.inSampleSize &lt; maxSize) {
+                break;
+            }
+            opt.inSampleSize *= 2;
+        }
+        opt.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, opt);
+    }
+}
 </code></pre>
 <ul>
 <li>修改启动页面的布局，修改如下：</li>
 </ul>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nt">&lt;RelativeLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-na">xmlns:app=</span><span class="highlight-s">"http://schemas.android.com/apk/res-auto"</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">".MainActivity"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-nt">&lt;LinearLayout</span>
-<span class="highlight-ln">10</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/btn_ll"</span>
-<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_alignParentBottom=</span><span class="highlight-s">"true"</span>
-<span class="highlight-ln">12</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">13</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">14</span>        <span class="highlight-na">android:orientation=</span><span class="highlight-s">"horizontal"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>        <span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln">17</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/use_photo"</span>
-<span class="highlight-ln">18</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">19</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
-<span class="highlight-ln">20</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">21</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"相册"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>    <span class="highlight-nt">&lt;/LinearLayout&gt;</span>
-<span class="highlight-ln">24</span>
-<span class="highlight-ln">25</span>    <span class="highlight-nt">&lt;TextView</span>
-<span class="highlight-ln">26</span>        <span class="highlight-na">android:layout_above=</span><span class="highlight-s">"@id/btn_ll"</span>
-<span class="highlight-ln">27</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/result_text"</span>
-<span class="highlight-ln">28</span>        <span class="highlight-na">android:textSize=</span><span class="highlight-s">"16sp"</span>
-<span class="highlight-ln">29</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">30</span>        <span class="highlight-na">android:hint=</span><span class="highlight-s">"预测结果会在这里显示"</span>
-<span class="highlight-ln">31</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"100dp"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>    <span class="highlight-nt">&lt;ImageView</span>
-<span class="highlight-ln">34</span>        <span class="highlight-na">android:layout_alignParentTop=</span><span class="highlight-s">"true"</span>
-<span class="highlight-ln">35</span>        <span class="highlight-na">android:layout_above=</span><span class="highlight-s">"@id/result_text"</span>
-<span class="highlight-ln">36</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/show_image"</span>
-<span class="highlight-ln">37</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">38</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">39</span>
-<span class="highlight-ln">40</span><span class="highlight-nt">&lt;/RelativeLayout&gt;</span>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"&gt;
+
+    &lt;LinearLayout
+        android:id="@+id/btn_ll"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"&gt;
+
+        &lt;Button
+            android:id="@+id/use_photo"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="相册" /&gt;
+
+    &lt;/LinearLayout&gt;
+
+    &lt;TextView
+        android:layout_above="@id/btn_ll"
+        android:id="@+id/result_text"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:hint="预测结果会在这里显示"
+        android:layout_height="100dp" /&gt;
+
+    &lt;ImageView
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/result_text"
+        android:id="@+id/show_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /&gt;
+
+&lt;/RelativeLayout&gt;
 </code></pre>
 <ul>
 <li>修改APP目录下的<code>CMakeLists.txt</code>文件，修改如下：</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span># For more information about using CMake with Android Studio, read the
-<span class="highlight-ln"> 2</span># documentation: https://d.android.com/studio/projects/add-native-code.html
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span># Sets the minimum version of CMake required to build the native library.
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span>cmake_minimum_required(VERSION 3.4.1)
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span># Creates and names a library, sets it as either STATIC
-<span class="highlight-ln"> 9</span># or SHARED, and provides the relative paths to its source code.
-<span class="highlight-ln">10</span># You can define multiple libraries, and CMake builds them for you.
-<span class="highlight-ln">11</span># Gradle automatically packages shared libraries with your APK.
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>set(ncnn_lib ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a/libncnn.a)
-<span class="highlight-ln">14</span>add_library (ncnn_lib STATIC IMPORTED)
-<span class="highlight-ln">15</span>set_target_properties(ncnn_lib PROPERTIES IMPORTED_LOCATION ${ncnn_lib})
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>add_library( # Sets the name of the library.
-<span class="highlight-ln">19</span>             ncnn_jni
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>             # Sets the library as a shared library.
-<span class="highlight-ln">22</span>             SHARED
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>             # Provides a relative path to your source file(s).
-<span class="highlight-ln">25</span>             src/main/cpp/ncnn_jni.cpp )
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span># Searches for a specified prebuilt library and stores the path as a
-<span class="highlight-ln">28</span># variable. Because CMake includes system libraries in the search path by
-<span class="highlight-ln">29</span># default, you only need to specify the name of the public NDK library
-<span class="highlight-ln">30</span># you want to add. CMake verifies that the library exists before
-<span class="highlight-ln">31</span># completing its build.
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>find_library( # Sets the name of the path variable.
-<span class="highlight-ln">34</span>              log-lib
-<span class="highlight-ln">35</span>
-<span class="highlight-ln">36</span>              # Specifies the name of the NDK library that
-<span class="highlight-ln">37</span>              # you want CMake to locate.
-<span class="highlight-ln">38</span>              log )
-<span class="highlight-ln">39</span>
-<span class="highlight-ln">40</span># Specifies libraries CMake should link to your target library. You
-<span class="highlight-ln">41</span># can link multiple libraries, such as libraries you define in this
-<span class="highlight-ln">42</span># build script, prebuilt third-party libraries, or system libraries.
-<span class="highlight-ln">43</span>
-<span class="highlight-ln">44</span>target_link_libraries( # Specifies the target library.
-<span class="highlight-ln">45</span>                       ncnn_jni
-<span class="highlight-ln">46</span>                       ncnn_lib
-<span class="highlight-ln">47</span>                       jnigraphics
-<span class="highlight-ln">48</span>
-<span class="highlight-ln">49</span>                       # Links the target library to the log library
-<span class="highlight-ln">50</span>                       # included in the NDK.
-<span class="highlight-ln">51</span>                       ${log-lib} )
+<pre><code># For more information about using CMake with Android Studio, read the
+# documentation: https://d.android.com/studio/projects/add-native-code.html
+
+# Sets the minimum version of CMake required to build the native library.
+
+cmake_minimum_required(VERSION 3.4.1)
+
+# Creates and names a library, sets it as either STATIC
+# or SHARED, and provides the relative paths to its source code.
+# You can define multiple libraries, and CMake builds them for you.
+# Gradle automatically packages shared libraries with your APK.
+
+set(ncnn_lib ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a/libncnn.a)
+add_library (ncnn_lib STATIC IMPORTED)
+set_target_properties(ncnn_lib PROPERTIES IMPORTED_LOCATION ${ncnn_lib})
+
+
+add_library( # Sets the name of the library.
+             ncnn_jni
+
+             # Sets the library as a shared library.
+             SHARED
+
+             # Provides a relative path to your source file(s).
+             src/main/cpp/ncnn_jni.cpp )
+
+# Searches for a specified prebuilt library and stores the path as a
+# variable. Because CMake includes system libraries in the search path by
+# default, you only need to specify the name of the public NDK library
+# you want to add. CMake verifies that the library exists before
+# completing its build.
+
+find_library( # Sets the name of the path variable.
+              log-lib
+
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              log )
+
+# Specifies libraries CMake should link to your target library. You
+# can link multiple libraries, such as libraries you define in this
+# build script, prebuilt third-party libraries, or system libraries.
+
+target_link_libraries( # Specifies the target library.
+                       ncnn_jni
+                       ncnn_lib
+                       jnigraphics
+
+                       # Links the target library to the log library
+                       # included in the NDK.
+                       ${log-lib} )
 </code></pre>
 <ul>
 <li>修改APP目录下的<code>build.gradle</code>文件，修改如下：</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>apply plugin: 'com.android.application'
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span>android {
-<span class="highlight-ln"> 4</span>    compileSdkVersion 28
-<span class="highlight-ln"> 5</span>    defaultConfig {
-<span class="highlight-ln"> 6</span>        applicationId "com.example.ncnn1"
-<span class="highlight-ln"> 7</span>        minSdkVersion 21
-<span class="highlight-ln"> 8</span>        targetSdkVersion 28
-<span class="highlight-ln"> 9</span>        versionCode 1
-<span class="highlight-ln">10</span>        versionName "1.0"
-<span class="highlight-ln">11</span>        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-<span class="highlight-ln">12</span>        externalNativeBuild {
-<span class="highlight-ln">13</span>            cmake {
-<span class="highlight-ln">14</span>                cppFlags "-std=c++11 -fopenmp"
-<span class="highlight-ln">15</span>                abiFilters "armeabi-v7a"
-<span class="highlight-ln">16</span>            }
-<span class="highlight-ln">17</span>        }
-<span class="highlight-ln">18</span>    }
-<span class="highlight-ln">19</span>    buildTypes {
-<span class="highlight-ln">20</span>        release {
-<span class="highlight-ln">21</span>            minifyEnabled false
-<span class="highlight-ln">22</span>            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-<span class="highlight-ln">23</span>        }
-<span class="highlight-ln">24</span>    }
-<span class="highlight-ln">25</span>    externalNativeBuild {
-<span class="highlight-ln">26</span>        cmake {
-<span class="highlight-ln">27</span>            path "CMakeLists.txt"
-<span class="highlight-ln">28</span>        }
-<span class="highlight-ln">29</span>    }
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>    sourceSets {
-<span class="highlight-ln">32</span>        main {
-<span class="highlight-ln">33</span>            jniLibs.srcDirs = ["src/main/jniLibs"]
-<span class="highlight-ln">34</span>            jni.srcDirs = ['src/cpp']
-<span class="highlight-ln">35</span>        }
-<span class="highlight-ln">36</span>    }
-<span class="highlight-ln">37</span>}
-<span class="highlight-ln">38</span>
-<span class="highlight-ln">39</span>dependencies {
-<span class="highlight-ln">40</span>    implementation fileTree(dir: 'libs', include: ['*.jar'])
-<span class="highlight-ln">41</span>    implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
-<span class="highlight-ln">42</span>    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-<span class="highlight-ln">43</span>    testImplementation 'junit:junit:4.12'
-<span class="highlight-ln">44</span>    implementation 'com.github.bumptech.glide:glide:4.3.1'
-<span class="highlight-ln">45</span>    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-<span class="highlight-ln">46</span>    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-<span class="highlight-ln">47</span>}
+<pre><code>apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.ncnn1"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11 -fopenmp"
+                abiFilters "armeabi-v7a"
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["src/main/jniLibs"]
+            jni.srcDirs = ['src/cpp']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.github.bumptech.glide:glide:4.3.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
 </code></pre>
 <ul>
 <li>最后别忘了在配置文件中添加权限。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>&lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/&gt;
-<span class="highlight-ln">2</span>&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/&gt;
+<pre><code>&lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/&gt;
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/&gt;
 </code></pre>
 <p>最后的效果图如下：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GMKK6f.png" alt="在这里插入图片描述"></p>
 <p><strong>代码传送门：</strong> 上面已经几乎包括所有的代码了，为了读者方便直接使用，可以在<a href="https://download.csdn.net/download/qq_33200967/10647900" target="_blank">这里下载</a>项目源代码。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_4">参考资料</h1>
 <ol>
 <li><a href="https://github.com/BVLC/caffe" target="_blank">https://github.com/BVLC/caffe</a></li>
 <li><a href="https://github.com/Tencent/ncnn/wiki/how-to-use-ncnn-with-alexnet" target="_blank">https://github.com/Tencent/ncnn/wiki/how-to-use-ncnn-with-alexnet</a></li>
@@ -953,7 +953,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -962,7 +962,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -970,11 +970,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466395357",
@@ -992,4 +992,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 87ms, 2020/04/07 11:38:46 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 24ms, 2020/04/07 14:57:08 -->

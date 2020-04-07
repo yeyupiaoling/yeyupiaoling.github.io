@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>基于PaddlePaddle语音识别模型 - 夜雨飘零</title><meta name="description" content="语音识别 本项目是基于PaddlePaddle的DeepSpeech项目修改的，方便训练中文自定义数据集。 本项目使用的环境： Python 2.7 PaddlePaddle 1.6.0 目录 环境搭建 数据准备 训练模型 评估和预测 项目部署 环境搭建 请提前安装好显卡驱动，然后执行下面的命令。 # 卸载系统原有docker sudo apt-get remove docker docker-engine docker.io containerd runc # 更新apt-get源 sudo apt-get update # 安装docker的依赖 sudo apt-get install \ apt-transport-https \ ca-certificates \ curl \ gnupg-agent \ software-properties-common # 添加Docker的官方GPG密钥： curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - # 验证拥有指...."/><meta property="og:description" content="语音识别 本项目是基于PaddlePaddle的DeepSpeech项目修改的，方便训练中文自定义数据集。 本项目使用的环境： Python 2.7 PaddlePaddle 1.6.0 目录 环境搭建 数据准备 训练模型 评估和预测 项目部署 环境搭建 请提前安装好显卡驱动，然后执行下面的命令。 # 卸载系统原有docker sudo apt-get remove docker docker-engine docker.io containerd runc # 更新apt-get源 sudo apt-get update # 安装docker的依赖 sudo apt-get install \ apt-transport-https \ ca-certificates \ curl \ gnupg-agent \ software-properties-common # 添加Docker的官方GPG密钥： curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - # 验证拥有指...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="基于PaddlePaddle语音识别模型 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974063811.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="基于PaddlePaddle语音识别模型 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974063811.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>基于PaddlePaddle语音识别模型 - 夜雨飘零</title><meta name="description" content="语音识别 本项目是基于PaddlePaddle的DeepSpeech项目修改的，方便训练中文自定义数据集。 本项目使用的环境： Python 2.7 PaddlePaddle 1.6.0 目录 环境搭建 数据准备 训练模型 评估和预测 项目部署 环境搭建 请提前安装好显卡驱动，然后执行下面的命令。 # 卸载系统原有docker sudo apt-get remove docker docker-engine docker.io containerd runc # 更新apt-get源 sudo apt-get update # 安装docker的依赖 sudo apt-get install \ apt-transport-https \ ca-certificates \ curl \ gnupg-agent \ software-properties-common # 添加Docker的官方GPG密钥： curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - # 验证拥有指...."/><meta property="og:description" content="语音识别 本项目是基于PaddlePaddle的DeepSpeech项目修改的，方便训练中文自定义数据集。 本项目使用的环境： Python 2.7 PaddlePaddle 1.6.0 目录 环境搭建 数据准备 训练模型 评估和预测 项目部署 环境搭建 请提前安装好显卡驱动，然后执行下面的命令。 # 卸载系统原有docker sudo apt-get remove docker docker-engine docker.io containerd runc # 更新apt-get源 sudo apt-get update # 安装docker的依赖 sudo apt-get install \ apt-transport-https \ ca-certificates \ curl \ gnupg-agent \ software-properties-common # 添加Docker的官方GPG密钥： curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - # 验证拥有指...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="基于PaddlePaddle语音识别模型 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584974063811.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="基于PaddlePaddle语音识别模型 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974063811.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="PaddlePaddle实现人脸识别系统二——使用MTCNN实现人脸检测" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973948630.html">
             <link rel="next" title="百度机器学习训练营笔记——数学基础" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584974132836.html">
     <!-- 百度统计 -->
@@ -78,28 +78,28 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#语音识别">语音识别</a>
+            <a href="#toc_h1_0">语音识别</a>
         </li>
         <li class="toc__h2">
-            <a href="#目录">目录</a>
+            <a href="#toc_h2_1">目录</a>
         </li>
         <li class="toc__h2">
-            <a href="#环境搭建">环境搭建</a>
+            <a href="#toc_h2_2">环境搭建</a>
         </li>
         <li class="toc__h3">
-            <a href="#搭建本地环境">搭建本地环境</a>
+            <a href="#toc_h3_3">搭建本地环境</a>
         </li>
         <li class="toc__h2">
-            <a href="#数据准备">数据准备</a>
+            <a href="#toc_h2_4">数据准备</a>
         </li>
         <li class="toc__h2">
-            <a href="#训练模型">训练模型</a>
+            <a href="#toc_h2_5">训练模型</a>
         </li>
         <li class="toc__h2">
-            <a href="#评估和预测">评估和预测</a>
+            <a href="#toc_h2_6">评估和预测</a>
         </li>
         <li class="toc__h2">
-            <a href="#项目部署">项目部署</a>
+            <a href="#toc_h2_7">项目部署</a>
         </li>
 </ul>        </div>
 </div>
@@ -147,106 +147,106 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20190719.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="语音识别">语音识别</h1>
+<h1 id="toc_h1_0">语音识别</h1>
 <p>本项目是基于PaddlePaddle的<a href="https://github.com/PaddlePaddle/DeepSpeech" target="_blank">DeepSpeech</a>项目修改的，方便训练中文自定义数据集。</p>
 <p>本项目使用的环境：</p>
 <ul>
 <li>Python 2.7</li>
 <li>PaddlePaddle 1.6.0</li>
 </ul>
-<h2 id="目录">目录</h2>
+<h2 id="toc_h2_1">目录</h2>
 <ul>
-<li><a href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">环境搭建</a></li>
-<li><a href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">数据准备</a></li>
-<li><a href="#%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">训练模型</a></li>
-<li><a href="#%E8%AF%84%E4%BC%B0%E5%92%8C%E9%A2%84%E6%B5%8B">评估和预测</a></li>
-<li><a href="#%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2">项目部署</a></li>
+<li><a href="#环境搭建">环境搭建</a></li>
+<li><a href="#数据准备">数据准备</a></li>
+<li><a href="#训练模型">训练模型</a></li>
+<li><a href="#评估和预测">评估和预测</a></li>
+<li><a href="#项目部署">项目部署</a></li>
 </ul>
-<h2 id="环境搭建">环境搭建</h2>
+<h2 id="toc_h2_2">环境搭建</h2>
 <ul>
 <li>请提前安装好显卡驱动，然后执行下面的命令。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># 卸载系统原有docker</span>
-<span class="highlight-ln"> 2</span>sudo apt-get remove docker docker-engine docker.io containerd runc
-<span class="highlight-ln"> 3</span><span class="highlight-c1"># 更新apt-get源</span> 
-<span class="highlight-ln"> 4</span>sudo apt-get update
-<span class="highlight-ln"> 5</span><span class="highlight-c1"># 安装docker的依赖</span> 
-<span class="highlight-ln"> 6</span>sudo apt-get install <span class="highlight-se">\
-</span><span class="highlight-ln"> 7</span><span class="highlight-se"></span>    apt-transport-https <span class="highlight-se">\
-</span><span class="highlight-ln"> 8</span><span class="highlight-se"></span>    ca-certificates <span class="highlight-se">\
-</span><span class="highlight-ln"> 9</span><span class="highlight-se"></span>    curl <span class="highlight-se">\
-</span><span class="highlight-ln">10</span><span class="highlight-se"></span>    gnupg-agent <span class="highlight-se">\
-</span><span class="highlight-ln">11</span><span class="highlight-se"></span>    software-properties-common
-<span class="highlight-ln">12</span><span class="highlight-c1"># 添加Docker的官方GPG密钥：</span>
-<span class="highlight-ln">13</span>curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="highlight-p">|</span> sudo apt-key add -
-<span class="highlight-ln">14</span><span class="highlight-c1"># 验证拥有指纹</span>
-<span class="highlight-ln">15</span>sudo apt-key fingerprint 0EBFCD88
-<span class="highlight-ln">16</span><span class="highlight-c1"># 设置稳定存储库</span>
-<span class="highlight-ln">17</span>sudo add-apt-repository <span class="highlight-se">\
-</span><span class="highlight-ln">18</span><span class="highlight-se"></span>   <span class="highlight-s2">"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-</span><span class="highlight-ln">19</span><span class="highlight-s2">   </span><span class="highlight-k">$(</span>lsb_release -cs<span class="highlight-k">)</span><span class="highlight-s2"> \
-</span><span class="highlight-ln">20</span><span class="highlight-s2">   stable"</span>
+<pre><code class="language-shell"># 卸载系统原有docker
+sudo apt-get remove docker docker-engine docker.io containerd runc
+# 更新apt-get源 
+sudo apt-get update
+# 安装docker的依赖 
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+# 添加Docker的官方GPG密钥：
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+# 验证拥有指纹
+sudo apt-key fingerprint 0EBFCD88
+# 设置稳定存储库
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
 </code></pre>
 <ul>
 <li>安装Docker</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># 再次更新apt-get源</span> 
-<span class="highlight-ln">2</span>sudo apt-get update
-<span class="highlight-ln">3</span><span class="highlight-c1"># 开始安装docker</span> 
-<span class="highlight-ln">4</span>sudo apt-get install docker-ce
-<span class="highlight-ln">5</span><span class="highlight-c1"># 加载docker</span> 
-<span class="highlight-ln">6</span>sudo apt-cache madison docker-ce
-<span class="highlight-ln">7</span><span class="highlight-c1"># 验证docker是否安装成功</span>
-<span class="highlight-ln">8</span>sudo docker run hello-world
+<pre><code class="language-shell"># 再次更新apt-get源 
+sudo apt-get update
+# 开始安装docker 
+sudo apt-get install docker-ce
+# 加载docker 
+sudo apt-cache madison docker-ce
+# 验证docker是否安装成功
+sudo docker run hello-world
 </code></pre>
 <ul>
 <li>安装nvidia-docker</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker_1.0.1-1_amd64.deb
-<span class="highlight-ln">2</span>sudo dpkg -i /tmp/nvidia-docker*.deb <span class="highlight-o">&amp;&amp;</span> rm /tmp/nvidia-docker*.deb
+<pre><code class="language-shell">wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker_1.0.1-1_amd64.deb
+sudo dpkg -i /tmp/nvidia-docker*.deb &amp;&amp; rm /tmp/nvidia-docker*.deb
 </code></pre>
 <ul>
 <li>下载 PaddlePaddle Docker 镜像</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sudo nvidia-docker pull hub.baidubce.com/paddlepaddle/deep_speech_fluid:latest-gpu
+<pre><code class="language-shell">sudo nvidia-docker pull hub.baidubce.com/paddlepaddle/deep_speech_fluid:latest-gpu
 </code></pre>
 <ul>
 <li>git clone 本项目源码</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/yeyupiaoling/DeepSpeech.git
+<pre><code class="language-shell">git clone https://github.com/yeyupiaoling/DeepSpeech.git
 </code></pre>
 <ul>
 <li>运行 PaddlePaddle Docker 镜像</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sudo nvidia-docker run -it -v <span class="highlight-k">$(</span><span class="highlight-nb">pwd</span><span class="highlight-k">)</span>/DeepSpeech:/DeepSpeech hub.baidubce.com/paddlepaddle/deep_speech_fluid:latest-gpu /bin/bash
+<pre><code class="language-shell">sudo nvidia-docker run -it -v $(pwd)/DeepSpeech:/DeepSpeech hub.baidubce.com/paddlepaddle/deep_speech_fluid:latest-gpu /bin/bash
 </code></pre>
 <ul>
 <li>安装 PaddlePaddle 1.6.0，因为这个项目必须要在 PaddlePaddle 1.6.0 版本以上才可以运行。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>pip2 install paddlepaddle-gpu<span class="highlight-o">==</span>1.6.0.post107 -i https://mirrors.aliyun.com/pypi/simple/
+<pre><code class="language-shell">pip2 install paddlepaddle-gpu==1.6.0.post107 -i https://mirrors.aliyun.com/pypi/simple/
 </code></pre>
-<h3 id="搭建本地环境">搭建本地环境</h3>
+<h3 id="toc_h3_3">搭建本地环境</h3>
 <ul>
 <li>并不建议使用本地进行训练和预测，但是如何开发者必须使用本地环境，可以执行下面的命令。因为每个电脑的环境不一样，不能保证能够正常使用。首先需要正确安装 PaddlePaddle 1.6.0 的GPU版本，并安装相关的CUDA和CUDNN。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>pip2 install paddlepaddle-gpu<span class="highlight-o">==</span>1.6.0.post107 -i https://mirrors.aliyun.com/pypi/simple/
+<pre><code class="language-shell">pip2 install paddlepaddle-gpu==1.6.0.post107 -i https://mirrors.aliyun.com/pypi/simple/
 </code></pre>
 <ul>
 <li>切换到<code>DeepSpeech/setup/</code>目录下，执行<code>setup.sh</code>脚本，注意在执行之后需要输入root用户密码，等待安装即可</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nb">cd</span> DeepSpeech/setup/
-<span class="highlight-ln">2</span>sh setup.sh
+<pre><code class="language-shell">cd DeepSpeech/setup/
+sh setup.sh
 </code></pre>
-<h2 id="数据准备">数据准备</h2>
+<h2 id="toc_h2_4">数据准备</h2>
 <ul>
 <li>首先进行到本项目的脚本文件夹中，我们所有程序都使用脚本执行。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nb">cd</span> DeepSpeech/run/
+<pre><code class="language-shell">cd DeepSpeech/run/
 </code></pre>
 <ul>
 <li>本项目提供了下载公开的中文普通话语音数据集，分别是Aishell，Free ST-Chinese-Mandarin-Corpus，THCHS-30 这三个数据集，总大小超过28G。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh download_public_data.sh
+<pre><code class="language-shell">sh download_public_data.sh
 </code></pre>
 <ul>
 <li>如果开发者有自己的数据集，可以使用自己的数据集进行训练，当然也可以跟上面下载的数据集一起训练。自定义的语音数据需要符合一下格式：
@@ -256,55 +256,55 @@ var _hmt = _hmt || [];
 </ol>
 </li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>./dataset/audio/wav/0175/H0175A0171.wav 我需要把空调温度调到二十度
-<span class="highlight-ln">2</span>./dataset/audio/wav/0175/H0175A0377.wav 出彩中国人
-<span class="highlight-ln">3</span>./dataset/audio/wav/0175/H0175A0470.wav 据克而瑞研究中心监测
-<span class="highlight-ln">4</span>./dataset/audio/wav/0175/H0175A0180.wav 把温度加大到十八
+<pre><code class="language-shell">./dataset/audio/wav/0175/H0175A0171.wav 我需要把空调温度调到二十度
+./dataset/audio/wav/0175/H0175A0377.wav 出彩中国人
+./dataset/audio/wav/0175/H0175A0470.wav 据克而瑞研究中心监测
+./dataset/audio/wav/0175/H0175A0180.wav 把温度加大到十八
 </code></pre>
 <ul>
 <li>然后执行下面的数据集处理脚本，这个是把我们的数据集生成三个JSON格式的文件，分别是<code>manifest.dev、manifest.test、manifest.train</code>。然后计算均值和标准差用于归一化，脚本随机采样2000个的语音频谱特征的均值和标准差，并将结果保存在<code>mean_std.npz</code>中。建立词表。最后建立词表，把所有出现的字符都存放子在<code>zh_vocab.txt</code>文件中，一行一个字符。以上生成的文件都存放在<code>DeepSpeech/dataset/</code>目录下。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh prepare_train_data.sh
+<pre><code class="language-shell">sh prepare_train_data.sh
 </code></pre>
-<h2 id="训练模型">训练模型</h2>
+<h2 id="toc_h2_5">训练模型</h2>
 <ul>
 <li>在执行训练之前，我们先来下载官方的预训练模型和官方提供的超大语言模型文件，这些文件将存放在<code>DeepSpeech/models</code>目录下。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh download_model.sh
+<pre><code class="language-shell">sh download_model.sh
 </code></pre>
 <ul>
 <li>执行训练脚本，开始训练语音识别模型， 每训练一轮保存一次模型，模型保存在<code>DeepSpeech/models/checkpoints</code>目录下。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh train.sh
+<pre><code class="language-shell">sh train.sh
 </code></pre>
-<h2 id="评估和预测">评估和预测</h2>
+<h2 id="toc_h2_6">评估和预测</h2>
 <ul>
 <li>在训练结束之后，我们要使用这个脚本对模型进行超参数调整，提高语音识别性能。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh hyper_parameter_tune.sh
+<pre><code class="language-shell">sh hyper_parameter_tune.sh
 </code></pre>
 <ul>
 <li>我们可以使用这个脚本对模型进行评估，通过字符错误率来评价模型的性能。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh eval.sh
+<pre><code class="language-shell">sh eval.sh
 </code></pre>
 <ul>
 <li>使用下面的脚本执行预测，获取预测的情况。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh infer.sh
+<pre><code class="language-shell">sh infer.sh
 </code></pre>
-<h2 id="项目部署">项目部署</h2>
+<h2 id="toc_h2_7">项目部署</h2>
 <ul>
 <li>启动语音识别服务，使用Socket通讯。需要注意的是<code>host_ip</code>参数是电脑本机的IP地址，其他使用默认就可以。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>sh start_server.sh
+<pre><code class="language-shell">sh start_server.sh
 </code></pre>
 <ul>
 <li>测试服务，执行下面这个程序调用语音识别服务。在控制台中，按下<code>空格键</code>，按住并开始讲话。讲话完毕请释放该键以让控制台中显示语音的文本结果。要退出客户端，只需按<code>ESC键</code>。</li>
 </ul>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>python deploy/client.py <span class="highlight-se">\
-</span><span class="highlight-ln">2</span><span class="highlight-se"></span>--host_ip<span class="highlight-o">=</span><span class="highlight-s1">'192.168.1.130'</span> <span class="highlight-se">\
-</span><span class="highlight-ln">3</span><span class="highlight-se"></span>--host_port<span class="highlight-o">=</span><span class="highlight-m">10086</span>
+<pre><code class="language-shell">python deploy/client.py \
+--host_ip='192.168.1.130' \
+--host_port=10086
 </code></pre>
                 <div>
                     <hr>
@@ -381,7 +381,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -390,7 +390,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -398,11 +398,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466409682",
@@ -420,4 +420,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 412ms, 2020/04/07 11:38:42 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 24ms, 2020/04/07 14:57:07 -->

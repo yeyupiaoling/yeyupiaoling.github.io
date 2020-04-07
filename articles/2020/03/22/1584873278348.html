@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>学习SpringMVC笔记——Intellij IDEA创建SpringMVC项目 - 夜雨飘零</title><meta name="description" content="选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢） 生成的一个项目（左），把lib文件夹移动到WEB-INF文件夹下（右） 配置文件的设置 为了方便管理，我把SpringMVC的配置文件都放在config的文件中 该文件的是与src文件同级的，修改如下： 打开项目设置（Ctrl+Shift+Alt+S）→Modules→（项目名称）→选择文件（config）→点击Sources 因为移动了配置文件了，要在wel.xml里重新配置文件的路径 applicationContext.xml dispatcher-servlet.xml 配置文件的移动完成了，可以开始动工项目了 Controller类 在 dispatcher-servlet.xml中添加返回路径的前缀和后缀 使用包扫描的方法，扫描Controller类 定义Controller类时，只要在类前添加 @Controller就可以了 方法的定义 @RequestMapping参数value的值值路径，method的值是访问方式，是一个数组或...."/><meta property="og:description" content="选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢） 生成的一个项目（左），把lib文件夹移动到WEB-INF文件夹下（右） 配置文件的设置 为了方便管理，我把SpringMVC的配置文件都放在config的文件中 该文件的是与src文件同级的，修改如下： 打开项目设置（Ctrl+Shift+Alt+S）→Modules→（项目名称）→选择文件（config）→点击Sources 因为移动了配置文件了，要在wel.xml里重新配置文件的路径 applicationContext.xml dispatcher-servlet.xml 配置文件的移动完成了，可以开始动工项目了 Controller类 在 dispatcher-servlet.xml中添加返回路径的前缀和后缀 使用包扫描的方法，扫描Controller类 定义Controller类时，只要在类前添加 @Controller就可以了 方法的定义 @RequestMapping参数value的值值路径，method的值是访问方式，是一个数组或...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="学习SpringMVC笔记——Intellij IDEA创建SpringMVC项目 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584873278348.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="学习SpringMVC笔记——Intellij IDEA创建SpringMVC项目 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584873278348.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>学习SpringMVC笔记——Intellij IDEA创建SpringMVC项目 - 夜雨飘零</title><meta name="description" content="选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢） 生成的一个项目（左），把lib文件夹移动到WEB-INF文件夹下（右） 配置文件的设置 为了方便管理，我把SpringMVC的配置文件都放在config的文件中 该文件的是与src文件同级的，修改如下： 打开项目设置（Ctrl+Shift+Alt+S）→Modules→（项目名称）→选择文件（config）→点击Sources 因为移动了配置文件了，要在wel.xml里重新配置文件的路径 applicationContext.xml dispatcher-servlet.xml 配置文件的移动完成了，可以开始动工项目了 Controller类 在 dispatcher-servlet.xml中添加返回路径的前缀和后缀 使用包扫描的方法，扫描Controller类 定义Controller类时，只要在类前添加 @Controller就可以了 方法的定义 @RequestMapping参数value的值值路径，method的值是访问方式，是一个数组或...."/><meta property="og:description" content="选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢） 生成的一个项目（左），把lib文件夹移动到WEB-INF文件夹下（右） 配置文件的设置 为了方便管理，我把SpringMVC的配置文件都放在config的文件中 该文件的是与src文件同级的，修改如下： 打开项目设置（Ctrl+Shift+Alt+S）→Modules→（项目名称）→选择文件（config）→点击Sources 因为移动了配置文件了，要在wel.xml里重新配置文件的路径 applicationContext.xml dispatcher-servlet.xml 配置文件的移动完成了，可以开始动工项目了 Controller类 在 dispatcher-servlet.xml中添加返回路径的前缀和后缀 使用包扫描的方法，扫描Controller类 定义Controller类时，只要在类前添加 @Controller就可以了 方法的定义 @RequestMapping参数value的值值路径，method的值是访问方式，是一个数组或...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="学习SpringMVC笔记——Intellij IDEA创建SpringMVC项目 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584873278348.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="学习SpringMVC笔记——Intellij IDEA创建SpringMVC项目 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584873278348.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="SQL格式笔记" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872767567.html">
             <link rel="next" title="Android的View动画" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584874793205.html">
     <!-- 百度统计 -->
@@ -78,13 +78,13 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h2">
-            <a href="#选择Spring-勾选SpringMVC-选择Download-让IDEA帮我们下载需要的jar包-可能会有点慢-">选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢）</a>
+            <a href="#toc_h2_0">选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢）</a>
         </li>
         <li class="toc__h2">
-            <a href="#配置文件的设置">配置文件的设置</a>
+            <a href="#toc_h2_1">配置文件的设置</a>
         </li>
         <li class="toc__h2">
-            <a href="#Controller类">Controller类</a>
+            <a href="#toc_h2_2">Controller类</a>
         </li>
 </ul>        </div>
 </div>
@@ -128,12 +128,12 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20191021.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h2 id="选择Spring-勾选SpringMVC-选择Download-让IDEA帮我们下载需要的jar包-可能会有点慢-">选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢）</h2>
+<h2 id="toc_h2_0">选择Spring→勾选SpringMVC→选择Download（让IDEA帮我们下载需要的jar包，可能会有点慢）</h2>
 <p><img src="https://s1.ax1x.com/2020/03/30/GnCpy6.png" alt=""></p>
 <p><img src="https://s1.ax1x.com/2020/04/02/GGf3wj.png" alt=""></p>
 <p>生成的一个项目（左），把lib文件夹移动到WEB-INF文件夹下（右）</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GM2hWj.png" alt=""> <img src="https://s1.ax1x.com/2020/04/02/GYdW3d.png" alt=""></p>
-<h2 id="配置文件的设置">配置文件的设置</h2>
+<h2 id="toc_h2_1">配置文件的设置</h2>
 <p>为了方便管理，我把SpringMVC的配置文件都放在config的文件中</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GM2yOP.png" alt=""> <img src="https://s1.ax1x.com/2020/04/02/GGWqL4.png" alt=""></p>
 <p>该文件的是与src文件同级的，修改如下：</p>
@@ -146,7 +146,7 @@ var _hmt = _hmt || [];
 <p><code>dispatcher-servlet.xml</code></p>
 <p><img src="https://s1.ax1x.com/2020/04/03/GdpDeK.png" alt=""></p>
 <p>配置文件的移动完成了，可以开始动工项目了</p>
-<h2 id="Controller类">Controller类</h2>
+<h2 id="toc_h2_2">Controller类</h2>
 <p>在 <code>dispatcher-servlet.xml</code>中添加返回路径的前缀和后缀</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GQjYNQ.png" alt=""></p>
 <p>使用包扫描的方法，扫描Controller类</p>
@@ -239,7 +239,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -248,7 +248,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -256,11 +256,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466405610",
@@ -278,4 +278,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 47ms, 2020/04/07 11:38:50 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 25ms, 2020/04/07 14:57:08 -->

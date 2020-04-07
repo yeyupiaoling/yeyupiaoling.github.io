@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>XAMPP下的MYSQL解决中文乱码问题 - 夜雨飘零</title><meta name="description" content="相信有很多朋友都跟我一样，使用XAMPP集成的MYSQL，因为它操作起来实在太方便了。但是它默认不是支持UTF-8的，需要我们手动去修改配置文件 my.ini 打开XAMPP的控制面板，并打开配置文件 在配置文件上加上4句话 default_character_set = utf8 character-set-server = utf8 collation-server = utf8_general_ci default_character_set = utf8 第1句： default_character_set = utf8 第2句和第3句 character-set-server = utf8 collation-server = utf8_general_ci 第4句： default_character_set = utf8 重启一下MySQL就行了，你重新创建一个数据库看看，但是数据库的编码一定要选对 说到这里顺便提一下Ubuntu server的MySQL中文乱码问题 在Ubuntu中配置文件的路径有点不一样，配置文件的内容也不一样，以下是路径 用vi...."/><meta property="og:description" content="相信有很多朋友都跟我一样，使用XAMPP集成的MYSQL，因为它操作起来实在太方便了。但是它默认不是支持UTF-8的，需要我们手动去修改配置文件 my.ini 打开XAMPP的控制面板，并打开配置文件 在配置文件上加上4句话 default_character_set = utf8 character-set-server = utf8 collation-server = utf8_general_ci default_character_set = utf8 第1句： default_character_set = utf8 第2句和第3句 character-set-server = utf8 collation-server = utf8_general_ci 第4句： default_character_set = utf8 重启一下MySQL就行了，你重新创建一个数据库看看，但是数据库的编码一定要选对 说到这里顺便提一下Ubuntu server的MySQL中文乱码问题 在Ubuntu中配置文件的路径有点不一样，配置文件的内容也不一样，以下是路径 用vi...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="XAMPP下的MYSQL解决中文乱码问题 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584872438296.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="XAMPP下的MYSQL解决中文乱码问题 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872438296.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>XAMPP下的MYSQL解决中文乱码问题 - 夜雨飘零</title><meta name="description" content="相信有很多朋友都跟我一样，使用XAMPP集成的MYSQL，因为它操作起来实在太方便了。但是它默认不是支持UTF-8的，需要我们手动去修改配置文件 my.ini 打开XAMPP的控制面板，并打开配置文件 在配置文件上加上4句话 default_character_set = utf8 character-set-server = utf8 collation-server = utf8_general_ci default_character_set = utf8 第1句： default_character_set = utf8 第2句和第3句 character-set-server = utf8 collation-server = utf8_general_ci 第4句： default_character_set = utf8 重启一下MySQL就行了，你重新创建一个数据库看看，但是数据库的编码一定要选对 说到这里顺便提一下Ubuntu server的MySQL中文乱码问题 在Ubuntu中配置文件的路径有点不一样，配置文件的内容也不一样，以下是路径 用vi...."/><meta property="og:description" content="相信有很多朋友都跟我一样，使用XAMPP集成的MYSQL，因为它操作起来实在太方便了。但是它默认不是支持UTF-8的，需要我们手动去修改配置文件 my.ini 打开XAMPP的控制面板，并打开配置文件 在配置文件上加上4句话 default_character_set = utf8 character-set-server = utf8 collation-server = utf8_general_ci default_character_set = utf8 第1句： default_character_set = utf8 第2句和第3句 character-set-server = utf8 collation-server = utf8_general_ci 第4句： default_character_set = utf8 重启一下MySQL就行了，你重新创建一个数据库看看，但是数据库的编码一定要选对 说到这里顺便提一下Ubuntu server的MySQL中文乱码问题 在Ubuntu中配置文件的路径有点不一样，配置文件的内容也不一样，以下是路径 用vi...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="XAMPP下的MYSQL解决中文乱码问题 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584872438296.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="XAMPP下的MYSQL解决中文乱码问题 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872438296.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="使用InteIIiJ IDEA开发Java web 项目" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872034302.html">
             <link rel="next" title="SQL格式笔记" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872767567.html">
     <!-- 百度统计 -->
@@ -119,24 +119,24 @@ var _hmt = _hmt || [];
 <p>打开XAMPP的控制面板，并打开配置文件</p>
 <p><img src="https://s1.ax1x.com/2020/04/02/GYd6AO.png" alt=""></p>
 <p>在配置文件上加上4句话</p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nv">default_character_set</span> <span class="highlight-o">=</span> utf8
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span>character-set-server <span class="highlight-o">=</span> utf8
-<span class="highlight-ln">4</span>collation-server <span class="highlight-o">=</span> utf8_general_ci
-<span class="highlight-ln">5</span>
-<span class="highlight-ln">6</span><span class="highlight-nv">default_character_set</span> <span class="highlight-o">=</span> utf8
+<pre><code class="language-shell">default_character_set = utf8
+
+character-set-server = utf8
+collation-server = utf8_general_ci
+
+default_character_set = utf8
 </code></pre>
 <p>第1句：</p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nv">default_character_set</span> <span class="highlight-o">=</span> utf8
+<pre><code class="language-shell">default_character_set = utf8
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/31/GluCIH.png" alt=""></p>
 <p>第2句和第3句</p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span>character-set-server <span class="highlight-o">=</span> utf8
-<span class="highlight-ln">2</span>collation-server <span class="highlight-o">=</span> utf8_general_ci
+<pre><code class="language-shell">character-set-server = utf8
+collation-server = utf8_general_ci
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/31/GQe5Ct.png" alt=""></p>
 <p>第4句：</p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nv">default_character_set</span> <span class="highlight-o">=</span> utf8
+<pre><code class="language-shell">default_character_set = utf8
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/03/31/GMu4Fs.png" alt=""></p>
 <p>重启一下MySQL就行了，你重新创建一个数据库看看，但是数据库的编码一定要选对</p>
@@ -145,13 +145,13 @@ var _hmt = _hmt || [];
 <p>在Ubuntu中配置文件的路径有点不一样，配置文件的内容也不一样，以下是路径</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GM2lW9.png" alt=""></p>
 <p>用vim编写配置文件在最后加上以下代码</p>
-<pre><code class="language-bash highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-o">[</span>client<span class="highlight-o">]</span>
-<span class="highlight-ln">2</span><span class="highlight-nv">default_character_set</span> <span class="highlight-o">=</span> utf8
-<span class="highlight-ln">3</span><span class="highlight-o">[</span>mysqld<span class="highlight-o">]</span>
-<span class="highlight-ln">4</span>character-set-server <span class="highlight-o">=</span> utf8
-<span class="highlight-ln">5</span>collation-server <span class="highlight-o">=</span> utf8_general_ci
-<span class="highlight-ln">6</span><span class="highlight-o">[</span>mysql<span class="highlight-o">]</span>
-<span class="highlight-ln">7</span><span class="highlight-nv">default_character_set</span> <span class="highlight-o">=</span> utf8
+<pre><code class="language-shell">[client]
+default_character_set = utf8
+[mysqld]
+character-set-server = utf8
+collation-server = utf8_general_ci
+[mysql]
+default_character_set = utf8
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/03/GdpisP.png" alt=""></p>
 <p>最后重启MySQL，命令是：<code>/etc/init.d/mysql start</code></p>
@@ -230,7 +230,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -239,7 +239,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -247,11 +247,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466419590",
@@ -269,4 +269,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 42ms, 2020/04/07 11:38:51 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

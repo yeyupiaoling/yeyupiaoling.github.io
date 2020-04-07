@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>深度学习神经网络中权重的初始化 - 夜雨飘零</title><meta name="description" content="前言 良好的初始化权重有以下的好处： 加快梯度下降的收敛速度 增加梯度下降收敛到较低训练（和泛化）错误的几率 所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式： 零初始化，将权重参数初始化为零。 随机初始化，使用随机的方式，初始化权重参数。 He初始化，这个公式的初始化方式。 我们来尝试这个三种方法吧。 模型函数 编写一个 model函数，使用这个函数可以测试各种初始化权重参数的效果。 在编写 model函数之前，我们先要导入对于依赖包，其中有些依赖包可以在这里下载。 # coding=utf-8 import numpy as np from init_utils import compute_loss, forward_propagation, backward_propagation from init_utils import update_parameters, predict, load_dataset # 加载图像数据集:蓝色/红点在圆圈中 train_X, train_Y, test_X, test_Y = load_dataset() 其中使用的...."/><meta property="og:description" content="前言 良好的初始化权重有以下的好处： 加快梯度下降的收敛速度 增加梯度下降收敛到较低训练（和泛化）错误的几率 所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式： 零初始化，将权重参数初始化为零。 随机初始化，使用随机的方式，初始化权重参数。 He初始化，这个公式的初始化方式。 我们来尝试这个三种方法吧。 模型函数 编写一个 model函数，使用这个函数可以测试各种初始化权重参数的效果。 在编写 model函数之前，我们先要导入对于依赖包，其中有些依赖包可以在这里下载。 # coding=utf-8 import numpy as np from init_utils import compute_loss, forward_propagation, backward_propagation from init_utils import update_parameters, predict, load_dataset # 加载图像数据集:蓝色/红点在圆圈中 train_X, train_Y, test_X, test_Y = load_dataset() 其中使用的...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="深度学习神经网络中权重的初始化 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="深度学习神经网络中权重的初始化 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>深度学习神经网络中权重的初始化 - 夜雨飘零</title><meta name="description" content="前言 良好的初始化权重有以下的好处： 加快梯度下降的收敛速度 增加梯度下降收敛到较低训练（和泛化）错误的几率 所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式： 零初始化，将权重参数初始化为零。 随机初始化，使用随机的方式，初始化权重参数。 He初始化，这个公式的初始化方式。 我们来尝试这个三种方法吧。 模型函数 编写一个 model函数，使用这个函数可以测试各种初始化权重参数的效果。 在编写 model函数之前，我们先要导入对于依赖包，其中有些依赖包可以在这里下载。 # coding=utf-8 import numpy as np from init_utils import compute_loss, forward_propagation, backward_propagation from init_utils import update_parameters, predict, load_dataset # 加载图像数据集:蓝色/红点在圆圈中 train_X, train_Y, test_X, test_Y = load_dataset() 其中使用的...."/><meta property="og:description" content="前言 良好的初始化权重有以下的好处： 加快梯度下降的收敛速度 增加梯度下降收敛到较低训练（和泛化）错误的几率 所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式： 零初始化，将权重参数初始化为零。 随机初始化，使用随机的方式，初始化权重参数。 He初始化，这个公式的初始化方式。 我们来尝试这个三种方法吧。 模型函数 编写一个 model函数，使用这个函数可以测试各种初始化权重参数的效果。 在编写 model函数之前，我们先要导入对于依赖包，其中有些依赖包可以在这里下载。 # coding=utf-8 import numpy as np from init_utils import compute_loss, forward_propagation, backward_propagation from init_utils import update_parameters, predict, load_dataset # 加载图像数据集:蓝色/红点在圆圈中 train_X, train_Y, test_X, test_Y = load_dataset() 其中使用的...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="深度学习神经网络中权重的初始化 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="深度学习神经网络中权重的初始化 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972080351.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《Improving Deep Neural Networks》的理论知识点" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584971993833.html">
             <link rel="next" title="深度学习神经网络中正则化的使用" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972209709.html">
     <!-- 百度统计 -->
@@ -78,25 +78,25 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#模型函数">模型函数</a>
+            <a href="#toc_h1_1">模型函数</a>
         </li>
         <li class="toc__h1">
-            <a href="#零初始化">零初始化</a>
+            <a href="#toc_h1_2">零初始化</a>
         </li>
         <li class="toc__h1">
-            <a href="#随机初始化">随机初始化</a>
+            <a href="#toc_h1_3">随机初始化</a>
         </li>
         <li class="toc__h1">
-            <a href="#He初始化">He初始化</a>
+            <a href="#toc_h1_4">He初始化</a>
         </li>
         <li class="toc__h1">
-            <a href="#总结">总结</a>
+            <a href="#toc_h1_5">总结</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_6">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -142,7 +142,7 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20191013.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>良好的初始化权重有以下的好处：</p>
 <ul>
 <li>加快梯度下降的收敛速度</li>
@@ -155,243 +155,243 @@ var _hmt = _hmt || [];
 <li>He初始化，这个公式的初始化方式。</li>
 </ol>
 <p>我们来尝试这个三种方法吧。</p>
-<h1 id="模型函数">模型函数</h1>
+<h1 id="toc_h1_1">模型函数</h1>
 <p>编写一个 <code>model</code>函数，使用这个函数可以测试各种初始化权重参数的效果。<br>
 在编写 <code>model</code>函数之前，我们先要导入对于依赖包，其中有些依赖包可以在<a href="https://download.csdn.net/download/qq_33200967/10350347" target="_blank">这里下载</a>。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">numpy</span> <span class="highlight-kn">as</span> <span class="highlight-nn">np</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">from</span> <span class="highlight-nn">init_utils</span> <span class="highlight-kn">import</span> <span class="highlight-n">compute_loss</span><span class="highlight-p">,</span> <span class="highlight-n">forward_propagation</span><span class="highlight-p">,</span> <span class="highlight-n">backward_propagation</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">from</span> <span class="highlight-nn">init_utils</span> <span class="highlight-kn">import</span> <span class="highlight-n">update_parameters</span><span class="highlight-p">,</span> <span class="highlight-n">predict</span><span class="highlight-p">,</span> <span class="highlight-n">load_dataset</span>
-<span class="highlight-ln">5</span>
-<span class="highlight-ln">6</span><span class="highlight-c1"># 加载图像数据集:蓝色/红点在圆圈中</span>
-<span class="highlight-ln">7</span><span class="highlight-n">train_X</span><span class="highlight-p">,</span> <span class="highlight-n">train_Y</span><span class="highlight-p">,</span> <span class="highlight-n">test_X</span><span class="highlight-p">,</span> <span class="highlight-n">test_Y</span> <span class="highlight-o">=</span> <span class="highlight-n">load_dataset</span><span class="highlight-p">()</span>
+<pre><code class="language-python"># coding=utf-8
+import numpy as np
+from init_utils import compute_loss, forward_propagation, backward_propagation
+from init_utils import update_parameters, predict, load_dataset
+
+# 加载图像数据集:蓝色/红点在圆圈中
+train_X, train_Y, test_X, test_Y = load_dataset()
 </code></pre>
 <p>其中使用的数据集是这个样子的：<br>
 <img src="https://s1.ax1x.com/2020/04/02/GYXEr9.png" alt="这里写图片描述"></p>
 <p>然后就可以编写 <code>model</code>函数了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">model</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.01</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-o">=</span><span class="highlight-mi">15000</span><span class="highlight-p">,</span> <span class="highlight-n">print_cost</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">initialization</span><span class="highlight-o">=</span><span class="highlight-s2">"he"</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    实现一个三层神经网络:LINEAR&gt;RELU-&gt;LINEAR-&gt;RELU-&gt;LINEAR-&gt;SIGMOID。
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    X -- 输入数据，形状(2，样本数量)
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    Y -- 真正的“标签”向量(包含0代表红点;(1)形状(1，样本数目)
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">    learning_rate -- 梯度下降的学习速率。
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">    num_iterations -- 运行梯度下降的迭代次数。
-</span><span class="highlight-ln">10</span><span class="highlight-s2">    print_cost -- 如果是真的，打印每1000次迭代的成本。
-</span><span class="highlight-ln">11</span><span class="highlight-s2">    initialization -- 选择使用哪个初始化(“0”、“随机”或“He”)
-</span><span class="highlight-ln">12</span><span class="highlight-s2">
-</span><span class="highlight-ln">13</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln">14</span><span class="highlight-s2">    parameters -- 由模型学习的参数。
-</span><span class="highlight-ln">15</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-k">global</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">grads</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">costs</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>  <span class="highlight-c1"># to keep track of the loss</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">m</span> <span class="highlight-o">=</span> <span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>  <span class="highlight-c1"># number of examples</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">layers_dims</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">X</span><span class="highlight-o">.</span><span class="highlight-n">shape</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-mi">10</span><span class="highlight-p">,</span> <span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>    <span class="highlight-c1"># 字典初始化参数。</span>
-<span class="highlight-ln">24</span>    <span class="highlight-k">if</span> <span class="highlight-n">initialization</span> <span class="highlight-o">==</span> <span class="highlight-s2">"zeros"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">25</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">initialize_parameters_zeros</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">)</span>
-<span class="highlight-ln">26</span>    <span class="highlight-k">elif</span> <span class="highlight-n">initialization</span> <span class="highlight-o">==</span> <span class="highlight-s2">"random"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">27</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">initialize_parameters_random</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">)</span>
-<span class="highlight-ln">28</span>    <span class="highlight-k">elif</span> <span class="highlight-n">initialization</span> <span class="highlight-o">==</span> <span class="highlight-s2">"he"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">29</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">initialize_parameters_he</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">)</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>    <span class="highlight-c1"># 循环(梯度下降)</span>
-<span class="highlight-ln">32</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">num_iterations</span><span class="highlight-p">):</span>
-<span class="highlight-ln">33</span>
-<span class="highlight-ln">34</span>        <span class="highlight-c1"># 前向传播: LINEAR -&gt; RELU -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID.</span>
-<span class="highlight-ln">35</span>        <span class="highlight-n">a3</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span> <span class="highlight-o">=</span> <span class="highlight-n">forward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>        <span class="highlight-c1"># Loss</span>
-<span class="highlight-ln">38</span>        <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">compute_loss</span><span class="highlight-p">(</span><span class="highlight-n">a3</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">)</span>
-<span class="highlight-ln">39</span>
-<span class="highlight-ln">40</span>        <span class="highlight-c1"># 反向传播。</span>
-<span class="highlight-ln">41</span>        <span class="highlight-n">grads</span> <span class="highlight-o">=</span> <span class="highlight-n">backward_propagation</span><span class="highlight-p">(</span><span class="highlight-n">X</span><span class="highlight-p">,</span> <span class="highlight-n">Y</span><span class="highlight-p">,</span> <span class="highlight-n">cache</span><span class="highlight-p">)</span>
-<span class="highlight-ln">42</span>
-<span class="highlight-ln">43</span>        <span class="highlight-c1"># 更新参数。</span>
-<span class="highlight-ln">44</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">update_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">grads</span><span class="highlight-p">,</span> <span class="highlight-n">learning_rate</span><span class="highlight-p">)</span>
-<span class="highlight-ln">45</span>
-<span class="highlight-ln">46</span>        <span class="highlight-c1"># 每1000次迭代打印一次损失。</span>
-<span class="highlight-ln">47</span>        <span class="highlight-k">if</span> <span class="highlight-n">print_cost</span> <span class="highlight-ow">and</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-mi">1000</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">48</span>            <span class="highlight-k">print</span><span class="highlight-p">(</span><span class="highlight-s2">"Cost after iteration {}: {}"</span><span class="highlight-o">.</span><span class="highlight-n">format</span><span class="highlight-p">(</span><span class="highlight-n">i</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-p">))</span>
-<span class="highlight-ln">49</span>            <span class="highlight-n">costs</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">50</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<pre><code class="language-python">def model(X, Y, learning_rate=0.01, num_iterations=15000, print_cost=True, initialization="he"):
+    """
+    实现一个三层神经网络:LINEAR&gt;RELU-&gt;LINEAR-&gt;RELU-&gt;LINEAR-&gt;SIGMOID。
+
+    Arguments:
+    X -- 输入数据，形状(2，样本数量)
+    Y -- 真正的“标签”向量(包含0代表红点;(1)形状(1，样本数目)
+    learning_rate -- 梯度下降的学习速率。
+    num_iterations -- 运行梯度下降的迭代次数。
+    print_cost -- 如果是真的，打印每1000次迭代的成本。
+    initialization -- 选择使用哪个初始化(“0”、“随机”或“He”)
+
+    Returns:
+    parameters -- 由模型学习的参数。
+    """
+
+    global parameters
+    grads = {}
+    costs = []  # to keep track of the loss
+    m = X.shape[1]  # number of examples
+    layers_dims = [X.shape[0], 10, 5, 1]
+
+    # 字典初始化参数。
+    if initialization == "zeros":
+        parameters = initialize_parameters_zeros(layers_dims)
+    elif initialization == "random":
+        parameters = initialize_parameters_random(layers_dims)
+    elif initialization == "he":
+        parameters = initialize_parameters_he(layers_dims)
+
+    # 循环(梯度下降)
+    for i in range(0, num_iterations):
+
+        # 前向传播: LINEAR -&gt; RELU -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID.
+        a3, cache = forward_propagation(X, parameters)
+
+        # Loss
+        cost = compute_loss(a3, Y)
+
+        # 反向传播。
+        grads = backward_propagation(X, Y, cache)
+
+        # 更新参数。
+        parameters = update_parameters(parameters, grads, learning_rate)
+
+        # 每1000次迭代打印一次损失。
+        if print_cost and i % 1000 == 0:
+            print("Cost after iteration {}: {}".format(i, cost))
+            costs.append(cost)
+    return parameters
 </code></pre>
-<h1 id="零初始化">零初始化</h1>
+<h1 id="toc_h1_2">零初始化</h1>
 <p>在神经网络中初始化的参数有两种类型：</p>
 <ul>
-<li>权重矩阵 <span class="vditor-math">(W^{[1]}, W^{[2]}, W^{[3]}, ..., W^{[L-1]}, W^{[L]})</span></li>
-<li>偏差向量 <span class="vditor-math">(b^{[1]}, b^{[2]}, b^{[3]}, ..., b^{[L-1]}, b^{[L]})</span></li>
+<li>权重矩阵 $(W^{[1]}, W^{[2]}, W^{[3]}, ..., W^{[L-1]}, W^{[L]})$</li>
+<li>偏差向量 $(b^{[1]}, b^{[2]}, b^{[3]}, ..., b^{[L-1]}, b^{[L]})$</li>
 </ul>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">initialize_parameters_zeros</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    layer_dims——python数组(list)，包含每个层的大小。
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">                    b1 -- 形状偏置向量(layers_dims[1]， 1)
-</span><span class="highlight-ln">10</span><span class="highlight-s2">                    ...
-</span><span class="highlight-ln">11</span><span class="highlight-s2">                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
-</span><span class="highlight-ln">12</span><span class="highlight-s2">                    bL -- 形状的偏置向量(layers_dims[L]， 1)
-</span><span class="highlight-ln">13</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">L</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">)</span>  <span class="highlight-c1"># 网络中的层数</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>    <span class="highlight-k">for</span> <span class="highlight-n">l</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">L</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'W'</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">l</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span><span class="highlight-p">],</span> <span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]))</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'b'</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">l</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">21</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<pre><code class="language-python">def initialize_parameters_zeros(layers_dims):
+    """
+    Arguments:
+    layer_dims——python数组(list)，包含每个层的大小。
+
+    Returns:
+    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
+                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
+                    b1 -- 形状偏置向量(layers_dims[1]， 1)
+                    ...
+                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
+                    bL -- 形状的偏置向量(layers_dims[L]， 1)
+    """
+
+    parameters = {}
+    L = len(layers_dims)  # 网络中的层数
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.zeros((layers_dims[l], layers_dims[l - 1]))
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
 </code></pre>
 <p>然后运行测试一下，会看cost并不怎么收敛，这是因为它没有“破坏对称性”。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">model</span><span class="highlight-p">(</span><span class="highlight-n">train_X</span><span class="highlight-p">,</span> <span class="highlight-n">train_Y</span><span class="highlight-p">,</span> <span class="highlight-n">initialization</span><span class="highlight-o">=</span><span class="highlight-s2">"zeros"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span>    <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"On the train set:"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">predictions_train</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">train_X</span><span class="highlight-p">,</span> <span class="highlight-n">train_Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"On the test set:"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span>    <span class="highlight-n">predictions_test</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">test_X</span><span class="highlight-p">,</span> <span class="highlight-n">test_Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    parameters = model(train_X, train_Y, initialization="zeros")
+    print ("On the train set:")
+    predictions_train = predict(train_X, train_Y, parameters)
+    print ("On the test set:")
+    predictions_test = predict(test_X, test_Y, parameters)
 </code></pre>
 <p>输出的日志信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>Cost after iteration 0: 0.69314718056
-<span class="highlight-ln"> 2</span>Cost after iteration 1000: 0.69314718056
-<span class="highlight-ln"> 3</span>Cost after iteration 2000: 0.69314718056
-<span class="highlight-ln"> 4</span>Cost after iteration 3000: 0.69314718056
-<span class="highlight-ln"> 5</span>Cost after iteration 4000: 0.69314718056
-<span class="highlight-ln"> 6</span>Cost after iteration 5000: 0.69314718056
-<span class="highlight-ln"> 7</span>Cost after iteration 6000: 0.69314718056
-<span class="highlight-ln"> 8</span>Cost after iteration 7000: 0.69314718056
-<span class="highlight-ln"> 9</span>Cost after iteration 8000: 0.69314718056
-<span class="highlight-ln">10</span>Cost after iteration 9000: 0.69314718056
-<span class="highlight-ln">11</span>Cost after iteration 10000: 0.69314718056
-<span class="highlight-ln">12</span>Cost after iteration 11000: 0.69314718056
-<span class="highlight-ln">13</span>Cost after iteration 12000: 0.69314718056
-<span class="highlight-ln">14</span>Cost after iteration 13000: 0.69314718056
-<span class="highlight-ln">15</span>Cost after iteration 14000: 0.69314718056
-<span class="highlight-ln">16</span>On the train set:
-<span class="highlight-ln">17</span>Accuracy: 0.5
-<span class="highlight-ln">18</span>On the test set:
-<span class="highlight-ln">19</span>Accuracy: 0.5
+<pre><code class="language-text">Cost after iteration 0: 0.69314718056
+Cost after iteration 1000: 0.69314718056
+Cost after iteration 2000: 0.69314718056
+Cost after iteration 3000: 0.69314718056
+Cost after iteration 4000: 0.69314718056
+Cost after iteration 5000: 0.69314718056
+Cost after iteration 6000: 0.69314718056
+Cost after iteration 7000: 0.69314718056
+Cost after iteration 8000: 0.69314718056
+Cost after iteration 9000: 0.69314718056
+Cost after iteration 10000: 0.69314718056
+Cost after iteration 11000: 0.69314718056
+Cost after iteration 12000: 0.69314718056
+Cost after iteration 13000: 0.69314718056
+Cost after iteration 14000: 0.69314718056
+On the train set:
+Accuracy: 0.5
+On the test set:
+Accuracy: 0.5
 </code></pre>
 <p>如果使用图表来显示的话，是这样子的：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQeHKS.png" alt="这里写图片描述"></p>
-<h1 id="随机初始化">随机初始化</h1>
+<h1 id="toc_h1_3">随机初始化</h1>
 <p>随机初始化可以打破对称，让我们随机初始化权重。在随机初始化之后，每个神经元可以继续学习其输入的不同功能。我们只是随机初始化权重参数，偏差还是继续初始化为零。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">initialize_parameters_random</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    layer_dims -- python数组(list)，包含每个层的大小。
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">                    b1 -- 形状偏置向量(layers_dims[1]， 1)
-</span><span class="highlight-ln">10</span><span class="highlight-s2">                    ...
-</span><span class="highlight-ln">11</span><span class="highlight-s2">                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
-</span><span class="highlight-ln">12</span><span class="highlight-s2">                    bL -- 形状的偏置向量(layers_dims[L]， 1)
-</span><span class="highlight-ln">13</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">L</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">)</span>  <span class="highlight-c1"># 表示层数的整数。</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>    <span class="highlight-k">for</span> <span class="highlight-n">l</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">L</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'W'</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">l</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span><span class="highlight-p">],</span> <span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">])</span> <span class="highlight-o">*</span> <span class="highlight-mi">10</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'b'</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">l</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">21</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<pre><code class="language-python">def initialize_parameters_random(layers_dims):
+    """
+    Arguments:
+    layer_dims -- python数组(list)，包含每个层的大小。
+
+    Returns:
+    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
+                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
+                    b1 -- 形状偏置向量(layers_dims[1]， 1)
+                    ...
+                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
+                    bL -- 形状的偏置向量(layers_dims[L]， 1)
+    """
+
+    parameters = {}
+    L = len(layers_dims)  # 表示层数的整数。
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.random.randn(layers_dims[l], layers_dims[l - 1]) * 10
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
 </code></pre>
 <p>运行一下，可以看到已经破坏了对称性，模型并开始收敛了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">model</span><span class="highlight-p">(</span><span class="highlight-n">train_X</span><span class="highlight-p">,</span> <span class="highlight-n">train_Y</span><span class="highlight-p">,</span> <span class="highlight-n">initialization</span><span class="highlight-o">=</span><span class="highlight-s2">"random"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span>    <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"On the train set:"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">predictions_train</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">train_X</span><span class="highlight-p">,</span> <span class="highlight-n">train_Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"On the test set:"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span>    <span class="highlight-n">predictions_test</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">test_X</span><span class="highlight-p">,</span> <span class="highlight-n">test_Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    parameters = model(train_X, train_Y, initialization="random")
+    print ("On the train set:")
+    predictions_train = predict(train_X, train_Y, parameters)
+    print ("On the test set:")
+    predictions_test = predict(test_X, test_Y, parameters)
 </code></pre>
 <p>输出的日志如下，看到在0次迭代的时候是“inf”，这是因为数值舍入的：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>Cost after iteration 0: inf
-<span class="highlight-ln"> 2</span>Cost after iteration 1000: 0.386009576858
-<span class="highlight-ln"> 3</span>Cost after iteration 2000: 0.276065073598
-<span class="highlight-ln"> 4</span>Cost after iteration 3000: 0.267517603676
-<span class="highlight-ln"> 5</span>Cost after iteration 4000: 0.261640832949
-<span class="highlight-ln"> 6</span>Cost after iteration 5000: 0.254131922349
-<span class="highlight-ln"> 7</span>Cost after iteration 6000: 0.31200805047
-<span class="highlight-ln"> 8</span>Cost after iteration 7000: 0.243035498545
-<span class="highlight-ln"> 9</span>Cost after iteration 8000: 0.22011133348
-<span class="highlight-ln">10</span>Cost after iteration 9000: 0.217258906612
-<span class="highlight-ln">11</span>Cost after iteration 10000: 0.214850990347
-<span class="highlight-ln">12</span>Cost after iteration 11000: 0.212760572669
-<span class="highlight-ln">13</span>Cost after iteration 12000: 0.210936153771
-<span class="highlight-ln">14</span>Cost after iteration 13000: 0.209300028106
-<span class="highlight-ln">15</span>Cost after iteration 14000: 0.207868192424
-<span class="highlight-ln">16</span>On the train set:
-<span class="highlight-ln">17</span>Accuracy: 0.883333333333
-<span class="highlight-ln">18</span>On the test set:
-<span class="highlight-ln">19</span>Accuracy: 0.85
+<pre><code class="language-text">Cost after iteration 0: inf
+Cost after iteration 1000: 0.386009576858
+Cost after iteration 2000: 0.276065073598
+Cost after iteration 3000: 0.267517603676
+Cost after iteration 4000: 0.261640832949
+Cost after iteration 5000: 0.254131922349
+Cost after iteration 6000: 0.31200805047
+Cost after iteration 7000: 0.243035498545
+Cost after iteration 8000: 0.22011133348
+Cost after iteration 9000: 0.217258906612
+Cost after iteration 10000: 0.214850990347
+Cost after iteration 11000: 0.212760572669
+Cost after iteration 12000: 0.210936153771
+Cost after iteration 13000: 0.209300028106
+Cost after iteration 14000: 0.207868192424
+On the train set:
+Accuracy: 0.883333333333
+On the test set:
+Accuracy: 0.85
 </code></pre>
 <p>如果用图表来显示的话，是这个样子的：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQeQNn.png" alt="这里写图片描述"></p>
-<h1 id="He初始化">He初始化</h1>
-<p>He初始化跟上面的随机初始化类似 <code>initialize_parameters_random(...)</code>。唯一的区别是，不是 <code>np.random.randn(..,..)*10</code>的乘以10，而是乘以<span class="vditor-math">\sqrt{\frac{2}{\text{dimension of the previous layer}}}</span>，这是He初始化为具有ReLU激活的图层推荐的内容。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">initialize_parameters_he</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-s2">"""
-</span><span class="highlight-ln"> 3</span><span class="highlight-s2">    Arguments:
-</span><span class="highlight-ln"> 4</span><span class="highlight-s2">    layer_dims -- python数组(list)，包含每个层的大小。
-</span><span class="highlight-ln"> 5</span><span class="highlight-s2">
-</span><span class="highlight-ln"> 6</span><span class="highlight-s2">    Returns:
-</span><span class="highlight-ln"> 7</span><span class="highlight-s2">    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
-</span><span class="highlight-ln"> 8</span><span class="highlight-s2">                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
-</span><span class="highlight-ln"> 9</span><span class="highlight-s2">                    b1 -- 形状偏置向量(layers_dims[1]， 1)
-</span><span class="highlight-ln">10</span><span class="highlight-s2">                    ...
-</span><span class="highlight-ln">11</span><span class="highlight-s2">                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
-</span><span class="highlight-ln">12</span><span class="highlight-s2">                    bL -- 形状的偏置向量(layers_dims[L]， 1)
-</span><span class="highlight-ln">13</span><span class="highlight-s2">    """</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">seed</span><span class="highlight-p">(</span><span class="highlight-mi">3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">L</span> <span class="highlight-o">=</span> <span class="highlight-nb">len</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">)</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span>  <span class="highlight-c1"># 表示层数的整数</span>
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>    <span class="highlight-k">for</span> <span class="highlight-n">l</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">L</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span><span class="highlight-p">):</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'W'</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">l</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">random</span><span class="highlight-o">.</span><span class="highlight-n">randn</span><span class="highlight-p">(</span><span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span><span class="highlight-p">],</span> <span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">])</span> <span class="highlight-o">*</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">sqrt</span><span class="highlight-p">(</span>
-<span class="highlight-ln">21</span>            <span class="highlight-mf">2.</span> <span class="highlight-o">/</span> <span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">])</span>
-<span class="highlight-ln">22</span>        <span class="highlight-n">parameters</span><span class="highlight-p">[</span><span class="highlight-s1">'b'</span> <span class="highlight-o">+</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">l</span><span class="highlight-p">)]</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">zeros</span><span class="highlight-p">((</span><span class="highlight-n">layers_dims</span><span class="highlight-p">[</span><span class="highlight-n">l</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">))</span>
-<span class="highlight-ln">23</span>    <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
+<h1 id="toc_h1_4">He初始化</h1>
+<p>He初始化跟上面的随机初始化类似 <code>initialize_parameters_random(...)</code>。唯一的区别是，不是 <code>np.random.randn(..,..)*10</code>的乘以10，而是乘以$\sqrt{\frac{2}{\text{dimension of the previous layer}}}$，这是He初始化为具有ReLU激活的图层推荐的内容。</p>
+<pre><code class="language-python">def initialize_parameters_he(layers_dims):
+    """
+    Arguments:
+    layer_dims -- python数组(list)，包含每个层的大小。
+
+    Returns:
+    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
+                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
+                    b1 -- 形状偏置向量(layers_dims[1]， 1)
+                    ...
+                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
+                    bL -- 形状的偏置向量(layers_dims[L]， 1)
+    """
+
+    np.random.seed(3)
+    parameters = {}
+    L = len(layers_dims) - 1  # 表示层数的整数
+
+    for l in range(1, L + 1):
+        parameters['W' + str(l)] = np.random.randn(layers_dims[l], layers_dims[l - 1]) * np.sqrt(
+            2. / layers_dims[l - 1])
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
 </code></pre>
 <p>运行这个初始化方式。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s2">"__main__"</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">model</span><span class="highlight-p">(</span><span class="highlight-n">train_X</span><span class="highlight-p">,</span> <span class="highlight-n">train_Y</span><span class="highlight-p">,</span> <span class="highlight-n">initialization</span><span class="highlight-o">=</span><span class="highlight-s2">"he"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span>    <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"On the train set:"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">4</span>    <span class="highlight-n">predictions_train</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">train_X</span><span class="highlight-p">,</span> <span class="highlight-n">train_Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
-<span class="highlight-ln">5</span>    <span class="highlight-k">print</span> <span class="highlight-p">(</span><span class="highlight-s2">"On the test set:"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">6</span>    <span class="highlight-n">predictions_test</span> <span class="highlight-o">=</span> <span class="highlight-n">predict</span><span class="highlight-p">(</span><span class="highlight-n">test_X</span><span class="highlight-p">,</span> <span class="highlight-n">test_Y</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == "__main__":
+    parameters = model(train_X, train_Y, initialization="he")
+    print ("On the train set:")
+    predictions_train = predict(train_X, train_Y, parameters)
+    print ("On the test set:")
+    predictions_test = predict(test_X, test_Y, parameters)
 </code></pre>
 <p>输出的日志信息是：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>Cost after iteration 0: 0.883053746342
-<span class="highlight-ln"> 2</span>Cost after iteration 1000: 0.687982591973
-<span class="highlight-ln"> 3</span>Cost after iteration 2000: 0.675128626452
-<span class="highlight-ln"> 4</span>Cost after iteration 3000: 0.652611776889
-<span class="highlight-ln"> 5</span>Cost after iteration 4000: 0.608295897057
-<span class="highlight-ln"> 6</span>Cost after iteration 5000: 0.530494449172
-<span class="highlight-ln"> 7</span>Cost after iteration 6000: 0.413864581707
-<span class="highlight-ln"> 8</span>Cost after iteration 7000: 0.311780346484
-<span class="highlight-ln"> 9</span>Cost after iteration 8000: 0.236962153303
-<span class="highlight-ln">10</span>Cost after iteration 9000: 0.185972872092
-<span class="highlight-ln">11</span>Cost after iteration 10000: 0.150155562804
-<span class="highlight-ln">12</span>Cost after iteration 11000: 0.123250792923
-<span class="highlight-ln">13</span>Cost after iteration 12000: 0.0991774654653
-<span class="highlight-ln">14</span>Cost after iteration 13000: 0.0845705595402
-<span class="highlight-ln">15</span>Cost after iteration 14000: 0.0735789596268
-<span class="highlight-ln">16</span>On the train set:
-<span class="highlight-ln">17</span>Accuracy: 0.993333333333
-<span class="highlight-ln">18</span>On the test set:
-<span class="highlight-ln">19</span>Accuracy: 0.96
+<pre><code class="language-text">Cost after iteration 0: 0.883053746342
+Cost after iteration 1000: 0.687982591973
+Cost after iteration 2000: 0.675128626452
+Cost after iteration 3000: 0.652611776889
+Cost after iteration 4000: 0.608295897057
+Cost after iteration 5000: 0.530494449172
+Cost after iteration 6000: 0.413864581707
+Cost after iteration 7000: 0.311780346484
+Cost after iteration 8000: 0.236962153303
+Cost after iteration 9000: 0.185972872092
+Cost after iteration 10000: 0.150155562804
+Cost after iteration 11000: 0.123250792923
+Cost after iteration 12000: 0.0991774654653
+Cost after iteration 13000: 0.0845705595402
+Cost after iteration 14000: 0.0735789596268
+On the train set:
+Accuracy: 0.993333333333
+On the test set:
+Accuracy: 0.96
 </code></pre>
 <p>如果用图表来显示的话，应该是：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GMu7lV.png" alt="这里写图片描述"></p>
-<h1 id="总结">总结</h1>
+<h1 id="toc_h1_5">总结</h1>
 <p>最后使用一个表格的方式来总结一下我们使用三个不同的初始化方式的训练准确率。</p>
 <table> 
     <tbody><tr>
@@ -437,9 +437,9 @@ var _hmt = _hmt || [];
         </td>
     </tr>
 </tbody></table>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_6">参考资料</h1>
 <ol>
-<li>http://deeplearning.ai/</li>
+<li><a href="http://deeplearning.ai/" target="_blank">http://deeplearning.ai/</a></li>
 </ol>
 <p><br><br><br></p>
 <blockquote>
@@ -520,7 +520,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -529,7 +529,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -537,11 +537,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466423248",
@@ -559,4 +559,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 54ms, 2020/04/07 11:38:48 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 29ms, 2020/04/07 14:57:08 -->

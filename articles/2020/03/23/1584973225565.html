@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在Android手机上使用PaddleMobile实现图像分类 - 夜雨飘零</title><meta name="description" content="前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。现在的手机深度学习会计有很多，比如百度的paddle-mobile、小米的MACNE、腾讯的NCNN、谷歌的TensorFlow lite，而我们在本章使用的是百度的paddle-mobile。 PaddleMobile的GitHub地址：https://github.com/PaddlePaddle/paddle-mobile 编译paddle-mobile库 想要使用paddle-mobile，就要编译Android能够使用的CPP库，在这一部分中，我们介绍两种编译Android的paddle-mobile库，分别是使用Docker编译paddle-mobile库、使用Ubunt...."/><meta property="og:description" content="前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。现在的手机深度学习会计有很多，比如百度的paddle-mobile、小米的MACNE、腾讯的NCNN、谷歌的TensorFlow lite，而我们在本章使用的是百度的paddle-mobile。 PaddleMobile的GitHub地址：https://github.com/PaddlePaddle/paddle-mobile 编译paddle-mobile库 想要使用paddle-mobile，就要编译Android能够使用的CPP库，在这一部分中，我们介绍两种编译Android的paddle-mobile库，分别是使用Docker编译paddle-mobile库、使用Ubunt...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在Android手机上使用PaddleMobile实现图像分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973225565.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在Android手机上使用PaddleMobile实现图像分类 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973225565.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在Android手机上使用PaddleMobile实现图像分类 - 夜雨飘零</title><meta name="description" content="前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。现在的手机深度学习会计有很多，比如百度的paddle-mobile、小米的MACNE、腾讯的NCNN、谷歌的TensorFlow lite，而我们在本章使用的是百度的paddle-mobile。 PaddleMobile的GitHub地址：https://github.com/PaddlePaddle/paddle-mobile 编译paddle-mobile库 想要使用paddle-mobile，就要编译Android能够使用的CPP库，在这一部分中，我们介绍两种编译Android的paddle-mobile库，分别是使用Docker编译paddle-mobile库、使用Ubunt...."/><meta property="og:description" content="前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。现在的手机深度学习会计有很多，比如百度的paddle-mobile、小米的MACNE、腾讯的NCNN、谷歌的TensorFlow lite，而我们在本章使用的是百度的paddle-mobile。 PaddleMobile的GitHub地址：https://github.com/PaddlePaddle/paddle-mobile 编译paddle-mobile库 想要使用paddle-mobile，就要编译Android能够使用的CPP库，在这一部分中，我们介绍两种编译Android的paddle-mobile库，分别是使用Docker编译paddle-mobile库、使用Ubunt...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在Android手机上使用PaddleMobile实现图像分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584973225565.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在Android手机上使用PaddleMobile实现图像分类 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973225565.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Android的单个或多个权限动态申请" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973117561.html">
             <link rel="next" title="使用PaddlePaddle实现人脸对比和人脸识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584973314354.html">
     <!-- 百度统计 -->
@@ -78,22 +78,22 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#编译paddle-mobile库">编译paddle-mobile库</a>
+            <a href="#toc_h1_1">编译paddle-mobile库</a>
         </li>
         <li class="toc__h2">
-            <a href="#使用Docker编译paddle-mobile库">使用Docker编译paddle-mobile库</a>
+            <a href="#toc_h2_2">使用Docker编译paddle-mobile库</a>
         </li>
         <li class="toc__h2">
-            <a href="#使用Ubuntu交叉编译paddle-mobile库">使用Ubuntu交叉编译paddle-mobile库</a>
+            <a href="#toc_h2_3">使用Ubuntu交叉编译paddle-mobile库</a>
         </li>
         <li class="toc__h1">
-            <a href="#创建Android项目">创建Android项目</a>
+            <a href="#toc_h1_4">创建Android项目</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_5">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -141,369 +141,369 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20191106.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。现在的手机深度学习会计有很多，比如百度的paddle-mobile、小米的MACNE、腾讯的NCNN、谷歌的TensorFlow lite，而我们在本章使用的是百度的paddle-mobile。</p>
 <p>PaddleMobile的GitHub地址：<a href="https://github.com/PaddlePaddle/paddle-mobile" target="_blank">https://github.com/PaddlePaddle/paddle-mobile</a></p>
-<h1 id="编译paddle-mobile库">编译paddle-mobile库</h1>
+<h1 id="toc_h1_1">编译paddle-mobile库</h1>
 <p>想要使用paddle-mobile，就要编译Android能够使用的CPP库，在这一部分中，我们介绍两种编译Android的paddle-mobile库，分别是使用Docker编译paddle-mobile库、使用Ubuntu交叉编译paddle-mobile库。</p>
 <p>在Android项目中有使用过CPP的读者都知道，想要让Java代码能够调用CPP代码，那么CPP的函数明明就要按照一定的规范：<code>Java_包名_类名_对应的Java的方法名</code>，目前官方提供了5个可以给Java调用的函数，该代码在：<code>paddle-mobile/src/jni/paddle_mobile_jni.cpp</code>，如果想要让这些函数能够在自己的包名下的类调用，就要修改CPP的函数名称修改如下：</p>
 <p>修改之前的<code>load</code>函数：</p>
-<pre><code class="language-cpp highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">JNIEXPORT</span> <span class="highlight-n">jboolean</span> <span class="highlight-n">JNICALL</span> <span class="highlight-nf">Java_com_baidu_paddle_PML_load</span><span class="highlight-p">(</span><span class="highlight-n">JNIEnv</span> <span class="highlight-o">*</span><span class="highlight-n">env</span><span class="highlight-p">,</span>
-<span class="highlight-ln">2</span>                                                          <span class="highlight-n">jclass</span> <span class="highlight-n">thiz</span><span class="highlight-p">,</span>
-<span class="highlight-ln">3</span>                                                          <span class="highlight-n">jstring</span> <span class="highlight-n">modelPath</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">4</span>  <span class="highlight-n">ANDROIDLOGI</span><span class="highlight-p">(</span><span class="highlight-s">"load invoked"</span><span class="highlight-p">);</span>
-<span class="highlight-ln">5</span>  <span class="highlight-kt">bool</span> <span class="highlight-n">optimize</span> <span class="highlight-o">=</span> <span class="highlight-nb">true</span><span class="highlight-p">;</span>
-<span class="highlight-ln">6</span>  <span class="highlight-k">return</span> <span class="highlight-n">getPaddleMobileInstance</span><span class="highlight-p">()</span><span class="highlight-o">-&gt;</span><span class="highlight-n">Load</span><span class="highlight-p">(</span><span class="highlight-n">jstring2cppstring</span><span class="highlight-p">(</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">modelPath</span><span class="highlight-p">),</span>
-<span class="highlight-ln">7</span>                                         <span class="highlight-n">optimize</span><span class="highlight-p">);</span>
-<span class="highlight-ln">8</span><span class="highlight-p">}</span>
+<pre><code class="language-cpp">JNIEXPORT jboolean JNICALL Java_com_baidu_paddle_PML_load(JNIEnv *env,
+                                                          jclass thiz,
+                                                          jstring modelPath) {
+  ANDROIDLOGI("load invoked");
+  bool optimize = true;
+  return getPaddleMobileInstance()-&gt;Load(jstring2cppstring(env, modelPath),
+                                         optimize);
+}
 </code></pre>
 <p>笔者项目的包名为<code>com.example.paddlemobile1</code>，在这个包下有一个<code>ImageRecognition.java</code>的程序来对应这个CPP程序，那么修改<code>load</code>函数如下：</p>
-<pre><code class="language-cpp highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">JNIEXPORT</span> <span class="highlight-n">jboolean</span> <span class="highlight-n">JNICALL</span> <span class="highlight-nf">Java_com_example_paddlemobile1_ImageRecognition_load</span><span class="highlight-p">(</span><span class="highlight-n">JNIEnv</span> <span class="highlight-o">*</span><span class="highlight-n">env</span><span class="highlight-p">,</span>
-<span class="highlight-ln">2</span>                                                          <span class="highlight-n">jclass</span> <span class="highlight-n">thiz</span><span class="highlight-p">,</span>
-<span class="highlight-ln">3</span>                                                          <span class="highlight-n">jstring</span> <span class="highlight-n">modelPath</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">4</span>  <span class="highlight-n">ANDROIDLOGI</span><span class="highlight-p">(</span><span class="highlight-s">"load invoked"</span><span class="highlight-p">);</span>
-<span class="highlight-ln">5</span>  <span class="highlight-kt">bool</span> <span class="highlight-n">optimize</span> <span class="highlight-o">=</span> <span class="highlight-nb">true</span><span class="highlight-p">;</span>
-<span class="highlight-ln">6</span>  <span class="highlight-k">return</span> <span class="highlight-n">getPaddleMobileInstance</span><span class="highlight-p">()</span><span class="highlight-o">-&gt;</span><span class="highlight-n">Load</span><span class="highlight-p">(</span><span class="highlight-n">jstring2cppstring</span><span class="highlight-p">(</span><span class="highlight-n">env</span><span class="highlight-p">,</span> <span class="highlight-n">modelPath</span><span class="highlight-p">),</span>
-<span class="highlight-ln">7</span>                                         <span class="highlight-n">optimize</span><span class="highlight-p">);</span>
-<span class="highlight-ln">8</span><span class="highlight-p">}</span>
+<pre><code class="language-cpp">JNIEXPORT jboolean JNICALL Java_com_example_paddlemobile1_ImageRecognition_load(JNIEnv *env,
+                                                          jclass thiz,
+                                                          jstring modelPath) {
+  ANDROIDLOGI("load invoked");
+  bool optimize = true;
+  return getPaddleMobileInstance()-&gt;Load(jstring2cppstring(env, modelPath),
+                                         optimize);
+}
 </code></pre>
 <p>如果读者觉得这样比较麻烦的话，可以不用修改，只要创建一个<code>com.baidu.paddle</code>包，在这个包下创建一个<code>PML.java</code>的Java程序来对应这个CPP程序。</p>
-<h2 id="使用Docker编译paddle-mobile库">使用Docker编译paddle-mobile库</h2>
+<h2 id="toc_h2_2">使用Docker编译paddle-mobile库</h2>
 <p>为了方便操作，以下的操作都是在root用户的执行的：</p>
 <p>1、安装Docker，以下是在Ubuntu下安装的的方式，只要一条命令就可以了：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>apt-get install docker.io
+<pre><code>apt-get install docker.io
 </code></pre>
 <p>2、克隆paddle-mobile源码：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/PaddlePaddle/paddle-mobile.git
+<pre><code>git clone https://github.com/PaddlePaddle/paddle-mobile.git
 </code></pre>
 <p>3、进入到paddle-mobile根目录下编译docker镜像：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd paddle-mobile
-<span class="highlight-ln">2</span># 编译生成进行，编译时间可能要很长
-<span class="highlight-ln">3</span>docker build -t paddle-mobile:dev - &lt; Dockerfile
+<pre><code>cd paddle-mobile
+# 编译生成进行，编译时间可能要很长
+docker build -t paddle-mobile:dev - &lt; Dockerfile
 </code></pre>
 <p>编译完成可以使用<code>docker images</code>命令查看是否已经生成进行：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test# docker images
-<span class="highlight-ln">2</span>REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
-<span class="highlight-ln">3</span>paddle-mobile                       dev                 fffbd8779c68        20 hours ago        3.76 GB
+<pre><code>root@test:/home/test# docker images
+REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+paddle-mobile                       dev                 fffbd8779c68        20 hours ago        3.76 GB
 </code></pre>
 <p>4、运行镜像并进入到容器里面，当前目录还是在paddle-mobile根目录下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>docker run -it -v $PWD:/paddle-mobile paddle-mobile:dev
+<pre><code>docker run -it -v $PWD:/paddle-mobile paddle-mobile:dev
 </code></pre>
 <p>5、在容器里面执行以下两条命令：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@fc6f7e9ebdf1:/# cd paddle-mobile/
-<span class="highlight-ln">2</span>root@fc6f7e9ebdf1:/paddle-mobile# cmake -DCMAKE_TOOLCHAIN_FILE=tools/toolchains/arm-android-neon.cmake
+<pre><code>root@fc6f7e9ebdf1:/# cd paddle-mobile/
+root@fc6f7e9ebdf1:/paddle-mobile# cmake -DCMAKE_TOOLCHAIN_FILE=tools/toolchains/arm-android-neon.cmake
 </code></pre>
 <p>6、（可选）可以使用命令<code>ccmake .</code>配置一些信息，比如可以设置<code>NET</code>仅支持<code>googlenet</code>，这样便于得到的paddle-mobile库会更小一些，修改完成之后，使用<code>c</code>命令保存，使用<code>g</code>退出。笔者一般跳过这个步骤。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>                                                    Page 1 of 1
-<span class="highlight-ln"> 2</span> CMAKE_ASM_FLAGS                                                                                                                                                                                
-<span class="highlight-ln"> 3</span> CMAKE_ASM_FLAGS_DEBUG                                                                                                                                                                          
-<span class="highlight-ln"> 4</span> CMAKE_ASM_FLAGS_RELEASE                                                                                                                                                                        
-<span class="highlight-ln"> 5</span> CMAKE_BUILD_TYPE                                                                                                                                                                               
-<span class="highlight-ln"> 6</span> CMAKE_INSTALL_PREFIX             /usr/local                                                                                                                                                    
-<span class="highlight-ln"> 7</span> CMAKE_TOOLCHAIN_FILE             /paddle-mobile/tools/toolchains/arm-android-neon.cmake                                                                                                        
-<span class="highlight-ln"> 8</span> CPU                              ON                                                                                                                                                            
-<span class="highlight-ln"> 9</span> DEBUGING                         ON                                                                                                                                                            
-<span class="highlight-ln">10</span> FPGA                             OFF                                                                                                                                                           
-<span class="highlight-ln">11</span> LOG_PROFILE                      ON                                                                                                                                                            
-<span class="highlight-ln">12</span> MALI_GPU                         OFF                                                                                                                                                           
-<span class="highlight-ln">13</span> NET                              defult                                                                                                                                                        
-<span class="highlight-ln">14</span> USE_EXCEPTION                    ON                                                                                                                                                            
-<span class="highlight-ln">15</span> USE_OPENMP                       ON                                                       
+<pre><code>                                                    Page 1 of 1
+ CMAKE_ASM_FLAGS                                                                                                                                                                                
+ CMAKE_ASM_FLAGS_DEBUG                                                                                                                                                                          
+ CMAKE_ASM_FLAGS_RELEASE                                                                                                                                                                        
+ CMAKE_BUILD_TYPE                                                                                                                                                                               
+ CMAKE_INSTALL_PREFIX             /usr/local                                                                                                                                                    
+ CMAKE_TOOLCHAIN_FILE             /paddle-mobile/tools/toolchains/arm-android-neon.cmake                                                                                                        
+ CPU                              ON                                                                                                                                                            
+ DEBUGING                         ON                                                                                                                                                            
+ FPGA                             OFF                                                                                                                                                           
+ LOG_PROFILE                      ON                                                                                                                                                            
+ MALI_GPU                         OFF                                                                                                                                                           
+ NET                              defult                                                                                                                                                        
+ USE_EXCEPTION                    ON                                                                                                                                                            
+ USE_OPENMP                       ON                                                       
 </code></pre>
 <p>7、最后执行一下<code>make</code>就可以了，到这一步就完成了paddle-mobile的编译。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@fc6f7e9ebdf1:/paddle-mobile# make
+<pre><code>root@fc6f7e9ebdf1:/paddle-mobile# make
 </code></pre>
 <p>8、使用<code>exit</code>命令退出容器，回到Ubuntu本地上。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@fc6f7e9ebdf1:/paddle-mobile# exit
+<pre><code>root@fc6f7e9ebdf1:/paddle-mobile# exit
 </code></pre>
 <p>9、在paddle-mobile根目录下，有一个build目录，我们编译好的paddle-mobile库就在这里。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddle-mobile/build# ls
-<span class="highlight-ln">2</span>libpaddle-mobile.so
+<pre><code>root@test:/home/test/paddle-mobile/build# ls
+libpaddle-mobile.so
 </code></pre>
 <p><code>libpaddle-mobile.so</code>就是我们在开发Android项目的时候使用到的paddle-mobile库。</p>
-<h2 id="使用Ubuntu交叉编译paddle-mobile库">使用Ubuntu交叉编译paddle-mobile库</h2>
+<h2 id="toc_h2_3">使用Ubuntu交叉编译paddle-mobile库</h2>
 <p>1、首先要下载和解压NDK。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
-<span class="highlight-ln">2</span>unzip android-ndk-r17b-linux-x86_64.zip
+<pre><code>wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
+unzip android-ndk-r17b-linux-x86_64.zip
 </code></pre>
 <p>2、设置NDK环境变量，目录是NDK的解压目录。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>export NDK_ROOT="/home/test/paddlepaddle/android-ndk-r17b"
+<pre><code>export NDK_ROOT="/home/test/paddlepaddle/android-ndk-r17b"
 </code></pre>
 <p>设置好之后，可以使用以下的命令查看配置情况。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddlepaddle# echo $NDK_ROOT
-<span class="highlight-ln">2</span>/home/test/paddlepaddle/android-ndk-r17b
+<pre><code>root@test:/home/test/paddlepaddle# echo $NDK_ROOT
+/home/test/paddlepaddle/android-ndk-r17b
 </code></pre>
 <p>3、安装cmake，需要安装较高版本的，笔者的cmake版本是3.11.2。</p>
 <ul>
 <li>下载cmake源码</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>wget https://cmake.org/files/v3.11/cmake-3.11.2.tar.gz
+<pre><code>wget https://cmake.org/files/v3.11/cmake-3.11.2.tar.gz
 </code></pre>
 <ul>
 <li>解压cmake源码</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>tar -zxvf cmake-3.11.2.tar.gz
+<pre><code>tar -zxvf cmake-3.11.2.tar.gz
 </code></pre>
 <ul>
 <li>进入到cmake源码根目录，并执行<code>bootstrap</code>。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd cmake-3.11.2
-<span class="highlight-ln">2</span>./bootstrap
+<pre><code>cd cmake-3.11.2
+./bootstrap
 </code></pre>
 <ul>
 <li>最后执行以下两条命令开始安装cmake。</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>make
-<span class="highlight-ln">2</span>make install
+<pre><code>make
+make install
 </code></pre>
 <ul>
 <li>安装完成之后，可以使用<code>cmake --version</code>是否安装成功.</li>
 </ul>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddlepaddle# cmake --version
-<span class="highlight-ln">2</span>cmake version 3.11.2
-<span class="highlight-ln">3</span>
-<span class="highlight-ln">4</span>CMake suite maintained and supported by Kitware (kitware.com/cmake).
+<pre><code>root@test:/home/test/paddlepaddle# cmake --version
+cmake version 3.11.2
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
 </code></pre>
 <p>4、克隆paddle-mobile源码。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>git clone https://github.com/PaddlePaddle/paddle-mobile.git
+<pre><code>git clone https://github.com/PaddlePaddle/paddle-mobile.git
 </code></pre>
 <p>5、进入到paddle-mobile的tools目录下，执行编译。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd paddle-mobile/tools/
-<span class="highlight-ln">2</span>sh build.sh android
+<pre><code>cd paddle-mobile/tools/
+sh build.sh android
 </code></pre>
 <p>（可选）如果想编译针对某一个网络编译更小的库时，可以在命令后面加上相应的参数，如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>sh build.sh android googlenet
+<pre><code>sh build.sh android googlenet
 </code></pre>
 <p>6、最后会在<code>paddle-mobile/build/release/arm-v7a/build</code>目录下生产paddle-mobile库。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>root@test:/home/test/paddlepaddle/paddle-mobile/build/release/arm-v7a/build# ls
-<span class="highlight-ln">2</span>libpaddle-mobile.so
+<pre><code>root@test:/home/test/paddlepaddle/paddle-mobile/build/release/arm-v7a/build# ls
+libpaddle-mobile.so
 </code></pre>
 <p><code>libpaddle-mobile.so</code>就是我们在开发Android项目的时候使用到的paddle-mobile库。</p>
-<h1 id="创建Android项目">创建Android项目</h1>
+<h1 id="toc_h1_4">创建Android项目</h1>
 <p>首先使用Android Studio创建一个普通的Android项目，包名为<code>com.example.paddlemobile1</code>，我们可以不用选择CPP的支持，因为我们已经编译好了CPP。之后按照以下的步骤开始执行：</p>
 <p>1、在<code>main</code>目录下创建l两个<code>assets/paddle_models</code>文件夹，这个文件夹我们将会使用它来存放PaddleFluid训练好的预测模型，官方也提供了一些训练好的模型和预测图像，可以在<a href="https://github.com/PaddlePaddle/paddle-mobile#4-%E9%83%A8%E5%88%86%E6%B5%8B%E8%AF%95%E6%A8%A1%E5%9E%8B%E5%92%8C%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E4%B8%8B%E8%BD%BD" target="_blank">这里下载</a>。预测有两种，一种是合并的模型，另一种是非合并的模型，在本项目中，我们使用的是非合并的模型，下面就是笔者使用的一个googlenet神经网络训练102中花卉数据集得到的预测模型，可以到<a href="https://download.csdn.net/download/qq_33200967/10546686" target="_blank">这里下载</a>笔者训练好的模型。<br>
 <img src="https://s1.ax1x.com/2020/03/31/GMKdXT.png" alt="这里写图片描述"></p>
 <p><strong>PS：</strong> PaddleMobile支持量化模型，使用模型量化可以把模型缩小至原来的四分之一，比如笔者的模型是20多M，量化之后就是5M多了。这个量化是把模型的float32经过量化变成int8，所以模型会是原来的四分之一，当然精度也有一点点损失，但影响不大。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">cd</span> <span class="highlight-n">paddle</span><span class="highlight-o">-</span><span class="highlight-n">mobile</span><span class="highlight-o">/</span><span class="highlight-n">tools</span><span class="highlight-o">/</span><span class="highlight-n">quantification</span><span class="highlight-o">/</span>
-<span class="highlight-ln">2</span><span class="highlight-n">cmake</span> <span class="highlight-o">.</span>
-<span class="highlight-ln">3</span><span class="highlight-n">make</span>
-<span class="highlight-ln">4</span><span class="highlight-c1"># 命令格式./quantify (0:seperated. 1:combined ) (输入路径) (输出路径)</span>
-<span class="highlight-ln">5</span><span class="highlight-o">./</span><span class="highlight-n">quantify</span> <span class="highlight-mi">0</span> <span class="highlight-n">googlenet</span><span class="highlight-o">/</span> <span class="highlight-o">./</span><span class="highlight-n">googlenet_min</span><span class="highlight-o">/</span>
+<pre><code class="language-python">cd paddle-mobile/tools/quantification/
+cmake .
+make
+# 命令格式./quantify (0:seperated. 1:combined ) (输入路径) (输出路径)
+./quantify 0 googlenet/ ./googlenet_min/
 </code></pre>
 <p>如果使用量化模型，那加载模型的接口也有修改一下，使用以下的接口加载模型：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">loadQualified</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelDir</span><span class="highlight-o">);</span>
+<pre><code class="language-java">public static native boolean loadQualified(String modelDir);
 </code></pre>
 <p>2、在<code>main</code>目录下创建一个<code>jniLibs</code>文件夹，这个文件夹是存放CPP编译库的，在本项目中就存放上一部分编译的<code>libpaddle-mobile.so</code>，<a href="https://download.csdn.net/download/qq_33200967/10546640" target="_blank">这里可以下载</a>笔者编译好的模型。<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQeWEd.png" alt="这里写图片描述"></p>
 <p>3、在Android项目的配置文件夹中加上权限声明，因为我们要使用到读取相册和使用相机，所以加上以下的权限声明：</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-nt">&lt;uses-permission</span> <span class="highlight-na">android:name=</span><span class="highlight-s">"android.permission.CAMERA"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">2</span><span class="highlight-nt">&lt;uses-permission</span> <span class="highlight-na">android:name=</span><span class="highlight-s">"android.permission.WRITE_EXTERNAL_STORAGE"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">3</span><span class="highlight-nt">&lt;uses-permission</span> <span class="highlight-na">android:name=</span><span class="highlight-s">"android.permission.READ_EXTERNAL_STORAGE"</span> <span class="highlight-nt">/&gt;</span>
+<pre><code class="language-xml">&lt;uses-permission android:name="android.permission.CAMERA" /&gt;
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /&gt;
+&lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /&gt;
 </code></pre>
 <p>4、修改<code>activity_main.xml</code>界面，修改成如下：</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-nt">&lt;RelativeLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-na">xmlns:app=</span><span class="highlight-s">"http://schemas.android.com/apk/res-auto"</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">".MainActivity"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-nt">&lt;LinearLayout</span>
-<span class="highlight-ln">10</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/btn_ll"</span>
-<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_alignParentBottom=</span><span class="highlight-s">"true"</span>
-<span class="highlight-ln">12</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">13</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">14</span>        <span class="highlight-na">android:orientation=</span><span class="highlight-s">"horizontal"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>        <span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln">17</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/use_photo"</span>
-<span class="highlight-ln">18</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">19</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
-<span class="highlight-ln">20</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">21</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"相册"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>        <span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln">24</span>            <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/start_camera"</span>
-<span class="highlight-ln">25</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">26</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
-<span class="highlight-ln">27</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">28</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"拍照"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">29</span>    <span class="highlight-nt">&lt;/LinearLayout&gt;</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>    <span class="highlight-nt">&lt;TextView</span>
-<span class="highlight-ln">32</span>        <span class="highlight-na">android:layout_above=</span><span class="highlight-s">"@id/btn_ll"</span>
-<span class="highlight-ln">33</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/result_text"</span>
-<span class="highlight-ln">34</span>        <span class="highlight-na">android:textSize=</span><span class="highlight-s">"16sp"</span>
-<span class="highlight-ln">35</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">36</span>        <span class="highlight-na">android:hint=</span><span class="highlight-s">"预测结果会在这里显示"</span>
-<span class="highlight-ln">37</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"100dp"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">38</span>
-<span class="highlight-ln">39</span>    <span class="highlight-nt">&lt;ImageView</span>
-<span class="highlight-ln">40</span>        <span class="highlight-na">android:layout_alignParentTop=</span><span class="highlight-s">"true"</span>
-<span class="highlight-ln">41</span>        <span class="highlight-na">android:layout_above=</span><span class="highlight-s">"@id/result_text"</span>
-<span class="highlight-ln">42</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/show_image"</span>
-<span class="highlight-ln">43</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">44</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">45</span>
-<span class="highlight-ln">46</span><span class="highlight-nt">&lt;/RelativeLayout&gt;</span>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"&gt;
+
+    &lt;LinearLayout
+        android:id="@+id/btn_ll"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"&gt;
+
+        &lt;Button
+            android:id="@+id/use_photo"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="相册" /&gt;
+
+        &lt;Button
+            android:id="@+id/start_camera"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="拍照" /&gt;
+    &lt;/LinearLayout&gt;
+
+    &lt;TextView
+        android:layout_above="@id/btn_ll"
+        android:id="@+id/result_text"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:hint="预测结果会在这里显示"
+        android:layout_height="100dp" /&gt;
+
+    &lt;ImageView
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/result_text"
+        android:id="@+id/show_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /&gt;
+
+&lt;/RelativeLayout&gt;
 </code></pre>
 <p>5、创建一个<code>ImageRecognition.java</code>的Java程序，这个程序的作用就是调用<code>paddle-mobile/src/jni/paddle_mobile_jni.cpp</code>的函数，对应的是里面的函数。目前支持一下几个接口。</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.paddlemobile1</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">ImageRecognition</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1">// set thread num
-</span><span class="highlight-ln"> 5</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">void</span> <span class="highlight-nf">setThread</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">threadCount</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-c1">//Load seperated parameters
-</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">load</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelDir</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1">// load qualified model
-</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">loadQualified</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelDir</span><span class="highlight-o">);</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-c1">// Load combined parameters
-</span><span class="highlight-ln">14</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">loadCombined</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelPath</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">paramPath</span><span class="highlight-o">);</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    <span class="highlight-c1">// load qualified model
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">boolean</span> <span class="highlight-nf">loadCombinedQualified</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">modelPath</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">paramPath</span><span class="highlight-o">);</span>
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>    <span class="highlight-c1">// object detection
-</span><span class="highlight-ln">20</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">predictImage</span><span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">buf</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span><span class="highlight-n">ddims</span><span class="highlight-o">);</span>
-<span class="highlight-ln">21</span>
-<span class="highlight-ln">22</span>    <span class="highlight-c1">// predict yuv image
-</span><span class="highlight-ln">23</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">predictYuv</span><span class="highlight-o">(</span><span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buf</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">imgWidth</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">imgHeight</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">ddims</span><span class="highlight-o">,</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span><span class="highlight-n">meanValues</span><span class="highlight-o">);</span>
-<span class="highlight-ln">24</span>    
-<span class="highlight-ln">25</span>    <span class="highlight-c1">// clear model
-</span><span class="highlight-ln">26</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">native</span> <span class="highlight-kt">void</span> <span class="highlight-nf">clear</span><span class="highlight-o">();</span>
-<span class="highlight-ln">27</span><span class="highlight-o">}</span>
+<pre><code class="language-java">package com.example.paddlemobile1;
+
+public class ImageRecognition {
+    // set thread num
+    public static native void setThread(int threadCount);
+
+    //Load seperated parameters
+    public static native boolean load(String modelDir);
+
+    // load qualified model
+    public static native boolean loadQualified(String modelDir);
+
+    // Load combined parameters
+    public static native boolean loadCombined(String modelPath, String paramPath);
+
+    // load qualified model
+    public static native boolean loadCombinedQualified(String modelPath, String paramPath);
+
+    // object detection
+    public static native float[] predictImage(float[] buf, int[]ddims);
+
+    // predict yuv image
+    public static native float[] predictYuv(byte[] buf, int imgWidth, int imgHeight, int[] ddims, float[]meanValues);
+    
+    // clear model
+    public static native void clear();
+}
 </code></pre>
 <p>6、然后编写一个<code>PhotoUtil.java</code>的工具类。</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.paddlemobile1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  2</span>
-<span class="highlight-ln">  3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Activity</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Context</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Intent</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.database.Cursor</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.Bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.BitmapFactory</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.net.Uri</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 10</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Build</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 11</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.provider.MediaStore</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 12</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v4.content.FileProvider</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 13</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.Log</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 14</span>
-<span class="highlight-ln"> 15</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.File</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 16</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.IOException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 17</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.util.Arrays</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 18</span>
-<span class="highlight-ln"> 19</span>
-<span class="highlight-ln"> 20</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">PhotoUtil</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 21</span>
-<span class="highlight-ln"> 22</span>    <span class="highlight-c1">// start camera
-</span><span class="highlight-ln"> 23</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">Uri</span> <span class="highlight-nf">start_camera</span><span class="highlight-o">(</span><span class="highlight-n">Activity</span> <span class="highlight-n">activity</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 24</span>        <span class="highlight-n">Uri</span> <span class="highlight-n">imageUri</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 25</span>        <span class="highlight-c1">// save image in cache path
-</span><span class="highlight-ln"> 26</span><span class="highlight-c1"></span>        <span class="highlight-n">File</span> <span class="highlight-n">outputImage</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">activity</span><span class="highlight-o">.</span><span class="highlight-na">getExternalCacheDir</span><span class="highlight-o">(),</span> <span class="highlight-s">"out_image.jpg"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 27</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 28</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">outputImage</span><span class="highlight-o">.</span><span class="highlight-na">exists</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 29</span>                <span class="highlight-n">outputImage</span><span class="highlight-o">.</span><span class="highlight-na">delete</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 30</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln"> 31</span>            <span class="highlight-n">outputImage</span><span class="highlight-o">.</span><span class="highlight-na">createNewFile</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 32</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 33</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 34</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 35</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">Build</span><span class="highlight-o">.</span><span class="highlight-na">VERSION</span><span class="highlight-o">.</span><span class="highlight-na">SDK_INT</span> <span class="highlight-o">&gt;=</span> <span class="highlight-n">24</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 36</span>            <span class="highlight-c1">// compatible with Android 7.0 or over
-</span><span class="highlight-ln"> 37</span><span class="highlight-c1"></span>            <span class="highlight-n">imageUri</span> <span class="highlight-o">=</span> <span class="highlight-n">FileProvider</span><span class="highlight-o">.</span><span class="highlight-na">getUriForFile</span><span class="highlight-o">(</span><span class="highlight-n">activity</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 38</span>                    <span class="highlight-s">"com.example.paddlemobile1"</span><span class="highlight-o">,</span> <span class="highlight-n">outputImage</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 39</span>        <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 40</span>            <span class="highlight-n">imageUri</span> <span class="highlight-o">=</span> <span class="highlight-n">Uri</span><span class="highlight-o">.</span><span class="highlight-na">fromFile</span><span class="highlight-o">(</span><span class="highlight-n">outputImage</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 41</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 42</span>        <span class="highlight-c1">// set system camera Action
-</span><span class="highlight-ln"> 43</span><span class="highlight-c1"></span>        <span class="highlight-n">Intent</span> <span class="highlight-n">intent</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Intent</span><span class="highlight-o">(</span><span class="highlight-n">MediaStore</span><span class="highlight-o">.</span><span class="highlight-na">ACTION_IMAGE_CAPTURE</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 44</span>        <span class="highlight-c1">// set save photo path
-</span><span class="highlight-ln"> 45</span><span class="highlight-c1"></span>        <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">putExtra</span><span class="highlight-o">(</span><span class="highlight-n">MediaStore</span><span class="highlight-o">.</span><span class="highlight-na">EXTRA_OUTPUT</span><span class="highlight-o">,</span> <span class="highlight-n">imageUri</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 46</span>        <span class="highlight-c1">// set photo quality, min is 0, max is 1
-</span><span class="highlight-ln"> 47</span><span class="highlight-c1"></span>        <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">putExtra</span><span class="highlight-o">(</span><span class="highlight-n">MediaStore</span><span class="highlight-o">.</span><span class="highlight-na">EXTRA_VIDEO_QUALITY</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 48</span>        <span class="highlight-n">activity</span><span class="highlight-o">.</span><span class="highlight-na">startActivityForResult</span><span class="highlight-o">(</span><span class="highlight-n">intent</span><span class="highlight-o">,</span> <span class="highlight-n">requestCode</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 49</span>        <span class="highlight-k">return</span> <span class="highlight-n">imageUri</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 50</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 51</span>
-<span class="highlight-ln"> 52</span>    <span class="highlight-c1">// get picture in photo
-</span><span class="highlight-ln"> 53</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kt">void</span> <span class="highlight-nf">use_photo</span><span class="highlight-o">(</span><span class="highlight-n">Activity</span> <span class="highlight-n">activity</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">){</span>
-<span class="highlight-ln"> 54</span>        <span class="highlight-n">Intent</span> <span class="highlight-n">intent</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Intent</span><span class="highlight-o">(</span><span class="highlight-n">Intent</span><span class="highlight-o">.</span><span class="highlight-na">ACTION_PICK</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 55</span>        <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">setType</span><span class="highlight-o">(</span><span class="highlight-s">"image/*"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 56</span>        <span class="highlight-n">activity</span><span class="highlight-o">.</span><span class="highlight-na">startActivityForResult</span><span class="highlight-o">(</span><span class="highlight-n">intent</span><span class="highlight-o">,</span> <span class="highlight-n">requestCode</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 57</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 58</span>
-<span class="highlight-ln"> 59</span>    <span class="highlight-c1">// get photo from Uri
-</span><span class="highlight-ln"> 60</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">String</span> <span class="highlight-nf">get_path_from_URI</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">Uri</span> <span class="highlight-n">uri</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 61</span>        <span class="highlight-n">String</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 62</span>        <span class="highlight-n">Cursor</span> <span class="highlight-n">cursor</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getContentResolver</span><span class="highlight-o">().</span><span class="highlight-na">query</span><span class="highlight-o">(</span><span class="highlight-n">uri</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 63</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">cursor</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 64</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">uri</span><span class="highlight-o">.</span><span class="highlight-na">getPath</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 65</span>        <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 66</span>            <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">moveToFirst</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 67</span>            <span class="highlight-kt">int</span> <span class="highlight-n">idx</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getColumnIndex</span><span class="highlight-o">(</span><span class="highlight-n">MediaStore</span><span class="highlight-o">.</span><span class="highlight-na">Images</span><span class="highlight-o">.</span><span class="highlight-na">ImageColumns</span><span class="highlight-o">.</span><span class="highlight-na">DATA</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 68</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-n">idx</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 69</span>            <span class="highlight-n">cursor</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 70</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 71</span>        <span class="highlight-k">return</span> <span class="highlight-n">result</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 72</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 73</span>
-<span class="highlight-ln"> 74</span>    <span class="highlight-c1">// Compress the image to the size of the training image，and change RGB
-</span><span class="highlight-ln"> 75</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-nf">getScaledMatrix</span><span class="highlight-o">(</span><span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 76</span>                                   <span class="highlight-kt">int</span> <span class="highlight-n">desHeight</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 77</span>        <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">dataBuf</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">float</span><span class="highlight-o">[</span><span class="highlight-n">3</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span> <span class="highlight-o">*</span> <span class="highlight-n">desHeight</span><span class="highlight-o">];</span>
-<span class="highlight-ln"> 78</span>        <span class="highlight-kt">int</span> <span class="highlight-n">rIndex</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 79</span>        <span class="highlight-kt">int</span> <span class="highlight-n">gIndex</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 80</span>        <span class="highlight-kt">int</span> <span class="highlight-n">bIndex</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 81</span>        <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">pixels</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">int</span><span class="highlight-o">[</span><span class="highlight-n">desWidth</span> <span class="highlight-o">*</span> <span class="highlight-n">desHeight</span><span class="highlight-o">];</span>
-<span class="highlight-ln"> 82</span>        <span class="highlight-n">Bitmap</span> <span class="highlight-n">bm</span> <span class="highlight-o">=</span> <span class="highlight-n">Bitmap</span><span class="highlight-o">.</span><span class="highlight-na">createScaledBitmap</span><span class="highlight-o">(</span><span class="highlight-n">bitmap</span><span class="highlight-o">,</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span> <span class="highlight-n">desHeight</span><span class="highlight-o">,</span> <span class="highlight-kc">false</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 83</span>        <span class="highlight-n">bm</span><span class="highlight-o">.</span><span class="highlight-na">getPixels</span><span class="highlight-o">(</span><span class="highlight-n">pixels</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">desWidth</span><span class="highlight-o">,</span> <span class="highlight-n">desHeight</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 84</span>        <span class="highlight-kt">int</span> <span class="highlight-n">j</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 85</span>        <span class="highlight-kt">int</span> <span class="highlight-n">k</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 86</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">pixels</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 87</span>            <span class="highlight-kt">int</span> <span class="highlight-n">clr</span> <span class="highlight-o">=</span> <span class="highlight-n">pixels</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln"> 88</span>            <span class="highlight-n">j</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span> <span class="highlight-o">/</span> <span class="highlight-n">desHeight</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 89</span>            <span class="highlight-n">k</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span> <span class="highlight-o">%</span> <span class="highlight-n">desWidth</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 90</span>            <span class="highlight-n">rIndex</span> <span class="highlight-o">=</span> <span class="highlight-n">j</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span> <span class="highlight-o">+</span> <span class="highlight-n">k</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 91</span>            <span class="highlight-n">gIndex</span> <span class="highlight-o">=</span> <span class="highlight-n">rIndex</span> <span class="highlight-o">+</span> <span class="highlight-n">desHeight</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 92</span>            <span class="highlight-n">bIndex</span> <span class="highlight-o">=</span> <span class="highlight-n">gIndex</span> <span class="highlight-o">+</span> <span class="highlight-n">desHeight</span> <span class="highlight-o">*</span> <span class="highlight-n">desWidth</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 93</span>            <span class="highlight-n">dataBuf</span><span class="highlight-o">[</span><span class="highlight-n">rIndex</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">)</span> <span class="highlight-o">((</span><span class="highlight-n">clr</span> <span class="highlight-o">&amp;</span> <span class="highlight-n">0x00ff0000</span><span class="highlight-o">)</span> <span class="highlight-o">&gt;&gt;</span> <span class="highlight-n">16</span><span class="highlight-o">)</span> <span class="highlight-o">-</span> <span class="highlight-n">148</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 94</span>            <span class="highlight-n">dataBuf</span><span class="highlight-o">[</span><span class="highlight-n">gIndex</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">)</span> <span class="highlight-o">((</span><span class="highlight-n">clr</span> <span class="highlight-o">&amp;</span> <span class="highlight-n">0x0000ff00</span><span class="highlight-o">)</span> <span class="highlight-o">&gt;&gt;</span> <span class="highlight-n">8</span><span class="highlight-o">)</span> <span class="highlight-o">-</span> <span class="highlight-n">148</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 95</span>            <span class="highlight-n">dataBuf</span><span class="highlight-o">[</span><span class="highlight-n">bIndex</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">)</span> <span class="highlight-o">((</span><span class="highlight-n">clr</span> <span class="highlight-o">&amp;</span> <span class="highlight-n">0x000000ff</span><span class="highlight-o">))</span> <span class="highlight-o">-</span> <span class="highlight-n">148</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 96</span>
-<span class="highlight-ln"> 97</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 98</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">bm</span><span class="highlight-o">.</span><span class="highlight-na">isRecycled</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 99</span>            <span class="highlight-n">bm</span><span class="highlight-o">.</span><span class="highlight-na">recycle</span><span class="highlight-o">();</span>
-<span class="highlight-ln">100</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">101</span>        <span class="highlight-k">return</span> <span class="highlight-n">dataBuf</span><span class="highlight-o">;</span>
-<span class="highlight-ln">102</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">103</span>
-<span class="highlight-ln">104</span>    <span class="highlight-c1">// compress picture
-</span><span class="highlight-ln">105</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">Bitmap</span> <span class="highlight-nf">getScaleBitmap</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">filePath</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">106</span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span> <span class="highlight-n">opt</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span><span class="highlight-o">();</span>
-<span class="highlight-ln">107</span>        <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">true</span><span class="highlight-o">;</span>
-<span class="highlight-ln">108</span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeFile</span><span class="highlight-o">(</span><span class="highlight-n">filePath</span><span class="highlight-o">,</span> <span class="highlight-n">opt</span><span class="highlight-o">);</span>
-<span class="highlight-ln">109</span>
-<span class="highlight-ln">110</span>        <span class="highlight-kt">int</span> <span class="highlight-n">bmpWidth</span> <span class="highlight-o">=</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">outWidth</span><span class="highlight-o">;</span>
-<span class="highlight-ln">111</span>        <span class="highlight-kt">int</span> <span class="highlight-n">bmpHeight</span> <span class="highlight-o">=</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">outHeight</span><span class="highlight-o">;</span>
-<span class="highlight-ln">112</span>
-<span class="highlight-ln">113</span>        <span class="highlight-kt">int</span> <span class="highlight-n">maxSize</span> <span class="highlight-o">=</span> <span class="highlight-n">500</span><span class="highlight-o">;</span>
-<span class="highlight-ln">114</span>
-<span class="highlight-ln">115</span>        <span class="highlight-c1">// compress picture with inSampleSize
-</span><span class="highlight-ln">116</span><span class="highlight-c1"></span>        <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">117</span>        <span class="highlight-k">while</span> <span class="highlight-o">(</span><span class="highlight-kc">true</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">118</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">bmpWidth</span> <span class="highlight-o">/</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">maxSize</span> <span class="highlight-o">||</span> <span class="highlight-n">bmpHeight</span> <span class="highlight-o">/</span> <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">maxSize</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">119</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">120</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">121</span>            <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">*=</span> <span class="highlight-n">2</span><span class="highlight-o">;</span>
-<span class="highlight-ln">122</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">123</span>        <span class="highlight-n">opt</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln">124</span>        <span class="highlight-k">return</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeFile</span><span class="highlight-o">(</span><span class="highlight-n">filePath</span><span class="highlight-o">,</span> <span class="highlight-n">opt</span><span class="highlight-o">);</span>
-<span class="highlight-ln">125</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">126</span><span class="highlight-o">}</span>
+<pre><code class="language-java">package com.example.paddlemobile1;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
+
+public class PhotoUtil {
+
+    // start camera
+    public static Uri start_camera(Activity activity, int requestCode) {
+        Uri imageUri;
+        // save image in cache path
+        File outputImage = new File(activity.getExternalCacheDir(), "out_image.jpg");
+        try {
+            if (outputImage.exists()) {
+                outputImage.delete();
+            }
+            outputImage.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (Build.VERSION.SDK_INT &gt;= 24) {
+            // compatible with Android 7.0 or over
+            imageUri = FileProvider.getUriForFile(activity,
+                    "com.example.paddlemobile1", outputImage);
+        } else {
+            imageUri = Uri.fromFile(outputImage);
+        }
+        // set system camera Action
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // set save photo path
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        // set photo quality, min is 0, max is 1
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+        activity.startActivityForResult(intent, requestCode);
+        return imageUri;
+    }
+
+    // get picture in photo
+    public static void use_photo(Activity activity, int requestCode){
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    // get photo from Uri
+    public static String get_path_from_URI(Context context, Uri uri) {
+        String result;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor == null) {
+            result = uri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
+
+    // Compress the image to the size of the training image，and change RGB
+    public static float[] getScaledMatrix(Bitmap bitmap, int desWidth,
+                                   int desHeight) {
+        float[] dataBuf = new float[3 * desWidth * desHeight];
+        int rIndex;
+        int gIndex;
+        int bIndex;
+        int[] pixels = new int[desWidth * desHeight];
+        Bitmap bm = Bitmap.createScaledBitmap(bitmap, desWidth, desHeight, false);
+        bm.getPixels(pixels, 0, desWidth, 0, 0, desWidth, desHeight);
+        int j = 0;
+        int k = 0;
+        for (int i = 0; i &lt; pixels.length; i++) {
+            int clr = pixels[i];
+            j = i / desHeight;
+            k = i % desWidth;
+            rIndex = j * desWidth + k;
+            gIndex = rIndex + desHeight * desWidth;
+            bIndex = gIndex + desHeight * desWidth;
+            dataBuf[rIndex] = (float) ((clr &amp; 0x00ff0000) &gt;&gt; 16) - 148;
+            dataBuf[gIndex] = (float) ((clr &amp; 0x0000ff00) &gt;&gt; 8) - 148;
+            dataBuf[bIndex] = (float) ((clr &amp; 0x000000ff)) - 148;
+
+        }
+        if (bm.isRecycled()) {
+            bm.recycle();
+        }
+        return dataBuf;
+    }
+
+    // compress picture
+    public static Bitmap getScaleBitmap(String filePath) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, opt);
+
+        int bmpWidth = opt.outWidth;
+        int bmpHeight = opt.outHeight;
+
+        int maxSize = 500;
+
+        // compress picture with inSampleSize
+        opt.inSampleSize = 1;
+        while (true) {
+            if (bmpWidth / opt.inSampleSize &lt; maxSize || bmpHeight / opt.inSampleSize &lt; maxSize) {
+                break;
+            }
+            opt.inSampleSize *= 2;
+        }
+        opt.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, opt);
+    }
+}
 </code></pre>
 <ul>
 <li><code>start_camera()</code>方法是启动相机并返回图片的URI。</li>
@@ -513,301 +513,301 @@ var _hmt = _hmt || [];
 <li><code>getScaleBitmap()</code>方法是对图片进行等比例压缩，减少内存的支出。</li>
 </ul>
 <p>7、最后修改<code>MainActivity.java</code>，修改如下：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.example.paddlemobile1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  2</span>
-<span class="highlight-ln">  3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.Manifest</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.annotation.SuppressLint</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.app.Activity</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Context</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Intent</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.pm.PackageManager</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.Bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 10</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.net.Uri</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 11</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 12</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Environment</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 13</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.annotation.NonNull</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 14</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.annotation.Nullable</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 15</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v4.app.ActivityCompat</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 16</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v4.content.ContextCompat</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 17</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v7.app.AppCompatActivity</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 18</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.Log</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 19</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 20</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Button</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 21</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.ImageView</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 22</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.TextView</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 23</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 24</span>
-<span class="highlight-ln"> 25</span><span class="highlight-kn">import</span> <span class="highlight-nn">com.bumptech.glide.Glide</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 26</span><span class="highlight-kn">import</span> <span class="highlight-nn">com.bumptech.glide.load.engine.DiskCacheStrategy</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 27</span><span class="highlight-kn">import</span> <span class="highlight-nn">com.bumptech.glide.request.RequestOptions</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 28</span>
-<span class="highlight-ln"> 29</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.File</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 30</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.FileOutputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 31</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.InputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 32</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.util.ArrayList</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 33</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.util.Arrays</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 34</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.util.List</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 35</span>
-<span class="highlight-ln"> 36</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MainActivity</span> <span class="highlight-kd">extends</span> <span class="highlight-n">AppCompatActivity</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 37</span>    <span class="highlight-kd">private</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">TAG</span> <span class="highlight-o">=</span> <span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">class</span><span class="highlight-o">.</span><span class="highlight-na">getName</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 38</span>    <span class="highlight-kd">private</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">USE_PHOTO</span> <span class="highlight-o">=</span> <span class="highlight-n">1001</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 39</span>    <span class="highlight-kd">private</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">START_CAMERA</span> <span class="highlight-o">=</span> <span class="highlight-n">1002</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 40</span>    <span class="highlight-kd">private</span> <span class="highlight-n">Uri</span> <span class="highlight-n">image_uri</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 41</span>    <span class="highlight-kd">private</span> <span class="highlight-n">ImageView</span> <span class="highlight-n">show_image</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 42</span>    <span class="highlight-kd">private</span> <span class="highlight-n">TextView</span> <span class="highlight-n">result_text</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 43</span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">assets_path</span> <span class="highlight-o">=</span> <span class="highlight-s">"paddle_models"</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 44</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">load_result</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 45</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">ddims</span> <span class="highlight-o">=</span> <span class="highlight-o">{</span><span class="highlight-n">1</span><span class="highlight-o">,</span> <span class="highlight-n">3</span><span class="highlight-o">,</span> <span class="highlight-n">224</span><span class="highlight-o">,</span> <span class="highlight-n">224</span><span class="highlight-o">};</span>
-<span class="highlight-ln"> 46</span>
-<span class="highlight-ln"> 47</span>    <span class="highlight-kd">private</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">PADDLE_MODEL</span> <span class="highlight-o">=</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 48</span>            <span class="highlight-s">"lenet"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 49</span>            <span class="highlight-s">"alexnet"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 50</span>            <span class="highlight-s">"vgg16"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 51</span>            <span class="highlight-s">"resnet"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 52</span>            <span class="highlight-s">"googlenet"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 53</span>            <span class="highlight-s">"mobilenet_v1"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 54</span>            <span class="highlight-s">"mobilenet_v2"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 55</span>            <span class="highlight-s">"inception_v1"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 56</span>            <span class="highlight-s">"inception_v2"</span><span class="highlight-o">,</span>
-<span class="highlight-ln"> 57</span>            <span class="highlight-s">"squeezenet"</span>
-<span class="highlight-ln"> 58</span>    <span class="highlight-o">};</span>
-<span class="highlight-ln"> 59</span>
-<span class="highlight-ln"> 60</span>    <span class="highlight-c1">// load paddle-mobile api
-</span><span class="highlight-ln"> 61</span><span class="highlight-c1"></span>    <span class="highlight-kd">static</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 62</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 63</span>            <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">loadLibrary</span><span class="highlight-o">(</span><span class="highlight-s">"paddle-mobile"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 64</span>
-<span class="highlight-ln"> 65</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">SecurityException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 66</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 67</span>
-<span class="highlight-ln"> 68</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">UnsatisfiedLinkError</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 69</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 70</span>
-<span class="highlight-ln"> 71</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">NullPointerException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 72</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 73</span>
-<span class="highlight-ln"> 74</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 75</span>
-<span class="highlight-ln"> 76</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 77</span>
-<span class="highlight-ln"> 78</span>
-<span class="highlight-ln"> 79</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 80</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 81</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">savedInstanceState</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 82</span>        <span class="highlight-n">setContentView</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">activity_main</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 83</span>
-<span class="highlight-ln"> 84</span>        <span class="highlight-n">init</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 85</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 86</span>
-<span class="highlight-ln"> 87</span>    <span class="highlight-c1">// initialize view
-</span><span class="highlight-ln"> 88</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">init</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 89</span>        <span class="highlight-n">request_permissions</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 90</span>        <span class="highlight-n">show_image</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">ImageView</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">show_image</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 91</span>        <span class="highlight-n">result_text</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">TextView</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">result_text</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 92</span>        <span class="highlight-n">Button</span> <span class="highlight-n">use_photo</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">use_photo</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 93</span>        <span class="highlight-n">Button</span> <span class="highlight-n">start_photo</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">start_camera</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 94</span>
-<span class="highlight-ln"> 95</span>        <span class="highlight-c1">// use photo click
-</span><span class="highlight-ln"> 96</span><span class="highlight-c1"></span>        <span class="highlight-n">use_photo</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 97</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 98</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">view</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 99</span>                <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">use_photo</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">USE_PHOTO</span><span class="highlight-o">);</span>
-<span class="highlight-ln">100</span><span class="highlight-c1">//                load_model();
-</span><span class="highlight-ln">101</span><span class="highlight-c1"></span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">102</span>        <span class="highlight-o">});</span>
-<span class="highlight-ln">103</span>
-<span class="highlight-ln">104</span>        <span class="highlight-c1">// start camera click
-</span><span class="highlight-ln">105</span><span class="highlight-c1"></span>        <span class="highlight-n">start_photo</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">106</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">107</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">view</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">108</span>                <span class="highlight-n">image_uri</span> <span class="highlight-o">=</span> <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">start_camera</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">START_CAMERA</span><span class="highlight-o">);</span>
-<span class="highlight-ln">109</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">110</span>        <span class="highlight-o">});</span>
-<span class="highlight-ln">111</span>
-<span class="highlight-ln">112</span>        <span class="highlight-c1">// copy file from assets to sdcard
-</span><span class="highlight-ln">113</span><span class="highlight-c1"></span>        <span class="highlight-n">String</span> <span class="highlight-n">sdcard_path</span> <span class="highlight-o">=</span> <span class="highlight-n">Environment</span><span class="highlight-o">.</span><span class="highlight-na">getExternalStorageDirectory</span><span class="highlight-o">()</span>
-<span class="highlight-ln">114</span>                <span class="highlight-o">+</span> <span class="highlight-n">File</span><span class="highlight-o">.</span><span class="highlight-na">separator</span> <span class="highlight-o">+</span> <span class="highlight-n">assets_path</span><span class="highlight-o">;</span>
-<span class="highlight-ln">115</span>        <span class="highlight-n">copy_file_from_asset</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">assets_path</span><span class="highlight-o">,</span> <span class="highlight-n">sdcard_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">116</span>
-<span class="highlight-ln">117</span>        <span class="highlight-c1">// load model
-</span><span class="highlight-ln">118</span><span class="highlight-c1"></span>        <span class="highlight-n">load_model</span><span class="highlight-o">();</span>
-<span class="highlight-ln">119</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">120</span>
-<span class="highlight-ln">121</span>    <span class="highlight-c1">// load infer model
-</span><span class="highlight-ln">122</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">load_model</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">123</span>        <span class="highlight-n">String</span> <span class="highlight-n">model_path</span> <span class="highlight-o">=</span> <span class="highlight-n">Environment</span><span class="highlight-o">.</span><span class="highlight-na">getExternalStorageDirectory</span><span class="highlight-o">()</span>
-<span class="highlight-ln">124</span>                <span class="highlight-o">+</span> <span class="highlight-n">File</span><span class="highlight-o">.</span><span class="highlight-na">separator</span> <span class="highlight-o">+</span> <span class="highlight-n">assets_path</span> <span class="highlight-o">+</span> <span class="highlight-n">File</span><span class="highlight-o">.</span><span class="highlight-na">separator</span> <span class="highlight-o">+</span> <span class="highlight-n">PADDLE_MODEL</span><span class="highlight-o">[</span><span class="highlight-n">4</span><span class="highlight-o">];</span>
-<span class="highlight-ln">125</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-n">model_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">126</span>        <span class="highlight-n">load_result</span> <span class="highlight-o">=</span> <span class="highlight-n">ImageRecognition</span><span class="highlight-o">.</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">model_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">127</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">load_result</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">128</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"model load success"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">129</span>        <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">130</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"model load fail"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">131</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">132</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">133</span>
-<span class="highlight-ln">134</span>    <span class="highlight-c1">// clear infer model
-</span><span class="highlight-ln">135</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">clear_model</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">136</span>        <span class="highlight-n">ImageRecognition</span><span class="highlight-o">.</span><span class="highlight-na">clear</span><span class="highlight-o">();</span>
-<span class="highlight-ln">137</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"model is clear"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">138</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">139</span>
-<span class="highlight-ln">140</span>    <span class="highlight-c1">// copy file from asset to sdcard
-</span><span class="highlight-ln">141</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">copy_file_from_asset</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">oldPath</span><span class="highlight-o">,</span> <span class="highlight-n">String</span> <span class="highlight-n">newPath</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">142</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">143</span>            <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">fileNames</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getAssets</span><span class="highlight-o">().</span><span class="highlight-na">list</span><span class="highlight-o">(</span><span class="highlight-n">oldPath</span><span class="highlight-o">);</span>
-<span class="highlight-ln">144</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">fileNames</span><span class="highlight-o">.</span><span class="highlight-na">length</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">145</span>                <span class="highlight-c1">// directory
-</span><span class="highlight-ln">146</span><span class="highlight-c1"></span>                <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">newPath</span><span class="highlight-o">);</span>
-<span class="highlight-ln">147</span>                <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">exists</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">148</span>                    <span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">mkdirs</span><span class="highlight-o">();</span>
-<span class="highlight-ln">149</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">150</span>                <span class="highlight-c1">// copy recursivelyC
-</span><span class="highlight-ln">151</span><span class="highlight-c1"></span>                <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">fileName</span> <span class="highlight-o">:</span> <span class="highlight-n">fileNames</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">152</span>                    <span class="highlight-n">copy_file_from_asset</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">oldPath</span> <span class="highlight-o">+</span> <span class="highlight-s">"/"</span> <span class="highlight-o">+</span> <span class="highlight-n">fileName</span><span class="highlight-o">,</span> <span class="highlight-n">newPath</span> <span class="highlight-o">+</span> <span class="highlight-s">"/"</span> <span class="highlight-o">+</span> <span class="highlight-n">fileName</span><span class="highlight-o">);</span>
-<span class="highlight-ln">153</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">154</span>                <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"copy files finish"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">155</span>            <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">156</span>                <span class="highlight-c1">// file
-</span><span class="highlight-ln">157</span><span class="highlight-c1"></span>                <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">newPath</span><span class="highlight-o">);</span>
-<span class="highlight-ln">158</span>                <span class="highlight-c1">// if file exists will never copy
-</span><span class="highlight-ln">159</span><span class="highlight-c1"></span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">exists</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">160</span>                    <span class="highlight-k">return</span><span class="highlight-o">;</span>
-<span class="highlight-ln">161</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">162</span>
-<span class="highlight-ln">163</span>                <span class="highlight-c1">// copy file to new path
-</span><span class="highlight-ln">164</span><span class="highlight-c1"></span>                <span class="highlight-n">InputStream</span> <span class="highlight-n">is</span> <span class="highlight-o">=</span> <span class="highlight-n">context</span><span class="highlight-o">.</span><span class="highlight-na">getAssets</span><span class="highlight-o">().</span><span class="highlight-na">open</span><span class="highlight-o">(</span><span class="highlight-n">oldPath</span><span class="highlight-o">);</span>
-<span class="highlight-ln">165</span>                <span class="highlight-n">FileOutputStream</span> <span class="highlight-n">fos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FileOutputStream</span><span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">);</span>
-<span class="highlight-ln">166</span>                <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
-<span class="highlight-ln">167</span>                <span class="highlight-kt">int</span> <span class="highlight-n">byteCount</span><span class="highlight-o">;</span>
-<span class="highlight-ln">168</span>                <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">byteCount</span> <span class="highlight-o">=</span> <span class="highlight-n">is</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">!=</span> <span class="highlight-o">-</span><span class="highlight-n">1</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">169</span>                    <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">byteCount</span><span class="highlight-o">);</span>
-<span class="highlight-ln">170</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">171</span>                <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">flush</span><span class="highlight-o">();</span>
-<span class="highlight-ln">172</span>                <span class="highlight-n">is</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">173</span>                <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">174</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">175</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">Exception</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">176</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">177</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">178</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">179</span>
-<span class="highlight-ln">180</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">181</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onActivityResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">resultCode</span><span class="highlight-o">,</span> <span class="highlight-nd">@Nullable</span> <span class="highlight-n">Intent</span> <span class="highlight-n">data</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">182</span>        <span class="highlight-n">String</span> <span class="highlight-n">image_path</span><span class="highlight-o">;</span>
-<span class="highlight-ln">183</span>        <span class="highlight-n">RequestOptions</span> <span class="highlight-n">options</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">RequestOptions</span><span class="highlight-o">().</span><span class="highlight-na">skipMemoryCache</span><span class="highlight-o">(</span><span class="highlight-kc">true</span><span class="highlight-o">).</span><span class="highlight-na">diskCacheStrategy</span><span class="highlight-o">(</span><span class="highlight-n">DiskCacheStrategy</span><span class="highlight-o">.</span><span class="highlight-na">NONE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">184</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">resultCode</span> <span class="highlight-o">==</span> <span class="highlight-n">Activity</span><span class="highlight-o">.</span><span class="highlight-na">RESULT_OK</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">185</span>            <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">186</span>                <span class="highlight-k">case</span> <span class="highlight-n">USE_PHOTO</span><span class="highlight-o">:</span>
-<span class="highlight-ln">187</span>                    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">data</span> <span class="highlight-o">==</span> <span class="highlight-kc">null</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">188</span>                        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">w</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"user photo data is null"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">189</span>                        <span class="highlight-k">return</span><span class="highlight-o">;</span>
-<span class="highlight-ln">190</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">191</span>                    <span class="highlight-n">image_uri</span> <span class="highlight-o">=</span> <span class="highlight-n">data</span><span class="highlight-o">.</span><span class="highlight-na">getData</span><span class="highlight-o">();</span>
-<span class="highlight-ln">192</span>                    <span class="highlight-n">Glide</span><span class="highlight-o">.</span><span class="highlight-na">with</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">).</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">image_uri</span><span class="highlight-o">).</span><span class="highlight-na">apply</span><span class="highlight-o">(</span><span class="highlight-n">options</span><span class="highlight-o">).</span><span class="highlight-na">into</span><span class="highlight-o">(</span><span class="highlight-n">show_image</span><span class="highlight-o">);</span>
-<span class="highlight-ln">193</span>                    <span class="highlight-c1">// get image path from uri
-</span><span class="highlight-ln">194</span><span class="highlight-c1"></span>                    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">get_path_from_URI</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">image_uri</span><span class="highlight-o">);</span>
-<span class="highlight-ln">195</span>                    <span class="highlight-c1">// show result
-</span><span class="highlight-ln">196</span><span class="highlight-c1"></span>                    <span class="highlight-n">result_text</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">197</span>                    <span class="highlight-c1">// predict image
-</span><span class="highlight-ln">198</span><span class="highlight-c1"></span>                    <span class="highlight-n">predict_image</span><span class="highlight-o">(</span><span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">get_path_from_URI</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">image_uri</span><span class="highlight-o">));</span>
-<span class="highlight-ln">199</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">200</span>                <span class="highlight-k">case</span> <span class="highlight-n">START_CAMERA</span><span class="highlight-o">:</span>
-<span class="highlight-ln">201</span>                    <span class="highlight-c1">// show photo
-</span><span class="highlight-ln">202</span><span class="highlight-c1"></span>                    <span class="highlight-n">Glide</span><span class="highlight-o">.</span><span class="highlight-na">with</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">).</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">image_uri</span><span class="highlight-o">).</span><span class="highlight-na">apply</span><span class="highlight-o">(</span><span class="highlight-n">options</span><span class="highlight-o">).</span><span class="highlight-na">into</span><span class="highlight-o">(</span><span class="highlight-n">show_image</span><span class="highlight-o">);</span>
-<span class="highlight-ln">203</span>                    <span class="highlight-c1">// get image path from uri
-</span><span class="highlight-ln">204</span><span class="highlight-c1"></span>                    <span class="highlight-n">image_path</span> <span class="highlight-o">=</span> <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">get_path_from_URI</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">image_uri</span><span class="highlight-o">);</span>
-<span class="highlight-ln">205</span>                    <span class="highlight-c1">// show result
-</span><span class="highlight-ln">206</span><span class="highlight-c1"></span>                    <span class="highlight-n">result_text</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">207</span>                    <span class="highlight-c1">// predict image
-</span><span class="highlight-ln">208</span><span class="highlight-c1"></span>                    <span class="highlight-n">predict_image</span><span class="highlight-o">(</span><span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">get_path_from_URI</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">image_uri</span><span class="highlight-o">));</span>
-<span class="highlight-ln">209</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">210</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">211</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">212</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">213</span>
-<span class="highlight-ln">214</span>    <span class="highlight-nd">@SuppressLint</span><span class="highlight-o">(</span><span class="highlight-s">"SetTextI18n"</span><span class="highlight-o">)</span>
-<span class="highlight-ln">215</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">predict_image</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">image_path</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">216</span>        <span class="highlight-c1">// picture to float array
-</span><span class="highlight-ln">217</span><span class="highlight-c1"></span>        <span class="highlight-n">Bitmap</span> <span class="highlight-n">bmp</span> <span class="highlight-o">=</span> <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">getScaleBitmap</span><span class="highlight-o">(</span><span class="highlight-n">image_path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">218</span>        <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">inputData</span> <span class="highlight-o">=</span> <span class="highlight-n">PhotoUtil</span><span class="highlight-o">.</span><span class="highlight-na">getScaledMatrix</span><span class="highlight-o">(</span><span class="highlight-n">bmp</span><span class="highlight-o">,</span> <span class="highlight-n">ddims</span><span class="highlight-o">[</span><span class="highlight-n">2</span><span class="highlight-o">],</span> <span class="highlight-n">ddims</span><span class="highlight-o">[</span><span class="highlight-n">3</span><span class="highlight-o">]);</span>
-<span class="highlight-ln">219</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">220</span>            <span class="highlight-kt">long</span> <span class="highlight-n">start</span> <span class="highlight-o">=</span> <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">currentTimeMillis</span><span class="highlight-o">();</span>
-<span class="highlight-ln">221</span>            <span class="highlight-c1">// get predict result
-</span><span class="highlight-ln">222</span><span class="highlight-c1"></span>            <span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">ImageRecognition</span><span class="highlight-o">.</span><span class="highlight-na">predictImage</span><span class="highlight-o">(</span><span class="highlight-n">inputData</span><span class="highlight-o">,</span> <span class="highlight-n">ddims</span><span class="highlight-o">);</span>
-<span class="highlight-ln">223</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-n">TAG</span><span class="highlight-o">,</span> <span class="highlight-s">"origin predict result:"</span> <span class="highlight-o">+</span> <span class="highlight-n">Arrays</span><span class="highlight-o">.</span><span class="highlight-na">toString</span><span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">));</span>
-<span class="highlight-ln">224</span>            <span class="highlight-kt">long</span> <span class="highlight-n">end</span> <span class="highlight-o">=</span> <span class="highlight-n">System</span><span class="highlight-o">.</span><span class="highlight-na">currentTimeMillis</span><span class="highlight-o">();</span>
-<span class="highlight-ln">225</span>            <span class="highlight-kt">long</span> <span class="highlight-n">time</span> <span class="highlight-o">=</span> <span class="highlight-n">end</span> <span class="highlight-o">-</span> <span class="highlight-n">start</span><span class="highlight-o">;</span>
-<span class="highlight-ln">226</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"result length"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">));</span>
-<span class="highlight-ln">227</span>            <span class="highlight-c1">// show predict result and time
-</span><span class="highlight-ln">228</span><span class="highlight-c1"></span>            <span class="highlight-kt">int</span> <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">get_max_result</span><span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">);</span>
-<span class="highlight-ln">229</span>            <span class="highlight-n">String</span> <span class="highlight-n">show_text</span> <span class="highlight-o">=</span> <span class="highlight-s">"result："</span> <span class="highlight-o">+</span> <span class="highlight-n">r</span> <span class="highlight-o">+</span> <span class="highlight-s">"\nprobability："</span> <span class="highlight-o">+</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">r</span><span class="highlight-o">]</span> <span class="highlight-o">+</span> <span class="highlight-s">"\ntime："</span> <span class="highlight-o">+</span> <span class="highlight-n">time</span> <span class="highlight-o">+</span> <span class="highlight-s">"ms"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">230</span>            <span class="highlight-n">result_text</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">show_text</span><span class="highlight-o">);</span>
-<span class="highlight-ln">231</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">Exception</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">232</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">233</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">234</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">235</span>
-<span class="highlight-ln">236</span>    <span class="highlight-kd">private</span> <span class="highlight-kt">int</span> <span class="highlight-nf">get_max_result</span><span class="highlight-o">(</span><span class="highlight-kt">float</span><span class="highlight-o">[]</span> <span class="highlight-n">result</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">237</span>        <span class="highlight-kt">float</span> <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">0</span><span class="highlight-o">];</span>
-<span class="highlight-ln">238</span>        <span class="highlight-kt">int</span> <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span>
-<span class="highlight-ln">239</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">240</span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">probability</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">])</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">241</span>                <span class="highlight-n">probability</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln">242</span>                <span class="highlight-n">r</span> <span class="highlight-o">=</span> <span class="highlight-n">i</span><span class="highlight-o">;</span>
-<span class="highlight-ln">243</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">244</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">245</span>        <span class="highlight-k">return</span> <span class="highlight-n">r</span><span class="highlight-o">;</span>
-<span class="highlight-ln">246</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">247</span>
-<span class="highlight-ln">248</span>    <span class="highlight-c1">// request permissions
-</span><span class="highlight-ln">249</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">request_permissions</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">250</span>
-<span class="highlight-ln">251</span>        <span class="highlight-n">List</span><span class="highlight-o">&lt;</span><span class="highlight-n">String</span><span class="highlight-o">&gt;</span> <span class="highlight-n">permissionList</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ArrayList</span><span class="highlight-o">&lt;&gt;();</span>
-<span class="highlight-ln">252</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">CAMERA</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">253</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">CAMERA</span><span class="highlight-o">);</span>
-<span class="highlight-ln">254</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">255</span>
-<span class="highlight-ln">256</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">WRITE_EXTERNAL_STORAGE</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">257</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">WRITE_EXTERNAL_STORAGE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">258</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">259</span>
-<span class="highlight-ln">260</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">ContextCompat</span><span class="highlight-o">.</span><span class="highlight-na">checkSelfPermission</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">)</span> <span class="highlight-o">!=</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_GRANTED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">261</span>            <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-n">Manifest</span><span class="highlight-o">.</span><span class="highlight-na">permission</span><span class="highlight-o">.</span><span class="highlight-na">READ_EXTERNAL_STORAGE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">262</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">263</span>
-<span class="highlight-ln">264</span>        <span class="highlight-c1">// if list is not empty will request permissions
-</span><span class="highlight-ln">265</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(!</span><span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">isEmpty</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">266</span>            <span class="highlight-n">ActivityCompat</span><span class="highlight-o">.</span><span class="highlight-na">requestPermissions</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">toArray</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">String</span><span class="highlight-o">[</span><span class="highlight-n">permissionList</span><span class="highlight-o">.</span><span class="highlight-na">size</span><span class="highlight-o">()]),</span> <span class="highlight-n">1</span><span class="highlight-o">);</span>
-<span class="highlight-ln">267</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">268</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">269</span>
-<span class="highlight-ln">270</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">271</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onRequestPermissionsResult</span><span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-nd">@NonNull</span> <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">permissions</span><span class="highlight-o">,</span> <span class="highlight-nd">@NonNull</span> <span class="highlight-kt">int</span><span class="highlight-o">[]</span> <span class="highlight-n">grantResults</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">272</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onRequestPermissionsResult</span><span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">,</span> <span class="highlight-n">permissions</span><span class="highlight-o">,</span> <span class="highlight-n">grantResults</span><span class="highlight-o">);</span>
-<span class="highlight-ln">273</span>        <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">requestCode</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">274</span>            <span class="highlight-k">case</span> <span class="highlight-n">1</span><span class="highlight-o">:</span>
-<span class="highlight-ln">275</span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">grantResults</span><span class="highlight-o">.</span><span class="highlight-na">length</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">276</span>                    <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">grantResults</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">277</span>
-<span class="highlight-ln">278</span>                        <span class="highlight-kt">int</span> <span class="highlight-n">grantResult</span> <span class="highlight-o">=</span> <span class="highlight-n">grantResults</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln">279</span>                        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">grantResult</span> <span class="highlight-o">==</span> <span class="highlight-n">PackageManager</span><span class="highlight-o">.</span><span class="highlight-na">PERMISSION_DENIED</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">280</span>                            <span class="highlight-n">String</span> <span class="highlight-n">s</span> <span class="highlight-o">=</span> <span class="highlight-n">permissions</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">];</span>
-<span class="highlight-ln">281</span>                            <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-k">this</span><span class="highlight-o">,</span> <span class="highlight-n">s</span> <span class="highlight-o">+</span> <span class="highlight-s">" permission was denied"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">282</span>                        <span class="highlight-o">}</span>
-<span class="highlight-ln">283</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">284</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">285</span>                <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">286</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">287</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">288</span>
-<span class="highlight-ln">289</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">290</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onDestroy</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">291</span>        <span class="highlight-c1">// clear model before destroy app
-</span><span class="highlight-ln">292</span><span class="highlight-c1"></span>        <span class="highlight-n">clear_model</span><span class="highlight-o">();</span>
-<span class="highlight-ln">293</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onDestroy</span><span class="highlight-o">();</span>
-<span class="highlight-ln">294</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">295</span><span class="highlight-o">}</span>
+<pre><code class="language-java">package com.example.paddlemobile1;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getName();
+    private static final int USE_PHOTO = 1001;
+    private static final int START_CAMERA = 1002;
+    private Uri image_uri;
+    private ImageView show_image;
+    private TextView result_text;
+    private String assets_path = "paddle_models";
+    private boolean load_result = false;
+    private int[] ddims = {1, 3, 224, 224};
+
+    private static final String[] PADDLE_MODEL = {
+            "lenet",
+            "alexnet",
+            "vgg16",
+            "resnet",
+            "googlenet",
+            "mobilenet_v1",
+            "mobilenet_v2",
+            "inception_v1",
+            "inception_v2",
+            "squeezenet"
+    };
+
+    // load paddle-mobile api
+    static {
+        try {
+            System.loadLibrary("paddle-mobile");
+
+        } catch (SecurityException e) {
+            e.printStackTrace();
+
+        } catch (UnsatisfiedLinkError e) {
+            e.printStackTrace();
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+
+        }
+
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        init();
+    }
+
+    // initialize view
+    private void init() {
+        request_permissions();
+        show_image = (ImageView) findViewById(R.id.show_image);
+        result_text = (TextView) findViewById(R.id.result_text);
+        Button use_photo = (Button) findViewById(R.id.use_photo);
+        Button start_photo = (Button) findViewById(R.id.start_camera);
+
+        // use photo click
+        use_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PhotoUtil.use_photo(MainActivity.this, USE_PHOTO);
+//                load_model();
+            }
+        });
+
+        // start camera click
+        start_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                image_uri = PhotoUtil.start_camera(MainActivity.this, START_CAMERA);
+            }
+        });
+
+        // copy file from assets to sdcard
+        String sdcard_path = Environment.getExternalStorageDirectory()
+                + File.separator + assets_path;
+        copy_file_from_asset(this, assets_path, sdcard_path);
+
+        // load model
+        load_model();
+    }
+
+    // load infer model
+    private void load_model() {
+        String model_path = Environment.getExternalStorageDirectory()
+                + File.separator + assets_path + File.separator + PADDLE_MODEL[4];
+        Log.d(TAG, model_path);
+        load_result = ImageRecognition.load(model_path);
+        if (load_result) {
+            Log.d(TAG, "model load success");
+        } else {
+            Log.d(TAG, "model load fail");
+        }
+    }
+
+    // clear infer model
+    private void clear_model() {
+        ImageRecognition.clear();
+        Log.d(TAG, "model is clear");
+    }
+
+    // copy file from asset to sdcard
+    public void copy_file_from_asset(Context context, String oldPath, String newPath) {
+        try {
+            String[] fileNames = context.getAssets().list(oldPath);
+            if (fileNames.length &gt; 0) {
+                // directory
+                File file = new File(newPath);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                // copy recursivelyC
+                for (String fileName : fileNames) {
+                    copy_file_from_asset(context, oldPath + "/" + fileName, newPath + "/" + fileName);
+                }
+                Log.d(TAG, "copy files finish");
+            } else {
+                // file
+                File file = new File(newPath);
+                // if file exists will never copy
+                if (file.exists()) {
+                    return;
+                }
+
+                // copy file to new path
+                InputStream is = context.getAssets().open(oldPath);
+                FileOutputStream fos = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int byteCount;
+                while ((byteCount = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, byteCount);
+                }
+                fos.flush();
+                is.close();
+                fos.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String image_path;
+        RequestOptions options = new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case USE_PHOTO:
+                    if (data == null) {
+                        Log.w(TAG, "user photo data is null");
+                        return;
+                    }
+                    image_uri = data.getData();
+                    Glide.with(MainActivity.this).load(image_uri).apply(options).into(show_image);
+                    // get image path from uri
+                    image_path = PhotoUtil.get_path_from_URI(MainActivity.this, image_uri);
+                    // show result
+                    result_text.setText(image_path);
+                    // predict image
+                    predict_image(PhotoUtil.get_path_from_URI(MainActivity.this, image_uri));
+                    break;
+                case START_CAMERA:
+                    // show photo
+                    Glide.with(MainActivity.this).load(image_uri).apply(options).into(show_image);
+                    // get image path from uri
+                    image_path = PhotoUtil.get_path_from_URI(MainActivity.this, image_uri);
+                    // show result
+                    result_text.setText(image_path);
+                    // predict image
+                    predict_image(PhotoUtil.get_path_from_URI(MainActivity.this, image_uri));
+                    break;
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void predict_image(String image_path) {
+        // picture to float array
+        Bitmap bmp = PhotoUtil.getScaleBitmap(image_path);
+        float[] inputData = PhotoUtil.getScaledMatrix(bmp, ddims[2], ddims[3]);
+        try {
+            long start = System.currentTimeMillis();
+            // get predict result
+            float[] result = ImageRecognition.predictImage(inputData, ddims);
+            Log.d(TAG, "origin predict result:" + Arrays.toString(result));
+            long end = System.currentTimeMillis();
+            long time = end - start;
+            Log.d("result length", String.valueOf(result.length));
+            // show predict result and time
+            int r = get_max_result(result);
+            String show_text = "result：" + r + "\nprobability：" + result[r] + "\ntime：" + time + "ms";
+            result_text.setText(show_text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int get_max_result(float[] result) {
+        float probability = result[0];
+        int r = 0;
+        for (int i = 0; i &lt; result.length; i++) {
+            if (probability &lt; result[i]) {
+                probability = result[i];
+                r = i;
+            }
+        }
+        return r;
+    }
+
+    // request permissions
+    private void request_permissions() {
+
+        List&lt;String&gt; permissionList = new ArrayList&lt;&gt;();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.CAMERA);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        // if list is not empty will request permissions
+        if (!permissionList.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length &gt; 0) {
+                    for (int i = 0; i &lt; grantResults.length; i++) {
+
+                        int grantResult = grantResults[i];
+                        if (grantResult == PackageManager.PERMISSION_DENIED) {
+                            String s = permissions[i];
+                            Toast.makeText(this, s + " permission was denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // clear model before destroy app
+        clear_model();
+        super.onDestroy();
+    }
+}
 </code></pre>
 <ul>
 <li><code>load_model()</code>方法是加载预测模型的。</li>
@@ -818,12 +818,12 @@ var _hmt = _hmt || [];
 <li><code>request_permissions()</code>方法是动态请求权限的。</li>
 </ul>
 <p>因为使用到图像加载框架Glide，所以要在<code>build.gradle</code>加入以下的引用。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>implementation 'com.github.bumptech.glide:glide:4.3.1'
+<pre><code>implementation 'com.github.bumptech.glide:glide:4.3.1'
 </code></pre>
 <p>8、最后运行项目，选择图片预测会得到以下的效果：<br>
 <img src="https://s1.ax1x.com/2020/04/02/GJsvlQ.png" alt="在这里插入图片描述"></p>
 <p>上面已经提供了全部代码，为了方便读者使用，这个提供了<a href="https://download.csdn.net/download/qq_33200967/10619979" target="_blank">整个项目的下载</a>。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_5">参考资料</h1>
 <ol>
 <li><a href="https://github.com/PaddlePaddle/paddle-mobile" target="_blank">https://github.com/PaddlePaddle/paddle-mobile</a></li>
 </ol>
@@ -902,7 +902,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -911,7 +911,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -919,11 +919,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466422489",
@@ -941,4 +941,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 255ms, 2020/04/07 11:38:46 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

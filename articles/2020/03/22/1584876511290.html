@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android在ImageView上直接显示网络图片 - 夜雨飘零</title><meta name="description" content="在原生的ImageView中，没有一个方法是可以直接显示网络的图片的，当我们经常需要显示网络图片时，每次都有一大堆的操作，这会很麻烦，今天就教大家在ImageView上轻松显示网络图片。 自定义ImageView方法 写一个类让它继承ImageView，并增加一个 setImageURL(path)方法 import android.content.Context; import android.graphics.Bitmap; import android.graphics.BitmapFactory; import android.os.Handler; import android.os.Message; import android.util.AttributeSet; import android.widget.ImageView; import android.widget.Toast; import java.io.IOException; import java.io.InputStream; import java.net.HttpURLConnection; imp...."/><meta property="og:description" content="在原生的ImageView中，没有一个方法是可以直接显示网络的图片的，当我们经常需要显示网络图片时，每次都有一大堆的操作，这会很麻烦，今天就教大家在ImageView上轻松显示网络图片。 自定义ImageView方法 写一个类让它继承ImageView，并增加一个 setImageURL(path)方法 import android.content.Context; import android.graphics.Bitmap; import android.graphics.BitmapFactory; import android.os.Handler; import android.os.Message; import android.util.AttributeSet; import android.widget.ImageView; import android.widget.Toast; import java.io.IOException; import java.io.InputStream; import java.net.HttpURLConnection; imp...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android在ImageView上直接显示网络图片 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584876511290.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android在ImageView上直接显示网络图片 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584876511290.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android在ImageView上直接显示网络图片 - 夜雨飘零</title><meta name="description" content="在原生的ImageView中，没有一个方法是可以直接显示网络的图片的，当我们经常需要显示网络图片时，每次都有一大堆的操作，这会很麻烦，今天就教大家在ImageView上轻松显示网络图片。 自定义ImageView方法 写一个类让它继承ImageView，并增加一个 setImageURL(path)方法 import android.content.Context; import android.graphics.Bitmap; import android.graphics.BitmapFactory; import android.os.Handler; import android.os.Message; import android.util.AttributeSet; import android.widget.ImageView; import android.widget.Toast; import java.io.IOException; import java.io.InputStream; import java.net.HttpURLConnection; imp...."/><meta property="og:description" content="在原生的ImageView中，没有一个方法是可以直接显示网络的图片的，当我们经常需要显示网络图片时，每次都有一大堆的操作，这会很麻烦，今天就教大家在ImageView上轻松显示网络图片。 自定义ImageView方法 写一个类让它继承ImageView，并增加一个 setImageURL(path)方法 import android.content.Context; import android.graphics.Bitmap; import android.graphics.BitmapFactory; import android.os.Handler; import android.os.Message; import android.util.AttributeSet; import android.widget.ImageView; import android.widget.Toast; import java.io.IOException; import java.io.InputStream; import java.net.HttpURLConnection; imp...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android在ImageView上直接显示网络图片 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584876511290.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android在ImageView上直接显示网络图片 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584876511290.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Android开机启动" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584875803137.html">
             <link rel="next" title="Android画板的实现" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584876802728.html">
     <!-- 百度统计 -->
@@ -78,13 +78,13 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h2">
-            <a href="#压缩">压缩</a>
+            <a href="#toc_h2_0">压缩</a>
         </li>
         <li class="toc__h2">
-            <a href="#缓存">缓存</a>
+            <a href="#toc_h2_1">缓存</a>
         </li>
         <li class="toc__h2">
-            <a href="#使用图片加载框架Glide">使用图片加载框架Glide</a>
+            <a href="#toc_h2_2">使用图片加载框架Glide</a>
         </li>
 </ul>        </div>
 </div>
@@ -131,735 +131,735 @@ var _hmt = _hmt || [];
 <p>在原生的ImageView中，没有一个方法是可以直接显示网络的图片的，当我们经常需要显示网络图片时，每次都有一大堆的操作，这会很麻烦，今天就教大家在ImageView上轻松显示网络图片。</p>
 <p>自定义ImageView方法</p>
 <p>写一个类让它继承ImageView，并增加一个 <code>setImageURL(path)</code>方法</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Context</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.Bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.BitmapFactory</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Handler</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Message</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.AttributeSet</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.ImageView</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.IOException</span><span class="highlight-o">;</span>
-<span class="highlight-ln">11</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.InputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln">12</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.net.HttpURLConnection</span><span class="highlight-o">;</span>
-<span class="highlight-ln">13</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.net.URL</span><span class="highlight-o">;</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MyImageView</span> <span class="highlight-kd">extends</span> <span class="highlight-n">ImageView</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">16</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">GET_DATA_SUCCESS</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">17</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">NETWORK_ERROR</span> <span class="highlight-o">=</span> <span class="highlight-n">2</span><span class="highlight-o">;</span>
-<span class="highlight-ln">18</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">SERVER_ERROR</span> <span class="highlight-o">=</span> <span class="highlight-n">3</span><span class="highlight-o">;</span>
-<span class="highlight-ln">19</span>    <span class="highlight-c1">//子线程不能操作UI，通过Handler设置图片
-</span><span class="highlight-ln">20</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-n">Handler</span> <span class="highlight-n">handler</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Handler</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">21</span>        <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">22</span>        <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">handleMessage</span><span class="highlight-o">(</span><span class="highlight-n">Message</span> <span class="highlight-n">msg</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">23</span>           <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span><span class="highlight-o">){</span>
-<span class="highlight-ln">24</span>               <span class="highlight-k">case</span> <span class="highlight-n">GET_DATA_SUCCESS</span><span class="highlight-o">:</span>
-<span class="highlight-ln">25</span>                   <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Bitmap</span><span class="highlight-o">)</span> <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span><span class="highlight-o">;</span>
-<span class="highlight-ln">26</span>                   <span class="highlight-n">setImageBitmap</span><span class="highlight-o">(</span><span class="highlight-n">bitmap</span><span class="highlight-o">);</span>
-<span class="highlight-ln">27</span>                   <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">28</span>               <span class="highlight-k">case</span> <span class="highlight-n">NETWORK_ERROR</span><span class="highlight-o">:</span>
-<span class="highlight-ln">29</span>                   <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">(),</span><span class="highlight-s">"网络连接失败"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">30</span>                   <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">31</span>               <span class="highlight-k">case</span> <span class="highlight-n">SERVER_ERROR</span><span class="highlight-o">:</span>
-<span class="highlight-ln">32</span>                   <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">(),</span><span class="highlight-s">"服务器发生错误"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">33</span>                   <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">34</span>           <span class="highlight-o">}</span>
-<span class="highlight-ln">35</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">36</span>    <span class="highlight-o">};</span>
-<span class="highlight-ln">37</span>
-<span class="highlight-ln">38</span>    <span class="highlight-kd">public</span> <span class="highlight-nf">MyImageView</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">AttributeSet</span> <span class="highlight-n">attrs</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">defStyleAttr</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">39</span>        <span class="highlight-kd">super</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">attrs</span><span class="highlight-o">,</span> <span class="highlight-n">defStyleAttr</span><span class="highlight-o">);</span>
-<span class="highlight-ln">40</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">41</span>
-<span class="highlight-ln">42</span>    <span class="highlight-kd">public</span> <span class="highlight-nf">MyImageView</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">43</span>        <span class="highlight-kd">super</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">);</span>
-<span class="highlight-ln">44</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">45</span>
-<span class="highlight-ln">46</span>    <span class="highlight-kd">public</span> <span class="highlight-nf">MyImageView</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">AttributeSet</span> <span class="highlight-n">attrs</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">47</span>        <span class="highlight-kd">super</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">attrs</span><span class="highlight-o">);</span>
-<span class="highlight-ln">48</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">49</span>
-<span class="highlight-ln">50</span>    <span class="highlight-c1">//设置网络图片
-</span><span class="highlight-ln">51</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">setImageURL</span><span class="highlight-o">(</span><span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">path</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">52</span>        <span class="highlight-c1">//开启一个线程用于联网
-</span><span class="highlight-ln">53</span><span class="highlight-c1"></span>        <span class="highlight-k">new</span> <span class="highlight-n">Thread</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">54</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">55</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">56</span>                <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">57</span>                    <span class="highlight-c1">//把传过来的路径转成URL
-</span><span class="highlight-ln">58</span><span class="highlight-c1"></span>                    <span class="highlight-n">URL</span> <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">URL</span><span class="highlight-o">(</span><span class="highlight-n">path</span><span class="highlight-o">);</span>
-<span class="highlight-ln">59</span>                    <span class="highlight-c1">//获取连接
-</span><span class="highlight-ln">60</span><span class="highlight-c1"></span>                    <span class="highlight-n">HttpURLConnection</span> <span class="highlight-n">connection</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">HttpURLConnection</span><span class="highlight-o">)</span> <span class="highlight-n">url</span><span class="highlight-o">.</span><span class="highlight-na">openConnection</span><span class="highlight-o">();</span>
-<span class="highlight-ln">61</span>                    <span class="highlight-c1">//使用GET方法访问网络
-</span><span class="highlight-ln">62</span><span class="highlight-c1"></span>                    <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">setRequestMethod</span><span class="highlight-o">(</span><span class="highlight-s">"GET"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">63</span>                    <span class="highlight-c1">//超时时间为10秒
-</span><span class="highlight-ln">64</span><span class="highlight-c1"></span>                    <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">setConnectTimeout</span><span class="highlight-o">(</span><span class="highlight-n">10000</span><span class="highlight-o">);</span>
-<span class="highlight-ln">65</span>                    <span class="highlight-c1">//获取返回码
-</span><span class="highlight-ln">66</span><span class="highlight-c1"></span>                    <span class="highlight-kt">int</span> <span class="highlight-n">code</span> <span class="highlight-o">=</span> <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">getResponseCode</span><span class="highlight-o">();</span>
-<span class="highlight-ln">67</span>                    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">code</span> <span class="highlight-o">==</span> <span class="highlight-n">200</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">68</span>                        <span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span> <span class="highlight-o">=</span> <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">getInputStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln">69</span>                        <span class="highlight-c1">//使用工厂把网络的输入流生产Bitmap
-</span><span class="highlight-ln">70</span><span class="highlight-c1"></span>                        <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeStream</span><span class="highlight-o">(</span><span class="highlight-n">inputStream</span><span class="highlight-o">);</span>
-<span class="highlight-ln">71</span>                        <span class="highlight-c1">//利用Message把图片发给Handler
-</span><span class="highlight-ln">72</span><span class="highlight-c1"></span>                        <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-n">Message</span><span class="highlight-o">.</span><span class="highlight-na">obtain</span><span class="highlight-o">();</span>
-<span class="highlight-ln">73</span>                        <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">74</span>                        <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">GET_DATA_SUCCESS</span><span class="highlight-o">;</span>
-<span class="highlight-ln">75</span>                        <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">76</span>　　　　　　　　　　　　　  <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">77</span>                    <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">78</span>                        <span class="highlight-c1">//服务启发生错误
-</span><span class="highlight-ln">79</span><span class="highlight-c1"></span>                        <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendEmptyMessage</span><span class="highlight-o">(</span><span class="highlight-n">SERVER_ERROR</span><span class="highlight-o">);</span>
-<span class="highlight-ln">80</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">81</span>                <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">82</span>                    <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">83</span>                    <span class="highlight-c1">//网络连接错误
-</span><span class="highlight-ln">84</span><span class="highlight-c1"></span>                    <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendEmptyMessage</span><span class="highlight-o">(</span><span class="highlight-n">NETWORK_ERROR</span><span class="highlight-o">);</span>
-<span class="highlight-ln">85</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">86</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">87</span>        <span class="highlight-o">}.</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">88</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">89</span><span class="highlight-o">}</span>
+<pre><code class="language-java">import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
+import android.util.AttributeSet;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class MyImageView extends ImageView {
+    public static final int GET_DATA_SUCCESS = 1;
+    public static final int NETWORK_ERROR = 2;
+    public static final int SERVER_ERROR = 3;
+    //子线程不能操作UI，通过Handler设置图片
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+           switch (msg.what){
+               case GET_DATA_SUCCESS:
+                   Bitmap bitmap = (Bitmap) msg.obj;
+                   setImageBitmap(bitmap);
+                   break;
+               case NETWORK_ERROR:
+                   Toast.makeText(getContext(),"网络连接失败",Toast.LENGTH_SHORT).show();
+                   break;
+               case SERVER_ERROR:
+                   Toast.makeText(getContext(),"服务器发生错误",Toast.LENGTH_SHORT).show();
+                   break;
+           }
+        }
+    };
+
+    public MyImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public MyImageView(Context context) {
+        super(context);
+    }
+
+    public MyImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    //设置网络图片
+    public void setImageURL(final String path) {
+        //开启一个线程用于联网
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //把传过来的路径转成URL
+                    URL url = new URL(path);
+                    //获取连接
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    //使用GET方法访问网络
+                    connection.setRequestMethod("GET");
+                    //超时时间为10秒
+                    connection.setConnectTimeout(10000);
+                    //获取返回码
+                    int code = connection.getResponseCode();
+                    if (code == 200) {
+                        InputStream inputStream = connection.getInputStream();
+                        //使用工厂把网络的输入流生产Bitmap
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        //利用Message把图片发给Handler
+                        Message msg = Message.obtain();
+                        msg.obj = bitmap;
+                        msg.what = GET_DATA_SUCCESS;
+                        handler.sendMessage(msg);
+　　　　　　　　　　　　　  inputStream.close();
+                    }else {
+                        //服务启发生错误
+                        handler.sendEmptyMessage(SERVER_ERROR);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    //网络连接错误
+                    handler.sendEmptyMessage(NETWORK_ERROR);
+                }
+            }
+        }.start();
+    }
+}
 </code></pre>
 <p>在布局上不能使用ImageView，要使用MyImageView，要把刚才重写的一个MyImageView的全路径写上</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln"> 2</span>        <span class="highlight-na">android:text=</span><span class="highlight-s">"加载网络图片"</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/button"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-nt">&lt;com.example.dell.myapplication.MyImageView</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/image_view"</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">10</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span> <span class="highlight-nt">/&gt;</span>
+<pre><code class="language-xml">&lt;Button
+        android:text="加载网络图片"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button" /&gt;
+
+    &lt;com.example.dell.myapplication.MyImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /&gt;
 </code></pre>
 <p>在MainActivity上，只要调用 <code>setImageURL()</code>，直接把网络的图片路径写上就可以显示网络的图片了</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">final</span> <span class="highlight-n">MyImageView</span> <span class="highlight-n">myImageView</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">MyImageView</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">image_view</span><span class="highlight-o">);</span>
-<span class="highlight-ln">2</span>        <span class="highlight-n">Button</span> <span class="highlight-n">button</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">button</span><span class="highlight-o">);</span>
-<span class="highlight-ln">3</span>        <span class="highlight-n">button</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">4</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">5</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">6</span>　　　　　　　　　 <span class="highlight-c1">//直接把网络的图片路径写上就可以显示网络的图片了
-</span><span class="highlight-ln">7</span><span class="highlight-c1"></span>                <span class="highlight-n">myImageView</span><span class="highlight-o">.</span><span class="highlight-na">setImageURL</span><span class="highlight-o">(</span><span class="highlight-s">"https://pic.cnblogs.com/avatar/1142647/20170416093225.png"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">8</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">9</span>        <span class="highlight-o">});</span>
+<pre><code class="language-java">final MyImageView myImageView = (MyImageView) findViewById(R.id.image_view);
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+　　　　　　　　　 //直接把网络的图片路径写上就可以显示网络的图片了
+                myImageView.setImageURL("https://pic.cnblogs.com/avatar/1142647/20170416093225.png");
+            }
+        });
 </code></pre>
 <p>最后别忘了添加访问网络的权限</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>&lt;uses-permission android:name="android.permission.INTERNET"/&gt;
+<pre><code>&lt;uses-permission android:name="android.permission.INTERNET"/&gt;
 </code></pre>
 <p>效果图</p>
 <p><img src="https://s1.ax1x.com/2020/04/04/Gdb76S.gif" alt=""></p>
-<h2 id="压缩">压缩</h2>
+<h2 id="toc_h2_0">压缩</h2>
 <p>这是比较简单的从网络获取照片，直接在ImageView上显示，但是你有没有考虑过如果网络的图片很大，已经超出了手机屏幕的大小，如果还是加载原图的话无疑是浪费内存，还有可能造成内存溢出，所以我们有必要对网络的图片进行压缩，下面就开始讲网络图片的压缩。</p>
 <p>首先获取ImageView要显示的宽度和高度</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln"> 2</span><span class="highlight-cm">     * 获取ImageView实际的宽度
-</span><span class="highlight-ln"> 3</span><span class="highlight-cm">     * @return 返回ImageView实际的宽度
-</span><span class="highlight-ln"> 4</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">realImageViewWith</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-n">DisplayMetrics</span> <span class="highlight-n">displayMetrics</span> <span class="highlight-o">=</span> <span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getResources</span><span class="highlight-o">().</span><span class="highlight-na">getDisplayMetrics</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-n">ViewGroup</span><span class="highlight-o">.</span><span class="highlight-na">LayoutParams</span> <span class="highlight-n">layoutParams</span> <span class="highlight-o">=</span> <span class="highlight-n">getLayoutParams</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-c1">//如果ImageView设置了宽度就可以获取实在宽带
-</span><span class="highlight-ln">10</span><span class="highlight-c1"></span>        <span class="highlight-kt">int</span> <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">getWidth</span><span class="highlight-o">();</span>
-<span class="highlight-ln">11</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">width</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">12</span>            <span class="highlight-c1">//如果ImageView没有设置宽度，就获取父级容器的宽度
-</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>            <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">layoutParams</span><span class="highlight-o">.</span><span class="highlight-na">width</span><span class="highlight-o">;</span>
-<span class="highlight-ln">14</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">15</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">width</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">16</span>            <span class="highlight-c1">//获取ImageView宽度的最大值
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>            <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">getMaxWidth</span><span class="highlight-o">();</span>
-<span class="highlight-ln">18</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">19</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">width</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">20</span>            <span class="highlight-c1">//获取屏幕的宽度
-</span><span class="highlight-ln">21</span><span class="highlight-c1"></span>            <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">displayMetrics</span><span class="highlight-o">.</span><span class="highlight-na">widthPixels</span><span class="highlight-o">;</span>
-<span class="highlight-ln">22</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">23</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"ImageView实际的宽度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">width</span><span class="highlight-o">));</span>
-<span class="highlight-ln">24</span>        <span class="highlight-k">return</span> <span class="highlight-n">width</span><span class="highlight-o">;</span>
-<span class="highlight-ln">25</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">28</span><span class="highlight-cm">     * 获取ImageView实际的高度
-</span><span class="highlight-ln">29</span><span class="highlight-cm">     * @return 返回ImageView实际的高度
-</span><span class="highlight-ln">30</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">31</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">realImageViewHeight</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">32</span>        <span class="highlight-n">DisplayMetrics</span> <span class="highlight-n">displayMetrics</span> <span class="highlight-o">=</span> <span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getResources</span><span class="highlight-o">().</span><span class="highlight-na">getDisplayMetrics</span><span class="highlight-o">();</span>
-<span class="highlight-ln">33</span>        <span class="highlight-n">ViewGroup</span><span class="highlight-o">.</span><span class="highlight-na">LayoutParams</span> <span class="highlight-n">layoutParams</span> <span class="highlight-o">=</span> <span class="highlight-n">getLayoutParams</span><span class="highlight-o">();</span>
-<span class="highlight-ln">34</span>
-<span class="highlight-ln">35</span>        <span class="highlight-c1">//如果ImageView设置了高度就可以获取实在宽度
-</span><span class="highlight-ln">36</span><span class="highlight-c1"></span>        <span class="highlight-kt">int</span> <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">getHeight</span><span class="highlight-o">();</span>
-<span class="highlight-ln">37</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">height</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">38</span>            <span class="highlight-c1">//如果ImageView没有设置高度，就获取父级容器的高度
-</span><span class="highlight-ln">39</span><span class="highlight-c1"></span>            <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">layoutParams</span><span class="highlight-o">.</span><span class="highlight-na">height</span><span class="highlight-o">;</span>
-<span class="highlight-ln">40</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">41</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">height</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">42</span>            <span class="highlight-c1">//获取ImageView高度的最大值
-</span><span class="highlight-ln">43</span><span class="highlight-c1"></span>            <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">getMaxHeight</span><span class="highlight-o">();</span>
-<span class="highlight-ln">44</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">45</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">height</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">46</span>            <span class="highlight-c1">//获取ImageView高度的最大值
-</span><span class="highlight-ln">47</span><span class="highlight-c1"></span>            <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">displayMetrics</span><span class="highlight-o">.</span><span class="highlight-na">heightPixels</span><span class="highlight-o">;</span>
-<span class="highlight-ln">48</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">49</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"ImageView实际的高度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">height</span><span class="highlight-o">));</span>
-<span class="highlight-ln">50</span>        <span class="highlight-k">return</span> <span class="highlight-n">height</span><span class="highlight-o">;</span>
-<span class="highlight-ln">51</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    /**
+     * 获取ImageView实际的宽度
+     * @return 返回ImageView实际的宽度
+     */
+    public int realImageViewWith() {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+
+        //如果ImageView设置了宽度就可以获取实在宽带
+        int width = getWidth();
+        if (width &lt;= 0) {
+            //如果ImageView没有设置宽度，就获取父级容器的宽度
+            width = layoutParams.width;
+        }
+        if (width &lt;= 0) {
+            //获取ImageView宽度的最大值
+            width = getMaxWidth();
+        }
+        if (width &lt;= 0) {
+            //获取屏幕的宽度
+            width = displayMetrics.widthPixels;
+        }
+        Log.e("ImageView实际的宽度", String.valueOf(width));
+        return width;
+    }
+
+    /**
+     * 获取ImageView实际的高度
+     * @return 返回ImageView实际的高度
+     */
+    public int realImageViewHeight() {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+
+        //如果ImageView设置了高度就可以获取实在宽度
+        int height = getHeight();
+        if (height &lt;= 0) {
+            //如果ImageView没有设置高度，就获取父级容器的高度
+            height = layoutParams.height;
+        }
+        if (height &lt;= 0) {
+            //获取ImageView高度的最大值
+            height = getMaxHeight();
+        }
+        if (height &lt;= 0) {
+            //获取ImageView高度的最大值
+            height = displayMetrics.heightPixels;
+        }
+        Log.e("ImageView实际的高度", String.valueOf(height));
+        return height;
+    }
 </code></pre>
 <p>然后是通过网络图片的大小计算要压缩的比率</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln"> 2</span><span class="highlight-cm">     * 获得需要压缩的比率
-</span><span class="highlight-ln"> 3</span><span class="highlight-cm">     *
-</span><span class="highlight-ln"> 4</span><span class="highlight-cm">     * @param options 需要传入已经BitmapFactory.decodeStream(is, null, options);
-</span><span class="highlight-ln"> 5</span><span class="highlight-cm">     * @return 返回压缩的比率，最小为1
-</span><span class="highlight-ln"> 6</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">getInSampleSize</span><span class="highlight-o">(</span><span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span> <span class="highlight-n">options</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-kt">int</span> <span class="highlight-n">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-kt">int</span> <span class="highlight-n">realWith</span> <span class="highlight-o">=</span> <span class="highlight-n">realImageViewWith</span><span class="highlight-o">();</span>
-<span class="highlight-ln">10</span>        <span class="highlight-kt">int</span> <span class="highlight-n">realHeight</span> <span class="highlight-o">=</span> <span class="highlight-n">realImageViewHeight</span><span class="highlight-o">();</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>        <span class="highlight-kt">int</span> <span class="highlight-n">outWidth</span> <span class="highlight-o">=</span> <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">outWidth</span><span class="highlight-o">;</span>
-<span class="highlight-ln">13</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"网络图片实际的宽度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">outWidth</span><span class="highlight-o">));</span>
-<span class="highlight-ln">14</span>        <span class="highlight-kt">int</span> <span class="highlight-n">outHeight</span> <span class="highlight-o">=</span> <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">outHeight</span><span class="highlight-o">;</span>
-<span class="highlight-ln">15</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"网络图片实际的高度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">outHeight</span><span class="highlight-o">));</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>        <span class="highlight-c1">//获取比率最大的那个
-</span><span class="highlight-ln">18</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">outWidth</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">realWith</span> <span class="highlight-o">||</span> <span class="highlight-n">outHeight</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">realHeight</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">19</span>            <span class="highlight-kt">int</span> <span class="highlight-n">withRadio</span> <span class="highlight-o">=</span> <span class="highlight-n">Math</span><span class="highlight-o">.</span><span class="highlight-na">round</span><span class="highlight-o">(</span><span class="highlight-n">outWidth</span> <span class="highlight-o">/</span> <span class="highlight-n">realWith</span><span class="highlight-o">);</span>
-<span class="highlight-ln">20</span>            <span class="highlight-kt">int</span> <span class="highlight-n">heightRadio</span> <span class="highlight-o">=</span> <span class="highlight-n">Math</span><span class="highlight-o">.</span><span class="highlight-na">round</span><span class="highlight-o">(</span><span class="highlight-n">outHeight</span> <span class="highlight-o">/</span> <span class="highlight-n">realHeight</span><span class="highlight-o">);</span>
-<span class="highlight-ln">21</span>            <span class="highlight-n">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">withRadio</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">heightRadio</span> <span class="highlight-o">?</span> <span class="highlight-n">withRadio</span> <span class="highlight-o">:</span> <span class="highlight-n">heightRadio</span><span class="highlight-o">;</span>
-<span class="highlight-ln">22</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">23</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"压缩比率"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">inSampleSize</span><span class="highlight-o">));</span>
-<span class="highlight-ln">24</span>        <span class="highlight-k">return</span> <span class="highlight-n">inSampleSize</span><span class="highlight-o">;</span>
-<span class="highlight-ln">25</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    /**
+     * 获得需要压缩的比率
+     *
+     * @param options 需要传入已经BitmapFactory.decodeStream(is, null, options);
+     * @return 返回压缩的比率，最小为1
+     */
+    public int getInSampleSize(BitmapFactory.Options options) {
+        int inSampleSize = 1;
+        int realWith = realImageViewWith();
+        int realHeight = realImageViewHeight();
+
+        int outWidth = options.outWidth;
+        Log.e("网络图片实际的宽度", String.valueOf(outWidth));
+        int outHeight = options.outHeight;
+        Log.e("网络图片实际的高度", String.valueOf(outHeight));
+
+        //获取比率最大的那个
+        if (outWidth &gt; realWith || outHeight &gt; realHeight) {
+            int withRadio = Math.round(outWidth / realWith);
+            int heightRadio = Math.round(outHeight / realHeight);
+            inSampleSize = withRadio &gt; heightRadio ? withRadio : heightRadio;
+        }
+        Log.e("压缩比率", String.valueOf(inSampleSize));
+        return inSampleSize;
+    }
 </code></pre>
 <p>获得压缩比率后，就可以进行压缩了</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln"> 2</span><span class="highlight-cm">     * 根据输入流返回一个压缩的图片
-</span><span class="highlight-ln"> 3</span><span class="highlight-cm">     * @param input 图片的输入流
-</span><span class="highlight-ln"> 4</span><span class="highlight-cm">     * @return 压缩的图片
-</span><span class="highlight-ln"> 5</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-kd">public</span> <span class="highlight-n">Bitmap</span> <span class="highlight-nf">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">InputStream</span> <span class="highlight-n">input</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-c1">//因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
-</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>        <span class="highlight-n">ByteArrayOutputStream</span> <span class="highlight-n">baos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayOutputStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">10</span>            <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
-<span class="highlight-ln">11</span>            <span class="highlight-kt">int</span> <span class="highlight-n">len</span><span class="highlight-o">;</span>
-<span class="highlight-ln">12</span>            <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">input</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">&gt;</span> <span class="highlight-o">-</span><span class="highlight-n">1</span> <span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">13</span>                <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">len</span><span class="highlight-o">);</span>
-<span class="highlight-ln">14</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">15</span>            <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">flush</span><span class="highlight-o">();</span>
-<span class="highlight-ln">16</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">17</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">18</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>        <span class="highlight-c1">//复制新的输入流
-</span><span class="highlight-ln">21</span><span class="highlight-c1"></span>        <span class="highlight-n">InputStream</span> <span class="highlight-n">is</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">22</span>        <span class="highlight-n">InputStream</span> <span class="highlight-n">is2</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>        <span class="highlight-c1">//只是获取网络图片的大小，并没有真正获取图片
-</span><span class="highlight-ln">25</span><span class="highlight-c1"></span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span> <span class="highlight-n">options</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span><span class="highlight-o">();</span>
-<span class="highlight-ln">26</span>        <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">true</span><span class="highlight-o">;</span>
-<span class="highlight-ln">27</span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeStream</span><span class="highlight-o">(</span><span class="highlight-n">is</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-n">options</span><span class="highlight-o">);</span>
-<span class="highlight-ln">28</span>        <span class="highlight-c1">//获取图片并进行压缩
-</span><span class="highlight-ln">29</span><span class="highlight-c1"></span>        <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">getInSampleSize</span><span class="highlight-o">(</span><span class="highlight-n">options</span><span class="highlight-o">);</span>
-<span class="highlight-ln">30</span>        <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln">31</span>        <span class="highlight-k">return</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeStream</span><span class="highlight-o">(</span><span class="highlight-n">is2</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-n">options</span><span class="highlight-o">);</span>
-<span class="highlight-ln">32</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    /**
+     * 根据输入流返回一个压缩的图片
+     * @param input 图片的输入流
+     * @return 压缩的图片
+     */
+    public Bitmap getCompressBitmap(InputStream input) {
+        //因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = input.read(buffer)) &gt; -1 ) {
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //复制新的输入流
+        InputStream is = new ByteArrayInputStream(baos.toByteArray());
+        InputStream is2 = new ByteArrayInputStream(baos.toByteArray());
+
+        //只是获取网络图片的大小，并没有真正获取图片
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is, null, options);
+        //获取图片并进行压缩
+        options.inSampleSize = getInSampleSize(options);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeStream(is2, null, options);
+    }
 </code></pre>
 <p>最后就是在 <code>setImageURL()</code>的方法中把 <code>Bitmap bitmap = BitmapFactory.decodeStream(inputStream);</code>改成下面的方法</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">inputStream</span><span class="highlight-o">);</span>
+<pre><code class="language-java">Bitmap bitmap = getCompressBitmap(inputStream);
 </code></pre>
-<h2 id="缓存">缓存</h2>
+<h2 id="toc_h2_1">缓存</h2>
 <p>有时候提高运行效率和节省流量，经常会使用的缓存，数据缓存后就算没有网络都可以使用，下面就开始学习缓存吧，我这种缓存不是正规的缓存技术。</p>
 <p>将 <code>setImageURL()</code>方法改成如下，并增加两全局变量imagePath、isUseCache;</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">//是否启用缓存
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">isUseCache</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 3</span>　　 <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">imagePath</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1">//设置网络图片
-</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">setImageURL</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">path</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-n">imagePath</span> <span class="highlight-o">=</span> <span class="highlight-n">path</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">isUseCache</span><span class="highlight-o">){</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-n">useCacheImage</span><span class="highlight-o">();</span>
-<span class="highlight-ln">10</span>        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">11</span>            <span class="highlight-n">useNetWorkImage</span><span class="highlight-o">();</span>
-<span class="highlight-ln">12</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">13</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    //是否启用缓存
+    public boolean isUseCache = false;
+　　 private String imagePath;
+
+    //设置网络图片
+    public void setImageURL(String path) {
+        imagePath = path;
+        if (isUseCache){
+            useCacheImage();
+        }else {
+            useNetWorkImage();
+        }
+    }
 </code></pre>
 <p>把之前 <code>setImageURL()</code>的大部分功能放到 <code>useNetWorkImage()</code>方法中，增加一个判断：是否缓存图片</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">//使用网络图片显示
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">useNetWorkImage</span><span class="highlight-o">(){</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-c1">//开启一个线程用于联网
-</span><span class="highlight-ln"> 4</span><span class="highlight-c1"></span>        <span class="highlight-k">new</span> <span class="highlight-n">Thread</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 5</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 6</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>                <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 8</span>                    <span class="highlight-c1">//把传过来的路径转成URL
-</span><span class="highlight-ln"> 9</span><span class="highlight-c1"></span>                    <span class="highlight-n">URL</span> <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">URL</span><span class="highlight-o">(</span><span class="highlight-n">imagePath</span><span class="highlight-o">);</span>
-<span class="highlight-ln">10</span>                    <span class="highlight-c1">//获取连接
-</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>                    <span class="highlight-n">HttpURLConnection</span> <span class="highlight-n">connection</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">HttpURLConnection</span><span class="highlight-o">)</span> <span class="highlight-n">url</span><span class="highlight-o">.</span><span class="highlight-na">openConnection</span><span class="highlight-o">();</span>
-<span class="highlight-ln">12</span>                    <span class="highlight-c1">//使用GET方法访问网络
-</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>                    <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">setRequestMethod</span><span class="highlight-o">(</span><span class="highlight-s">"GET"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">14</span>                    <span class="highlight-c1">//超时时间为10秒
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>                    <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">setConnectTimeout</span><span class="highlight-o">(</span><span class="highlight-n">10000</span><span class="highlight-o">);</span>
-<span class="highlight-ln">16</span>                    <span class="highlight-c1">//获取返回码
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>                    <span class="highlight-kt">int</span> <span class="highlight-n">code</span> <span class="highlight-o">=</span> <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">getResponseCode</span><span class="highlight-o">();</span>
-<span class="highlight-ln">18</span>                    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">code</span> <span class="highlight-o">==</span> <span class="highlight-n">200</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">19</span>                        <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">20</span>                        <span class="highlight-c1">//获取网络输入流
-</span><span class="highlight-ln">21</span><span class="highlight-c1"></span>                        <span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span> <span class="highlight-o">=</span> <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">getInputStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>                        <span class="highlight-c1">//判断是否使用缓存图片
-</span><span class="highlight-ln">24</span><span class="highlight-c1"></span>                        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">isUseCache</span><span class="highlight-o">){</span>
-<span class="highlight-ln">25</span>                            <span class="highlight-c1">//因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
-</span><span class="highlight-ln">26</span><span class="highlight-c1"></span>                            <span class="highlight-n">ByteArrayOutputStream</span> <span class="highlight-n">baos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayOutputStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln">27</span>                            <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">28</span>                                <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
-<span class="highlight-ln">29</span>                                <span class="highlight-kt">int</span> <span class="highlight-n">len</span><span class="highlight-o">;</span>
-<span class="highlight-ln">30</span>                                <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">&gt;</span> <span class="highlight-o">-</span><span class="highlight-n">1</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">31</span>                                    <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">len</span><span class="highlight-o">);</span>
-<span class="highlight-ln">32</span>                                <span class="highlight-o">}</span>
-<span class="highlight-ln">33</span>                                <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">flush</span><span class="highlight-o">();</span>
-<span class="highlight-ln">34</span>                            <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">35</span>                                <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">36</span>                            <span class="highlight-o">}</span>
-<span class="highlight-ln">37</span>
-<span class="highlight-ln">38</span>                            <span class="highlight-c1">//复制新的输入流
-</span><span class="highlight-ln">39</span><span class="highlight-c1"></span>                            <span class="highlight-n">InputStream</span> <span class="highlight-n">is</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">40</span>                            <span class="highlight-n">InputStream</span> <span class="highlight-n">is2</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">41</span>
-<span class="highlight-ln">42</span>                            <span class="highlight-c1">//调用压缩方法显示图片
-</span><span class="highlight-ln">43</span><span class="highlight-c1"></span>                             <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">is</span><span class="highlight-o">);</span>
-<span class="highlight-ln">44</span>                            <span class="highlight-c1">//调用缓存图片方法
-</span><span class="highlight-ln">45</span><span class="highlight-c1"></span>                            <span class="highlight-n">cacheImage</span><span class="highlight-o">(</span><span class="highlight-n">is2</span><span class="highlight-o">);</span>
-<span class="highlight-ln">46</span>                        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">47</span>                            <span class="highlight-c1">//调用压缩方法
-</span><span class="highlight-ln">48</span><span class="highlight-c1"></span>                             <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">inputStream</span><span class="highlight-o">);</span>
-<span class="highlight-ln">49</span>                        <span class="highlight-o">}</span>
-<span class="highlight-ln">50</span>
-<span class="highlight-ln">51</span>                        <span class="highlight-c1">//利用Message把图片发给Handler
-</span><span class="highlight-ln">52</span><span class="highlight-c1"></span>                        <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-n">Message</span><span class="highlight-o">.</span><span class="highlight-na">obtain</span><span class="highlight-o">();</span>
-<span class="highlight-ln">53</span>                        <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">54</span>                        <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">GET_DATA_SUCCESS</span><span class="highlight-o">;</span>
-<span class="highlight-ln">55</span>                        <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">56</span>                        <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">57</span>                    <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">58</span>                        <span class="highlight-c1">//服务启发生错误
-</span><span class="highlight-ln">59</span><span class="highlight-c1"></span>                        <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendEmptyMessage</span><span class="highlight-o">(</span><span class="highlight-n">SERVER_ERROR</span><span class="highlight-o">);</span>
-<span class="highlight-ln">60</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">61</span>                <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">62</span>                    <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">63</span>                    <span class="highlight-c1">//网络连接错误
-</span><span class="highlight-ln">64</span><span class="highlight-c1"></span>                    <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendEmptyMessage</span><span class="highlight-o">(</span><span class="highlight-n">NETWORK_ERROR</span><span class="highlight-o">);</span>
-<span class="highlight-ln">65</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">66</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">67</span>        <span class="highlight-o">}.</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">68</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    //使用网络图片显示
+    public void useNetWorkImage(){
+        //开启一个线程用于联网
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //把传过来的路径转成URL
+                    URL url = new URL(imagePath);
+                    //获取连接
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    //使用GET方法访问网络
+                    connection.setRequestMethod("GET");
+                    //超时时间为10秒
+                    connection.setConnectTimeout(10000);
+                    //获取返回码
+                    int code = connection.getResponseCode();
+                    if (code == 200) {
+                        Bitmap bitmap;
+                        //获取网络输入流
+                        InputStream inputStream = connection.getInputStream();
+
+                        //判断是否使用缓存图片
+                        if (isUseCache){
+                            //因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            try {
+                                byte[] buffer = new byte[1024];
+                                int len;
+                                while ((len = inputStream.read(buffer)) &gt; -1) {
+                                    baos.write(buffer, 0, len);
+                                }
+                                baos.flush();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            //复制新的输入流
+                            InputStream is = new ByteArrayInputStream(baos.toByteArray());
+                            InputStream is2 = new ByteArrayInputStream(baos.toByteArray());
+
+                            //调用压缩方法显示图片
+                             bitmap = getCompressBitmap(is);
+                            //调用缓存图片方法
+                            cacheImage(is2);
+                        }else {
+                            //调用压缩方法
+                             bitmap = getCompressBitmap(inputStream);
+                        }
+
+                        //利用Message把图片发给Handler
+                        Message msg = Message.obtain();
+                        msg.obj = bitmap;
+                        msg.what = GET_DATA_SUCCESS;
+                        handler.sendMessage(msg);
+                        inputStream.close();
+                    } else {
+                        //服务启发生错误
+                        handler.sendEmptyMessage(SERVER_ERROR);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    //网络连接错误
+                    handler.sendEmptyMessage(NETWORK_ERROR);
+                }
+            }
+        }.start();
+    }
 </code></pre>
 <p>创建一个方法用于根据传了的网址生成一个独一无二文件，之后会根据这个路径生成图片和查找是否有缓存图片</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln"> 2</span><span class="highlight-cm">     * 根据网址生成一个文件名
-</span><span class="highlight-ln"> 3</span><span class="highlight-cm">     * @return 文件名
-</span><span class="highlight-ln"> 4</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-kd">public</span> <span class="highlight-n">String</span> <span class="highlight-nf">getURLPath</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-n">StringBuilder</span> <span class="highlight-n">urlStr2</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">StringBuilder</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">strings</span> <span class="highlight-o">=</span> <span class="highlight-n">imagePath</span><span class="highlight-o">.</span><span class="highlight-na">split</span><span class="highlight-o">(</span><span class="highlight-s">"\\/"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">string</span> <span class="highlight-o">:</span> <span class="highlight-n">strings</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-n">urlStr2</span><span class="highlight-o">.</span><span class="highlight-na">append</span><span class="highlight-o">(</span><span class="highlight-n">string</span><span class="highlight-o">);</span>
-<span class="highlight-ln">10</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"文件名："</span><span class="highlight-o">+</span><span class="highlight-n">urlStr2</span><span class="highlight-o">.</span><span class="highlight-na">toString</span><span class="highlight-o">());</span>
-<span class="highlight-ln">12</span>        <span class="highlight-k">return</span> <span class="highlight-n">urlStr2</span><span class="highlight-o">.</span><span class="highlight-na">toString</span><span class="highlight-o">();</span>
-<span class="highlight-ln">13</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    /**
+     * 根据网址生成一个文件名
+     * @return 文件名
+     */
+    public String getURLPath() {
+        StringBuilder urlStr2 = new StringBuilder();
+        String[] strings = imagePath.split("\\/");
+        for (String string : strings) {
+            urlStr2.append(string);
+        }
+        Log.e("MyImageView","文件名："+urlStr2.toString());
+        return urlStr2.toString();
+    }
 </code></pre>
 <p>根据生成的路径缓存图片</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln"> 2</span><span class="highlight-cm">     * 缓存网络的图片
-</span><span class="highlight-ln"> 3</span><span class="highlight-cm">     * @param inputStream 网络的输入流
-</span><span class="highlight-ln"> 4</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">cacheImage</span><span class="highlight-o">(</span><span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getCacheDir</span><span class="highlight-o">(),</span> <span class="highlight-n">getURLPath</span><span class="highlight-o">());</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-n">FileOutputStream</span> <span class="highlight-n">fos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FileOutputStream</span><span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-kt">int</span> <span class="highlight-n">len</span><span class="highlight-o">;</span>
-<span class="highlight-ln">10</span>            <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
-<span class="highlight-ln">11</span>            <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">!=</span> <span class="highlight-o">-</span><span class="highlight-n">1</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">12</span>                <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">len</span><span class="highlight-o">);</span>
-<span class="highlight-ln">13</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">14</span>            <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">15</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"缓存成功"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">16</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">17</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">18</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"缓存失败"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">19</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">20</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    /**
+     * 缓存网络的图片
+     * @param inputStream 网络的输入流
+     */
+    public void cacheImage(InputStream inputStream) {
+        try {
+            File file = new File(getContext().getCacheDir(), getURLPath());
+            FileOutputStream fos = new FileOutputStream(file);
+            int len;
+            byte[] buffer = new byte[1024];
+            while ((len = inputStream.read(buffer)) != -1) {
+                fos.write(buffer, 0, len);
+            }
+            fos.close();
+            Log.e("MyImageView","缓存成功");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("MyImageView","缓存失败");
+        }
+    }
 </code></pre>
 <p>最后就可以直接使用缓存图片了</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">//使用缓存图片
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">useCacheImage</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-c1">//创建路径一样的文件
-</span><span class="highlight-ln"> 4</span><span class="highlight-c1"></span>        <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getCacheDir</span><span class="highlight-o">(),</span> <span class="highlight-n">getURLPath</span><span class="highlight-o">());</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-c1">//判断文件是否存在
-</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">file</span> <span class="highlight-o">!=</span> <span class="highlight-kc">null</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">()</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-c1">//使用本地图片
-</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>            <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 9</span>                <span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FileInputStream</span><span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">);</span>
-<span class="highlight-ln">10</span>                <span class="highlight-c1">//调用压缩方法显示图片
-</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>                <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">inputStream</span><span class="highlight-o">);</span>
-<span class="highlight-ln">12</span>                <span class="highlight-c1">//利用Message把图片发给Handler
-</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>                <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-n">Message</span><span class="highlight-o">.</span><span class="highlight-na">obtain</span><span class="highlight-o">();</span>
-<span class="highlight-ln">14</span>                <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">15</span>                <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">GET_DATA_SUCCESS</span><span class="highlight-o">;</span>
-<span class="highlight-ln">16</span>                <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">17</span>                <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"使用缓存图片"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">18</span>            <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">FileNotFoundException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">19</span>                <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">20</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">21</span>        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">22</span>            <span class="highlight-c1">//使用网络图片
-</span><span class="highlight-ln">23</span><span class="highlight-c1"></span>            <span class="highlight-n">useNetWorkImage</span><span class="highlight-o">();</span>
-<span class="highlight-ln">24</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"使用网络图片"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">25</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">26</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    //使用缓存图片
+    public void useCacheImage() {
+        //创建路径一样的文件
+        File file = new File(getContext().getCacheDir(), getURLPath());
+        //判断文件是否存在
+        if (file != null &amp;&amp; file.length() &gt; 0) {
+            //使用本地图片
+            try {
+                InputStream inputStream = new FileInputStream(file);
+                //调用压缩方法显示图片
+                Bitmap bitmap = getCompressBitmap(inputStream);
+                //利用Message把图片发给Handler
+                Message msg = Message.obtain();
+                msg.obj = bitmap;
+                msg.what = GET_DATA_SUCCESS;
+                handler.sendMessage(msg);
+                Log.e("MyImageView","使用缓存图片");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }else {
+            //使用网络图片
+            useNetWorkImage();
+            Log.e("MyImageView","使用网络图片");
+        }
+    }
 </code></pre>
 <p>现在就可以使用缓存了，记得要吧isUseCache设置成true</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span>        <span class="highlight-c1">//直接把网络的图片路径写上就可以显示网络的图片了
-</span><span class="highlight-ln">2</span><span class="highlight-c1"></span>          <span class="highlight-n">String</span> <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-s">"https://pic.cnblogs.com/avatar/1142647/20170416093225.png"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">3</span>         <span class="highlight-c1">//设置成true才会启动缓存，默认是false
-</span><span class="highlight-ln">4</span><span class="highlight-c1"></span>          <span class="highlight-n">myImageView</span><span class="highlight-o">.</span><span class="highlight-na">isUseCache</span> <span class="highlight-o">=</span> <span class="highlight-kc">true</span><span class="highlight-o">;</span>
-<span class="highlight-ln">5</span>         <span class="highlight-n">myImageView</span><span class="highlight-o">.</span><span class="highlight-na">setImageURL</span><span class="highlight-o">(</span><span class="highlight-n">url</span><span class="highlight-o">);</span>
+<pre><code class="language-java">        //直接把网络的图片路径写上就可以显示网络的图片了
+          String url = "https://pic.cnblogs.com/avatar/1142647/20170416093225.png";
+         //设置成true才会启动缓存，默认是false
+          myImageView.isUseCache = true;
+         myImageView.setImageURL(url);
 </code></pre>
 <p>整篇MyImageView.java的代码</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">  1</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.Context</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  2</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.Bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.graphics.BitmapFactory</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Handler</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Message</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.AttributeSet</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.DisplayMetrics</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  8</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.util.Log</span><span class="highlight-o">;</span>
-<span class="highlight-ln">  9</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.ViewGroup</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 10</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.ImageView</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 11</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 12</span>
-<span class="highlight-ln"> 13</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.ByteArrayInputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 14</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.ByteArrayOutputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 15</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.File</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 16</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.FileInputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 17</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.FileNotFoundException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 18</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.FileOutputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 19</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.IOException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 20</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.InputStream</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 21</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.net.HttpURLConnection</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 22</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.net.URL</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 23</span>
-<span class="highlight-ln"> 24</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MyImageView</span> <span class="highlight-kd">extends</span> <span class="highlight-n">ImageView</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 25</span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">imagePath</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 26</span>    <span class="highlight-c1">//是否启用缓存
-</span><span class="highlight-ln"> 27</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">boolean</span> <span class="highlight-n">isUseCache</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 28</span>
-<span class="highlight-ln"> 29</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">GET_DATA_SUCCESS</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 30</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">NETWORK_ERROR</span> <span class="highlight-o">=</span> <span class="highlight-n">2</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 31</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">SERVER_ERROR</span> <span class="highlight-o">=</span> <span class="highlight-n">3</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 32</span>    <span class="highlight-c1">//子线程不能操作UI，通过Handler设置图片
-</span><span class="highlight-ln"> 33</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-n">Handler</span> <span class="highlight-n">handler</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Handler</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 34</span>        <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 35</span>        <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">handleMessage</span><span class="highlight-o">(</span><span class="highlight-n">Message</span> <span class="highlight-n">msg</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 36</span>            <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 37</span>                <span class="highlight-k">case</span> <span class="highlight-n">GET_DATA_SUCCESS</span><span class="highlight-o">:</span>
-<span class="highlight-ln"> 38</span>                    <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Bitmap</span><span class="highlight-o">)</span> <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 39</span>                    <span class="highlight-n">setImageBitmap</span><span class="highlight-o">(</span><span class="highlight-n">bitmap</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 40</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 41</span>                <span class="highlight-k">case</span> <span class="highlight-n">NETWORK_ERROR</span><span class="highlight-o">:</span>
-<span class="highlight-ln"> 42</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">(),</span> <span class="highlight-s">"网络连接失败"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 43</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 44</span>                <span class="highlight-k">case</span> <span class="highlight-n">SERVER_ERROR</span><span class="highlight-o">:</span>
-<span class="highlight-ln"> 45</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">(),</span> <span class="highlight-s">"服务器发生错误"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 46</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 47</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln"> 48</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 49</span>    <span class="highlight-o">};</span>
-<span class="highlight-ln"> 50</span>
-<span class="highlight-ln"> 51</span>    <span class="highlight-kd">public</span> <span class="highlight-nf">MyImageView</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">AttributeSet</span> <span class="highlight-n">attrs</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">defStyleAttr</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 52</span>        <span class="highlight-kd">super</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">attrs</span><span class="highlight-o">,</span> <span class="highlight-n">defStyleAttr</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 53</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 54</span>
-<span class="highlight-ln"> 55</span>    <span class="highlight-kd">public</span> <span class="highlight-nf">MyImageView</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 56</span>        <span class="highlight-kd">super</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 57</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 58</span>
-<span class="highlight-ln"> 59</span>    <span class="highlight-kd">public</span> <span class="highlight-nf">MyImageView</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">AttributeSet</span> <span class="highlight-n">attrs</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 60</span>        <span class="highlight-kd">super</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">,</span> <span class="highlight-n">attrs</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 61</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 62</span>
-<span class="highlight-ln"> 63</span>    <span class="highlight-c1">//设置网络图片
-</span><span class="highlight-ln"> 64</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">setImageURL</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">path</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 65</span>        <span class="highlight-n">imagePath</span> <span class="highlight-o">=</span> <span class="highlight-n">path</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 66</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">isUseCache</span><span class="highlight-o">){</span>
-<span class="highlight-ln"> 67</span>            <span class="highlight-n">useCacheImage</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 68</span>        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 69</span>            <span class="highlight-n">useNetWorkImage</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 70</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln"> 71</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 72</span>
-<span class="highlight-ln"> 73</span>    <span class="highlight-c1">//使用网络图片显示
-</span><span class="highlight-ln"> 74</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">useNetWorkImage</span><span class="highlight-o">(){</span>
-<span class="highlight-ln"> 75</span>        <span class="highlight-c1">//开启一个线程用于联网
-</span><span class="highlight-ln"> 76</span><span class="highlight-c1"></span>        <span class="highlight-k">new</span> <span class="highlight-n">Thread</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 77</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 78</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 79</span>                <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 80</span>                    <span class="highlight-c1">//把传过来的路径转成URL
-</span><span class="highlight-ln"> 81</span><span class="highlight-c1"></span>                    <span class="highlight-n">URL</span> <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">URL</span><span class="highlight-o">(</span><span class="highlight-n">imagePath</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 82</span>                    <span class="highlight-c1">//获取连接
-</span><span class="highlight-ln"> 83</span><span class="highlight-c1"></span>                    <span class="highlight-n">HttpURLConnection</span> <span class="highlight-n">connection</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">HttpURLConnection</span><span class="highlight-o">)</span> <span class="highlight-n">url</span><span class="highlight-o">.</span><span class="highlight-na">openConnection</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 84</span>                    <span class="highlight-c1">//使用GET方法访问网络
-</span><span class="highlight-ln"> 85</span><span class="highlight-c1"></span>                    <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">setRequestMethod</span><span class="highlight-o">(</span><span class="highlight-s">"GET"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 86</span>                    <span class="highlight-c1">//超时时间为10秒
-</span><span class="highlight-ln"> 87</span><span class="highlight-c1"></span>                    <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">setConnectTimeout</span><span class="highlight-o">(</span><span class="highlight-n">10000</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 88</span>                    <span class="highlight-c1">//获取返回码
-</span><span class="highlight-ln"> 89</span><span class="highlight-c1"></span>                    <span class="highlight-kt">int</span> <span class="highlight-n">code</span> <span class="highlight-o">=</span> <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">getResponseCode</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 90</span>                    <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">code</span> <span class="highlight-o">==</span> <span class="highlight-n">200</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 91</span>                        <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 92</span>                        <span class="highlight-c1">//获取网络输入流
-</span><span class="highlight-ln"> 93</span><span class="highlight-c1"></span>                        <span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span> <span class="highlight-o">=</span> <span class="highlight-n">connection</span><span class="highlight-o">.</span><span class="highlight-na">getInputStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 94</span>
-<span class="highlight-ln"> 95</span>                        <span class="highlight-c1">//判断是否使用缓存图片
-</span><span class="highlight-ln"> 96</span><span class="highlight-c1"></span>                        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">isUseCache</span><span class="highlight-o">){</span>
-<span class="highlight-ln"> 97</span>                            <span class="highlight-c1">//因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
-</span><span class="highlight-ln"> 98</span><span class="highlight-c1"></span>                            <span class="highlight-n">ByteArrayOutputStream</span> <span class="highlight-n">baos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayOutputStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 99</span>                            <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">100</span>                                <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
-<span class="highlight-ln">101</span>                                <span class="highlight-kt">int</span> <span class="highlight-n">len</span><span class="highlight-o">;</span>
-<span class="highlight-ln">102</span>                                <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">&gt;</span> <span class="highlight-o">-</span><span class="highlight-n">1</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">103</span>                                    <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">len</span><span class="highlight-o">);</span>
-<span class="highlight-ln">104</span>                                <span class="highlight-o">}</span>
-<span class="highlight-ln">105</span>                                <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">flush</span><span class="highlight-o">();</span>
-<span class="highlight-ln">106</span>                            <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">107</span>                                <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">108</span>                            <span class="highlight-o">}</span>
-<span class="highlight-ln">109</span>
-<span class="highlight-ln">110</span>                            <span class="highlight-c1">//复制新的输入流
-</span><span class="highlight-ln">111</span><span class="highlight-c1"></span>                            <span class="highlight-n">InputStream</span> <span class="highlight-n">is</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">112</span>                            <span class="highlight-n">InputStream</span> <span class="highlight-n">is2</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">113</span>
-<span class="highlight-ln">114</span>                            <span class="highlight-c1">//调用压缩方法显示图片
-</span><span class="highlight-ln">115</span><span class="highlight-c1"></span>                             <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">is</span><span class="highlight-o">);</span>
-<span class="highlight-ln">116</span>                            <span class="highlight-c1">//调用缓存图片方法
-</span><span class="highlight-ln">117</span><span class="highlight-c1"></span>                            <span class="highlight-n">cacheImage</span><span class="highlight-o">(</span><span class="highlight-n">is2</span><span class="highlight-o">);</span>
-<span class="highlight-ln">118</span>                        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">119</span>                            <span class="highlight-c1">//调用压缩方法
-</span><span class="highlight-ln">120</span><span class="highlight-c1"></span>                             <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">inputStream</span><span class="highlight-o">);</span>
-<span class="highlight-ln">121</span>                        <span class="highlight-o">}</span>
-<span class="highlight-ln">122</span>
-<span class="highlight-ln">123</span>                        <span class="highlight-c1">//利用Message把图片发给Handler
-</span><span class="highlight-ln">124</span><span class="highlight-c1"></span>                        <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-n">Message</span><span class="highlight-o">.</span><span class="highlight-na">obtain</span><span class="highlight-o">();</span>
-<span class="highlight-ln">125</span>                        <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">126</span>                        <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">GET_DATA_SUCCESS</span><span class="highlight-o">;</span>
-<span class="highlight-ln">127</span>                        <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">128</span>                        <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">129</span>                    <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">130</span>                        <span class="highlight-c1">//服务启发生错误
-</span><span class="highlight-ln">131</span><span class="highlight-c1"></span>                        <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendEmptyMessage</span><span class="highlight-o">(</span><span class="highlight-n">SERVER_ERROR</span><span class="highlight-o">);</span>
-<span class="highlight-ln">132</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">133</span>                <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">134</span>                    <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">135</span>                    <span class="highlight-c1">//网络连接错误
-</span><span class="highlight-ln">136</span><span class="highlight-c1"></span>                    <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendEmptyMessage</span><span class="highlight-o">(</span><span class="highlight-n">NETWORK_ERROR</span><span class="highlight-o">);</span>
-<span class="highlight-ln">137</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">138</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">139</span>        <span class="highlight-o">}.</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">140</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">141</span>
-<span class="highlight-ln">142</span>    <span class="highlight-c1">//使用缓存图片
-</span><span class="highlight-ln">143</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">useCacheImage</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">144</span>        <span class="highlight-c1">//创建路径一样的文件
-</span><span class="highlight-ln">145</span><span class="highlight-c1"></span>        <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getCacheDir</span><span class="highlight-o">(),</span> <span class="highlight-n">getURLPath</span><span class="highlight-o">());</span>
-<span class="highlight-ln">146</span>        <span class="highlight-c1">//判断文件是否存在
-</span><span class="highlight-ln">147</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">file</span> <span class="highlight-o">!=</span> <span class="highlight-kc">null</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">file</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">()</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">148</span>            <span class="highlight-c1">//使用本地图片
-</span><span class="highlight-ln">149</span><span class="highlight-c1"></span>            <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">150</span>                <span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FileInputStream</span><span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">);</span>
-<span class="highlight-ln">151</span>                <span class="highlight-c1">//调用压缩方法显示图片
-</span><span class="highlight-ln">152</span><span class="highlight-c1"></span>                <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">inputStream</span><span class="highlight-o">);</span>
-<span class="highlight-ln">153</span>                <span class="highlight-c1">//利用Message把图片发给Handler
-</span><span class="highlight-ln">154</span><span class="highlight-c1"></span>                <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-n">Message</span><span class="highlight-o">.</span><span class="highlight-na">obtain</span><span class="highlight-o">();</span>
-<span class="highlight-ln">155</span>                <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">156</span>                <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">GET_DATA_SUCCESS</span><span class="highlight-o">;</span>
-<span class="highlight-ln">157</span>                <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">158</span>                <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"使用缓存图片"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">159</span>            <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">FileNotFoundException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">160</span>                <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">161</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">162</span>        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">163</span>            <span class="highlight-c1">//使用网络图片
-</span><span class="highlight-ln">164</span><span class="highlight-c1"></span>            <span class="highlight-n">useNetWorkImage</span><span class="highlight-o">();</span>
-<span class="highlight-ln">165</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"使用网络图片"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">166</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">167</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">168</span>
-<span class="highlight-ln">169</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">170</span><span class="highlight-cm">     * 缓存网络的图片
-</span><span class="highlight-ln">171</span><span class="highlight-cm">     * @param inputStream 网络的输入流
-</span><span class="highlight-ln">172</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">173</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">cacheImage</span><span class="highlight-o">(</span><span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">174</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">175</span>            <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getCacheDir</span><span class="highlight-o">(),</span> <span class="highlight-n">getURLPath</span><span class="highlight-o">());</span>
-<span class="highlight-ln">176</span>            <span class="highlight-n">FileOutputStream</span> <span class="highlight-n">fos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FileOutputStream</span><span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">);</span>
-<span class="highlight-ln">177</span>            <span class="highlight-kt">int</span> <span class="highlight-n">len</span><span class="highlight-o">;</span>
-<span class="highlight-ln">178</span>            <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
-<span class="highlight-ln">179</span>            <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">!=</span> <span class="highlight-o">-</span><span class="highlight-n">1</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">180</span>                <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">len</span><span class="highlight-o">);</span>
-<span class="highlight-ln">181</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">182</span>            <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">183</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"缓存成功"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">184</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">185</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">186</span>            <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"缓存失败"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">187</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">188</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">189</span>
-<span class="highlight-ln">190</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">191</span><span class="highlight-cm">     * 根据网址生成一个文件名
-</span><span class="highlight-ln">192</span><span class="highlight-cm">     * @return 文件名
-</span><span class="highlight-ln">193</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">194</span>    <span class="highlight-kd">public</span> <span class="highlight-n">String</span> <span class="highlight-nf">getURLPath</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">195</span>        <span class="highlight-n">StringBuilder</span> <span class="highlight-n">urlStr2</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">StringBuilder</span><span class="highlight-o">();</span>
-<span class="highlight-ln">196</span>        <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">strings</span> <span class="highlight-o">=</span> <span class="highlight-n">imagePath</span><span class="highlight-o">.</span><span class="highlight-na">split</span><span class="highlight-o">(</span><span class="highlight-s">"\\/"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">197</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">string</span> <span class="highlight-o">:</span> <span class="highlight-n">strings</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">198</span>            <span class="highlight-n">urlStr2</span><span class="highlight-o">.</span><span class="highlight-na">append</span><span class="highlight-o">(</span><span class="highlight-n">string</span><span class="highlight-o">);</span>
-<span class="highlight-ln">199</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">200</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"MyImageView"</span><span class="highlight-o">,</span><span class="highlight-s">"文件名："</span><span class="highlight-o">+</span><span class="highlight-n">urlStr2</span><span class="highlight-o">.</span><span class="highlight-na">toString</span><span class="highlight-o">());</span>
-<span class="highlight-ln">201</span>        <span class="highlight-k">return</span> <span class="highlight-n">urlStr2</span><span class="highlight-o">.</span><span class="highlight-na">toString</span><span class="highlight-o">();</span>
-<span class="highlight-ln">202</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">203</span>
-<span class="highlight-ln">204</span>
-<span class="highlight-ln">205</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">206</span><span class="highlight-cm">     * 根据输入流返回一个压缩的图片
-</span><span class="highlight-ln">207</span><span class="highlight-cm">     *
-</span><span class="highlight-ln">208</span><span class="highlight-cm">     * @param input 图片的输入流
-</span><span class="highlight-ln">209</span><span class="highlight-cm">     * @return 压缩的图片
-</span><span class="highlight-ln">210</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">211</span>    <span class="highlight-kd">public</span> <span class="highlight-n">Bitmap</span> <span class="highlight-nf">getCompressBitmap</span><span class="highlight-o">(</span><span class="highlight-n">InputStream</span> <span class="highlight-n">input</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">212</span>        <span class="highlight-c1">//因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
-</span><span class="highlight-ln">213</span><span class="highlight-c1"></span>        <span class="highlight-n">ByteArrayOutputStream</span> <span class="highlight-n">baos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayOutputStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln">214</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">215</span>            <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">buffer</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-kt">byte</span><span class="highlight-o">[</span><span class="highlight-n">1024</span><span class="highlight-o">];</span>
-<span class="highlight-ln">216</span>            <span class="highlight-kt">int</span> <span class="highlight-n">len</span><span class="highlight-o">;</span>
-<span class="highlight-ln">217</span>            <span class="highlight-k">while</span> <span class="highlight-o">((</span><span class="highlight-n">len</span> <span class="highlight-o">=</span> <span class="highlight-n">input</span><span class="highlight-o">.</span><span class="highlight-na">read</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">))</span> <span class="highlight-o">&gt;</span> <span class="highlight-o">-</span><span class="highlight-n">1</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">218</span>                <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">buffer</span><span class="highlight-o">,</span> <span class="highlight-n">0</span><span class="highlight-o">,</span> <span class="highlight-n">len</span><span class="highlight-o">);</span>
-<span class="highlight-ln">219</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">220</span>            <span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">flush</span><span class="highlight-o">();</span>
-<span class="highlight-ln">221</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">222</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">223</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">224</span>
-<span class="highlight-ln">225</span>        <span class="highlight-c1">//复制新的输入流
-</span><span class="highlight-ln">226</span><span class="highlight-c1"></span>        <span class="highlight-n">InputStream</span> <span class="highlight-n">is</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">227</span>        <span class="highlight-n">InputStream</span> <span class="highlight-n">is2</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ByteArrayInputStream</span><span class="highlight-o">(</span><span class="highlight-n">baos</span><span class="highlight-o">.</span><span class="highlight-na">toByteArray</span><span class="highlight-o">());</span>
-<span class="highlight-ln">228</span>
-<span class="highlight-ln">229</span>        <span class="highlight-c1">//只是获取网络图片的大小，并没有真正获取图片
-</span><span class="highlight-ln">230</span><span class="highlight-c1"></span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span> <span class="highlight-n">options</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span><span class="highlight-o">();</span>
-<span class="highlight-ln">231</span>        <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">true</span><span class="highlight-o">;</span>
-<span class="highlight-ln">232</span>        <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeStream</span><span class="highlight-o">(</span><span class="highlight-n">is</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-n">options</span><span class="highlight-o">);</span>
-<span class="highlight-ln">233</span>        <span class="highlight-c1">//获取图片并进行压缩
-</span><span class="highlight-ln">234</span><span class="highlight-c1"></span>        <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">getInSampleSize</span><span class="highlight-o">(</span><span class="highlight-n">options</span><span class="highlight-o">);</span>
-<span class="highlight-ln">235</span>        <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">inJustDecodeBounds</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln">236</span>        <span class="highlight-k">return</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeStream</span><span class="highlight-o">(</span><span class="highlight-n">is2</span><span class="highlight-o">,</span> <span class="highlight-kc">null</span><span class="highlight-o">,</span> <span class="highlight-n">options</span><span class="highlight-o">);</span>
-<span class="highlight-ln">237</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">238</span>
-<span class="highlight-ln">239</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">240</span><span class="highlight-cm">     * 获得需要压缩的比率
-</span><span class="highlight-ln">241</span><span class="highlight-cm">     *
-</span><span class="highlight-ln">242</span><span class="highlight-cm">     * @param options 需要传入已经BitmapFactory.decodeStream(is, null, options);
-</span><span class="highlight-ln">243</span><span class="highlight-cm">     * @return 返回压缩的比率，最小为1
-</span><span class="highlight-ln">244</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">245</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">getInSampleSize</span><span class="highlight-o">(</span><span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">Options</span> <span class="highlight-n">options</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">246</span>        <span class="highlight-kt">int</span> <span class="highlight-n">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">247</span>        <span class="highlight-kt">int</span> <span class="highlight-n">realWith</span> <span class="highlight-o">=</span> <span class="highlight-n">realImageViewWith</span><span class="highlight-o">();</span>
-<span class="highlight-ln">248</span>        <span class="highlight-kt">int</span> <span class="highlight-n">realHeight</span> <span class="highlight-o">=</span> <span class="highlight-n">realImageViewHeight</span><span class="highlight-o">();</span>
-<span class="highlight-ln">249</span>
-<span class="highlight-ln">250</span>        <span class="highlight-kt">int</span> <span class="highlight-n">outWidth</span> <span class="highlight-o">=</span> <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">outWidth</span><span class="highlight-o">;</span>
-<span class="highlight-ln">251</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"网络图片实际的宽度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">outWidth</span><span class="highlight-o">));</span>
-<span class="highlight-ln">252</span>        <span class="highlight-kt">int</span> <span class="highlight-n">outHeight</span> <span class="highlight-o">=</span> <span class="highlight-n">options</span><span class="highlight-o">.</span><span class="highlight-na">outHeight</span><span class="highlight-o">;</span>
-<span class="highlight-ln">253</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"网络图片实际的高度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">outHeight</span><span class="highlight-o">));</span>
-<span class="highlight-ln">254</span>
-<span class="highlight-ln">255</span>        <span class="highlight-c1">//获取比率最大的那个
-</span><span class="highlight-ln">256</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">outWidth</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">realWith</span> <span class="highlight-o">||</span> <span class="highlight-n">outHeight</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">realHeight</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">257</span>            <span class="highlight-kt">int</span> <span class="highlight-n">withRadio</span> <span class="highlight-o">=</span> <span class="highlight-n">Math</span><span class="highlight-o">.</span><span class="highlight-na">round</span><span class="highlight-o">(</span><span class="highlight-n">outWidth</span> <span class="highlight-o">/</span> <span class="highlight-n">realWith</span><span class="highlight-o">);</span>
-<span class="highlight-ln">258</span>            <span class="highlight-kt">int</span> <span class="highlight-n">heightRadio</span> <span class="highlight-o">=</span> <span class="highlight-n">Math</span><span class="highlight-o">.</span><span class="highlight-na">round</span><span class="highlight-o">(</span><span class="highlight-n">outHeight</span> <span class="highlight-o">/</span> <span class="highlight-n">realHeight</span><span class="highlight-o">);</span>
-<span class="highlight-ln">259</span>            <span class="highlight-n">inSampleSize</span> <span class="highlight-o">=</span> <span class="highlight-n">withRadio</span> <span class="highlight-o">&gt;</span> <span class="highlight-n">heightRadio</span> <span class="highlight-o">?</span> <span class="highlight-n">withRadio</span> <span class="highlight-o">:</span> <span class="highlight-n">heightRadio</span><span class="highlight-o">;</span>
-<span class="highlight-ln">260</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">261</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"压缩比率"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">inSampleSize</span><span class="highlight-o">));</span>
-<span class="highlight-ln">262</span>        <span class="highlight-k">return</span> <span class="highlight-n">inSampleSize</span><span class="highlight-o">;</span>
-<span class="highlight-ln">263</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">264</span>
-<span class="highlight-ln">265</span>
-<span class="highlight-ln">266</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">267</span><span class="highlight-cm">     * 获取ImageView实际的宽度
-</span><span class="highlight-ln">268</span><span class="highlight-cm">     *
-</span><span class="highlight-ln">269</span><span class="highlight-cm">     * @return 返回ImageView实际的宽度
-</span><span class="highlight-ln">270</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">271</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">realImageViewWith</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">272</span>        <span class="highlight-n">DisplayMetrics</span> <span class="highlight-n">displayMetrics</span> <span class="highlight-o">=</span> <span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getResources</span><span class="highlight-o">().</span><span class="highlight-na">getDisplayMetrics</span><span class="highlight-o">();</span>
-<span class="highlight-ln">273</span>        <span class="highlight-n">ViewGroup</span><span class="highlight-o">.</span><span class="highlight-na">LayoutParams</span> <span class="highlight-n">layoutParams</span> <span class="highlight-o">=</span> <span class="highlight-n">getLayoutParams</span><span class="highlight-o">();</span>
-<span class="highlight-ln">274</span>
-<span class="highlight-ln">275</span>        <span class="highlight-c1">//如果ImageView设置了宽度就可以获取实在宽带
-</span><span class="highlight-ln">276</span><span class="highlight-c1"></span>        <span class="highlight-kt">int</span> <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">getWidth</span><span class="highlight-o">();</span>
-<span class="highlight-ln">277</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">width</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">278</span>            <span class="highlight-c1">//如果ImageView没有设置宽度，就获取父级容器的宽度
-</span><span class="highlight-ln">279</span><span class="highlight-c1"></span>            <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">layoutParams</span><span class="highlight-o">.</span><span class="highlight-na">width</span><span class="highlight-o">;</span>
-<span class="highlight-ln">280</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">281</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">width</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">282</span>            <span class="highlight-c1">//获取ImageView宽度的最大值
-</span><span class="highlight-ln">283</span><span class="highlight-c1"></span>            <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">getMaxWidth</span><span class="highlight-o">();</span>
-<span class="highlight-ln">284</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">285</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">width</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">286</span>            <span class="highlight-c1">//获取屏幕的宽度
-</span><span class="highlight-ln">287</span><span class="highlight-c1"></span>            <span class="highlight-n">width</span> <span class="highlight-o">=</span> <span class="highlight-n">displayMetrics</span><span class="highlight-o">.</span><span class="highlight-na">widthPixels</span><span class="highlight-o">;</span>
-<span class="highlight-ln">288</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">289</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"ImageView实际的宽度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">width</span><span class="highlight-o">));</span>
-<span class="highlight-ln">290</span>        <span class="highlight-k">return</span> <span class="highlight-n">width</span><span class="highlight-o">;</span>
-<span class="highlight-ln">291</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">292</span>
-<span class="highlight-ln">293</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">294</span><span class="highlight-cm">     * 获取ImageView实际的高度
-</span><span class="highlight-ln">295</span><span class="highlight-cm">     *
-</span><span class="highlight-ln">296</span><span class="highlight-cm">     * @return 返回ImageView实际的高度
-</span><span class="highlight-ln">297</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">298</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">int</span> <span class="highlight-nf">realImageViewHeight</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">299</span>        <span class="highlight-n">DisplayMetrics</span> <span class="highlight-n">displayMetrics</span> <span class="highlight-o">=</span> <span class="highlight-n">getContext</span><span class="highlight-o">().</span><span class="highlight-na">getResources</span><span class="highlight-o">().</span><span class="highlight-na">getDisplayMetrics</span><span class="highlight-o">();</span>
-<span class="highlight-ln">300</span>        <span class="highlight-n">ViewGroup</span><span class="highlight-o">.</span><span class="highlight-na">LayoutParams</span> <span class="highlight-n">layoutParams</span> <span class="highlight-o">=</span> <span class="highlight-n">getLayoutParams</span><span class="highlight-o">();</span>
-<span class="highlight-ln">301</span>
-<span class="highlight-ln">302</span>        <span class="highlight-c1">//如果ImageView设置了高度就可以获取实在宽度
-</span><span class="highlight-ln">303</span><span class="highlight-c1"></span>        <span class="highlight-kt">int</span> <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">getHeight</span><span class="highlight-o">();</span>
-<span class="highlight-ln">304</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">height</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">305</span>            <span class="highlight-c1">//如果ImageView没有设置高度，就获取父级容器的高度
-</span><span class="highlight-ln">306</span><span class="highlight-c1"></span>            <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">layoutParams</span><span class="highlight-o">.</span><span class="highlight-na">height</span><span class="highlight-o">;</span>
-<span class="highlight-ln">307</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">308</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">height</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">309</span>            <span class="highlight-c1">//获取ImageView高度的最大值
-</span><span class="highlight-ln">310</span><span class="highlight-c1"></span>            <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">getMaxHeight</span><span class="highlight-o">();</span>
-<span class="highlight-ln">311</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">312</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">height</span> <span class="highlight-o">&lt;=</span> <span class="highlight-n">0</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">313</span>            <span class="highlight-c1">//获取ImageView高度的最大值
-</span><span class="highlight-ln">314</span><span class="highlight-c1"></span>            <span class="highlight-n">height</span> <span class="highlight-o">=</span> <span class="highlight-n">displayMetrics</span><span class="highlight-o">.</span><span class="highlight-na">heightPixels</span><span class="highlight-o">;</span>
-<span class="highlight-ln">315</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">316</span>        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"ImageView实际的高度"</span><span class="highlight-o">,</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">height</span><span class="highlight-o">));</span>
-<span class="highlight-ln">317</span>        <span class="highlight-k">return</span> <span class="highlight-n">height</span><span class="highlight-o">;</span>
-<span class="highlight-ln">318</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">319</span><span class="highlight-o">}</span>
+<pre><code class="language-java">import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
+import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class MyImageView extends ImageView {
+    private String imagePath;
+    //是否启用缓存
+    public boolean isUseCache = false;
+
+    public static final int GET_DATA_SUCCESS = 1;
+    public static final int NETWORK_ERROR = 2;
+    public static final int SERVER_ERROR = 3;
+    //子线程不能操作UI，通过Handler设置图片
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case GET_DATA_SUCCESS:
+                    Bitmap bitmap = (Bitmap) msg.obj;
+                    setImageBitmap(bitmap);
+                    break;
+                case NETWORK_ERROR:
+                    Toast.makeText(getContext(), "网络连接失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case SERVER_ERROR:
+                    Toast.makeText(getContext(), "服务器发生错误", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    public MyImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public MyImageView(Context context) {
+        super(context);
+    }
+
+    public MyImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    //设置网络图片
+    public void setImageURL(String path) {
+        imagePath = path;
+        if (isUseCache){
+            useCacheImage();
+        }else {
+            useNetWorkImage();
+        }
+    }
+
+    //使用网络图片显示
+    public void useNetWorkImage(){
+        //开启一个线程用于联网
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //把传过来的路径转成URL
+                    URL url = new URL(imagePath);
+                    //获取连接
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    //使用GET方法访问网络
+                    connection.setRequestMethod("GET");
+                    //超时时间为10秒
+                    connection.setConnectTimeout(10000);
+                    //获取返回码
+                    int code = connection.getResponseCode();
+                    if (code == 200) {
+                        Bitmap bitmap;
+                        //获取网络输入流
+                        InputStream inputStream = connection.getInputStream();
+
+                        //判断是否使用缓存图片
+                        if (isUseCache){
+                            //因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            try {
+                                byte[] buffer = new byte[1024];
+                                int len;
+                                while ((len = inputStream.read(buffer)) &gt; -1) {
+                                    baos.write(buffer, 0, len);
+                                }
+                                baos.flush();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            //复制新的输入流
+                            InputStream is = new ByteArrayInputStream(baos.toByteArray());
+                            InputStream is2 = new ByteArrayInputStream(baos.toByteArray());
+
+                            //调用压缩方法显示图片
+                             bitmap = getCompressBitmap(is);
+                            //调用缓存图片方法
+                            cacheImage(is2);
+                        }else {
+                            //调用压缩方法
+                             bitmap = getCompressBitmap(inputStream);
+                        }
+
+                        //利用Message把图片发给Handler
+                        Message msg = Message.obtain();
+                        msg.obj = bitmap;
+                        msg.what = GET_DATA_SUCCESS;
+                        handler.sendMessage(msg);
+                        inputStream.close();
+                    } else {
+                        //服务启发生错误
+                        handler.sendEmptyMessage(SERVER_ERROR);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    //网络连接错误
+                    handler.sendEmptyMessage(NETWORK_ERROR);
+                }
+            }
+        }.start();
+    }
+
+    //使用缓存图片
+    public void useCacheImage() {
+        //创建路径一样的文件
+        File file = new File(getContext().getCacheDir(), getURLPath());
+        //判断文件是否存在
+        if (file != null &amp;&amp; file.length() &gt; 0) {
+            //使用本地图片
+            try {
+                InputStream inputStream = new FileInputStream(file);
+                //调用压缩方法显示图片
+                Bitmap bitmap = getCompressBitmap(inputStream);
+                //利用Message把图片发给Handler
+                Message msg = Message.obtain();
+                msg.obj = bitmap;
+                msg.what = GET_DATA_SUCCESS;
+                handler.sendMessage(msg);
+                Log.e("MyImageView","使用缓存图片");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }else {
+            //使用网络图片
+            useNetWorkImage();
+            Log.e("MyImageView","使用网络图片");
+        }
+    }
+
+    /**
+     * 缓存网络的图片
+     * @param inputStream 网络的输入流
+     */
+    public void cacheImage(InputStream inputStream) {
+        try {
+            File file = new File(getContext().getCacheDir(), getURLPath());
+            FileOutputStream fos = new FileOutputStream(file);
+            int len;
+            byte[] buffer = new byte[1024];
+            while ((len = inputStream.read(buffer)) != -1) {
+                fos.write(buffer, 0, len);
+            }
+            fos.close();
+            Log.e("MyImageView","缓存成功");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("MyImageView","缓存失败");
+        }
+    }
+
+    /**
+     * 根据网址生成一个文件名
+     * @return 文件名
+     */
+    public String getURLPath() {
+        StringBuilder urlStr2 = new StringBuilder();
+        String[] strings = imagePath.split("\\/");
+        for (String string : strings) {
+            urlStr2.append(string);
+        }
+        Log.e("MyImageView","文件名："+urlStr2.toString());
+        return urlStr2.toString();
+    }
+
+
+    /**
+     * 根据输入流返回一个压缩的图片
+     *
+     * @param input 图片的输入流
+     * @return 压缩的图片
+     */
+    public Bitmap getCompressBitmap(InputStream input) {
+        //因为InputStream要使用两次，但是使用一次就无效了，所以需要复制两个
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = input.read(buffer)) &gt; -1) {
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //复制新的输入流
+        InputStream is = new ByteArrayInputStream(baos.toByteArray());
+        InputStream is2 = new ByteArrayInputStream(baos.toByteArray());
+
+        //只是获取网络图片的大小，并没有真正获取图片
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is, null, options);
+        //获取图片并进行压缩
+        options.inSampleSize = getInSampleSize(options);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeStream(is2, null, options);
+    }
+
+    /**
+     * 获得需要压缩的比率
+     *
+     * @param options 需要传入已经BitmapFactory.decodeStream(is, null, options);
+     * @return 返回压缩的比率，最小为1
+     */
+    public int getInSampleSize(BitmapFactory.Options options) {
+        int inSampleSize = 1;
+        int realWith = realImageViewWith();
+        int realHeight = realImageViewHeight();
+
+        int outWidth = options.outWidth;
+        Log.e("网络图片实际的宽度", String.valueOf(outWidth));
+        int outHeight = options.outHeight;
+        Log.e("网络图片实际的高度", String.valueOf(outHeight));
+
+        //获取比率最大的那个
+        if (outWidth &gt; realWith || outHeight &gt; realHeight) {
+            int withRadio = Math.round(outWidth / realWith);
+            int heightRadio = Math.round(outHeight / realHeight);
+            inSampleSize = withRadio &gt; heightRadio ? withRadio : heightRadio;
+        }
+        Log.e("压缩比率", String.valueOf(inSampleSize));
+        return inSampleSize;
+    }
+
+
+    /**
+     * 获取ImageView实际的宽度
+     *
+     * @return 返回ImageView实际的宽度
+     */
+    public int realImageViewWith() {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+
+        //如果ImageView设置了宽度就可以获取实在宽带
+        int width = getWidth();
+        if (width &lt;= 0) {
+            //如果ImageView没有设置宽度，就获取父级容器的宽度
+            width = layoutParams.width;
+        }
+        if (width &lt;= 0) {
+            //获取ImageView宽度的最大值
+            width = getMaxWidth();
+        }
+        if (width &lt;= 0) {
+            //获取屏幕的宽度
+            width = displayMetrics.widthPixels;
+        }
+        Log.e("ImageView实际的宽度", String.valueOf(width));
+        return width;
+    }
+
+    /**
+     * 获取ImageView实际的高度
+     *
+     * @return 返回ImageView实际的高度
+     */
+    public int realImageViewHeight() {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+
+        //如果ImageView设置了高度就可以获取实在宽度
+        int height = getHeight();
+        if (height &lt;= 0) {
+            //如果ImageView没有设置高度，就获取父级容器的高度
+            height = layoutParams.height;
+        }
+        if (height &lt;= 0) {
+            //获取ImageView高度的最大值
+            height = getMaxHeight();
+        }
+        if (height &lt;= 0) {
+            //获取ImageView高度的最大值
+            height = displayMetrics.heightPixels;
+        }
+        Log.e("ImageView实际的高度", String.valueOf(height));
+        return height;
+    }
+}
 </code></pre>
 <p><strong>使用网络图片的效果图</strong><br>
 <img src="https://img.hacpai.com/file/2020/04/hennhh-9fd11d3e.gif" alt="hennhh.gif"></p>
 <p>使用缓存图片的效果图</p>
 <p><img src="https://s1.ax1x.com/2020/04/03/GakL8g.gif" alt=""></p>
-<h2 id="使用图片加载框架Glide">使用图片加载框架Glide</h2>
+<h2 id="toc_h2_2">使用图片加载框架Glide</h2>
 <p>在这开源非常发达的时代，肯定会有大牛为我们做了个种各样的开源框架，根本不需要我们做这么复杂的工作，下面就简单使用图片加载框架Glide</p>
 <p>在使用前要添加Glide的依赖库</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>compile 'com.github.bumptech.glide:glide:4.0.0'
+<pre><code>compile 'com.github.bumptech.glide:glide:4.0.0'
 </code></pre>
 <p>刚才的条件不变，把点击事件的操作换成下面两行代码</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">String</span> <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-s">"https://pic.cnblogs.com/avatar/1142647/20170416093225.png"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span><span class="highlight-n">Glide</span><span class="highlight-o">.</span><span class="highlight-na">with</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">).</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">url</span><span class="highlight-o">).</span><span class="highlight-na">into</span><span class="highlight-o">(</span><span class="highlight-n">myImageView</span><span class="highlight-o">);</span>
+<pre><code class="language-java">String url = "https://pic.cnblogs.com/avatar/1142647/20170416093225.png";
+Glide.with(MainActivity.this).load(url).into(myImageView);
 </code></pre>
 <p>是不是非常简单，有了这个开源库，你还愿意写那一大堆的代码吗，我想不会，更强大的是它已经有缓存功能，这一切它都帮你做好了。</p>
 <p>加载网络图片的效果图</p>
@@ -867,37 +867,37 @@ var _hmt = _hmt || [];
 <p>使用缓存的效果图<br>
 <img src="https://img.hacpai.com/file/2020/04/heddnnhh-c7178f9c.gif" alt="heddnnhh.gif"></p>
 <p>既然那么强大的开源库，我们就简单地了解它是如何使用的，先看看with()方法的源码，它可以接收6中参数，所以在各种情况下都能使用</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">RequestManager</span> <span class="highlight-nf">with</span><span class="highlight-o">(</span><span class="highlight-n">Context</span> <span class="highlight-n">context</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>        <span class="highlight-k">return</span> <span class="highlight-n">getRetriever</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">).</span><span class="highlight-na">get</span><span class="highlight-o">(</span><span class="highlight-n">context</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">RequestManager</span> <span class="highlight-nf">with</span><span class="highlight-o">(</span><span class="highlight-n">Activity</span> <span class="highlight-n">activity</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-k">return</span> <span class="highlight-n">getRetriever</span><span class="highlight-o">(</span><span class="highlight-n">activity</span><span class="highlight-o">).</span><span class="highlight-na">get</span><span class="highlight-o">(</span><span class="highlight-n">activity</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">RequestManager</span> <span class="highlight-nf">with</span><span class="highlight-o">(</span><span class="highlight-n">FragmentActivity</span> <span class="highlight-n">activity</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">10</span>        <span class="highlight-k">return</span> <span class="highlight-n">getRetriever</span><span class="highlight-o">(</span><span class="highlight-n">activity</span><span class="highlight-o">).</span><span class="highlight-na">get</span><span class="highlight-o">(</span><span class="highlight-n">activity</span><span class="highlight-o">);</span>
-<span class="highlight-ln">11</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">RequestManager</span> <span class="highlight-nf">with</span><span class="highlight-o">(</span><span class="highlight-n">android</span><span class="highlight-o">.</span><span class="highlight-na">app</span><span class="highlight-o">.</span><span class="highlight-na">Fragment</span> <span class="highlight-n">fragment</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">14</span>        <span class="highlight-k">return</span> <span class="highlight-n">getRetriever</span><span class="highlight-o">(</span><span class="highlight-n">fragment</span><span class="highlight-o">.</span><span class="highlight-na">getActivity</span><span class="highlight-o">()).</span><span class="highlight-na">get</span><span class="highlight-o">(</span><span class="highlight-n">fragment</span><span class="highlight-o">);</span>
-<span class="highlight-ln">15</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">RequestManager</span> <span class="highlight-nf">with</span><span class="highlight-o">(</span><span class="highlight-n">Fragment</span> <span class="highlight-n">fragment</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">18</span>        <span class="highlight-k">return</span> <span class="highlight-n">getRetriever</span><span class="highlight-o">(</span><span class="highlight-n">fragment</span><span class="highlight-o">.</span><span class="highlight-na">getActivity</span><span class="highlight-o">()).</span><span class="highlight-na">get</span><span class="highlight-o">(</span><span class="highlight-n">fragment</span><span class="highlight-o">);</span>
-<span class="highlight-ln">19</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-n">RequestManager</span> <span class="highlight-nf">with</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">view</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">22</span>        <span class="highlight-k">return</span> <span class="highlight-n">getRetriever</span><span class="highlight-o">(</span><span class="highlight-n">view</span><span class="highlight-o">.</span><span class="highlight-na">getContext</span><span class="highlight-o">()).</span><span class="highlight-na">get</span><span class="highlight-o">(</span><span class="highlight-n">view</span><span class="highlight-o">);</span>
-<span class="highlight-ln">23</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    public static RequestManager with(Context context) {
+        return getRetriever(context).get(context);
+    }
+
+    public static RequestManager with(Activity activity) {
+        return getRetriever(activity).get(activity);
+    }
+
+    public static RequestManager with(FragmentActivity activity) {
+        return getRetriever(activity).get(activity);
+    }
+
+    public static RequestManager with(android.app.Fragment fragment) {
+        return getRetriever(fragment.getActivity()).get(fragment);
+    }
+
+    public static RequestManager with(Fragment fragment) {
+        return getRetriever(fragment.getActivity()).get(fragment);
+    }
+
+    public static RequestManager with(View view) {
+        return getRetriever(view.getContext()).get(view);
+    }
 </code></pre>
 <p>然后是 <code>load()</code>方法，虽然只有一个方法，但是所能做的事情却不少，比如我刚才只是传了一个String类型的，它就可以帮我加载了网络的图片，它还支持File（加载本地图片）、int（加载应用文件的源）、byte[]（字节流）、Uri</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-n">RequestBuilder</span><span class="highlight-o">&lt;</span><span class="highlight-n">Drawable</span><span class="highlight-o">&gt;</span> <span class="highlight-nf">load</span><span class="highlight-o">(</span><span class="highlight-nd">@Nullable</span> <span class="highlight-n">Object</span> <span class="highlight-n">model</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">2</span>    <span class="highlight-k">return</span> <span class="highlight-n">asDrawable</span><span class="highlight-o">().</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">model</span><span class="highlight-o">);</span>
-<span class="highlight-ln">3</span>  <span class="highlight-o">}</span>
+<pre><code class="language-java">public RequestBuilder&lt;Drawable&gt; load(@Nullable Object model) {
+    return asDrawable().load(model);
+  }
 </code></pre>
 <p>我们就试试加载应用的图片</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">Glide</span><span class="highlight-o">.</span><span class="highlight-na">with</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">).</span><span class="highlight-na">load</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">mipmap</span><span class="highlight-o">.</span><span class="highlight-na">ic_launcher</span><span class="highlight-o">).</span><span class="highlight-na">into</span><span class="highlight-o">(</span><span class="highlight-n">myImageView</span><span class="highlight-o">);</span>
+<pre><code class="language-java">Glide.with(MainActivity.this).load(R.mipmap.ic_launcher).into(myImageView);
 </code></pre>
 <p>效果图</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/Glnm59.gif" alt=""></p>
@@ -979,7 +979,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -988,7 +988,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -996,11 +996,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466413846",
@@ -1018,4 +1018,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 79ms, 2020/04/07 11:38:50 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

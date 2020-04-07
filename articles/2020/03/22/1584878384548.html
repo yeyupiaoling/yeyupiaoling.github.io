@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android网络框架OKhttp3学习笔记 - 夜雨飘零</title><meta name="description" content="OKhttp3是一个非常强大的Android网络框架，它是由Square公司开发并开源的，很大Android开发者都会使用到，所以我也要来学学。 服务器 为了方便测试，我们需要一个后台服务器的的应用，下面是一个Java Web的Servlet，它的功能是接收客户端发来的登录数据，判断密码是否正确，并返回结果（JSON格式） import javax.servlet.ServletException; import javax.servlet.annotation.WebServlet; import javax.servlet.http.HttpServlet; import javax.servlet.http.HttpServletRequest; import javax.servlet.http.HttpServletResponse; import java.io.IOException; import java.io.OutputStreamWriter; import java.io.PrintWriter; import java.io.Writer; @WebServ...."/><meta property="og:description" content="OKhttp3是一个非常强大的Android网络框架，它是由Square公司开发并开源的，很大Android开发者都会使用到，所以我也要来学学。 服务器 为了方便测试，我们需要一个后台服务器的的应用，下面是一个Java Web的Servlet，它的功能是接收客户端发来的登录数据，判断密码是否正确，并返回结果（JSON格式） import javax.servlet.ServletException; import javax.servlet.annotation.WebServlet; import javax.servlet.http.HttpServlet; import javax.servlet.http.HttpServletRequest; import javax.servlet.http.HttpServletResponse; import java.io.IOException; import java.io.OutputStreamWriter; import java.io.PrintWriter; import java.io.Writer; @WebServ...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android网络框架OKhttp3学习笔记 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584878384548.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android网络框架OKhttp3学习笔记 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584878384548.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android网络框架OKhttp3学习笔记 - 夜雨飘零</title><meta name="description" content="OKhttp3是一个非常强大的Android网络框架，它是由Square公司开发并开源的，很大Android开发者都会使用到，所以我也要来学学。 服务器 为了方便测试，我们需要一个后台服务器的的应用，下面是一个Java Web的Servlet，它的功能是接收客户端发来的登录数据，判断密码是否正确，并返回结果（JSON格式） import javax.servlet.ServletException; import javax.servlet.annotation.WebServlet; import javax.servlet.http.HttpServlet; import javax.servlet.http.HttpServletRequest; import javax.servlet.http.HttpServletResponse; import java.io.IOException; import java.io.OutputStreamWriter; import java.io.PrintWriter; import java.io.Writer; @WebServ...."/><meta property="og:description" content="OKhttp3是一个非常强大的Android网络框架，它是由Square公司开发并开源的，很大Android开发者都会使用到，所以我也要来学学。 服务器 为了方便测试，我们需要一个后台服务器的的应用，下面是一个Java Web的Servlet，它的功能是接收客户端发来的登录数据，判断密码是否正确，并返回结果（JSON格式） import javax.servlet.ServletException; import javax.servlet.annotation.WebServlet; import javax.servlet.http.HttpServlet; import javax.servlet.http.HttpServletRequest; import javax.servlet.http.HttpServletResponse; import java.io.IOException; import java.io.OutputStreamWriter; import java.io.PrintWriter; import java.io.Writer; @WebServ...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android网络框架OKhttp3学习笔记 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584878384548.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android网络框架OKhttp3学习笔记 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584878384548.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Android使用SharedPreferences保存账号密码" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584878043302.html">
             <link rel="next" title="《深度学习》学习笔记一——线性代数" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970104343.html">
     <!-- 百度统计 -->
@@ -118,272 +118,272 @@ var _hmt = _hmt || [];
 <p>OKhttp3是一个非常强大的Android网络框架，它是由Square公司开发并开源的，很大Android开发者都会使用到，所以我也要来学学。</p>
 <p>服务器</p>
 <p>为了方便测试，我们需要一个后台服务器的的应用，下面是一个Java Web的Servlet，它的功能是接收客户端发来的登录数据，判断密码是否正确，并返回结果（JSON格式）</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.ServletException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.annotation.WebServlet</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.http.HttpServlet</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.http.HttpServletRequest</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.http.HttpServletResponse</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.IOException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.OutputStreamWriter</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.PrintWriter</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 9</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.Writer</span><span class="highlight-o">;</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span><span class="highlight-nd">@WebServlet</span><span class="highlight-o">(</span><span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s">"MyServlet"</span><span class="highlight-o">,</span><span class="highlight-n">urlPatterns</span> <span class="highlight-o">=</span> <span class="highlight-o">{</span><span class="highlight-s">"/MyServlet"</span><span class="highlight-o">})</span>
-<span class="highlight-ln">12</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MyServlet</span> <span class="highlight-kd">extends</span> <span class="highlight-n">HttpServlet</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">13</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">doPost</span><span class="highlight-o">(</span><span class="highlight-n">HttpServletRequest</span> <span class="highlight-n">request</span><span class="highlight-o">,</span> <span class="highlight-n">HttpServletResponse</span> <span class="highlight-n">response</span><span class="highlight-o">)</span> <span class="highlight-kd">throws</span> <span class="highlight-n">ServletException</span><span class="highlight-o">,</span> <span class="highlight-n">IOException</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">14</span>        <span class="highlight-c1">//获取表单数据
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>        <span class="highlight-n">String</span> <span class="highlight-n">number</span> <span class="highlight-o">=</span> <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">getParameter</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">16</span>        <span class="highlight-n">String</span> <span class="highlight-n">pwd</span> <span class="highlight-o">=</span> <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">getParameter</span><span class="highlight-o">(</span><span class="highlight-s">"pwd"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">String</span> <span class="highlight-n">body</span><span class="highlight-o">;</span>
-<span class="highlight-ln">18</span>        <span class="highlight-c1">//判断密码和账号有没有正确
-</span><span class="highlight-ln">19</span><span class="highlight-c1"></span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">number</span><span class="highlight-o">.</span><span class="highlight-na">equals</span><span class="highlight-o">(</span><span class="highlight-s">"12345"</span><span class="highlight-o">)</span> <span class="highlight-o">&amp;&amp;</span> <span class="highlight-n">pwd</span><span class="highlight-o">.</span><span class="highlight-na">equals</span><span class="highlight-o">(</span><span class="highlight-s">"12345"</span><span class="highlight-o">)){</span>
-<span class="highlight-ln">20</span>            <span class="highlight-n">body</span> <span class="highlight-o">=</span> <span class="highlight-s">"{\"result\":\"success\",\"file\":\"/file/123.jpg\"}"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">21</span>        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">22</span>            <span class="highlight-n">body</span> <span class="highlight-o">=</span> <span class="highlight-s">"{\"result\":\"faile\"}"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">23</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">24</span>        <span class="highlight-c1">//打印结果
-</span><span class="highlight-ln">25</span><span class="highlight-c1"></span>        <span class="highlight-n">PrintWriter</span> <span class="highlight-n">writer</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-na">getWriter</span><span class="highlight-o">();</span>
-<span class="highlight-ln">26</span>        <span class="highlight-n">writer</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">body</span><span class="highlight-o">);</span>
-<span class="highlight-ln">27</span>
-<span class="highlight-ln">28</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">29</span>
-<span class="highlight-ln">30</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">doGet</span><span class="highlight-o">(</span><span class="highlight-n">HttpServletRequest</span> <span class="highlight-n">request</span><span class="highlight-o">,</span> <span class="highlight-n">HttpServletResponse</span> <span class="highlight-n">response</span><span class="highlight-o">)</span> <span class="highlight-kd">throws</span> <span class="highlight-n">ServletException</span><span class="highlight-o">,</span> <span class="highlight-n">IOException</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">31</span>        <span class="highlight-k">this</span><span class="highlight-o">.</span><span class="highlight-na">doPost</span><span class="highlight-o">(</span><span class="highlight-n">request</span><span class="highlight-o">,</span> <span class="highlight-n">response</span><span class="highlight-o">);</span>
-<span class="highlight-ln">32</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">33</span><span class="highlight-o">}</span>
+<pre><code class="language-java">import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+
+@WebServlet(name = "MyServlet",urlPatterns = {"/MyServlet"})
+public class MyServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //获取表单数据
+        String number = request.getParameter("number");
+        String pwd = request.getParameter("pwd");
+        String body;
+        //判断密码和账号有没有正确
+        if (number.equals("12345") &amp;&amp; pwd.equals("12345")){
+            body = "{\"result\":\"success\",\"file\":\"/file/123.jpg\"}";
+        }else {
+            body = "{\"result\":\"faile\"}";
+        }
+        //打印结果
+        PrintWriter writer = response.getWriter();
+        writer.write(body);
+
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        this.doPost(request, response);
+    }
+}
 </code></pre>
 <p>客户端</p>
 <p>使用OKhttp3要添加依赖库，下面的语句会加入两个库，一个是基础包Okio，另一个就是OKhttp</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>compile 'com.squareup.okhttp3:okhttp:3.8.1'
+<pre><code>compile 'com.squareup.okhttp3:okhttp:3.8.1'
 </code></pre>
 <p>需要创建两个Activity，一个是登录界面，一个是登录结果界面</p>
 <p>然后把 <code>activity_main.xml</code>修改成如下，做出一个登录界面</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nt">&lt;LinearLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/activity_main"</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-na">android:orientation=</span><span class="highlight-s">"vertical"</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">"com.example.dell.testokhttp3.MainActivity"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-nt">&lt;EditText</span>
-<span class="highlight-ln">10</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/edit_number"</span>
-<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">12</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">13</span>        <span class="highlight-na">android:hint=</span><span class="highlight-s">"请输入账号"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-nt">&lt;EditText</span>
-<span class="highlight-ln">16</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/edit_pwd"</span>
-<span class="highlight-ln">17</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">18</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">19</span>        <span class="highlight-na">android:hint=</span><span class="highlight-s">"请输入密码"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-nt">&lt;LinearLayout</span>
-<span class="highlight-ln">22</span>        <span class="highlight-na">android:orientation=</span><span class="highlight-s">"horizontal"</span>
-<span class="highlight-ln">23</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">24</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>        <span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln">27</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">28</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
-<span class="highlight-ln">29</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">30</span>            <span class="highlight-na">android:onClick=</span><span class="highlight-s">"getRequest"</span>
-<span class="highlight-ln">31</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"get登录"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>        <span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln">34</span>            <span class="highlight-na">android:layout_weight=</span><span class="highlight-s">"1"</span>
-<span class="highlight-ln">35</span>            <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"0dp"</span>
-<span class="highlight-ln">36</span>            <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">37</span>            <span class="highlight-na">android:onClick=</span><span class="highlight-s">"postRequest"</span>
-<span class="highlight-ln">38</span>            <span class="highlight-na">android:text=</span><span class="highlight-s">"post登录"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">39</span>    <span class="highlight-nt">&lt;/LinearLayout&gt;</span>
-<span class="highlight-ln">40</span>
-<span class="highlight-ln">41</span><span class="highlight-nt">&lt;/LinearLayout&gt;</span>
+<pre><code class="language-xml">&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.dell.testokhttp3.MainActivity"&gt;
+
+    &lt;EditText
+        android:id="@+id/edit_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入账号" /&gt;
+
+    &lt;EditText
+        android:id="@+id/edit_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入密码" /&gt;
+
+    &lt;LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"&gt;
+
+        &lt;Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="getRequest"
+            android:text="get登录" /&gt;
+
+        &lt;Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="postRequest"
+            android:text="post登录" /&gt;
+    &lt;/LinearLayout&gt;
+
+&lt;/LinearLayout&gt;
 </code></pre>
 <p>界面图</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GMuHyT.png" alt=""></p>
 <p>之后把 <code>activity_main2.xml</code>修改成如下，做出一个登录成功后的界面</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-nt">&lt;LinearLayout</span> <span class="highlight-na">xmlns:android=</span><span class="highlight-s">"http://schemas.android.com/apk/res/android"</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-na">xmlns:tools=</span><span class="highlight-s">"http://schemas.android.com/tools"</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/activity_main2"</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-na">android:orientation=</span><span class="highlight-s">"vertical"</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-na">tools:context=</span><span class="highlight-s">"com.example.dell.testokhttp3.Main2Activity"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln">10</span>        <span class="highlight-na">android:text=</span><span class="highlight-s">"显示图片"</span>
-<span class="highlight-ln">11</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">12</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">13</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/showImage"</span>
-<span class="highlight-ln">14</span>        <span class="highlight-na">android:onClick=</span><span class="highlight-s">"showImage"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    <span class="highlight-nt">&lt;Button</span>
-<span class="highlight-ln">17</span>        <span class="highlight-na">android:text=</span><span class="highlight-s">"保存图片"</span>
-<span class="highlight-ln">18</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">19</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">20</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/saveImage"</span>
-<span class="highlight-ln">21</span>        <span class="highlight-na">android:onClick=</span><span class="highlight-s">"saveImage"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>    <span class="highlight-nt">&lt;ImageView</span>
-<span class="highlight-ln">24</span>        <span class="highlight-na">android:id=</span><span class="highlight-s">"@+id/imageview"</span>
-<span class="highlight-ln">25</span>        <span class="highlight-na">android:layout_width=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">26</span>        <span class="highlight-na">android:layout_height=</span><span class="highlight-s">"wrap_content"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">27</span><span class="highlight-nt">&lt;/LinearLayout&gt;</span>
+<pre><code class="language-xml">&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.dell.testokhttp3.Main2Activity"&gt;
+
+    &lt;Button
+        android:text="显示图片"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/showImage"
+        android:onClick="showImage" /&gt;
+
+    &lt;Button
+        android:text="保存图片"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saveImage"
+        android:onClick="saveImage" /&gt;
+
+    &lt;ImageView
+        android:id="@+id/imageview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" /&gt;
+&lt;/LinearLayout&gt;
 </code></pre>
 <p>界面图</p>
 <p><img src="https://s1.ax1x.com/2020/04/02/GG3QSO.png" alt=""></p>
 <p>在MainActivity修改代码</p>
 <p>一些初始化操作</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1">//网址主连接
-</span><span class="highlight-ln">2</span><span class="highlight-c1"></span>    <span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-s">"http://10.0.2.2:8080"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">3</span>    <span class="highlight-kd">private</span> <span class="highlight-n">EditText</span> <span class="highlight-n">number</span><span class="highlight-o">;</span>
-<span class="highlight-ln">4</span>    <span class="highlight-kd">private</span> <span class="highlight-n">EditText</span> <span class="highlight-n">pwd</span><span class="highlight-o">;</span>
-<span class="highlight-ln">5</span>
-<span class="highlight-ln">6</span>    <span class="highlight-n">number</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">EditText</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">edit_number</span><span class="highlight-o">);</span>
-<span class="highlight-ln">7</span>    <span class="highlight-n">pwd</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">EditText</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">edit_pwd</span><span class="highlight-o">);</span>
+<pre><code class="language-java">//网址主连接
+    private String url = "http://10.0.2.2:8080";
+    private EditText number;
+    private EditText pwd;
+
+    number = (EditText) findViewById(R.id.edit_number);
+    pwd = (EditText) findViewById(R.id.edit_pwd);
 </code></pre>
 <p>我共使用了两种登录方式，分别是GET和POST这两种提交方式，</p>
 <p>GET方式，一般登录不会用这种方式，GET是把数据放在地址上的，很容易就被其他人看到，我这只是测试而已</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">//使用GET方法
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">get</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">numberStr</span> <span class="highlight-o">=</span> <span class="highlight-n">number</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">pwdStr</span> <span class="highlight-o">=</span> <span class="highlight-n">pwd</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-c1">//连接网络要使用线程
-</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>        <span class="highlight-k">new</span> <span class="highlight-n">Thread</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Runnable</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 9</span>                <span class="highlight-c1">//GET方法要在路径上写好数据
-</span><span class="highlight-ln">10</span><span class="highlight-c1"></span>                <span class="highlight-n">Request</span> <span class="highlight-n">request</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Request</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln">11</span>                        <span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">(</span><span class="highlight-n">url</span> <span class="highlight-o">+</span> <span class="highlight-s">"/MyServlet?number="</span> <span class="highlight-o">+</span> <span class="highlight-n">numberStr</span> <span class="highlight-o">+</span> <span class="highlight-s">"&amp;pwd="</span> <span class="highlight-o">+</span> <span class="highlight-n">pwdStr</span><span class="highlight-o">)</span>
-<span class="highlight-ln">12</span>                        <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">13</span>                <span class="highlight-n">OkHttpClient</span> <span class="highlight-n">client</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">OkHttpClient</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln">14</span>                        <span class="highlight-c1">//连接超时
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>                        <span class="highlight-o">.</span><span class="highlight-na">connectTimeout</span><span class="highlight-o">(</span><span class="highlight-n">10</span><span class="highlight-o">,</span> <span class="highlight-n">TimeUnit</span><span class="highlight-o">.</span><span class="highlight-na">SECONDS</span><span class="highlight-o">)</span>
-<span class="highlight-ln">16</span>                        <span class="highlight-c1">//写入超时
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>                        <span class="highlight-o">.</span><span class="highlight-na">writeTimeout</span><span class="highlight-o">(</span><span class="highlight-n">20</span><span class="highlight-o">,</span> <span class="highlight-n">TimeUnit</span><span class="highlight-o">.</span><span class="highlight-na">SECONDS</span><span class="highlight-o">)</span>
-<span class="highlight-ln">18</span>                        <span class="highlight-c1">//读取超时
-</span><span class="highlight-ln">19</span><span class="highlight-c1"></span>                        <span class="highlight-o">.</span><span class="highlight-na">readTimeout</span><span class="highlight-o">(</span><span class="highlight-n">20</span><span class="highlight-o">,</span> <span class="highlight-n">TimeUnit</span><span class="highlight-o">.</span><span class="highlight-na">SECONDS</span><span class="highlight-o">)</span>
-<span class="highlight-ln">20</span>                        <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">21</span>                <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"MainActivity"</span><span class="highlight-o">,</span><span class="highlight-s">"GET路径为："</span><span class="highlight-o">+</span><span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">());</span>
-<span class="highlight-ln">22</span>                <span class="highlight-n">Call</span> <span class="highlight-n">call</span> <span class="highlight-o">=</span> <span class="highlight-n">client</span><span class="highlight-o">.</span><span class="highlight-na">newCall</span><span class="highlight-o">(</span><span class="highlight-n">request</span><span class="highlight-o">);</span>
-<span class="highlight-ln">23</span>                <span class="highlight-n">call</span><span class="highlight-o">.</span><span class="highlight-na">enqueue</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Callback</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">24</span>                    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">25</span>                    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onFailure</span><span class="highlight-o">(</span><span class="highlight-n">Call</span> <span class="highlight-n">call</span><span class="highlight-o">,</span> <span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">26</span>                        <span class="highlight-c1">//失败做的一些处理
-</span><span class="highlight-ln">27</span><span class="highlight-c1"></span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>                    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">30</span>                    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onResponse</span><span class="highlight-o">(</span><span class="highlight-n">Call</span> <span class="highlight-n">call</span><span class="highlight-o">,</span> <span class="highlight-n">Response</span> <span class="highlight-n">response</span><span class="highlight-o">)</span> <span class="highlight-kd">throws</span> <span class="highlight-n">IOException</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">31</span>                        <span class="highlight-c1">//获得返回数据
-</span><span class="highlight-ln">32</span><span class="highlight-c1"></span>                        <span class="highlight-n">String</span> <span class="highlight-n">res</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-na">body</span><span class="highlight-o">().</span><span class="highlight-na">string</span><span class="highlight-o">();</span>
-<span class="highlight-ln">33</span>                        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"MainActivity"</span><span class="highlight-o">,</span> <span class="highlight-s">"GET方法返回的数据为："</span> <span class="highlight-o">+</span> <span class="highlight-n">res</span><span class="highlight-o">);</span>
-<span class="highlight-ln">34</span>                        <span class="highlight-n">parseJSON</span><span class="highlight-o">(</span><span class="highlight-n">res</span><span class="highlight-o">);</span>
-<span class="highlight-ln">35</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">36</span>                <span class="highlight-o">});</span>
-<span class="highlight-ln">37</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">38</span>        <span class="highlight-o">}).</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">39</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">//使用GET方法
+    public void get() {
+        final String numberStr = number.getText().toString().trim();
+        final String pwdStr = pwd.getText().toString().trim();
+        //连接网络要使用线程
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //GET方法要在路径上写好数据
+                Request request = new Request.Builder()
+                        .url(url + "/MyServlet?number=" + numberStr + "&amp;pwd=" + pwdStr)
+                        .build();
+                OkHttpClient client = new OkHttpClient.Builder()
+                        //连接超时
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        //写入超时
+                        .writeTimeout(20, TimeUnit.SECONDS)
+                        //读取超时
+                        .readTimeout(20, TimeUnit.SECONDS)
+                        .build();
+                Log.d("MainActivity","GET路径为："+request.url());
+                Call call = client.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        //失败做的一些处理
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        //获得返回数据
+                        String res = response.body().string();
+                        Log.d("MainActivity", "GET方法返回的数据为：" + res);
+                        parseJSON(res);
+                    }
+                });
+            }
+        }).start();
+    }
 </code></pre>
 <p>POST方式，这种方式用处比较多，比如上传文件也是用到POST方式</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1">//使用POST方法
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">post</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">numberStr</span> <span class="highlight-o">=</span> <span class="highlight-n">number</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">pwdStr</span> <span class="highlight-o">=</span> <span class="highlight-n">pwd</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-c1">//连接网络要使用线程
-</span><span class="highlight-ln"> 6</span><span class="highlight-c1"></span>        <span class="highlight-k">new</span> <span class="highlight-n">Thread</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Runnable</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 9</span>                <span class="highlight-n">OkHttpClient</span> <span class="highlight-n">client</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">OkHttpClient</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln">10</span>                        <span class="highlight-c1">//连接超时
-</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>                        <span class="highlight-o">.</span><span class="highlight-na">connectTimeout</span><span class="highlight-o">(</span><span class="highlight-n">10</span><span class="highlight-o">,</span> <span class="highlight-n">TimeUnit</span><span class="highlight-o">.</span><span class="highlight-na">SECONDS</span><span class="highlight-o">)</span>
-<span class="highlight-ln">12</span>                        <span class="highlight-c1">//写入超时
-</span><span class="highlight-ln">13</span><span class="highlight-c1"></span>                        <span class="highlight-o">.</span><span class="highlight-na">writeTimeout</span><span class="highlight-o">(</span><span class="highlight-n">20</span><span class="highlight-o">,</span> <span class="highlight-n">TimeUnit</span><span class="highlight-o">.</span><span class="highlight-na">SECONDS</span><span class="highlight-o">)</span>
-<span class="highlight-ln">14</span>                        <span class="highlight-c1">//读取超时
-</span><span class="highlight-ln">15</span><span class="highlight-c1"></span>                        <span class="highlight-o">.</span><span class="highlight-na">readTimeout</span><span class="highlight-o">(</span><span class="highlight-n">20</span><span class="highlight-o">,</span> <span class="highlight-n">TimeUnit</span><span class="highlight-o">.</span><span class="highlight-na">SECONDS</span><span class="highlight-o">)</span>
-<span class="highlight-ln">16</span>                        <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">17</span>                <span class="highlight-c1">//打包表单数据
-</span><span class="highlight-ln">18</span><span class="highlight-c1"></span>                <span class="highlight-n">FormBody</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span> <span class="highlight-n">formBodyBuild</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FormBody</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">();</span>
-<span class="highlight-ln">19</span>                <span class="highlight-n">formBodyBuild</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">,</span> <span class="highlight-n">numberStr</span><span class="highlight-o">);</span>
-<span class="highlight-ln">20</span>                <span class="highlight-n">formBodyBuild</span><span class="highlight-o">.</span><span class="highlight-na">add</span><span class="highlight-o">(</span><span class="highlight-s">"pwd"</span><span class="highlight-o">,</span> <span class="highlight-n">pwdStr</span><span class="highlight-o">);</span>
-<span class="highlight-ln">21</span>                <span class="highlight-c1">//设置请求头
-</span><span class="highlight-ln">22</span><span class="highlight-c1"></span>                <span class="highlight-n">Request</span> <span class="highlight-n">request</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Request</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln">23</span>                        <span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">(</span><span class="highlight-n">url</span><span class="highlight-o">+</span><span class="highlight-s">"/MyServlet"</span><span class="highlight-o">)</span>
-<span class="highlight-ln">24</span>                        <span class="highlight-c1">//上传文件的写法
-</span><span class="highlight-ln">25</span><span class="highlight-c1"></span>                        <span class="highlight-cm">/*.post(RequestBody.create(MediaType.parse("text/x-markdown; charset=utf-8"),
-</span><span class="highlight-ln">26</span><span class="highlight-cm">                                new File("/mnt/sdcard/a.png")))*/</span>
-<span class="highlight-ln">27</span>                        <span class="highlight-o">.</span><span class="highlight-na">post</span><span class="highlight-o">(</span><span class="highlight-n">formBodyBuild</span><span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">())</span>
-<span class="highlight-ln">28</span>                        <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">29</span>                <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"MainActivity"</span><span class="highlight-o">,</span><span class="highlight-s">"POST路径为："</span><span class="highlight-o">+</span><span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">());</span>
-<span class="highlight-ln">30</span>                <span class="highlight-n">Call</span> <span class="highlight-n">call</span> <span class="highlight-o">=</span> <span class="highlight-n">client</span><span class="highlight-o">.</span><span class="highlight-na">newCall</span><span class="highlight-o">(</span><span class="highlight-n">request</span><span class="highlight-o">);</span>
-<span class="highlight-ln">31</span>                <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">();</span>
-<span class="highlight-ln">32</span>                <span class="highlight-n">call</span><span class="highlight-o">.</span><span class="highlight-na">enqueue</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Callback</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">33</span>                    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">34</span>                    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onFailure</span><span class="highlight-o">(</span><span class="highlight-n">Call</span> <span class="highlight-n">call</span><span class="highlight-o">,</span> <span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">35</span>                        <span class="highlight-c1">//失败做的一些处理，比如连接失败
-</span><span class="highlight-ln">36</span><span class="highlight-c1"></span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">37</span>
-<span class="highlight-ln">38</span>                    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">39</span>                    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onResponse</span><span class="highlight-o">(</span><span class="highlight-n">Call</span> <span class="highlight-n">call</span><span class="highlight-o">,</span> <span class="highlight-n">Response</span> <span class="highlight-n">response</span><span class="highlight-o">)</span> <span class="highlight-kd">throws</span> <span class="highlight-n">IOException</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">40</span>                        <span class="highlight-c1">//获得返回数据
-</span><span class="highlight-ln">41</span><span class="highlight-c1"></span>                        <span class="highlight-n">String</span> <span class="highlight-n">res</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-na">body</span><span class="highlight-o">().</span><span class="highlight-na">string</span><span class="highlight-o">();</span>
-<span class="highlight-ln">42</span>                        <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"MainActivity"</span><span class="highlight-o">,</span> <span class="highlight-s">"POST方法返回的数据为："</span> <span class="highlight-o">+</span> <span class="highlight-n">res</span><span class="highlight-o">);</span>
-<span class="highlight-ln">43</span>                        <span class="highlight-n">parseJSON</span><span class="highlight-o">(</span><span class="highlight-n">res</span><span class="highlight-o">);</span>
-<span class="highlight-ln">44</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">45</span>                <span class="highlight-o">});</span>
-<span class="highlight-ln">46</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">47</span>        <span class="highlight-o">}).</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">48</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">//使用POST方法
+    public void post() {
+        final String numberStr = number.getText().toString().trim();
+        final String pwdStr = pwd.getText().toString().trim();
+        //连接网络要使用线程
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient.Builder()
+                        //连接超时
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        //写入超时
+                        .writeTimeout(20, TimeUnit.SECONDS)
+                        //读取超时
+                        .readTimeout(20, TimeUnit.SECONDS)
+                        .build();
+                //打包表单数据
+                FormBody.Builder formBodyBuild = new FormBody.Builder();
+                formBodyBuild.add("number", numberStr);
+                formBodyBuild.add("pwd", pwdStr);
+                //设置请求头
+                Request request = new Request.Builder()
+                        .url(url+"/MyServlet")
+                        //上传文件的写法
+                        /*.post(RequestBody.create(MediaType.parse("text/x-markdown; charset=utf-8"),
+                                new File("/mnt/sdcard/a.png")))*/
+                        .post(formBodyBuild.build())
+                        .build();
+                Log.d("MainActivity","POST路径为："+request.url());
+                Call call = client.newCall(request);
+                request.url();
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        //失败做的一些处理，比如连接失败
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        //获得返回数据
+                        String res = response.body().string();
+                        Log.d("MainActivity", "POST方法返回的数据为：" + res);
+                        parseJSON(res);
+                    }
+                });
+            }
+        }).start();
+    }
 </code></pre>
 <p>因为返回的数据是json格式，创建一个用于解析json的方法</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-c1">//解析JSON数据
-</span><span class="highlight-ln"> 2</span><span class="highlight-c1"></span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">parseJSON</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">jsonStr</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 4</span>            <span class="highlight-n">JSONObject</span> <span class="highlight-n">jsonObject</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">JSONObject</span><span class="highlight-o">(</span><span class="highlight-n">jsonStr</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 5</span>            <span class="highlight-n">String</span> <span class="highlight-n">resulet</span> <span class="highlight-o">=</span> <span class="highlight-n">jsonObject</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-s">"result"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 6</span>            <span class="highlight-c1">//判断是否成功
-</span><span class="highlight-ln"> 7</span><span class="highlight-c1"></span>            <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">resulet</span><span class="highlight-o">.</span><span class="highlight-na">equals</span><span class="highlight-o">(</span><span class="highlight-s">"success"</span><span class="highlight-o">))</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 8</span>                <span class="highlight-n">String</span> <span class="highlight-n">fileUrl</span> <span class="highlight-o">=</span> <span class="highlight-n">jsonObject</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-s">"file"</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 9</span>                <span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">imageUrl</span> <span class="highlight-o">=</span> <span class="highlight-n">url</span> <span class="highlight-o">+</span> <span class="highlight-n">fileUrl</span><span class="highlight-o">;</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>                <span class="highlight-c1">//操作UI不能在子线程上操作，要在UI线程上操作
-</span><span class="highlight-ln">12</span><span class="highlight-c1"></span>                <span class="highlight-n">runOnUiThread</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Runnable</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">13</span>                    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">14</span>                    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">15</span>                        <span class="highlight-c1">//登录成功，跳转到另一个Activity
-</span><span class="highlight-ln">16</span><span class="highlight-c1"></span>                        <span class="highlight-n">Intent</span> <span class="highlight-n">intent</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Intent</span><span class="highlight-o">(</span><span class="highlight-n">MainActivity</span><span class="highlight-o">.</span><span class="highlight-na">this</span><span class="highlight-o">,</span> <span class="highlight-n">Main2Activity</span><span class="highlight-o">.</span><span class="highlight-na">class</span><span class="highlight-o">);</span>
-<span class="highlight-ln">17</span>                        <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">putExtra</span><span class="highlight-o">(</span><span class="highlight-s">"imageUrl"</span><span class="highlight-o">,</span> <span class="highlight-n">imageUrl</span><span class="highlight-o">);</span>
-<span class="highlight-ln">18</span>                        <span class="highlight-n">startActivity</span><span class="highlight-o">(</span><span class="highlight-n">intent</span><span class="highlight-o">);</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>                        <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getApplicationContext</span><span class="highlight-o">(),</span> <span class="highlight-s">"登录成功"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">21</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">22</span>                <span class="highlight-o">});</span>
-<span class="highlight-ln">23</span>            <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">24</span>                <span class="highlight-c1">//登录失败
-</span><span class="highlight-ln">25</span><span class="highlight-c1"></span>                <span class="highlight-n">runOnUiThread</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Runnable</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">26</span>                    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">27</span>                    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">28</span>                        <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getApplicationContext</span><span class="highlight-o">(),</span> <span class="highlight-s">"账号或密码错误"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">29</span>                    <span class="highlight-o">}</span>
-<span class="highlight-ln">30</span>                <span class="highlight-o">});</span>
-<span class="highlight-ln">31</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">32</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">JSONException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">33</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">34</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">35</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    //解析JSON数据
+    public void parseJSON(String jsonStr) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            String resulet = jsonObject.getString("result");
+            //判断是否成功
+            if (resulet.equals("success")) {
+                String fileUrl = jsonObject.getString("file");
+                final String imageUrl = url + fileUrl;
+
+                //操作UI不能在子线程上操作，要在UI线程上操作
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //登录成功，跳转到另一个Activity
+                        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+                        intent.putExtra("imageUrl", imageUrl);
+                        startActivity(intent);
+
+                        Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                //登录失败
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "账号或密码错误", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 </code></pre>
 <p>给那两按钮添加点击事件</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">getRequest</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">view</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">2</span>        <span class="highlight-n">get</span><span class="highlight-o">();</span>
-<span class="highlight-ln">3</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">4</span>
-<span class="highlight-ln">5</span>    <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">postRequest</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">view</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">6</span>        <span class="highlight-n">post</span><span class="highlight-o">();</span>
-<span class="highlight-ln">7</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">public void getRequest(View view) {
+        get();
+    }
+
+    public void postRequest(View view) {
+        post();
+    }
 </code></pre>
 <p>到这里其他就可以进行第一次运行了，因为要联网，还有之后保存图片到SD卡，这都有权限，所以要加上下面的权限</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>&lt;uses-permission android:name="android.permission.INTERNET" /&gt;
-<span class="highlight-ln">2</span>&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/&gt;
+<pre><code>&lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/&gt;
 </code></pre>
 <p>可以运行看看了，首先使用GET的提交方式登录</p>
 <p><img src="https://s1.ax1x.com/2020/04/03/GdpAZ8.gif" alt=""></p>
@@ -391,110 +391,110 @@ var _hmt = _hmt || [];
 <p><img src="https://s1.ax1x.com/2020/03/31/GlnJVe.gif" alt=""></p>
 <p>运行没有问题后，接下来是编写登录成功后的功能了</p>
 <p>接收上一个Activity传来的图片的网址</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">private</span> <span class="highlight-n">String</span> <span class="highlight-n">url</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-c1">//获取上一个Activity传来的图片路径
-</span><span class="highlight-ln">4</span><span class="highlight-c1"></span><span class="highlight-n">Intent</span> <span class="highlight-n">intent</span> <span class="highlight-o">=</span> <span class="highlight-n">getIntent</span><span class="highlight-o">();</span>
-<span class="highlight-ln">5</span><span class="highlight-n">url</span> <span class="highlight-o">=</span> <span class="highlight-n">intent</span><span class="highlight-o">.</span><span class="highlight-na">getStringExtra</span><span class="highlight-o">(</span><span class="highlight-s">"imageUrl"</span><span class="highlight-o">);</span>
+<pre><code class="language-java">private String url;
+
+//获取上一个Activity传来的图片路径
+Intent intent = getIntent();
+url = intent.getStringExtra("imageUrl");
 </code></pre>
 <p>一些界面控件的初始化</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">private</span> <span class="highlight-n">ImageView</span> <span class="highlight-n">imageView</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-n">imageView</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">ImageView</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">imageview</span><span class="highlight-o">);</span>
+<pre><code class="language-java">private ImageView imageView;
+
+imageView = (ImageView) findViewById(R.id.imageview);
 </code></pre>
 <p>显示网络图片的操作</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kd">private</span> <span class="highlight-kt">void</span> <span class="highlight-nf">showImage</span><span class="highlight-o">(</span><span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">ImageUrl</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>        <span class="highlight-c1">//连接网络要使用线程
-</span><span class="highlight-ln"> 3</span><span class="highlight-c1"></span>        <span class="highlight-k">new</span> <span class="highlight-n">Thread</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Runnable</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 4</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 5</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>                <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>                    <span class="highlight-n">OkHttpClient</span> <span class="highlight-n">client</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">OkHttpClient</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln"> 8</span>                            <span class="highlight-c1">//使用缓存
-</span><span class="highlight-ln"> 9</span><span class="highlight-c1"></span>                            <span class="highlight-o">.</span><span class="highlight-na">cache</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Cache</span><span class="highlight-o">(</span><span class="highlight-n">getExternalCacheDir</span><span class="highlight-o">().</span><span class="highlight-na">getAbsoluteFile</span><span class="highlight-o">(),</span> <span class="highlight-n">1024</span> <span class="highlight-o">*</span> <span class="highlight-n">1024</span> <span class="highlight-o">*</span> <span class="highlight-n">2</span><span class="highlight-o">))</span>
-<span class="highlight-ln">10</span>                            <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">11</span>                    <span class="highlight-n">Request</span> <span class="highlight-n">request</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Request</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln">12</span>                            <span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">(</span><span class="highlight-n">ImageUrl</span><span class="highlight-o">)</span>
-<span class="highlight-ln">13</span>                            <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">14</span>                    <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"Main2Activity"</span><span class="highlight-o">,</span><span class="highlight-s">"图片路径为："</span><span class="highlight-o">+</span><span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">());</span>
-<span class="highlight-ln">15</span>                    <span class="highlight-n">Response</span> <span class="highlight-n">response</span> <span class="highlight-o">=</span> <span class="highlight-n">client</span><span class="highlight-o">.</span><span class="highlight-na">newCall</span><span class="highlight-o">(</span><span class="highlight-n">request</span><span class="highlight-o">).</span><span class="highlight-na">execute</span><span class="highlight-o">();</span>
-<span class="highlight-ln">16</span>                    <span class="highlight-c1">//获取输入流
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>                    <span class="highlight-n">InputStream</span> <span class="highlight-n">inputStream</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-na">body</span><span class="highlight-o">().</span><span class="highlight-na">byteStream</span><span class="highlight-o">();</span>
-<span class="highlight-ln">18</span>                    <span class="highlight-n">Bitmap</span> <span class="highlight-n">bitmap</span> <span class="highlight-o">=</span> <span class="highlight-n">BitmapFactory</span><span class="highlight-o">.</span><span class="highlight-na">decodeStream</span><span class="highlight-o">(</span><span class="highlight-n">inputStream</span><span class="highlight-o">);</span>
-<span class="highlight-ln">19</span>                    <span class="highlight-c1">//使用Hander线程修改UI
-</span><span class="highlight-ln">20</span><span class="highlight-c1"></span>                    <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Message</span><span class="highlight-o">();</span>
-<span class="highlight-ln">21</span>                    <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">1</span><span class="highlight-o">;</span>
-<span class="highlight-ln">22</span>                    <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-n">bitmap</span><span class="highlight-o">;</span>
-<span class="highlight-ln">23</span>                    <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">24</span>
-<span class="highlight-ln">25</span>                    <span class="highlight-n">inputStream</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">26</span>                <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">27</span>                    <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">28</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">29</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">30</span>        <span class="highlight-o">}).</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">31</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">private void showImage(final String ImageUrl) {
+        //连接网络要使用线程
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            //使用缓存
+                            .cache(new Cache(getExternalCacheDir().getAbsoluteFile(), 1024 * 1024 * 2))
+                            .build();
+                    Request request = new Request.Builder()
+                            .url(ImageUrl)
+                            .build();
+                    Log.d("Main2Activity","图片路径为："+request.url());
+                    Response response = client.newCall(request).execute();
+                    //获取输入流
+                    InputStream inputStream = response.body().byteStream();
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    //使用Hander线程修改UI
+                    Message msg = new Message();
+                    msg.what = 1;
+                    msg.obj = bitmap;
+                    handler.sendMessage(msg);
+
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 </code></pre>
 <p>还有一个保存网络图片到本地的SD卡上</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">saveImage</span><span class="highlight-o">(</span><span class="highlight-kd">final</span> <span class="highlight-n">String</span> <span class="highlight-n">imageUrl</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>        <span class="highlight-c1">//连接网络要使用线程
-</span><span class="highlight-ln"> 3</span><span class="highlight-c1"></span>        <span class="highlight-k">new</span> <span class="highlight-n">Thread</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Runnable</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 4</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 5</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">run</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 6</span>                <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 7</span>                    <span class="highlight-n">OkHttpClient</span> <span class="highlight-n">client</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">OkHttpClient</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln"> 8</span>                            <span class="highlight-c1">//使用缓存
-</span><span class="highlight-ln"> 9</span><span class="highlight-c1"></span>                            <span class="highlight-o">.</span><span class="highlight-na">cache</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">Cache</span><span class="highlight-o">(</span><span class="highlight-n">getExternalCacheDir</span><span class="highlight-o">().</span><span class="highlight-na">getAbsoluteFile</span><span class="highlight-o">(),</span> <span class="highlight-n">1024</span> <span class="highlight-o">*</span> <span class="highlight-n">1024</span> <span class="highlight-o">*</span> <span class="highlight-n">2</span><span class="highlight-o">))</span>
-<span class="highlight-ln">10</span>                            <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">11</span>                    <span class="highlight-n">Request</span> <span class="highlight-n">request</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Request</span><span class="highlight-o">.</span><span class="highlight-na">Builder</span><span class="highlight-o">()</span>
-<span class="highlight-ln">12</span>                            <span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">(</span><span class="highlight-n">imageUrl</span><span class="highlight-o">)</span>
-<span class="highlight-ln">13</span>                            <span class="highlight-o">.</span><span class="highlight-na">build</span><span class="highlight-o">();</span>
-<span class="highlight-ln">14</span>                    <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">d</span><span class="highlight-o">(</span><span class="highlight-s">"Main2Activity"</span><span class="highlight-o">,</span><span class="highlight-s">"图片路径为："</span><span class="highlight-o">+</span><span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">url</span><span class="highlight-o">());</span>
-<span class="highlight-ln">15</span>                    <span class="highlight-n">Response</span> <span class="highlight-n">response</span> <span class="highlight-o">=</span> <span class="highlight-n">client</span><span class="highlight-o">.</span><span class="highlight-na">newCall</span><span class="highlight-o">(</span><span class="highlight-n">request</span><span class="highlight-o">).</span><span class="highlight-na">execute</span><span class="highlight-o">();</span>
-<span class="highlight-ln">16</span>                    <span class="highlight-c1">//获取字节数据
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>                    <span class="highlight-kt">byte</span><span class="highlight-o">[]</span> <span class="highlight-n">bytes</span> <span class="highlight-o">=</span> <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-na">body</span><span class="highlight-o">().</span><span class="highlight-na">bytes</span><span class="highlight-o">();</span>
-<span class="highlight-ln">18</span>                    <span class="highlight-c1">//获取文件名
-</span><span class="highlight-ln">19</span><span class="highlight-c1"></span>                    <span class="highlight-n">String</span><span class="highlight-o">[]</span> <span class="highlight-n">urls</span> <span class="highlight-o">=</span> <span class="highlight-n">url</span><span class="highlight-o">.</span><span class="highlight-na">split</span><span class="highlight-o">(</span><span class="highlight-s">"/"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">20</span>                    <span class="highlight-n">String</span> <span class="highlight-n">filename</span> <span class="highlight-o">=</span> <span class="highlight-n">urls</span><span class="highlight-o">[</span><span class="highlight-n">urls</span><span class="highlight-o">.</span><span class="highlight-na">length</span> <span class="highlight-o">-</span> <span class="highlight-n">1</span><span class="highlight-o">];</span>
-<span class="highlight-ln">21</span>                    <span class="highlight-c1">//保存文件
-</span><span class="highlight-ln">22</span><span class="highlight-c1"></span>                    <span class="highlight-n">File</span> <span class="highlight-n">file</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">File</span><span class="highlight-o">(</span><span class="highlight-n">Environment</span><span class="highlight-o">.</span><span class="highlight-na">getExternalStorageDirectory</span><span class="highlight-o">(),</span> <span class="highlight-n">filename</span><span class="highlight-o">);</span>
-<span class="highlight-ln">23</span>                    <span class="highlight-n">FileOutputStream</span> <span class="highlight-n">fos</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">FileOutputStream</span><span class="highlight-o">(</span><span class="highlight-n">file</span><span class="highlight-o">);</span>
-<span class="highlight-ln">24</span>                    <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">write</span><span class="highlight-o">(</span><span class="highlight-n">bytes</span><span class="highlight-o">);</span>
-<span class="highlight-ln">25</span>                    <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">flush</span><span class="highlight-o">();</span>
-<span class="highlight-ln">26</span>                    <span class="highlight-n">fos</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">27</span>                    <span class="highlight-c1">//弹出Toast
-</span><span class="highlight-ln">28</span><span class="highlight-c1"></span>                    <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Message</span><span class="highlight-o">();</span>
-<span class="highlight-ln">29</span>                    <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">2</span><span class="highlight-o">;</span>
-<span class="highlight-ln">30</span>                    <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-s">"保存成功"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">31</span>                    <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">32</span>                <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">IOException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">33</span>                    <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">34</span>                    <span class="highlight-n">Log</span><span class="highlight-o">.</span><span class="highlight-na">e</span><span class="highlight-o">(</span><span class="highlight-s">"Main2Activity"</span><span class="highlight-o">,</span> <span class="highlight-s">"图片保存失败"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">35</span>                    <span class="highlight-n">Message</span> <span class="highlight-n">msg</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Message</span><span class="highlight-o">();</span>
-<span class="highlight-ln">36</span>                    <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span> <span class="highlight-o">=</span> <span class="highlight-n">2</span><span class="highlight-o">;</span>
-<span class="highlight-ln">37</span>                    <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span> <span class="highlight-o">=</span> <span class="highlight-s">"图片保存失败"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">38</span>                    <span class="highlight-n">handler</span><span class="highlight-o">.</span><span class="highlight-na">sendMessage</span><span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">);</span>
-<span class="highlight-ln">39</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">40</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">41</span>        <span class="highlight-o">}).</span><span class="highlight-na">start</span><span class="highlight-o">();</span>
-<span class="highlight-ln">42</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">public void saveImage(final String imageUrl) {
+        //连接网络要使用线程
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            //使用缓存
+                            .cache(new Cache(getExternalCacheDir().getAbsoluteFile(), 1024 * 1024 * 2))
+                            .build();
+                    Request request = new Request.Builder()
+                            .url(imageUrl)
+                            .build();
+                    Log.d("Main2Activity","图片路径为："+request.url());
+                    Response response = client.newCall(request).execute();
+                    //获取字节数据
+                    byte[] bytes = response.body().bytes();
+                    //获取文件名
+                    String[] urls = url.split("/");
+                    String filename = urls[urls.length - 1];
+                    //保存文件
+                    File file = new File(Environment.getExternalStorageDirectory(), filename);
+                    FileOutputStream fos = new FileOutputStream(file);
+                    fos.write(bytes);
+                    fos.flush();
+                    fos.close();
+                    //弹出Toast
+                    Message msg = new Message();
+                    msg.what = 2;
+                    msg.obj = "保存成功";
+                    handler.sendMessage(msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("Main2Activity", "图片保存失败");
+                    Message msg = new Message();
+                    msg.what = 2;
+                    msg.obj = "图片保存失败";
+                    handler.sendMessage(msg);
+                }
+            }
+        }).start();
+    }
 </code></pre>
 <p>在上面两种方法中都可以看到我使用了Handle更新UI，下面就是Handle的实现</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span> <span class="highlight-kd">private</span> <span class="highlight-n">Handler</span> <span class="highlight-n">handler</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">Handler</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>        <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">handleMessage</span><span class="highlight-o">(</span><span class="highlight-n">Message</span> <span class="highlight-n">msg</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 4</span>            <span class="highlight-k">switch</span> <span class="highlight-o">(</span><span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">what</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 5</span>                <span class="highlight-k">case</span> <span class="highlight-n">1</span><span class="highlight-o">:</span>
-<span class="highlight-ln"> 6</span>                    <span class="highlight-c1">//设置图片
-</span><span class="highlight-ln"> 7</span><span class="highlight-c1"></span>                    <span class="highlight-n">imageView</span><span class="highlight-o">.</span><span class="highlight-na">setImageBitmap</span><span class="highlight-o">((</span><span class="highlight-n">Bitmap</span><span class="highlight-o">)</span> <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span><span class="highlight-o">);</span>
-<span class="highlight-ln"> 8</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 9</span>                <span class="highlight-k">case</span> <span class="highlight-n">2</span><span class="highlight-o">:</span>
-<span class="highlight-ln">10</span>                    <span class="highlight-c1">//一些提示
-</span><span class="highlight-ln">11</span><span class="highlight-c1"></span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getApplicationContext</span><span class="highlight-o">(),</span> <span class="highlight-o">(</span><span class="highlight-n">String</span><span class="highlight-o">)</span> <span class="highlight-n">msg</span><span class="highlight-o">.</span><span class="highlight-na">obj</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">12</span>                    <span class="highlight-k">break</span><span class="highlight-o">;</span>
-<span class="highlight-ln">13</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">14</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">15</span>    <span class="highlight-o">};</span>
+<pre><code class="language-java"> private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    //设置图片
+                    imageView.setImageBitmap((Bitmap) msg.obj);
+                    break;
+                case 2:
+                    //一些提示
+                    Toast.makeText(getApplicationContext(), (String) msg.obj, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 </code></pre>
 <p>最后就是把刚才的操作添加到按钮的点击事件上，因为作者是在Android6.0上测试的，而读写SD卡的权限在Android6.0后要动态申请，所以加了申请权限的操作，这样就大功告成了。</p>
 <p>效果图</p>
@@ -575,7 +575,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -584,7 +584,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -592,11 +592,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466411229",
@@ -614,4 +614,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 52ms, 2020/04/07 11:38:51 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 26ms, 2020/04/07 14:57:08 -->

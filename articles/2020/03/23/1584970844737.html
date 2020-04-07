@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记五——验证码的识别 - 夜雨飘零</title><meta name="description" content="本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集介绍 本次使用的验证码是方正系统，现在很多的大学的教务系统用的就是这个方正系统，刚好既然那么普遍，我们就用它练一练手。经过观察大量的验证码发现，该系统的验证码只有小写的字母和数字，这样分类就少了很多了。该系统的验证码如下： 验证码尺寸说明 7227只有数字和小写字母 1227第一个X方向的从5开始裁剪到17，Y取全部，即从0裁剪到27 1227第二个X方向的从17开始裁剪到29，Y取全部，即从0裁剪到27 1227第三个X方向的从29开始裁剪到41，Y取全部，即从0裁剪到27 1227第四个X方向的从41开始裁剪到53，Y取全部，即从0裁剪到27 通过上面表上说明，我们就可以开始裁剪验证码了。在裁剪之前我们先要下载编写一个程序，让它来帮我们下载更多的验证码 下载验证码 编写一个下载验证码的程序DownloadYanZhengMa.py，这里我们只需要传入保存路径和要下载的数量就可以了。 # -- coding:utf-8 -- import re import uuid i...."/><meta property="og:description" content="本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集介绍 本次使用的验证码是方正系统，现在很多的大学的教务系统用的就是这个方正系统，刚好既然那么普遍，我们就用它练一练手。经过观察大量的验证码发现，该系统的验证码只有小写的字母和数字，这样分类就少了很多了。该系统的验证码如下： 验证码尺寸说明 7227只有数字和小写字母 1227第一个X方向的从5开始裁剪到17，Y取全部，即从0裁剪到27 1227第二个X方向的从17开始裁剪到29，Y取全部，即从0裁剪到27 1227第三个X方向的从29开始裁剪到41，Y取全部，即从0裁剪到27 1227第四个X方向的从41开始裁剪到53，Y取全部，即从0裁剪到27 通过上面表上说明，我们就可以开始裁剪验证码了。在裁剪之前我们先要下载编写一个程序，让它来帮我们下载更多的验证码 下载验证码 编写一个下载验证码的程序DownloadYanZhengMa.py，这里我们只需要传入保存路径和要下载的数量就可以了。 # -- coding:utf-8 -- import re import uuid i...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记五——验证码的识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记五——验证码的识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记五——验证码的识别 - 夜雨飘零</title><meta name="description" content="本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集介绍 本次使用的验证码是方正系统，现在很多的大学的教务系统用的就是这个方正系统，刚好既然那么普遍，我们就用它练一练手。经过观察大量的验证码发现，该系统的验证码只有小写的字母和数字，这样分类就少了很多了。该系统的验证码如下： 验证码尺寸说明 7227只有数字和小写字母 1227第一个X方向的从5开始裁剪到17，Y取全部，即从0裁剪到27 1227第二个X方向的从17开始裁剪到29，Y取全部，即从0裁剪到27 1227第三个X方向的从29开始裁剪到41，Y取全部，即从0裁剪到27 1227第四个X方向的从41开始裁剪到53，Y取全部，即从0裁剪到27 通过上面表上说明，我们就可以开始裁剪验证码了。在裁剪之前我们先要下载编写一个程序，让它来帮我们下载更多的验证码 下载验证码 编写一个下载验证码的程序DownloadYanZhengMa.py，这里我们只需要传入保存路径和要下载的数量就可以了。 # -- coding:utf-8 -- import re import uuid i...."/><meta property="og:description" content="本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 数据集介绍 本次使用的验证码是方正系统，现在很多的大学的教务系统用的就是这个方正系统，刚好既然那么普遍，我们就用它练一练手。经过观察大量的验证码发现，该系统的验证码只有小写的字母和数字，这样分类就少了很多了。该系统的验证码如下： 验证码尺寸说明 7227只有数字和小写字母 1227第一个X方向的从5开始裁剪到17，Y取全部，即从0裁剪到27 1227第二个X方向的从17开始裁剪到29，Y取全部，即从0裁剪到27 1227第三个X方向的从29开始裁剪到41，Y取全部，即从0裁剪到27 1227第四个X方向的从41开始裁剪到53，Y取全部，即从0裁剪到27 通过上面表上说明，我们就可以开始裁剪验证码了。在裁剪之前我们先要下载编写一个程序，让它来帮我们下载更多的验证码 下载验证码 编写一个下载验证码的程序DownloadYanZhengMa.py，这里我们只需要传入保存路径和要下载的数量就可以了。 # -- coding:utf-8 -- import re import uuid i...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记五——验证码的识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记五——验证码的识别 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970844737.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="《我的PaddlePaddle学习之路》笔记四——自定义图像数据集的识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970774428.html">
             <link rel="next" title="《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584970919853.html">
     <!-- 百度统计 -->
@@ -78,61 +78,61 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#数据集介绍">数据集介绍</a>
+            <a href="#toc_h1_0">数据集介绍</a>
         </li>
         <li class="toc__h1">
-            <a href="#下载验证码">下载验证码</a>
+            <a href="#toc_h1_1">下载验证码</a>
         </li>
         <li class="toc__h1">
-            <a href="#修改验证码的文件名">修改验证码的文件名</a>
+            <a href="#toc_h1_2">修改验证码的文件名</a>
         </li>
         <li class="toc__h1">
-            <a href="#裁剪验证码">裁剪验证码</a>
+            <a href="#toc_h1_3">裁剪验证码</a>
         </li>
         <li class="toc__h1">
-            <a href="#生成图像列表">生成图像列表</a>
+            <a href="#toc_h1_4">生成图像列表</a>
         </li>
         <li class="toc__h1">
-            <a href="#读取数据">读取数据</a>
+            <a href="#toc_h1_5">读取数据</a>
         </li>
         <li class="toc__h2">
-            <a href="#MyReader代码">MyReader代码</a>
+            <a href="#toc_h2_6">MyReader代码</a>
         </li>
         <li class="toc__h1">
-            <a href="#使用PaddlePaddle开始训练">使用PaddlePaddle开始训练</a>
+            <a href="#toc_h1_7">使用PaddlePaddle开始训练</a>
         </li>
         <li class="toc__h2">
-            <a href="#导入依赖包">导入依赖包</a>
+            <a href="#toc_h2_8">导入依赖包</a>
         </li>
         <li class="toc__h2">
-            <a href="#初始化Paddle">初始化Paddle</a>
+            <a href="#toc_h2_9">初始化Paddle</a>
         </li>
         <li class="toc__h2">
-            <a href="#获取参数">获取参数</a>
+            <a href="#toc_h2_10">获取参数</a>
         </li>
         <li class="toc__h2">
-            <a href="#创建训练器">创建训练器</a>
+            <a href="#toc_h2_11">创建训练器</a>
         </li>
         <li class="toc__h2">
-            <a href="#开始训练">开始训练</a>
+            <a href="#toc_h2_12">开始训练</a>
         </li>
         <li class="toc__h1">
-            <a href="#使用PaddlePaddle预测">使用PaddlePaddle预测</a>
+            <a href="#toc_h1_13">使用PaddlePaddle预测</a>
         </li>
         <li class="toc__h2">
-            <a href="#裁剪要预测的验证码">裁剪要预测的验证码</a>
+            <a href="#toc_h2_14">裁剪要预测的验证码</a>
         </li>
         <li class="toc__h2">
-            <a href="#使用裁剪好的图像进行预测">使用裁剪好的图像进行预测</a>
+            <a href="#toc_h2_15">使用裁剪好的图像进行预测</a>
         </li>
         <li class="toc__h2">
-            <a href="#把预测的label转换成对应的字符">把预测的label转换成对应的字符</a>
+            <a href="#toc_h2_16">把预测的label转换成对应的字符</a>
         </li>
         <li class="toc__h1">
-            <a href="#项目代码">项目代码</a>
+            <a href="#toc_h1_17">项目代码</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_18">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -181,83 +181,59 @@ var _hmt = _hmt || [];
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20191218.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
 <p>*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7</p>
-<h1 id="数据集介绍">数据集介绍</h1>
+<h1 id="toc_h1_0">数据集介绍</h1>
 <hr>
 <p>本次使用的验证码是方正系统，现在很多的大学的教务系统用的就是这个方正系统，刚好既然那么普遍，我们就用它练一练手。经过观察大量的验证码发现，该系统的验证码只有小写的字母和数字，这样分类就少了很多了。该系统的验证码如下：</p>
 <table>
 <thead>
-<tr>
-<th align="center">验证码</th>
-<th align="center">尺寸</th>
-<th align="center">说明</th>
-</tr>
+<tr><th align="center">验证码</th><th align="center">尺寸</th><th align="center">说明</th></tr>
 </thead>
 <tbody>
-<tr>
-<td align="center"><img src="https://s1.ax1x.com/2020/03/31/GlnzqO.gif" alt="这里写图片描述"></td>
-<td align="center">72*27</td>
-<td align="center">只有数字和小写字母</td>
-</tr>
-<tr>
-<td align="center"><img src="https://s1.ax1x.com/2020/04/02/GGWbyF.png" alt="这里写图片描述"></td>
-<td align="center">12*27</td>
-<td align="center">第一个X方向的从5开始裁剪到17，Y取全部，即从0裁剪到27</td>
-</tr>
-<tr>
-<td align="center"><img src="https://s1.ax1x.com/2020/03/31/GMufoj.png" alt="这里写图片描述"></td>
-<td align="center">12*27</td>
-<td align="center">第二个X方向的从17开始裁剪到29，Y取全部，即从0裁剪到27</td>
-</tr>
-<tr>
-<td align="center"><img src="https://s1.ax1x.com/2020/04/03/GakXvj.png" alt="这里写图片描述"></td>
-<td align="center">12*27</td>
-<td align="center">第三个X方向的从29开始裁剪到41，Y取全部，即从0裁剪到27</td>
-</tr>
-<tr>
-<td align="center"><img src="https://s1.ax1x.com/2020/04/04/GdWDuq.png" alt="这里写图片描述"></td>
-<td align="center">12*27</td>
-<td align="center">第四个X方向的从41开始裁剪到53，Y取全部，即从0裁剪到27</td>
-</tr>
+<tr><td align="center"><img src="https://s1.ax1x.com/2020/03/31/GlnzqO.gif" alt="这里写图片描述"></td><td align="center">72*27</td><td align="center">只有数字和小写字母</td></tr>
+<tr><td align="center"><img src="https://s1.ax1x.com/2020/04/02/GGWbyF.png" alt="这里写图片描述"></td><td align="center">12*27</td><td align="center">第一个X方向的从5开始裁剪到17，Y取全部，即从0裁剪到27</td></tr>
+<tr><td align="center"><img src="https://s1.ax1x.com/2020/03/31/GMufoj.png" alt="这里写图片描述"></td><td align="center">12*27</td><td align="center">第二个X方向的从17开始裁剪到29，Y取全部，即从0裁剪到27</td></tr>
+<tr><td align="center"><img src="https://s1.ax1x.com/2020/04/03/GakXvj.png" alt="这里写图片描述"></td><td align="center">12*27</td><td align="center">第三个X方向的从29开始裁剪到41，Y取全部，即从0裁剪到27</td></tr>
+<tr><td align="center"><img src="https://s1.ax1x.com/2020/04/04/GdWDuq.png" alt="这里写图片描述"></td><td align="center">12*27</td><td align="center">第四个X方向的从41开始裁剪到53，Y取全部，即从0裁剪到27</td></tr>
 </tbody>
 </table>
 <p>通过上面表上说明，我们就可以开始裁剪验证码了。在裁剪之前我们先要下载编写一个程序，让它来帮我们下载更多的验证码</p>
-<h1 id="下载验证码">下载验证码</h1>
+<h1 id="toc_h1_1">下载验证码</h1>
 <hr>
 <p>编写一个下载验证码的程序<code>DownloadYanZhengMa.py</code>，这里我们只需要传入保存路径和要下载的数量就可以了。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># -*- coding:utf-8 -*-</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">re</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">uuid</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">requests</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span><span class="highlight-k">class</span> <span class="highlight-nc">DownloadYanZhengMa</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span><span class="highlight-n">save_path</span><span class="highlight-p">,</span><span class="highlight-n">download_max</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">download_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">10</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">save_path</span> <span class="highlight-o">=</span> <span class="highlight-n">save_path</span>
-<span class="highlight-ln">11</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">download_max</span> <span class="highlight-o">=</span> <span class="highlight-n">download_max</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-k">def</span> <span class="highlight-nf">downloadImages</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">14</span>        <span class="highlight-k">try</span><span class="highlight-p">:</span>
-<span class="highlight-ln">15</span>            <span class="highlight-n">pic</span> <span class="highlight-o">=</span> <span class="highlight-n">requests</span><span class="highlight-o">.</span><span class="highlight-n">get</span><span class="highlight-p">(</span><span class="highlight-s1">'http://jwsys.ctbu.edu.cn/CheckCode.aspx?'</span><span class="highlight-p">,</span> <span class="highlight-n">timeout</span><span class="highlight-o">=</span><span class="highlight-mi">500</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>            <span class="highlight-n">pic_name</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">save_path</span><span class="highlight-o">+</span><span class="highlight-s1">'/'</span> <span class="highlight-o">+</span><span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">uuid</span><span class="highlight-o">.</span><span class="highlight-n">uuid1</span><span class="highlight-p">())</span> <span class="highlight-o">+</span> <span class="highlight-s1">'.png'</span>
-<span class="highlight-ln">17</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">pic_name</span><span class="highlight-p">,</span> <span class="highlight-s1">'wb'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">18</span>                <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">pic</span><span class="highlight-o">.</span><span class="highlight-n">content</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>            <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">download_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">20</span>            <span class="highlight-k">print</span> <span class="highlight-s1">'已下载完成'</span><span class="highlight-o">+</span><span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">download_sum</span><span class="highlight-p">)</span><span class="highlight-o">+</span><span class="highlight-s1">'张验证码'</span>
-<span class="highlight-ln">21</span>            <span class="highlight-k">if</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">download_sum</span> <span class="highlight-o">&gt;=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">download_max</span><span class="highlight-p">:</span>
-<span class="highlight-ln">22</span>                <span class="highlight-k">return</span>
-<span class="highlight-ln">23</span>            <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">24</span>                <span class="highlight-k">return</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">downloadImages</span><span class="highlight-p">()</span>
-<span class="highlight-ln">25</span>        <span class="highlight-k">except</span>  <span class="highlight-ne">Exception</span><span class="highlight-p">,</span> <span class="highlight-n">e</span><span class="highlight-p">:</span>
-<span class="highlight-ln">26</span>            <span class="highlight-k">print</span> <span class="highlight-s1">'【错误】当前图片无法下载，</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">e</span>
-<span class="highlight-ln">27</span>            <span class="highlight-k">return</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">downloadImages</span><span class="highlight-p">()</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>
-<span class="highlight-ln">30</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">31</span>    <span class="highlight-n">downloadYanZhenMa</span> <span class="highlight-o">=</span> <span class="highlight-n">DownloadYanZhengMa</span><span class="highlight-p">(</span><span class="highlight-n">save_path</span><span class="highlight-o">=</span><span class="highlight-s1">'images/download_yanzhengma'</span><span class="highlight-p">,</span> <span class="highlight-n">download_max</span><span class="highlight-o">=</span><span class="highlight-mi">1000</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>    <span class="highlight-n">downloadYanZhenMa</span><span class="highlight-o">.</span><span class="highlight-n">downloadImages</span><span class="highlight-p">()</span>
+<pre><code class="language-python"># -*- coding:utf-8 -*-
+import re
+import uuid
+import requests
+import os
+
+class DownloadYanZhengMa:
+    def __init__(self,save_path,download_max):
+        self.download_sum = 0
+        self.save_path = save_path
+        self.download_max = download_max
+
+    def downloadImages(self):
+        try:
+            pic = requests.get('http://jwsys.ctbu.edu.cn/CheckCode.aspx?', timeout=500)
+            pic_name = self.save_path+'/' +str(uuid.uuid1()) + '.png'
+            with open(pic_name, 'wb') as f:
+                f.write(pic.content)
+            self.download_sum += 1
+            print '已下载完成'+str(self.download_sum)+'张验证码'
+            if self.download_sum &gt;= self.download_max:
+                return
+            else:
+                return self.downloadImages()
+        except  Exception, e:
+            print '【错误】当前图片无法下载，%s' % e
+            return self.downloadImages()
+
+
+if __name__ == '__main__':
+    downloadYanZhenMa = DownloadYanZhengMa(save_path='images/download_yanzhengma', download_max=1000)
+    downloadYanZhenMa.downloadImages()
 </code></pre>
-<h1 id="修改验证码的文件名">修改验证码的文件名</h1>
+<h1 id="toc_h1_2">修改验证码的文件名</h1>
 <hr>
 <p>从上一个部分可以看到下载到<code>images/download_yanzhengma</code>文件夹中, 待下载完成之后,需要做以下几件事:</p>
 <ol>
@@ -265,166 +241,166 @@ var _hmt = _hmt || [];
 <li>将命名好的验证码剪切到<code>images/src_yanzhengma/</code>文件夹中</li>
 </ol>
 <p>修改验证码的文件名是一个非常费时的工程,如果快速正确命名,那要发挥你们的想象力了,笔者同时也提供了数据集,这个不用担心. 正确命名是非常重要的, 在一个部分会讲到.</p>
-<h1 id="裁剪验证码">裁剪验证码</h1>
+<h1 id="toc_h1_3">裁剪验证码</h1>
 <hr>
 <p>在数据集介绍的那部分，我们编写一个<code>CorpYanZhengMa.py</code>程序，让它来帮我们去裁剪所有的验证码，但是要注意一下几点：</p>
 <ul>
 <li>验证码的命名一定要对于验证码的内容，这个非常重要</li>
 <li>裁剪的验证码会单独存放在自己对应的文件夹中</li>
 </ul>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">uuid</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">from</span> <span class="highlight-nn">PIL</span> <span class="highlight-kn">import</span> <span class="highlight-n">Image</span>
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span><span class="highlight-k">class</span> <span class="highlight-nc">YanZhenMaUtil</span><span class="highlight-p">():</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-k">pass</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">def</span> <span class="highlight-nf">splitimage</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span><span class="highlight-n">src</span><span class="highlight-p">,</span> <span class="highlight-n">dstpath</span><span class="highlight-p">):</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-n">src</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'/'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>        <span class="highlight-n">name1</span> <span class="highlight-o">=</span> <span class="highlight-n">name</span><span class="highlight-p">[</span><span class="highlight-n">name</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">13</span>        <span class="highlight-n">name2</span> <span class="highlight-o">=</span> <span class="highlight-n">name1</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">)[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">l1</span> <span class="highlight-o">=</span> <span class="highlight-nb">list</span><span class="highlight-p">(</span><span class="highlight-n">name2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">src</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>        <span class="highlight-n">box1</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">17</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">box2</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">17</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">29</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>        <span class="highlight-n">box3</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">29</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">41</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">box4</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">41</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">53</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">path1</span> <span class="highlight-o">=</span> <span class="highlight-n">dstpath</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">l1</span><span class="highlight-p">[</span><span class="highlight-mi">0</span><span class="highlight-p">]</span>
-<span class="highlight-ln">21</span>        <span class="highlight-n">path2</span> <span class="highlight-o">=</span> <span class="highlight-n">dstpath</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">l1</span><span class="highlight-p">[</span><span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">22</span>        <span class="highlight-n">path3</span> <span class="highlight-o">=</span> <span class="highlight-n">dstpath</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">l1</span><span class="highlight-p">[</span><span class="highlight-mi">2</span><span class="highlight-p">]</span>
-<span class="highlight-ln">23</span>        <span class="highlight-n">path4</span> <span class="highlight-o">=</span> <span class="highlight-n">dstpath</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">l1</span><span class="highlight-p">[</span><span class="highlight-mi">3</span><span class="highlight-p">]</span>
-<span class="highlight-ln">24</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">path1</span><span class="highlight-p">):</span>
-<span class="highlight-ln">25</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">path1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">26</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">path2</span><span class="highlight-p">):</span>
-<span class="highlight-ln">27</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">path2</span><span class="highlight-p">)</span>
-<span class="highlight-ln">28</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">path3</span><span class="highlight-p">):</span>
-<span class="highlight-ln">29</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">path3</span><span class="highlight-p">)</span>
-<span class="highlight-ln">30</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">path4</span><span class="highlight-p">):</span>
-<span class="highlight-ln">31</span>            <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">path4</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>        <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box1</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">path1</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">.png'</span> <span class="highlight-o">%</span> <span class="highlight-n">uuid</span><span class="highlight-o">.</span><span class="highlight-n">uuid1</span><span class="highlight-p">())</span>
-<span class="highlight-ln">33</span>        <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box2</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">path2</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">.png'</span> <span class="highlight-o">%</span> <span class="highlight-n">uuid</span><span class="highlight-o">.</span><span class="highlight-n">uuid1</span><span class="highlight-p">())</span>
-<span class="highlight-ln">34</span>        <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box3</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">path3</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">.png'</span> <span class="highlight-o">%</span> <span class="highlight-n">uuid</span><span class="highlight-o">.</span><span class="highlight-n">uuid1</span><span class="highlight-p">())</span>
-<span class="highlight-ln">35</span>        <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box4</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">path4</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/</span><span class="highlight-si">%s</span><span class="highlight-s1">.png'</span> <span class="highlight-o">%</span> <span class="highlight-n">uuid</span><span class="highlight-o">.</span><span class="highlight-n">uuid1</span><span class="highlight-p">())</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">38</span>    <span class="highlight-n">root_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">'images/src_yanzhengma/'</span>
-<span class="highlight-ln">39</span>    <span class="highlight-n">dstpath</span> <span class="highlight-o">=</span> <span class="highlight-s1">'images/dst_yanzhengma/'</span>
-<span class="highlight-ln">40</span>    <span class="highlight-n">imgs</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">root_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">41</span>    <span class="highlight-n">yanZhenMaUtil</span> <span class="highlight-o">=</span> <span class="highlight-n">YanZhenMaUtil</span><span class="highlight-p">()</span>
-<span class="highlight-ln">42</span>    <span class="highlight-k">for</span> <span class="highlight-n">src</span> <span class="highlight-ow">in</span> <span class="highlight-n">imgs</span><span class="highlight-p">:</span>
-<span class="highlight-ln">43</span>        <span class="highlight-n">src</span> <span class="highlight-o">=</span> <span class="highlight-n">root_path</span> <span class="highlight-o">+</span> <span class="highlight-n">src</span>
-<span class="highlight-ln">44</span>        <span class="highlight-n">yanZhenMaUtil</span><span class="highlight-o">.</span><span class="highlight-n">splitimage</span><span class="highlight-p">(</span><span class="highlight-n">src</span><span class="highlight-o">=</span><span class="highlight-n">src</span><span class="highlight-p">,</span> <span class="highlight-n">dstpath</span><span class="highlight-o">=</span><span class="highlight-n">dstpath</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+import os
+import uuid
+from PIL import Image
+
+class YanZhenMaUtil():
+    def __init__(self):
+        pass
+
+    def splitimage(self,src, dstpath):
+        name = src.split('/')
+        name1 = name[name.__len__() - 1]
+        name2 = name1.split('.')[0]
+        l1 = list(name2)
+        img = Image.open(src)
+        box1 = (5, 0, 17, 27)
+        box2 = (17, 0, 29, 27)
+        box3 = (29, 0, 41, 27)
+        box4 = (41, 0, 53, 27)
+        path1 = dstpath + '/%s' % l1[0]
+        path2 = dstpath + '/%s' % l1[1]
+        path3 = dstpath + '/%s' % l1[2]
+        path4 = dstpath + '/%s' % l1[3]
+        if not os.path.exists(path1):
+            os.makedirs(path1)
+        if not os.path.exists(path2):
+            os.makedirs(path2)
+        if not os.path.exists(path3):
+            os.makedirs(path3)
+        if not os.path.exists(path4):
+            os.makedirs(path4)
+        img.crop(box1).save(path1 + '/%s.png' % uuid.uuid1())
+        img.crop(box2).save(path2 + '/%s.png' % uuid.uuid1())
+        img.crop(box3).save(path3 + '/%s.png' % uuid.uuid1())
+        img.crop(box4).save(path4 + '/%s.png' % uuid.uuid1())
+
+if __name__ == '__main__':
+    root_path = 'images/src_yanzhengma/'
+    dstpath = 'images/dst_yanzhengma/'
+    imgs = os.listdir(root_path)
+    yanZhenMaUtil = YanZhenMaUtil()
+    for src in imgs:
+        src = root_path + src
+        yanZhenMaUtil.splitimage(src=src, dstpath=dstpath)
 </code></pre>
 <p>例如经过上面裁剪，会生成这些文件夹，裁剪的图片会放在这里<br>
 <img src="https://s1.ax1x.com/2020/03/31/Glnfx0.png" alt="这里写图片描述"><br>
 你会发现只有33个文件夹,你应该会好奇10+26不应该是36个类别吗.因为验证码去掉了容易混淆的9,o,z,所以只剩下了33个类别.</p>
-<h1 id="生成图像列表">生成图像列表</h1>
+<h1 id="toc_h1_4">生成图像列表</h1>
 <hr>
 <p>编写一个生成<code>CreateDataList.py</code>的程序，然后我们要把刚才的验证码生成一个图像列表，只有这个这里PaddlePaddle才能读取验证码数据，在<a href="http://blog.csdn.net/qq_33200967/article/details/79095265" target="_blank">自定义图像数据集的识别</a>这一章有介绍，如果不了解的话可以阅读该文章。<br>
 这里就用到了上一个部分裁剪后的数据集,通过传入<code>../images/dst_yanzhengma</code>这个路径,会把之前裁剪好的所有图像都生成它的<strong>相对路径</strong>,给之后的训练程序使用.</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">json</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span><span class="highlight-k">class</span> <span class="highlight-nc">CreateDataList</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 7</span>        <span class="highlight-k">pass</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">def</span> <span class="highlight-nf">createDataList</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">data_root_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">10</span>        <span class="highlight-c1"># # 把生产的数据列表都放在自己的总类别文件夹中</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">data_list_path</span> <span class="highlight-o">=</span> <span class="highlight-s1">''</span>
-<span class="highlight-ln">12</span>        <span class="highlight-c1"># 所有类别的信息</span>
-<span class="highlight-ln">13</span>        <span class="highlight-n">class_detail</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln">14</span>        <span class="highlight-c1"># 获取所有类别</span>
-<span class="highlight-ln">15</span>        <span class="highlight-n">class_dirs</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">data_root_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>        <span class="highlight-c1"># 类别标签</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">class_label</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">18</span>        <span class="highlight-c1"># 获取总类别的名称</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">father_paths</span> <span class="highlight-o">=</span> <span class="highlight-n">data_root_path</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'/'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>        <span class="highlight-k">while</span> <span class="highlight-bp">True</span><span class="highlight-p">:</span>
-<span class="highlight-ln">21</span>            <span class="highlight-k">if</span> <span class="highlight-n">father_paths</span><span class="highlight-p">[</span><span class="highlight-n">father_paths</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span> <span class="highlight-o">==</span> <span class="highlight-s1">''</span><span class="highlight-p">:</span>
-<span class="highlight-ln">22</span>                <span class="highlight-k">del</span> <span class="highlight-n">father_paths</span><span class="highlight-p">[</span><span class="highlight-n">father_paths</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">23</span>            <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">24</span>                <span class="highlight-k">break</span>
-<span class="highlight-ln">25</span>        <span class="highlight-n">father_path</span> <span class="highlight-o">=</span> <span class="highlight-n">father_paths</span><span class="highlight-p">[</span><span class="highlight-n">father_paths</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span> <span class="highlight-o">-</span> <span class="highlight-mi">1</span><span class="highlight-p">]</span>
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>        <span class="highlight-n">all_class_images</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">28</span>        <span class="highlight-c1"># 读取每个类别</span>
-<span class="highlight-ln">29</span>        <span class="highlight-k">for</span> <span class="highlight-n">class_dir</span> <span class="highlight-ow">in</span> <span class="highlight-n">class_dirs</span><span class="highlight-p">:</span>
-<span class="highlight-ln">30</span>            <span class="highlight-c1"># 每个类别的信息</span>
-<span class="highlight-ln">31</span>            <span class="highlight-n">class_detail_list</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
-<span class="highlight-ln">32</span>            <span class="highlight-n">test_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">33</span>            <span class="highlight-n">trainer_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">34</span>            <span class="highlight-c1"># 把生产的数据列表都放在自己的总类别文件夹中</span>
-<span class="highlight-ln">35</span>            <span class="highlight-n">data_list_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"../data/</span><span class="highlight-si">%s</span><span class="highlight-s2">/"</span> <span class="highlight-o">%</span> <span class="highlight-n">father_path</span>
-<span class="highlight-ln">36</span>            <span class="highlight-c1"># 统计每个类别有多少张图片</span>
-<span class="highlight-ln">37</span>            <span class="highlight-n">class_sum</span> <span class="highlight-o">=</span> <span class="highlight-mi">0</span>
-<span class="highlight-ln">38</span>            <span class="highlight-c1"># 获取类别路径</span>
-<span class="highlight-ln">39</span>            <span class="highlight-n">path</span> <span class="highlight-o">=</span> <span class="highlight-n">data_root_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"/"</span> <span class="highlight-o">+</span> <span class="highlight-n">class_dir</span>
-<span class="highlight-ln">40</span>            <span class="highlight-c1"># 获取所有图片</span>
-<span class="highlight-ln">41</span>            <span class="highlight-n">img_paths</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">listdir</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">42</span>            <span class="highlight-k">for</span> <span class="highlight-n">img_path</span> <span class="highlight-ow">in</span> <span class="highlight-n">img_paths</span><span class="highlight-p">:</span>
-<span class="highlight-ln">43</span>                <span class="highlight-c1"># 每张图片的路径</span>
-<span class="highlight-ln">44</span>                <span class="highlight-n">name_path</span> <span class="highlight-o">=</span> <span class="highlight-n">path</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/'</span> <span class="highlight-o">+</span> <span class="highlight-n">img_path</span>
-<span class="highlight-ln">45</span>                <span class="highlight-c1"># 如果不存在这个文件夹,就创建</span>
-<span class="highlight-ln">46</span>                <span class="highlight-n">isexist</span> <span class="highlight-o">=</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">47</span>                <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">isexist</span><span class="highlight-p">:</span>
-<span class="highlight-ln">48</span>                    <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">49</span>                <span class="highlight-c1"># 每10张图片取一个做测试数据</span>
-<span class="highlight-ln">50</span>                <span class="highlight-k">if</span> <span class="highlight-n">class_sum</span> <span class="highlight-o">%</span> <span class="highlight-mi">10</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">51</span>                    <span class="highlight-n">test_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">52</span>                    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"test.list"</span><span class="highlight-p">,</span> <span class="highlight-s1">'a'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">53</span>                        <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">name_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\t</span><span class="highlight-si">%d</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">class_label</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\n</span><span class="highlight-s2">"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">54</span>                <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">55</span>                    <span class="highlight-n">trainer_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">56</span>                    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"trainer.list"</span><span class="highlight-p">,</span> <span class="highlight-s1">'a'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">57</span>                        <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">name_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\t</span><span class="highlight-si">%d</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">class_label</span> <span class="highlight-o">+</span> <span class="highlight-s2">"</span><span class="highlight-se">\n</span><span class="highlight-s2">"</span><span class="highlight-p">)</span>
-<span class="highlight-ln">58</span>                <span class="highlight-n">class_sum</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">59</span>                <span class="highlight-n">all_class_images</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">60</span>            <span class="highlight-n">class_label</span> <span class="highlight-o">+=</span> <span class="highlight-mi">1</span>
-<span class="highlight-ln">61</span>            <span class="highlight-c1"># 说明的json文件的class_detail数据</span>
-<span class="highlight-ln">62</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_name'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">class_dir</span>
-<span class="highlight-ln">63</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_label'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">class_label</span>
-<span class="highlight-ln">64</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_test_images'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">test_sum</span>
-<span class="highlight-ln">65</span>            <span class="highlight-n">class_detail_list</span><span class="highlight-p">[</span><span class="highlight-s1">'class_trainer_images'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">trainer_sum</span>
-<span class="highlight-ln">66</span>            <span class="highlight-n">class_detail</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">(</span><span class="highlight-n">class_detail_list</span><span class="highlight-p">)</span>
-<span class="highlight-ln">67</span>        <span class="highlight-c1"># 获取类别数量</span>
-<span class="highlight-ln">68</span>        <span class="highlight-n">all_class_sum</span> <span class="highlight-o">=</span> <span class="highlight-n">class_dirs</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()</span>
-<span class="highlight-ln">69</span>        <span class="highlight-c1"># 说明的json文件信息</span>
-<span class="highlight-ln">70</span>        <span class="highlight-n">readjson</span> <span class="highlight-o">=</span> <span class="highlight-p">{}</span>
-<span class="highlight-ln">71</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'all_class_name'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">father_path</span>
-<span class="highlight-ln">72</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'all_class_sum'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">all_class_sum</span>
-<span class="highlight-ln">73</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'all_class_images'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">all_class_images</span>
-<span class="highlight-ln">74</span>        <span class="highlight-n">readjson</span><span class="highlight-p">[</span><span class="highlight-s1">'class_detail'</span><span class="highlight-p">]</span> <span class="highlight-o">=</span> <span class="highlight-n">class_detail</span>
-<span class="highlight-ln">75</span>        <span class="highlight-n">jsons</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">dumps</span><span class="highlight-p">(</span><span class="highlight-n">readjson</span><span class="highlight-p">,</span> <span class="highlight-n">sort_keys</span><span class="highlight-o">=</span><span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">indent</span><span class="highlight-o">=</span><span class="highlight-mi">4</span><span class="highlight-p">,</span> <span class="highlight-n">separators</span><span class="highlight-o">=</span><span class="highlight-p">(</span><span class="highlight-s1">','</span><span class="highlight-p">,</span> <span class="highlight-s1">': '</span><span class="highlight-p">))</span>
-<span class="highlight-ln">76</span>        <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">data_list_path</span> <span class="highlight-o">+</span> <span class="highlight-s2">"readme.json"</span><span class="highlight-p">,</span><span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">77</span>            <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-n">jsons</span><span class="highlight-p">)</span>
-<span class="highlight-ln">78</span>
-<span class="highlight-ln">79</span>
-<span class="highlight-ln">80</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln">81</span>    <span class="highlight-n">createDataList</span> <span class="highlight-o">=</span> <span class="highlight-n">CreateDataList</span><span class="highlight-p">()</span>
-<span class="highlight-ln">82</span>    <span class="highlight-n">createDataList</span><span class="highlight-o">.</span><span class="highlight-n">createDataList</span><span class="highlight-p">(</span><span class="highlight-s1">'../images/dst_yanzhengma'</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+import os
+import json
+
+class CreateDataList:
+    def __init__(self):
+        pass
+
+    def createDataList(self, data_root_path):
+        # # 把生产的数据列表都放在自己的总类别文件夹中
+        data_list_path = ''
+        # 所有类别的信息
+        class_detail = []
+        # 获取所有类别
+        class_dirs = os.listdir(data_root_path)
+        # 类别标签
+        class_label = 0
+        # 获取总类别的名称
+        father_paths = data_root_path.split('/')
+        while True:
+            if father_paths[father_paths.__len__() - 1] == '':
+                del father_paths[father_paths.__len__() - 1]
+            else:
+                break
+        father_path = father_paths[father_paths.__len__() - 1]
+
+        all_class_images = 0
+        # 读取每个类别
+        for class_dir in class_dirs:
+            # 每个类别的信息
+            class_detail_list = {}
+            test_sum = 0
+            trainer_sum = 0
+            # 把生产的数据列表都放在自己的总类别文件夹中
+            data_list_path = "../data/%s/" % father_path
+            # 统计每个类别有多少张图片
+            class_sum = 0
+            # 获取类别路径
+            path = data_root_path + "/" + class_dir
+            # 获取所有图片
+            img_paths = os.listdir(path)
+            for img_path in img_paths:
+                # 每张图片的路径
+                name_path = path + '/' + img_path
+                # 如果不存在这个文件夹,就创建
+                isexist = os.path.exists(data_list_path)
+                if not isexist:
+                    os.makedirs(data_list_path)
+                # 每10张图片取一个做测试数据
+                if class_sum % 10 == 0:
+                    test_sum += 1
+                    with open(data_list_path + "test.list", 'a') as f:
+                        f.write(name_path + "\t%d" % class_label + "\n")
+                else:
+                    trainer_sum += 1
+                    with open(data_list_path + "trainer.list", 'a') as f:
+                        f.write(name_path + "\t%d" % class_label + "\n")
+                class_sum += 1
+                all_class_images += 1
+            class_label += 1
+            # 说明的json文件的class_detail数据
+            class_detail_list['class_name'] = class_dir
+            class_detail_list['class_label'] = class_label
+            class_detail_list['class_test_images'] = test_sum
+            class_detail_list['class_trainer_images'] = trainer_sum
+            class_detail.append(class_detail_list)
+        # 获取类别数量
+        all_class_sum = class_dirs.__len__()
+        # 说明的json文件信息
+        readjson = {}
+        readjson['all_class_name'] = father_path
+        readjson['all_class_sum'] = all_class_sum
+        readjson['all_class_images'] = all_class_images
+        readjson['class_detail'] = class_detail
+        jsons = json.dumps(readjson, sort_keys=True, indent=4, separators=(',', ': '))
+        with open(data_list_path + "readme.json",'w') as f:
+            f.write(jsons)
+
+
+if __name__ == '__main__':
+    createDataList = CreateDataList()
+    createDataList.createDataList('../images/dst_yanzhengma')
 </code></pre>
 <p>通过上面的程序，一共会生成<code>trainer.list</code>，<code>test.list</code>，<code>readme.json</code>，其中<code>trainer.list</code>，<code>test.list</code>分布是用来训练和测试的，<code>readme.json</code>这个在这里就非常重要了。它会通过标签寻找的对用的字符。<code>readme.json</code>的格式如下：</p>
-<pre><code class="language-json highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-p">{</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-nt">"all_class_images"</span><span class="highlight-p">:</span> <span class="highlight-mi">3300</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-nt">"all_class_name"</span><span class="highlight-p">:</span> <span class="highlight-s2">"vegetables"</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-nt">"all_class_sum"</span><span class="highlight-p">:</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-nt">"class_detail"</span><span class="highlight-p">:</span> <span class="highlight-p">[</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-p">{</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-nt">"class_label"</span><span class="highlight-p">:</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-nt">"class_name"</span><span class="highlight-p">:</span> <span class="highlight-s2">"cuke"</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-nt">"class_test_images"</span><span class="highlight-p">:</span> <span class="highlight-mi">110</span><span class="highlight-p">,</span>
-<span class="highlight-ln">10</span>            <span class="highlight-nt">"class_trainer_images"</span><span class="highlight-p">:</span> <span class="highlight-mi">990</span>
-<span class="highlight-ln">11</span>        <span class="highlight-p">}</span>
-<span class="highlight-ln">12</span><span class="highlight-err">}</span>
+<pre><code class="language-json">{
+    "all_class_images": 3300,
+    "all_class_name": "vegetables",
+    "all_class_sum": 3,
+    "class_detail": [
+        {
+            "class_label": 1,
+            "class_name": "cuke",
+            "class_test_images": 110,
+            "class_trainer_images": 990
+        }
+}
 </code></pre>
-<h1 id="读取数据">读取数据</h1>
+<h1 id="toc_h1_5">读取数据</h1>
 <hr>
 <p>因为是使用自定义数据集，所以同样使用到<code>reader.py</code><a href="https://github.com/PaddlePaddle/models/blob/develop/image_classification/reader.py" target="_blank">这程序</a>，但是这次又点不一样，这次使用的单通道的灰度图，所以我们的参数要变一变，把<code>is_color</code>的参数变成<code>False</code>，因为默认的是<code>True</code>.从<a href="http://paddlepaddle.org/docs/develop/documentation/zh/api/v2/data/image.html#paddle.v2.image.simple_transform" target="_blank">官方文档</a>可以了解到这些</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">v2</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">simple_transform</span><span class="highlight-err">（</span><span class="highlight-n">im</span><span class="highlight-err">，</span><span class="highlight-n">resize_size</span><span class="highlight-err">，</span><span class="highlight-n">crop_size</span><span class="highlight-err">，</span><span class="highlight-n">is_train</span><span class="highlight-err">，</span><span class="highlight-n">is_color</span> <span class="highlight-o">=</span> <span class="highlight-bp">True</span><span class="highlight-err">，</span><span class="highlight-n">mean</span> <span class="highlight-o">=</span> <span class="highlight-bp">None</span> <span class="highlight-err">）</span>
+<pre><code class="language-python">paddle.v2.image.simple_transform（im，resize_size，crop_size，is_train，is_color = True，mean = None ）
 </code></pre>
 <p><strong>参数：</strong></p>
 <ul>
@@ -435,412 +411,412 @@ var _hmt = _hmt || [];
 <li>is_color（bool） - 图像是否是彩色的。</li>
 <li>mean（numpy array | list） - 平均值，可以是每个通道的元素平均值或平均值。</li>
 </ul>
-<h2 id="MyReader代码">MyReader代码</h2>
+<h2 id="toc_h2_6">MyReader代码</h2>
 <p>为了做一下区分,我把命名改成了<code>MyReade.py</code>，在旧版本的该程序是有bug的，如果读者想使用这个程序，想要更新本地PaddlePaddle的版本，旧版本的bug是没有对灰度的图像处理，所以在做这个灰度的验证码时会报错。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding=utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">from</span> <span class="highlight-nn">multiprocessing</span> <span class="highlight-kn">import</span> <span class="highlight-n">cpu_count</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span><span class="highlight-k">class</span> <span class="highlight-nc">MyReader</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">imageSize</span> <span class="highlight-o">=</span> <span class="highlight-n">imageSize</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">def</span> <span class="highlight-nf">train_mapper</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">sample</span><span class="highlight-p">):</span>
-<span class="highlight-ln">11</span>        <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">sample</span>
-<span class="highlight-ln">12</span>        <span class="highlight-c1"># 我这里使用的是本地的image,如果你的paddlepaddle是最新的,也可以使用padd.v2.image</span>
-<span class="highlight-ln">13</span>        <span class="highlight-c1"># 因为是灰度图,所以is_color=False</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">simple_transform</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-mi">38</span><span class="highlight-p">,</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-bp">True</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>        <span class="highlight-k">return</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">),</span> <span class="highlight-n">label</span>
-<span class="highlight-ln">17</span>
-<span class="highlight-ln">18</span>    <span class="highlight-k">def</span> <span class="highlight-nf">test_mapper</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">sample</span><span class="highlight-p">):</span>
-<span class="highlight-ln">19</span>        <span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">sample</span>
-<span class="highlight-ln">20</span>        <span class="highlight-c1"># 我这里使用的是本地的image,如果你的paddlepaddle是最新的,也可以使用padd.v2.image</span>
-<span class="highlight-ln">21</span>        <span class="highlight-c1"># 因为是灰度图,所以is_color=False</span>
-<span class="highlight-ln">22</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_image</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>        <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">simple_transform</span><span class="highlight-p">(</span><span class="highlight-n">img</span><span class="highlight-p">,</span> <span class="highlight-mi">38</span><span class="highlight-p">,</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">24</span>        <span class="highlight-k">return</span> <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">),</span> <span class="highlight-n">label</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>    <span class="highlight-k">def</span> <span class="highlight-nf">train_reader</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">train_list</span><span class="highlight-p">,</span> <span class="highlight-n">buffered_size</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">):</span>
-<span class="highlight-ln">27</span>        <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
-<span class="highlight-ln">28</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">train_list</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">29</span>                <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span> <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">f</span><span class="highlight-p">]</span>
-<span class="highlight-ln">30</span>                <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
-<span class="highlight-ln">31</span>                    <span class="highlight-n">img_path</span><span class="highlight-p">,</span> <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">32</span>                    <span class="highlight-k">yield</span> <span class="highlight-n">img_path</span><span class="highlight-p">,</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">lab</span><span class="highlight-p">)</span>
-<span class="highlight-ln">33</span>
-<span class="highlight-ln">34</span>        <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">xmap_readers</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">train_mapper</span><span class="highlight-p">,</span> <span class="highlight-n">reader</span><span class="highlight-p">,</span>
-<span class="highlight-ln">35</span>                                          <span class="highlight-n">cpu_count</span><span class="highlight-p">(),</span> <span class="highlight-n">buffered_size</span><span class="highlight-p">)</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>    <span class="highlight-k">def</span> <span class="highlight-nf">test_reader</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">test_list</span><span class="highlight-p">,</span> <span class="highlight-n">buffered_size</span><span class="highlight-o">=</span><span class="highlight-mi">1024</span><span class="highlight-p">):</span>
-<span class="highlight-ln">38</span>        <span class="highlight-k">def</span> <span class="highlight-nf">reader</span><span class="highlight-p">():</span>
-<span class="highlight-ln">39</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">test_list</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">40</span>                <span class="highlight-n">lines</span> <span class="highlight-o">=</span> <span class="highlight-p">[</span><span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span> <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">f</span><span class="highlight-p">]</span>
-<span class="highlight-ln">41</span>                <span class="highlight-k">for</span> <span class="highlight-n">line</span> <span class="highlight-ow">in</span> <span class="highlight-n">lines</span><span class="highlight-p">:</span>
-<span class="highlight-ln">42</span>                    <span class="highlight-n">img_path</span><span class="highlight-p">,</span> <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">line</span><span class="highlight-o">.</span><span class="highlight-n">strip</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">split</span><span class="highlight-p">(</span><span class="highlight-s1">'</span><span class="highlight-se">\t</span><span class="highlight-s1">'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">43</span>                    <span class="highlight-k">yield</span> <span class="highlight-n">img_path</span><span class="highlight-p">,</span> <span class="highlight-nb">int</span><span class="highlight-p">(</span><span class="highlight-n">lab</span><span class="highlight-p">)</span>
-<span class="highlight-ln">44</span>
-<span class="highlight-ln">45</span>        <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">xmap_readers</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">test_mapper</span><span class="highlight-p">,</span> <span class="highlight-n">reader</span><span class="highlight-p">,</span>
-<span class="highlight-ln">46</span>                                          <span class="highlight-n">cpu_count</span><span class="highlight-p">(),</span> <span class="highlight-n">buffered_size</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># coding=utf-8
+from multiprocessing import cpu_count
+import paddle.v2 as paddle
+
+
+class MyReader:
+    def __init__(self, imageSize):
+        self.imageSize = imageSize
+
+    def train_mapper(self, sample):
+        img, label = sample
+        # 我这里使用的是本地的image,如果你的paddlepaddle是最新的,也可以使用padd.v2.image
+        # 因为是灰度图,所以is_color=False
+        img = paddle.image.load_image(img, is_color=False)
+        img = paddle.image.simple_transform(img, 38, self.imageSize, True, is_color=False)
+        return img.flatten().astype('float32'), label
+
+    def test_mapper(self, sample):
+        img, label = sample
+        # 我这里使用的是本地的image,如果你的paddlepaddle是最新的,也可以使用padd.v2.image
+        # 因为是灰度图,所以is_color=False
+        img = paddle.image.load_image(img, is_color=False)
+        img = paddle.image.simple_transform(img, 38, self.imageSize, False, is_color=False)
+        return img.flatten().astype('float32'), label
+
+    def train_reader(self, train_list, buffered_size=1024):
+        def reader():
+            with open(train_list, 'r') as f:
+                lines = [line.strip() for line in f]
+                for line in lines:
+                    img_path, lab = line.strip().split('\t')
+                    yield img_path, int(lab)
+
+        return paddle.reader.xmap_readers(self.train_mapper, reader,
+                                          cpu_count(), buffered_size)
+
+    def test_reader(self, test_list, buffered_size=1024):
+        def reader():
+            with open(test_list, 'r') as f:
+                lines = [line.strip() for line in f]
+                for line in lines:
+                    img_path, lab = line.strip().split('\t')
+                    yield img_path, int(lab)
+
+        return paddle.reader.xmap_readers(self.test_mapper, reader,
+                                          cpu_count(), buffered_size)
 </code></pre>
-<h1 id="使用PaddlePaddle开始训练">使用PaddlePaddle开始训练</h1>
+<h1 id="toc_h1_7">使用PaddlePaddle开始训练</h1>
 <hr>
 <p>同样在开始训练的前，要定义一个神经网络<code>vgg.py</code>，我们这次使用的还是前面两章使用到的VGG16的神经网络模型,在这里我同样是把<code>BN</code>层关闭了,至于为什么,可以查看<a href="http://blog.csdn.net/qq_33200967/article/details/79095265#%E5%AE%9A%E4%B9%89%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B" target="_blank">之前的文章</a>：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding:utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span>
-<span class="highlight-ln"> 5</span><span class="highlight-c1"># ***********************定义VGG卷积神经网络模型***************************************</span>
-<span class="highlight-ln"> 6</span><span class="highlight-k">def</span> <span class="highlight-nf">vgg_bn_drop</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"image"</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 8</span>                              <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">dense_vector</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-k">def</span> <span class="highlight-nf">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span> <span class="highlight-n">num_filter</span><span class="highlight-p">,</span> <span class="highlight-n">groups</span><span class="highlight-p">,</span> <span class="highlight-n">dropouts</span><span class="highlight-p">,</span> <span class="highlight-n">num_channels</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">):</span>
-<span class="highlight-ln">11</span>        <span class="highlight-k">return</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">networks</span><span class="highlight-o">.</span><span class="highlight-n">img_conv_group</span><span class="highlight-p">(</span>
-<span class="highlight-ln">12</span>            <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">ipt</span><span class="highlight-p">,</span>
-<span class="highlight-ln">13</span>            <span class="highlight-n">num_channels</span><span class="highlight-o">=</span><span class="highlight-n">num_channels</span><span class="highlight-p">,</span>
-<span class="highlight-ln">14</span>            <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">15</span>            <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">16</span>            <span class="highlight-n">conv_num_filter</span><span class="highlight-o">=</span><span class="highlight-p">[</span><span class="highlight-n">num_filter</span><span class="highlight-p">]</span> <span class="highlight-o">*</span> <span class="highlight-n">groups</span><span class="highlight-p">,</span>
-<span class="highlight-ln">17</span>            <span class="highlight-n">conv_filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">3</span><span class="highlight-p">,</span>
-<span class="highlight-ln">18</span>            <span class="highlight-n">conv_act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">19</span>            <span class="highlight-n">conv_with_batchnorm</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">,</span>
-<span class="highlight-ln">20</span>            <span class="highlight-n">conv_batchnorm_drop_rate</span><span class="highlight-o">=</span><span class="highlight-n">dropouts</span><span class="highlight-p">,</span>
-<span class="highlight-ln">21</span>            <span class="highlight-n">pool_type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">pooling</span><span class="highlight-o">.</span><span class="highlight-n">Max</span><span class="highlight-p">())</span>
-<span class="highlight-ln">22</span>
-<span class="highlight-ln">23</span>    <span class="highlight-c1"># 最后一个参数是图像的通道数</span>
-<span class="highlight-ln">24</span>    <span class="highlight-n">conv1</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-mi">64</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mf">0.3</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-mi">1</span><span class="highlight-p">)</span>
-<span class="highlight-ln">25</span>    <span class="highlight-n">conv2</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">conv1</span><span class="highlight-p">,</span> <span class="highlight-mi">128</span><span class="highlight-p">,</span> <span class="highlight-mi">2</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mf">0.4</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">conv3</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">conv2</span><span class="highlight-p">,</span> <span class="highlight-mi">256</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mf">0.4</span><span class="highlight-p">,</span> <span class="highlight-mf">0.4</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">27</span>    <span class="highlight-n">conv4</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">conv3</span><span class="highlight-p">,</span> <span class="highlight-mi">512</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mf">0.4</span><span class="highlight-p">,</span> <span class="highlight-mf">0.4</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">28</span>    <span class="highlight-n">conv5</span> <span class="highlight-o">=</span> <span class="highlight-n">conv_block</span><span class="highlight-p">(</span><span class="highlight-n">conv4</span><span class="highlight-p">,</span> <span class="highlight-mi">512</span><span class="highlight-p">,</span> <span class="highlight-mi">3</span><span class="highlight-p">,</span> <span class="highlight-p">[</span><span class="highlight-mf">0.4</span><span class="highlight-p">,</span> <span class="highlight-mf">0.4</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">])</span>
-<span class="highlight-ln">29</span>
-<span class="highlight-ln">30</span>    <span class="highlight-n">drop</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">dropout</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv5</span><span class="highlight-p">,</span> <span class="highlight-n">dropout_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.5</span><span class="highlight-p">)</span>
-<span class="highlight-ln">31</span>    <span class="highlight-n">fc1</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">drop</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Linear</span><span class="highlight-p">())</span>
-<span class="highlight-ln">32</span>    <span class="highlight-n">bn</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">batch_norm</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">33</span>                                 <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">(),</span>
-<span class="highlight-ln">34</span>                                 <span class="highlight-n">layer_attr</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">attr</span><span class="highlight-o">.</span><span class="highlight-n">Extra</span><span class="highlight-p">(</span><span class="highlight-n">drop_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.5</span><span class="highlight-p">))</span>
-<span class="highlight-ln">35</span>    <span class="highlight-n">fc2</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">bn</span><span class="highlight-p">,</span> <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-mi">512</span><span class="highlight-p">,</span> <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Linear</span><span class="highlight-p">())</span>
-<span class="highlight-ln">36</span>    <span class="highlight-c1"># 通过Softmax获得分类器</span>
-<span class="highlight-ln">37</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">fc2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">38</span>                          <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">,</span>
-<span class="highlight-ln">39</span>                          <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Softmax</span><span class="highlight-p">())</span>
-<span class="highlight-ln">40</span>    <span class="highlight-k">return</span> <span class="highlight-n">out</span>
+<pre><code class="language-python"># coding:utf-8
+import paddle.v2 as paddle
+
+
+# ***********************定义VGG卷积神经网络模型***************************************
+def vgg_bn_drop(datadim, type_size):
+    image = paddle.layer.data(name="image",
+                              type=paddle.data_type.dense_vector(datadim))
+
+    def conv_block(ipt, num_filter, groups, dropouts, num_channels=None):
+        return paddle.networks.img_conv_group(
+            input=ipt,
+            num_channels=num_channels,
+            pool_size=2,
+            pool_stride=2,
+            conv_num_filter=[num_filter] * groups,
+            conv_filter_size=3,
+            conv_act=paddle.activation.Relu(),
+            conv_with_batchnorm=False,
+            conv_batchnorm_drop_rate=dropouts,
+            pool_type=paddle.pooling.Max())
+
+    # 最后一个参数是图像的通道数
+    conv1 = conv_block(image, 64, 2, [0.3, 0], 1)
+    conv2 = conv_block(conv1, 128, 2, [0.4, 0])
+    conv3 = conv_block(conv2, 256, 3, [0.4, 0.4, 0])
+    conv4 = conv_block(conv3, 512, 3, [0.4, 0.4, 0])
+    conv5 = conv_block(conv4, 512, 3, [0.4, 0.4, 0])
+
+    drop = paddle.layer.dropout(input=conv5, dropout_rate=0.5)
+    fc1 = paddle.layer.fc(input=drop, size=512, act=paddle.activation.Linear())
+    bn = paddle.layer.batch_norm(input=fc1,
+                                 act=paddle.activation.Relu(),
+                                 layer_attr=paddle.attr.Extra(drop_rate=0.5))
+    fc2 = paddle.layer.fc(input=bn, size=512, act=paddle.activation.Linear())
+    # 通过Softmax获得分类器
+    out = paddle.layer.fc(input=fc2,
+                          size=type_size,
+                          act=paddle.activation.Softmax())
+    return out
 </code></pre>
 <p>然后创建一个<code>train.py</code>编写以下代码：</p>
-<h2 id="导入依赖包">导入依赖包</h2>
+<h2 id="toc_h2_8">导入依赖包</h2>
 <p>首先要先导入依赖包,其中有PaddlePaddle的V2包和上面定义的Myreader.py读取数据的程序</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1"># coding:utf-8</span>
-<span class="highlight-ln">2</span><span class="highlight-kn">import</span> <span class="highlight-nn">sys</span>
-<span class="highlight-ln">3</span><span class="highlight-kn">import</span> <span class="highlight-nn">os</span>
-<span class="highlight-ln">4</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln">5</span><span class="highlight-kn">from</span> <span class="highlight-nn">MyReader</span> <span class="highlight-kn">import</span> <span class="highlight-n">MyReader</span>
-<span class="highlight-ln">6</span><span class="highlight-kn">from</span> <span class="highlight-nn">vgg</span> <span class="highlight-kn">import</span> <span class="highlight-n">vgg_bn_drop</span>
-<span class="highlight-ln">7</span><span class="highlight-kn">from</span> <span class="highlight-nn">cnn</span> <span class="highlight-kn">import</span> <span class="highlight-n">convolutional_neural_network</span>
+<pre><code class="language-python"># coding:utf-8
+import sys
+import os
+import paddle.v2 as paddle
+from MyReader import MyReader
+from vgg import vgg_bn_drop
+from cnn import convolutional_neural_network
 </code></pre>
-<h2 id="初始化Paddle">初始化Paddle</h2>
+<h2 id="toc_h2_9">初始化Paddle</h2>
 <p>然后我们创建一个类,再在类中创建一个初始化函数,在初始化函数中来初始化我们的PaddlePaddle</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">class</span> <span class="highlight-nc">PaddleUtil</span><span class="highlight-p">:</span>
-<span class="highlight-ln">2</span>    <span class="highlight-k">def</span> <span class="highlight-fm">__init__</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">):</span>
-<span class="highlight-ln">3</span>        <span class="highlight-c1"># 初始化paddpaddle,只是用CPU,把GPU关闭</span>
-<span class="highlight-ln">4</span>        <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">init</span><span class="highlight-p">(</span><span class="highlight-n">use_gpu</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_count</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">)</span>
+<pre><code class="language-python">class PaddleUtil:
+    def __init__(self):
+        # 初始化paddpaddle,只是用CPU,把GPU关闭
+        paddle.init(use_gpu=False, trainer_count=2)
 </code></pre>
 <p>程序默认给出的是VGG16网络神经模型,还记得我们在<a href="http://blog.csdn.net/qq_33200967/article/details/79095172" target="_blank">手写数字识别</a>使用的卷积神经网络LeNet-5吧,这里笔者也提供LeNet-5的神经网络模型<code>cnn.py</code>：</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># coding:utf-8</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">paddle.v2</span> <span class="highlight-kn">as</span> <span class="highlight-nn">paddle</span>
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span><span class="highlight-c1"># 卷积神经网络LeNet-5,获取分类器</span>
-<span class="highlight-ln"> 5</span><span class="highlight-k">def</span> <span class="highlight-nf">convolutional_neural_network</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">image</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"image"</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 7</span>                              <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">dense_vector</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-c1"># 第一个卷积--池化层</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">conv_pool_1</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">networks</span><span class="highlight-o">.</span><span class="highlight-n">simple_img_conv_pool</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">image</span><span class="highlight-p">,</span>
-<span class="highlight-ln">11</span>                                                       <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">5</span><span class="highlight-p">,</span>
-<span class="highlight-ln">12</span>                                                       <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-mi">20</span><span class="highlight-p">,</span>
-<span class="highlight-ln">13</span>                                                       <span class="highlight-n">num_channel</span><span class="highlight-o">=</span><span class="highlight-mi">1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">14</span>                                                       <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">15</span>                                                       <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">16</span>                                                       <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">())</span>
-<span class="highlight-ln">17</span>    <span class="highlight-c1"># 第二个卷积--池化层</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">conv_pool_2</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">networks</span><span class="highlight-o">.</span><span class="highlight-n">simple_img_conv_pool</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv_pool_1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">19</span>                                                       <span class="highlight-n">filter_size</span><span class="highlight-o">=</span><span class="highlight-mi">5</span><span class="highlight-p">,</span>
-<span class="highlight-ln">20</span>                                                       <span class="highlight-n">num_filters</span><span class="highlight-o">=</span><span class="highlight-mi">50</span><span class="highlight-p">,</span>
-<span class="highlight-ln">21</span>                                                       <span class="highlight-n">num_channel</span><span class="highlight-o">=</span><span class="highlight-mi">20</span><span class="highlight-p">,</span>
-<span class="highlight-ln">22</span>                                                       <span class="highlight-n">pool_size</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">23</span>                                                       <span class="highlight-n">pool_stride</span><span class="highlight-o">=</span><span class="highlight-mi">2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">24</span>                                                       <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Relu</span><span class="highlight-p">())</span>
-<span class="highlight-ln">25</span>    <span class="highlight-c1"># 以softmax为激活函数的全连接输出层</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">fc</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">conv_pool_2</span><span class="highlight-p">,</span>
-<span class="highlight-ln">27</span>                          <span class="highlight-n">size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">,</span>
-<span class="highlight-ln">28</span>                          <span class="highlight-n">act</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">activation</span><span class="highlight-o">.</span><span class="highlight-n">Softmax</span><span class="highlight-p">())</span>
-<span class="highlight-ln">29</span>    <span class="highlight-k">return</span> <span class="highlight-n">out</span>
+<pre><code class="language-python"># coding:utf-8
+import paddle.v2 as paddle
+
+# 卷积神经网络LeNet-5,获取分类器
+def convolutional_neural_network(datadim, type_size):
+    image = paddle.layer.data(name="image",
+                              type=paddle.data_type.dense_vector(datadim))
+
+    # 第一个卷积--池化层
+    conv_pool_1 = paddle.networks.simple_img_conv_pool(input=image,
+                                                       filter_size=5,
+                                                       num_filters=20,
+                                                       num_channel=1,
+                                                       pool_size=2,
+                                                       pool_stride=2,
+                                                       act=paddle.activation.Relu())
+    # 第二个卷积--池化层
+    conv_pool_2 = paddle.networks.simple_img_conv_pool(input=conv_pool_1,
+                                                       filter_size=5,
+                                                       num_filters=50,
+                                                       num_channel=20,
+                                                       pool_size=2,
+                                                       pool_stride=2,
+                                                       act=paddle.activation.Relu())
+    # 以softmax为激活函数的全连接输出层
+    out = paddle.layer.fc(input=conv_pool_2,
+                          size=type_size,
+                          act=paddle.activation.Softmax())
+    return out
 </code></pre>
 <p>如果要使用LeNet-5，只要把</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">vgg_bn_drop</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">)</span>
+<pre><code class="language-python">out = self.vgg_bn_drop(input=image, type_size=type_size)
 </code></pre>
 <p>改成</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">convolutional_neural_network</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">image</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">)</span>
+<pre><code class="language-python">out = self.convolutional_neural_network(input=image, type_size=type_size)
 </code></pre>
 <p>同时要把训练优化方法改成以下方法就可以了</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">Momentum</span><span class="highlight-p">(</span><span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.00001</span> <span class="highlight-o">/</span> <span class="highlight-mf">128.0</span><span class="highlight-p">,</span>
-<span class="highlight-ln">2</span>                                      <span class="highlight-n">momentum</span><span class="highlight-o">=</span><span class="highlight-mf">0.9</span><span class="highlight-p">,</span>
-<span class="highlight-ln">3</span>                                      <span class="highlight-n">regularization</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">L2Regularization</span><span class="highlight-p">(</span><span class="highlight-n">rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.005</span> <span class="highlight-o">*</span> <span class="highlight-mi">128</span><span class="highlight-p">))</span>
+<pre><code class="language-python">optimizer = paddle.optimizer.Momentum(learning_rate=0.00001 / 128.0,
+                                      momentum=0.9,
+                                      regularization=paddle.optimizer.L2Regularization(rate=0.005 * 128))
 </code></pre>
 <p>要提醒的是,为了让网络能够收敛,我把学习率调了很低,所以训练收敛会非常慢.</p>
-<h2 id="获取参数">获取参数</h2>
+<h2 id="toc_h2_10">获取参数</h2>
 <p>该函数可以通过输入是否是参数文件路径,或者是损失函数,如果是参数文件路径,就使用之前训练好的参数生产参数.<br>
 如果不传入参数文件路径,那就使用传入的损失函数生成参数</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">get_parameters</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">,</span> <span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-bp">None</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">parameters_path</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-c1"># 使用cost创建parameters</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">cost</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 5</span>            <span class="highlight-k">raise</span> <span class="highlight-ne">NameError</span><span class="highlight-p">(</span><span class="highlight-s1">'请输入cost参数'</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 6</span>        <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 7</span>            <span class="highlight-c1"># 根据损失函数创建参数</span>
-<span class="highlight-ln"> 8</span>            <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">create</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>            <span class="highlight-k">print</span> <span class="highlight-s2">"cost"</span>
-<span class="highlight-ln">10</span>            <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln">11</span>    <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">12</span>        <span class="highlight-c1"># 使用之前训练好的参数</span>
-<span class="highlight-ln">13</span>        <span class="highlight-k">try</span><span class="highlight-p">:</span>
-<span class="highlight-ln">14</span>            <span class="highlight-c1"># 使用训练好的参数</span>
-<span class="highlight-ln">15</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-p">,</span> <span class="highlight-s1">'r'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">16</span>                <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">parameters</span><span class="highlight-o">.</span><span class="highlight-n">Parameters</span><span class="highlight-o">.</span><span class="highlight-n">from_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>            <span class="highlight-k">print</span> <span class="highlight-s2">"使用parameters"</span>
-<span class="highlight-ln">18</span>            <span class="highlight-k">return</span> <span class="highlight-n">parameters</span>
-<span class="highlight-ln">19</span>        <span class="highlight-k">except</span> <span class="highlight-ne">Exception</span> <span class="highlight-k">as</span> <span class="highlight-n">e</span><span class="highlight-p">:</span>
-<span class="highlight-ln">20</span>            <span class="highlight-k">raise</span> <span class="highlight-ne">NameError</span><span class="highlight-p">(</span><span class="highlight-s2">"你的参数文件错误,具体问题是:</span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-n">e</span><span class="highlight-p">)</span>
+<pre><code class="language-python">def get_parameters(self, parameters_path=None, cost=None):
+    if not parameters_path:
+        # 使用cost创建parameters
+        if not cost:
+            raise NameError('请输入cost参数')
+        else:
+            # 根据损失函数创建参数
+            parameters = paddle.parameters.create(cost)
+            print "cost"
+            return parameters
+    else:
+        # 使用之前训练好的参数
+        try:
+            # 使用训练好的参数
+            with open(parameters_path, 'r') as f:
+                parameters = paddle.parameters.Parameters.from_tar(f)
+            print "使用parameters"
+            return parameters
+        except Exception as e:
+            raise NameError("你的参数文件错误,具体问题是:%s" % e)
 </code></pre>
-<h2 id="创建训练器">创建训练器</h2>
+<h2 id="toc_h2_11">创建训练器</h2>
 <p>创建训练器要3个参数,分别是损失函数,参数,优化方法.<br>
 通过图像的标签信息和分类器生成损失函数.<br>
 参数可以选择是使用之前训练好的参数,然后在此基础上再进行训练,又或者是使用损失函数生成初始化参数.<br>
 然后再生成优化方法.就可以创建一个训练器了.</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># datadim 数据大小</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">get_trainer</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-p">,</span> <span class="highlight-n">parameters_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 获得图片对于的信息标签</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">label</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">data</span><span class="highlight-p">(</span><span class="highlight-n">name</span><span class="highlight-o">=</span><span class="highlight-s2">"label"</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 5</span>                              <span class="highlight-nb">type</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">data_type</span><span class="highlight-o">.</span><span class="highlight-n">integer_value</span><span class="highlight-p">(</span><span class="highlight-n">type_size</span><span class="highlight-p">))</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-c1"># 获取全连接层,也就是分类器</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">vgg_bn_drop</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-o">=</span><span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 获得损失函数</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">cost</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">layer</span><span class="highlight-o">.</span><span class="highlight-n">classification_cost</span><span class="highlight-p">(</span><span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">,</span> <span class="highlight-n">label</span><span class="highlight-o">=</span><span class="highlight-n">label</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-c1"># 获得参数</span>
-<span class="highlight-ln">14</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">parameters_path</span><span class="highlight-p">:</span>
-<span class="highlight-ln">15</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">cost</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>    <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">17</span>        <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-bp">self</span><span class="highlight-o">.</span><span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>
-<span class="highlight-ln">19</span>    <span class="highlight-s1">'''
-</span><span class="highlight-ln">20</span><span class="highlight-s1">    定义优化方法
-</span><span class="highlight-ln">21</span><span class="highlight-s1">    learning_rate 迭代的速度
-</span><span class="highlight-ln">22</span><span class="highlight-s1">    momentum 跟前面动量优化的比例
-</span><span class="highlight-ln">23</span><span class="highlight-s1">    regularzation 正则化,防止过拟合
-</span><span class="highlight-ln">24</span><span class="highlight-s1">    '''</span>
-<span class="highlight-ln">25</span>    <span class="highlight-c1"># ********************如果使用VGG网络模型就用这个优化方法******************</span>
-<span class="highlight-ln">26</span>    <span class="highlight-n">optimizer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">Momentum</span><span class="highlight-p">(</span>
-<span class="highlight-ln">27</span>        <span class="highlight-n">momentum</span><span class="highlight-o">=</span><span class="highlight-mf">0.9</span><span class="highlight-p">,</span>
-<span class="highlight-ln">28</span>        <span class="highlight-n">regularization</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">optimizer</span><span class="highlight-o">.</span><span class="highlight-n">L2Regularization</span><span class="highlight-p">(</span><span class="highlight-n">rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.0005</span> <span class="highlight-o">*</span> <span class="highlight-mi">128</span><span class="highlight-p">),</span>
-<span class="highlight-ln">29</span>        <span class="highlight-n">learning_rate</span><span class="highlight-o">=</span><span class="highlight-mf">0.0001</span> <span class="highlight-o">/</span> <span class="highlight-mi">128</span><span class="highlight-p">,</span>
-<span class="highlight-ln">30</span>        <span class="highlight-n">learning_rate_decay_a</span><span class="highlight-o">=</span><span class="highlight-mf">0.1</span><span class="highlight-p">,</span>
-<span class="highlight-ln">31</span>        <span class="highlight-n">learning_rate_decay_b</span><span class="highlight-o">=</span><span class="highlight-mi">128000</span> <span class="highlight-o">*</span> <span class="highlight-mi">35</span><span class="highlight-p">,</span>
-<span class="highlight-ln">32</span>        <span class="highlight-n">learning_rate_schedule</span><span class="highlight-o">=</span><span class="highlight-s2">"discexp"</span><span class="highlight-p">,</span> <span class="highlight-p">)</span>
-<span class="highlight-ln">33</span>
-<span class="highlight-ln">34</span>    <span class="highlight-c1"># ********************如果使用LeNet-5网络模型就用这个优化方法******************</span>
-<span class="highlight-ln">35</span>    <span class="highlight-c1"># optimizer = paddle.optimizer.Momentum(learning_rate=0.00001 / 128.0,</span>
-<span class="highlight-ln">36</span>    <span class="highlight-c1">#                                       momentum=0.9,</span>
-<span class="highlight-ln">37</span>    <span class="highlight-c1">#                                       regularization=paddle.optimizer.L2Regularization(rate=0.005 * 128))</span>
-<span class="highlight-ln">38</span>
-<span class="highlight-ln">39</span>    <span class="highlight-s1">'''
-</span><span class="highlight-ln">40</span><span class="highlight-s1">    创建训练器
-</span><span class="highlight-ln">41</span><span class="highlight-s1">    cost 分类器
-</span><span class="highlight-ln">42</span><span class="highlight-s1">    parameters 训练参数,可以通过创建,也可以使用之前训练好的参数
-</span><span class="highlight-ln">43</span><span class="highlight-s1">    update_equation 优化方法
-</span><span class="highlight-ln">44</span><span class="highlight-s1">    '''</span>
-<span class="highlight-ln">45</span>    <span class="highlight-n">trainer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">SGD</span><span class="highlight-p">(</span><span class="highlight-n">cost</span><span class="highlight-o">=</span><span class="highlight-n">cost</span><span class="highlight-p">,</span>
-<span class="highlight-ln">46</span>                                 <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span>
-<span class="highlight-ln">47</span>                                 <span class="highlight-n">update_equation</span><span class="highlight-o">=</span><span class="highlight-n">optimizer</span><span class="highlight-p">)</span>
-<span class="highlight-ln">48</span>    <span class="highlight-k">return</span> <span class="highlight-n">trainer</span>
+<pre><code class="language-python"># datadim 数据大小
+def get_trainer(self, datadim, type_size, parameters_path):
+    # 获得图片对于的信息标签
+    label = paddle.layer.data(name="label",
+                              type=paddle.data_type.integer_value(type_size))
+
+    # 获取全连接层,也就是分类器
+    out = vgg_bn_drop(datadim=datadim, type_size=type_size)
+
+    # 获得损失函数
+    cost = paddle.layer.classification_cost(input=out, label=label)
+
+    # 获得参数
+    if not parameters_path:
+        parameters = self.get_parameters(cost=cost)
+    else:
+        parameters = self.get_parameters(parameters_path=parameters_path)
+
+    '''
+    定义优化方法
+    learning_rate 迭代的速度
+    momentum 跟前面动量优化的比例
+    regularzation 正则化,防止过拟合
+    '''
+    # ********************如果使用VGG网络模型就用这个优化方法******************
+    optimizer = paddle.optimizer.Momentum(
+        momentum=0.9,
+        regularization=paddle.optimizer.L2Regularization(rate=0.0005 * 128),
+        learning_rate=0.0001 / 128,
+        learning_rate_decay_a=0.1,
+        learning_rate_decay_b=128000 * 35,
+        learning_rate_schedule="discexp", )
+
+    # ********************如果使用LeNet-5网络模型就用这个优化方法******************
+    # optimizer = paddle.optimizer.Momentum(learning_rate=0.00001 / 128.0,
+    #                                       momentum=0.9,
+    #                                       regularization=paddle.optimizer.L2Regularization(rate=0.005 * 128))
+
+    '''
+    创建训练器
+    cost 分类器
+    parameters 训练参数,可以通过创建,也可以使用之前训练好的参数
+    update_equation 优化方法
+    '''
+    trainer = paddle.trainer.SGD(cost=cost,
+                                 parameters=parameters,
+                                 update_equation=optimizer)
+    return trainer
 </code></pre>
-<h2 id="开始训练">开始训练</h2>
+<h2 id="toc_h2_12">开始训练</h2>
 <p>我们把图片设置成灰度图来处理了，所以数据集也非常小。所以相对之前训练CIFAR数据集来说,训练起来还算挺快的。</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># ***********************开始训练***************************************</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">start_trainer</span><span class="highlight-p">(</span><span class="highlight-bp">self</span><span class="highlight-p">,</span> <span class="highlight-n">trainer</span><span class="highlight-p">,</span> <span class="highlight-n">num_passes</span><span class="highlight-p">,</span> <span class="highlight-n">save_parameters_name</span><span class="highlight-p">,</span> <span class="highlight-n">trainer_reader</span><span class="highlight-p">,</span> <span class="highlight-n">test_reader</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-c1"># 获得数据</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">reader</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">reader</span><span class="highlight-o">.</span><span class="highlight-n">shuffle</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">trainer_reader</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 5</span>                                                       <span class="highlight-n">buf_size</span><span class="highlight-o">=</span><span class="highlight-mi">50000</span><span class="highlight-p">),</span>
-<span class="highlight-ln"> 6</span>                          <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-c1"># 保证保存模型的目录是存在的</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">father_path</span> <span class="highlight-o">=</span> <span class="highlight-n">save_parameters_name</span><span class="highlight-p">[:</span><span class="highlight-n">save_parameters_name</span><span class="highlight-o">.</span><span class="highlight-n">rfind</span><span class="highlight-p">(</span><span class="highlight-s2">"/"</span><span class="highlight-p">)]</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-k">if</span> <span class="highlight-ow">not</span> <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">path</span><span class="highlight-o">.</span><span class="highlight-n">exists</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">):</span>
-<span class="highlight-ln">10</span>        <span class="highlight-n">os</span><span class="highlight-o">.</span><span class="highlight-n">makedirs</span><span class="highlight-p">(</span><span class="highlight-n">father_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>    <span class="highlight-c1"># 指定每条数据和padd.layer.data的对应关系</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">feeding</span> <span class="highlight-o">=</span> <span class="highlight-p">{</span><span class="highlight-s2">"image"</span><span class="highlight-p">:</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-s2">"label"</span><span class="highlight-p">:</span> <span class="highlight-mi">1</span><span class="highlight-p">}</span>
-<span class="highlight-ln">14</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1"># 定义训练事件</span>
-<span class="highlight-ln">16</span>    <span class="highlight-k">def</span> <span class="highlight-nf">event_handler</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">):</span>
-<span class="highlight-ln">17</span>        <span class="highlight-k">if</span> <span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">EndIteration</span><span class="highlight-p">):</span>
-<span class="highlight-ln">18</span>            <span class="highlight-k">if</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">batch_id</span> <span class="highlight-o">%</span> <span class="highlight-mi">100</span> <span class="highlight-o">==</span> <span class="highlight-mi">0</span><span class="highlight-p">:</span>
-<span class="highlight-ln">19</span>                <span class="highlight-k">print</span> <span class="highlight-s2">"</span><span class="highlight-se">\n</span><span class="highlight-s2">Pass </span><span class="highlight-si">%d</span><span class="highlight-s2">, Batch </span><span class="highlight-si">%d</span><span class="highlight-s2">, Cost </span><span class="highlight-si">%f</span><span class="highlight-s2">, </span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span>
-<span class="highlight-ln">20</span>                    <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">batch_id</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">cost</span><span class="highlight-p">,</span> <span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>            <span class="highlight-k">else</span><span class="highlight-p">:</span>
-<span class="highlight-ln">22</span>                <span class="highlight-n">sys</span><span class="highlight-o">.</span><span class="highlight-n">stdout</span><span class="highlight-o">.</span><span class="highlight-n">write</span><span class="highlight-p">(</span><span class="highlight-s1">'.'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>                <span class="highlight-n">sys</span><span class="highlight-o">.</span><span class="highlight-n">stdout</span><span class="highlight-o">.</span><span class="highlight-n">flush</span><span class="highlight-p">()</span>
-<span class="highlight-ln">24</span>
-<span class="highlight-ln">25</span>        <span class="highlight-c1"># 每一轮训练完成之后</span>
-<span class="highlight-ln">26</span>        <span class="highlight-k">if</span> <span class="highlight-nb">isinstance</span><span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-p">,</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">EndPass</span><span class="highlight-p">):</span>
-<span class="highlight-ln">27</span>            <span class="highlight-c1"># 保存训练好的参数</span>
-<span class="highlight-ln">28</span>            <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-n">save_parameters_name</span><span class="highlight-p">,</span> <span class="highlight-s1">'w'</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln">29</span>                <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">save_parameter_to_tar</span><span class="highlight-p">(</span><span class="highlight-n">f</span><span class="highlight-p">)</span>
-<span class="highlight-ln">30</span>
-<span class="highlight-ln">31</span>            <span class="highlight-c1"># 测试准确率</span>
-<span class="highlight-ln">32</span>            <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">test</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">batch</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">test_reader</span><span class="highlight-p">,</span>
-<span class="highlight-ln">33</span>                                                      <span class="highlight-n">batch_size</span><span class="highlight-o">=</span><span class="highlight-mi">128</span><span class="highlight-p">),</span>
-<span class="highlight-ln">34</span>                                  <span class="highlight-n">feeding</span><span class="highlight-o">=</span><span class="highlight-n">feeding</span><span class="highlight-p">)</span>
-<span class="highlight-ln">35</span>            <span class="highlight-k">print</span> <span class="highlight-s2">"</span><span class="highlight-se">\n</span><span class="highlight-s2">Test with Pass </span><span class="highlight-si">%d</span><span class="highlight-s2">, </span><span class="highlight-si">%s</span><span class="highlight-s2">"</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">event</span><span class="highlight-o">.</span><span class="highlight-n">pass_id</span><span class="highlight-p">,</span> <span class="highlight-n">result</span><span class="highlight-o">.</span><span class="highlight-n">metrics</span><span class="highlight-p">)</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>    <span class="highlight-s1">'''
-</span><span class="highlight-ln">38</span><span class="highlight-s1">    开始训练
-</span><span class="highlight-ln">39</span><span class="highlight-s1">    reader 训练数据
-</span><span class="highlight-ln">40</span><span class="highlight-s1">    num_passes 训练的轮数
-</span><span class="highlight-ln">41</span><span class="highlight-s1">    event_handler 训练的事件,比如在训练的时候要做一些什么事情
-</span><span class="highlight-ln">42</span><span class="highlight-s1">    feeding 说明每条数据和padd.layer.data的对应关系
-</span><span class="highlight-ln">43</span><span class="highlight-s1">    '''</span>
-<span class="highlight-ln">44</span>    <span class="highlight-n">trainer</span><span class="highlight-o">.</span><span class="highlight-n">train</span><span class="highlight-p">(</span><span class="highlight-n">reader</span><span class="highlight-o">=</span><span class="highlight-n">reader</span><span class="highlight-p">,</span>
-<span class="highlight-ln">45</span>                  <span class="highlight-n">num_passes</span><span class="highlight-o">=</span><span class="highlight-n">num_passes</span><span class="highlight-p">,</span>
-<span class="highlight-ln">46</span>                  <span class="highlight-n">event_handler</span><span class="highlight-o">=</span><span class="highlight-n">event_handler</span><span class="highlight-p">,</span>
-<span class="highlight-ln">47</span>                  <span class="highlight-n">feeding</span><span class="highlight-o">=</span><span class="highlight-n">feeding</span><span class="highlight-p">)</span>
+<pre><code class="language-python"># ***********************开始训练***************************************
+def start_trainer(self, trainer, num_passes, save_parameters_name, trainer_reader, test_reader):
+    # 获得数据
+    reader = paddle.batch(reader=paddle.reader.shuffle(reader=trainer_reader,
+                                                       buf_size=50000),
+                          batch_size=128)
+    # 保证保存模型的目录是存在的
+    father_path = save_parameters_name[:save_parameters_name.rfind("/")]
+    if not os.path.exists(father_path):
+        os.makedirs(father_path)
+
+    # 指定每条数据和padd.layer.data的对应关系
+    feeding = {"image": 0, "label": 1}
+
+    # 定义训练事件
+    def event_handler(event):
+        if isinstance(event, paddle.event.EndIteration):
+            if event.batch_id % 100 == 0:
+                print "\nPass %d, Batch %d, Cost %f, %s" % (
+                    event.pass_id, event.batch_id, event.cost, event.metrics)
+            else:
+                sys.stdout.write('.')
+                sys.stdout.flush()
+
+        # 每一轮训练完成之后
+        if isinstance(event, paddle.event.EndPass):
+            # 保存训练好的参数
+            with open(save_parameters_name, 'w') as f:
+                trainer.save_parameter_to_tar(f)
+
+            # 测试准确率
+            result = trainer.test(reader=paddle.batch(reader=test_reader,
+                                                      batch_size=128),
+                                  feeding=feeding)
+            print "\nTest with Pass %d, %s" % (event.pass_id, result.metrics)
+
+    '''
+    开始训练
+    reader 训练数据
+    num_passes 训练的轮数
+    event_handler 训练的事件,比如在训练的时候要做一些什么事情
+    feeding 说明每条数据和padd.layer.data的对应关系
+    '''
+    trainer.train(reader=reader,
+                  num_passes=num_passes,
+                  event_handler=event_handler,
+                  feeding=feeding)
 </code></pre>
 <p>然后在<code>main</code>中调用相应的函数,就可以开始训练了</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 类别总数</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">type_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">33</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 图片大小</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">imageSize</span> <span class="highlight-o">=</span> <span class="highlight-mi">32</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 总的分类名称</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">all_class_name</span> <span class="highlight-o">=</span> <span class="highlight-s1">'dst_yanzhengma'</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 保存的model路径</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">parameters_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"../model/model.tar"</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 数据的大小</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">datadim</span> <span class="highlight-o">=</span> <span class="highlight-n">imageSize</span> <span class="highlight-o">*</span> <span class="highlight-n">imageSize</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">paddleUtil</span> <span class="highlight-o">=</span> <span class="highlight-n">PaddleUtil</span><span class="highlight-p">()</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>    <span class="highlight-c1"># *******************************开始训练**************************************</span>
-<span class="highlight-ln">15</span>    <span class="highlight-n">myReader</span> <span class="highlight-o">=</span> <span class="highlight-n">MyReader</span><span class="highlight-p">(</span><span class="highlight-n">imageSize</span><span class="highlight-o">=</span><span class="highlight-n">imageSize</span><span class="highlight-p">)</span>
-<span class="highlight-ln">16</span>    <span class="highlight-c1"># parameters_path设置为None就使用普通生成参数,</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">trainer</span> <span class="highlight-o">=</span> <span class="highlight-n">paddleUtil</span><span class="highlight-o">.</span><span class="highlight-n">get_trainer</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-o">=</span><span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">,</span> <span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">trainer_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">myReader</span><span class="highlight-o">.</span><span class="highlight-n">train_reader</span><span class="highlight-p">(</span><span class="highlight-n">train_list</span><span class="highlight-o">=</span><span class="highlight-s2">"../data/</span><span class="highlight-si">%s</span><span class="highlight-s2">/trainer.list"</span> <span class="highlight-o">%</span> <span class="highlight-n">all_class_name</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>    <span class="highlight-n">test_reader</span> <span class="highlight-o">=</span> <span class="highlight-n">myReader</span><span class="highlight-o">.</span><span class="highlight-n">test_reader</span><span class="highlight-p">(</span><span class="highlight-n">test_list</span><span class="highlight-o">=</span><span class="highlight-s2">"../data/</span><span class="highlight-si">%s</span><span class="highlight-s2">/test.list"</span> <span class="highlight-o">%</span> <span class="highlight-n">all_class_name</span><span class="highlight-p">)</span>
-<span class="highlight-ln">20</span>
-<span class="highlight-ln">21</span>    <span class="highlight-n">paddleUtil</span><span class="highlight-o">.</span><span class="highlight-n">start_trainer</span><span class="highlight-p">(</span><span class="highlight-n">trainer</span><span class="highlight-o">=</span><span class="highlight-n">trainer</span><span class="highlight-p">,</span> <span class="highlight-n">num_passes</span><span class="highlight-o">=</span><span class="highlight-mi">100</span><span class="highlight-p">,</span> <span class="highlight-n">save_parameters_name</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">,</span>
-<span class="highlight-ln">22</span>                             <span class="highlight-n">trainer_reader</span><span class="highlight-o">=</span><span class="highlight-n">trainer_reader</span><span class="highlight-p">,</span> <span class="highlight-n">test_reader</span><span class="highlight-o">=</span><span class="highlight-n">test_reader</span><span class="highlight-p">)</span>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 类别总数
+    type_size = 33
+    # 图片大小
+    imageSize = 32
+    # 总的分类名称
+    all_class_name = 'dst_yanzhengma'
+    # 保存的model路径
+    parameters_path = "../model/model.tar"
+    # 数据的大小
+    datadim = imageSize * imageSize
+    paddleUtil = PaddleUtil()
+
+    # *******************************开始训练**************************************
+    myReader = MyReader(imageSize=imageSize)
+    # parameters_path设置为None就使用普通生成参数,
+    trainer = paddleUtil.get_trainer(datadim=datadim, type_size=type_size, parameters_path=parameters_path)
+    trainer_reader = myReader.train_reader(train_list="../data/%s/trainer.list" % all_class_name)
+    test_reader = myReader.test_reader(test_list="../data/%s/test.list" % all_class_name)
+
+    paddleUtil.start_trainer(trainer=trainer, num_passes=100, save_parameters_name=parameters_path,
+                             trainer_reader=trainer_reader, test_reader=test_reader)
 </code></pre>
 <p>训练输出的日志:</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>Pass 0, Batch 0, Cost 3.684595, {'classification_error_evaluator': 0.9765625}
-<span class="highlight-ln">2</span>........................................
-<span class="highlight-ln">3</span>Test with Pass 0, {'classification_error_evaluator': 0.930390477180481}
-<span class="highlight-ln">4</span>
-<span class="highlight-ln">5</span>Pass 1, Batch 0, Cost 3.523515, {'classification_error_evaluator': 0.953125}
-<span class="highlight-ln">6</span>........................................
-<span class="highlight-ln">7</span>Test with Pass 1, {'classification_error_evaluator': 0.8862478733062744}
+<pre><code class="language-text">Pass 0, Batch 0, Cost 3.684595, {'classification_error_evaluator': 0.9765625}
+........................................
+Test with Pass 0, {'classification_error_evaluator': 0.930390477180481}
+
+Pass 1, Batch 0, Cost 3.523515, {'classification_error_evaluator': 0.953125}
+........................................
+Test with Pass 1, {'classification_error_evaluator': 0.8862478733062744}
 </code></pre>
-<h1 id="使用PaddlePaddle预测">使用PaddlePaddle预测</h1>
+<h1 id="toc_h1_13">使用PaddlePaddle预测</h1>
 <hr>
 <p>编写<code>infer.py</code>做验证码预测，这次预测要做的事情比较多.<br>
 因为传进来的是一个完整的验证码,所以首先要对验证码进行裁剪.<br>
 然后把裁剪后的数据传该PaddlePaddle进行预测.<br>
 预测出来的是一个label值,所以还有通过label找到对应的字符</p>
-<h2 id="裁剪要预测的验证码">裁剪要预测的验证码</h2>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-c1"># *****************获取你要预测的参数********************************</span>
-<span class="highlight-ln"> 2</span><span class="highlight-k">def</span> <span class="highlight-nf">get_TestData</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">test_data</span> <span class="highlight-o">=</span> <span class="highlight-p">[]</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-n">img</span> <span class="highlight-o">=</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">open</span><span class="highlight-p">(</span><span class="highlight-n">path</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-c1"># 切割图片并保存</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-n">box1</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">5</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">17</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">box2</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">17</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">29</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-n">box3</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">29</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">41</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">box4</span> <span class="highlight-o">=</span> <span class="highlight-p">(</span><span class="highlight-mi">41</span><span class="highlight-p">,</span> <span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-mi">53</span><span class="highlight-p">,</span> <span class="highlight-mi">27</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    <span class="highlight-n">temp</span> <span class="highlight-o">=</span> <span class="highlight-s1">'../images/temp'</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box1</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/1.png'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">12</span>    <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box2</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/2.png'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">13</span>    <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box3</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/3.png'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">img</span><span class="highlight-o">.</span><span class="highlight-n">crop</span><span class="highlight-p">(</span><span class="highlight-n">box4</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">resize</span><span class="highlight-p">((</span><span class="highlight-mi">32</span><span class="highlight-p">,</span> <span class="highlight-mi">32</span><span class="highlight-p">),</span> <span class="highlight-n">Image</span><span class="highlight-o">.</span><span class="highlight-n">ANTIALIAS</span><span class="highlight-p">)</span><span class="highlight-o">.</span><span class="highlight-n">save</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/4.png'</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1"># 把图像加载到预测数据中</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">test_data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_and_transform</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/1.png'</span><span class="highlight-p">,</span> <span class="highlight-mi">38</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>                      <span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">),))</span>
-<span class="highlight-ln">18</span>    <span class="highlight-n">test_data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_and_transform</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/2.png'</span><span class="highlight-p">,</span> <span class="highlight-mi">38</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">19</span>                      <span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">),))</span>
-<span class="highlight-ln">20</span>    <span class="highlight-n">test_data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_and_transform</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/3.png'</span><span class="highlight-p">,</span> <span class="highlight-mi">38</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>                      <span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">),))</span>
-<span class="highlight-ln">22</span>    <span class="highlight-n">test_data</span><span class="highlight-o">.</span><span class="highlight-n">append</span><span class="highlight-p">((</span><span class="highlight-n">image</span><span class="highlight-o">.</span><span class="highlight-n">load_and_transform</span><span class="highlight-p">(</span><span class="highlight-n">temp</span> <span class="highlight-o">+</span> <span class="highlight-s1">'/4.png'</span><span class="highlight-p">,</span> <span class="highlight-mi">38</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-p">,</span> <span class="highlight-bp">False</span><span class="highlight-p">,</span> <span class="highlight-n">is_color</span><span class="highlight-o">=</span><span class="highlight-bp">False</span><span class="highlight-p">)</span>
-<span class="highlight-ln">23</span>                      <span class="highlight-o">.</span><span class="highlight-n">flatten</span><span class="highlight-p">()</span><span class="highlight-o">.</span><span class="highlight-n">astype</span><span class="highlight-p">(</span><span class="highlight-s1">'float32'</span><span class="highlight-p">),))</span>
-<span class="highlight-ln">24</span>    <span class="highlight-k">return</span> <span class="highlight-n">test_data</span>
+<h2 id="toc_h2_14">裁剪要预测的验证码</h2>
+<pre><code class="language-python"># *****************获取你要预测的参数********************************
+def get_TestData(path, imageSize):
+    test_data = []
+    img = Image.open(path)
+    # 切割图片并保存
+    box1 = (5, 0, 17, 27)
+    box2 = (17, 0, 29, 27)
+    box3 = (29, 0, 41, 27)
+    box4 = (41, 0, 53, 27)
+    temp = '../images/temp'
+    img.crop(box1).resize((32, 32), Image.ANTIALIAS).save(temp + '/1.png')
+    img.crop(box2).resize((32, 32), Image.ANTIALIAS).save(temp + '/2.png')
+    img.crop(box3).resize((32, 32), Image.ANTIALIAS).save(temp + '/3.png')
+    img.crop(box4).resize((32, 32), Image.ANTIALIAS).save(temp + '/4.png')
+    # 把图像加载到预测数据中
+    test_data.append((image.load_and_transform(temp + '/1.png', 38, imageSize, False, is_color=False)
+                      .flatten().astype('float32'),))
+    test_data.append((image.load_and_transform(temp + '/2.png', 38, imageSize, False, is_color=False)
+                      .flatten().astype('float32'),))
+    test_data.append((image.load_and_transform(temp + '/3.png', 38, imageSize, False, is_color=False)
+                      .flatten().astype('float32'),))
+    test_data.append((image.load_and_transform(temp + '/4.png', 38, imageSize, False, is_color=False)
+                      .flatten().astype('float32'),))
+    return test_data
 </code></pre>
-<h2 id="使用裁剪好的图像进行预测">使用裁剪好的图像进行预测</h2>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">def</span> <span class="highlight-nf">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">test_data</span><span class="highlight-p">,</span> <span class="highlight-n">parameters</span><span class="highlight-p">,</span> <span class="highlight-n">out</span><span class="highlight-p">,</span> <span class="highlight-n">all_class_name</span><span class="highlight-p">):</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-k">with</span> <span class="highlight-nb">open</span><span class="highlight-p">(</span><span class="highlight-s1">'../data/</span><span class="highlight-si">%s</span><span class="highlight-s1">/readme.json'</span> <span class="highlight-o">%</span> <span class="highlight-n">all_class_name</span><span class="highlight-p">)</span> <span class="highlight-k">as</span> <span class="highlight-n">f</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-n">txt</span> <span class="highlight-o">=</span> <span class="highlight-n">f</span><span class="highlight-o">.</span><span class="highlight-n">read</span><span class="highlight-p">()</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 获得预测结果</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">probs</span> <span class="highlight-o">=</span> <span class="highlight-n">paddle</span><span class="highlight-o">.</span><span class="highlight-n">infer</span><span class="highlight-p">(</span><span class="highlight-n">output_layer</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 6</span>                         <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span>
-<span class="highlight-ln"> 7</span>                         <span class="highlight-nb">input</span><span class="highlight-o">=</span><span class="highlight-n">test_data</span><span class="highlight-p">)</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 处理预测结果</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">lab</span> <span class="highlight-o">=</span> <span class="highlight-n">np</span><span class="highlight-o">.</span><span class="highlight-n">argsort</span><span class="highlight-p">(</span><span class="highlight-o">-</span><span class="highlight-n">probs</span><span class="highlight-p">)</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 返回概率最大的值和其对应的概率值</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-s1">''</span>
-<span class="highlight-ln">12</span>    <span class="highlight-k">for</span> <span class="highlight-n">i</span> <span class="highlight-ow">in</span> <span class="highlight-nb">range</span><span class="highlight-p">(</span><span class="highlight-mi">0</span><span class="highlight-p">,</span> <span class="highlight-n">lab</span><span class="highlight-o">.</span><span class="highlight-fm">__len__</span><span class="highlight-p">()):</span>
-<span class="highlight-ln">13</span>        <span class="highlight-k">print</span> <span class="highlight-s1">'第</span><span class="highlight-si">%d</span><span class="highlight-s1">张预测结果为:</span><span class="highlight-si">%d</span><span class="highlight-s1">,可信度为:</span><span class="highlight-si">%f</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-p">(</span><span class="highlight-n">i</span> <span class="highlight-o">+</span> <span class="highlight-mi">1</span><span class="highlight-p">,</span> <span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">probs</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][(</span><span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">])])</span>
-<span class="highlight-ln">14</span>        <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">result</span> <span class="highlight-o">+</span> <span class="highlight-n">lab_to_result</span><span class="highlight-p">(</span><span class="highlight-n">lab</span><span class="highlight-p">[</span><span class="highlight-n">i</span><span class="highlight-p">][</span><span class="highlight-mi">0</span><span class="highlight-p">],</span> <span class="highlight-n">txt</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>    <span class="highlight-k">return</span> <span class="highlight-nb">str</span><span class="highlight-p">(</span><span class="highlight-n">result</span><span class="highlight-p">)</span>
+<h2 id="toc_h2_15">使用裁剪好的图像进行预测</h2>
+<pre><code class="language-python">def to_prediction(test_data, parameters, out, all_class_name):
+    with open('../data/%s/readme.json' % all_class_name) as f:
+        txt = f.read()
+    # 获得预测结果
+    probs = paddle.infer(output_layer=out,
+                         parameters=parameters,
+                         input=test_data)
+    # 处理预测结果
+    lab = np.argsort(-probs)
+    # 返回概率最大的值和其对应的概率值
+    result = ''
+    for i in range(0, lab.__len__()):
+        print '第%d张预测结果为:%d,可信度为:%f' % (i + 1, lab[i][0], probs[i][(lab[i][0])])
+        result = result + lab_to_result(lab[i][0], txt)
+    return str(result)
 </code></pre>
-<h2 id="把预测的label转换成对应的字符">把预测的label转换成对应的字符</h2>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">def</span> <span class="highlight-nf">lab_to_result</span><span class="highlight-p">(</span><span class="highlight-n">lab</span><span class="highlight-p">,</span> <span class="highlight-n">json_str</span><span class="highlight-p">):</span>
-<span class="highlight-ln">2</span>    <span class="highlight-n">myjson</span> <span class="highlight-o">=</span> <span class="highlight-n">json</span><span class="highlight-o">.</span><span class="highlight-n">loads</span><span class="highlight-p">(</span><span class="highlight-n">json_str</span><span class="highlight-p">)</span>
-<span class="highlight-ln">3</span>    <span class="highlight-n">class_details</span> <span class="highlight-o">=</span> <span class="highlight-n">myjson</span><span class="highlight-p">[</span><span class="highlight-s1">'class_detail'</span><span class="highlight-p">]</span>
-<span class="highlight-ln">4</span>    <span class="highlight-k">for</span> <span class="highlight-n">class_detail</span> <span class="highlight-ow">in</span> <span class="highlight-n">class_details</span><span class="highlight-p">:</span>
-<span class="highlight-ln">5</span>        <span class="highlight-k">if</span> <span class="highlight-n">class_detail</span><span class="highlight-p">[</span><span class="highlight-s1">'class_label'</span><span class="highlight-p">]</span> <span class="highlight-o">==</span> <span class="highlight-n">lab</span><span class="highlight-p">:</span>
-<span class="highlight-ln">6</span>            <span class="highlight-k">return</span> <span class="highlight-n">class_detail</span><span class="highlight-p">[</span><span class="highlight-s1">'class_name'</span><span class="highlight-p">]</span>
+<h2 id="toc_h2_16">把预测的label转换成对应的字符</h2>
+<pre><code class="language-python">def lab_to_result(lab, json_str):
+    myjson = json.loads(json_str)
+    class_details = myjson['class_detail']
+    for class_detail in class_details:
+        if class_detail['class_label'] == lab:
+            return class_detail['class_name']
 </code></pre>
 <p>然后通过以上的程序拼接,最后在<code>main</code>入口中调用对应的程序就可以预测验证码了</p>
-<pre><code class="language-python highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-k">if</span> <span class="highlight-vm">__name__</span> <span class="highlight-o">==</span> <span class="highlight-s1">'__main__'</span><span class="highlight-p">:</span>
-<span class="highlight-ln"> 2</span>    <span class="highlight-c1"># 类别总数</span>
-<span class="highlight-ln"> 3</span>    <span class="highlight-n">type_size</span> <span class="highlight-o">=</span> <span class="highlight-mi">33</span>
-<span class="highlight-ln"> 4</span>    <span class="highlight-c1"># 图片大小</span>
-<span class="highlight-ln"> 5</span>    <span class="highlight-n">imageSize</span> <span class="highlight-o">=</span> <span class="highlight-mi">32</span>
-<span class="highlight-ln"> 6</span>    <span class="highlight-c1"># 总的分类名称</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-n">all_class_name</span> <span class="highlight-o">=</span> <span class="highlight-s1">'dst_yanzhengma'</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-c1"># 保存的model路径</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-n">parameters_path</span> <span class="highlight-o">=</span> <span class="highlight-s2">"../model/model.tar"</span>
-<span class="highlight-ln">10</span>    <span class="highlight-c1"># 数据的大小</span>
-<span class="highlight-ln">11</span>    <span class="highlight-n">datadim</span> <span class="highlight-o">=</span> <span class="highlight-n">imageSize</span> <span class="highlight-o">*</span> <span class="highlight-n">imageSize</span>
-<span class="highlight-ln">12</span>    
-<span class="highlight-ln">13</span>    <span class="highlight-n">out</span> <span class="highlight-o">=</span> <span class="highlight-n">get_out</span><span class="highlight-p">(</span><span class="highlight-n">datadim</span><span class="highlight-o">=</span><span class="highlight-n">datadim</span><span class="highlight-p">,</span> <span class="highlight-n">type_size</span><span class="highlight-o">=</span><span class="highlight-n">type_size</span><span class="highlight-p">)</span>
-<span class="highlight-ln">14</span>    <span class="highlight-n">parameters</span> <span class="highlight-o">=</span> <span class="highlight-n">get_parameters</span><span class="highlight-p">(</span><span class="highlight-n">parameters_path</span><span class="highlight-o">=</span><span class="highlight-n">parameters_path</span><span class="highlight-p">)</span>
-<span class="highlight-ln">15</span>    <span class="highlight-c1"># 添加数据</span>
-<span class="highlight-ln">16</span>    <span class="highlight-n">test_data</span> <span class="highlight-o">=</span> <span class="highlight-n">paddleUtil</span><span class="highlight-o">.</span><span class="highlight-n">get_TestData</span><span class="highlight-p">(</span><span class="highlight-s2">"../images/src_yanzhengma/0a13.png"</span><span class="highlight-p">,</span> <span class="highlight-n">imageSize</span><span class="highlight-o">=</span><span class="highlight-n">imageSize</span><span class="highlight-p">)</span>
-<span class="highlight-ln">17</span>    <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-n">paddleUtil</span><span class="highlight-o">.</span><span class="highlight-n">to_prediction</span><span class="highlight-p">(</span><span class="highlight-n">test_data</span><span class="highlight-o">=</span><span class="highlight-n">test_data</span><span class="highlight-p">,</span>
-<span class="highlight-ln">18</span>                                      <span class="highlight-n">parameters</span><span class="highlight-o">=</span><span class="highlight-n">parameters</span><span class="highlight-p">,</span>
-<span class="highlight-ln">19</span>                                      <span class="highlight-n">out</span><span class="highlight-o">=</span><span class="highlight-n">out</span><span class="highlight-p">,</span>
-<span class="highlight-ln">20</span>                                      <span class="highlight-n">all_class_name</span><span class="highlight-o">=</span><span class="highlight-n">all_class_name</span><span class="highlight-p">)</span>
-<span class="highlight-ln">21</span>    <span class="highlight-k">print</span> <span class="highlight-s1">'预测结果为:</span><span class="highlight-si">%s</span><span class="highlight-s1">'</span> <span class="highlight-o">%</span> <span class="highlight-n">result</span>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 类别总数
+    type_size = 33
+    # 图片大小
+    imageSize = 32
+    # 总的分类名称
+    all_class_name = 'dst_yanzhengma'
+    # 保存的model路径
+    parameters_path = "../model/model.tar"
+    # 数据的大小
+    datadim = imageSize * imageSize
+    
+    out = get_out(datadim=datadim, type_size=type_size)
+    parameters = get_parameters(parameters_path=parameters_path)
+    # 添加数据
+    test_data = paddleUtil.get_TestData("../images/src_yanzhengma/0a13.png", imageSize=imageSize)
+    result = paddleUtil.to_prediction(test_data=test_data,
+                                      parameters=parameters,
+                                      out=out,
+                                      all_class_name=all_class_name)
+    print '预测结果为:%s' % result
 </code></pre>
 <p>预测结果输出</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>第1张预测结果为:0,可信度为:0.966999
-<span class="highlight-ln">2</span>第2张预测结果为:9,可信度为:0.664706
-<span class="highlight-ln">3</span>第3张预测结果为:1,可信度为:0.780999
-<span class="highlight-ln">4</span>第4张预测结果为:3,可信度为:0.959722
-<span class="highlight-ln">5</span>预测结果为:0a13
+<pre><code class="language-text">第1张预测结果为:0,可信度为:0.966999
+第2张预测结果为:9,可信度为:0.664706
+第3张预测结果为:1,可信度为:0.780999
+第4张预测结果为:3,可信度为:0.959722
+预测结果为:0a13
 </code></pre>
-<h1 id="项目代码">项目代码</h1>
+<h1 id="toc_h1_17">项目代码</h1>
 <hr>
 <p>GitHub地址:<a href="https://github.com/yeyupiaoling/LearnPaddle" target="_blank">https://github.com/yeyupiaoling/LearnPaddle</a></p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_18">参考资料</h1>
 <hr>
 <ol>
 <li><a href="http://paddlepaddle.org/" target="_blank">http://paddlepaddle.org/</a></li>
@@ -921,7 +897,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -930,7 +906,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -938,11 +914,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466412475",
@@ -960,4 +936,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 73ms, 2020/04/07 11:38:49 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 37ms, 2020/04/07 14:57:08 -->

@@ -22,6 +22,11 @@
         <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">${tocLabel}</a>
     </div>
     <#include "../../common-template/macro-user_site.ftl"/>
+    <#--
+    <div class="user__sites">
+        <@userSite dir=""/>
+    </div>
+    -->
     <header class="content fn__flex-1">
         <a href="${servePath}">
             <img class="avatar" src="${adminUser.userAvatar}" title="${userName}" alt="${userName}"/>
@@ -52,7 +57,7 @@
                         <a href="${servePath}/links.html">${linkLabel}</a>
                         &nbsp; &nbsp;
                         <a href="${servePath}/search?keyword=">
-                            ${searchLabel}
+                            Search
                         </a>
                     </li>
                 </#if>
@@ -63,6 +68,18 @@
         <#if noticeBoard??>
             <div class="vditor-reset">${noticeBoard}</div>
         </#if>
+        <#--
+        <#if !staticSite>
+            <#if isLoggedIn>
+                <a href="${servePath}/admin-index.do#main" title="${adminLabel}" class="icon-setting"></a>
+                &nbsp; &nbsp;
+                <a title="${logoutLabel}" class="icon-logout" href="${logoutURL}"></a>
+            <#else>
+                <a href="${servePath}/start" title="${startToUseLabel}" class="icon-login"></a>
+            </#if> &nbsp; &nbsp;
+        </#if>
+        <a rel="alternate" href="${servePath}/rss.xml" title="${subscribeLabel}" class="icon-rss"></a>
+        -->
     </footer>
     <#if article?? && article.articleToC?? && article.articleToC?size &gt; 0>
         <div class="toc">

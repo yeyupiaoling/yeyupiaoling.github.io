@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>SQL格式笔记 - 夜雨飘零</title><meta name="description" content="说明：[]内的参数可以省略 表的创建 create table &lt;表名&gt; (&lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], &lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], ······ ,&lt;表级完整性约束条件&gt;); 表的修改 alter table &lt;表名&gt; [add [column] &lt;新列名&gt; &lt;数据类型&gt; [完整性约束]] [add &lt;表级完整性约束&gt;] [drop [column] &lt;列名&gt; [cascade|restrict]] [drop constraint &lt;完整性约束名&gt; [restrict|cascade]] [alter column &lt;列名&gt; &lt;数据类型&gt;]; 表的删除 drop table &lt;表名&gt; [cascade|restrict]; 查询 select &lt;目标列表达式&gt; [,&lt;目标列表达式&gt;]··· from &lt;表名&gt; [group...."/><meta property="og:description" content="说明：[]内的参数可以省略 表的创建 create table &lt;表名&gt; (&lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], &lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], ······ ,&lt;表级完整性约束条件&gt;); 表的修改 alter table &lt;表名&gt; [add [column] &lt;新列名&gt; &lt;数据类型&gt; [完整性约束]] [add &lt;表级完整性约束&gt;] [drop [column] &lt;列名&gt; [cascade|restrict]] [drop constraint &lt;完整性约束名&gt; [restrict|cascade]] [alter column &lt;列名&gt; &lt;数据类型&gt;]; 表的删除 drop table &lt;表名&gt; [cascade|restrict]; 查询 select &lt;目标列表达式&gt; [,&lt;目标列表达式&gt;]··· from &lt;表名&gt; [group...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="SQL格式笔记 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584872767567.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="SQL格式笔记 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872767567.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>SQL格式笔记 - 夜雨飘零</title><meta name="description" content="说明：[]内的参数可以省略 表的创建 create table &lt;表名&gt; (&lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], &lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], ······ ,&lt;表级完整性约束条件&gt;); 表的修改 alter table &lt;表名&gt; [add [column] &lt;新列名&gt; &lt;数据类型&gt; [完整性约束]] [add &lt;表级完整性约束&gt;] [drop [column] &lt;列名&gt; [cascade|restrict]] [drop constraint &lt;完整性约束名&gt; [restrict|cascade]] [alter column &lt;列名&gt; &lt;数据类型&gt;]; 表的删除 drop table &lt;表名&gt; [cascade|restrict]; 查询 select &lt;目标列表达式&gt; [,&lt;目标列表达式&gt;]··· from &lt;表名&gt; [group...."/><meta property="og:description" content="说明：[]内的参数可以省略 表的创建 create table &lt;表名&gt; (&lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], &lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件], ······ ,&lt;表级完整性约束条件&gt;); 表的修改 alter table &lt;表名&gt; [add [column] &lt;新列名&gt; &lt;数据类型&gt; [完整性约束]] [add &lt;表级完整性约束&gt;] [drop [column] &lt;列名&gt; [cascade|restrict]] [drop constraint &lt;完整性约束名&gt; [restrict|cascade]] [alter column &lt;列名&gt; &lt;数据类型&gt;]; 表的删除 drop table &lt;表名&gt; [cascade|restrict]; 查询 select &lt;目标列表达式&gt; [,&lt;目标列表达式&gt;]··· from &lt;表名&gt; [group...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="SQL格式笔记 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584872767567.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="SQL格式笔记 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872767567.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="XAMPP下的MYSQL解决中文乱码问题" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584872438296.html">
             <link rel="next" title="学习SpringMVC笔记——Intellij IDEA创建SpringMVC项目" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584873278348.html">
     <!-- 百度统计 -->
@@ -116,45 +116,45 @@ var _hmt = _hmt || [];
         <section class="abstract vditor-reset">
             <p><strong>说明：[]内的参数可以省略</strong></p>
 <p><strong>表的创建</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">create</span> <span class="highlight-k">table</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span> <span class="highlight-p">(</span><span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-o">&gt;</span> <span class="highlight-o">&lt;</span><span class="highlight-err">数据类型</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-err">列级完整性约束条件</span><span class="highlight-p">],</span>
-<span class="highlight-ln">2</span><span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-o">&gt;</span> <span class="highlight-o">&lt;</span><span class="highlight-err">数据类型</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-err">列级完整性约束条件</span><span class="highlight-p">],</span>
-<span class="highlight-ln">3</span><span class="highlight-err">······</span>
-<span class="highlight-ln">4</span><span class="highlight-p">,</span><span class="highlight-o">&lt;</span><span class="highlight-err">表级完整性约束条件</span><span class="highlight-o">&gt;</span><span class="highlight-p">);</span> 
+<pre><code class="language-sql">create table &lt;表名&gt; (&lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件],
+&lt;列名&gt; &lt;数据类型&gt; [列级完整性约束条件],
+······
+,&lt;表级完整性约束条件&gt;); 
 </code></pre>
 <p><strong>表的修改</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">alter</span> <span class="highlight-k">table</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span>
-<span class="highlight-ln">2</span><span class="highlight-p">[</span><span class="highlight-k">add</span> <span class="highlight-p">[</span><span class="highlight-k">column</span><span class="highlight-p">]</span> <span class="highlight-o">&lt;</span><span class="highlight-err">新列名</span><span class="highlight-o">&gt;</span> <span class="highlight-o">&lt;</span><span class="highlight-err">数据类型</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-err">完整性约束</span><span class="highlight-p">]]</span>
-<span class="highlight-ln">3</span><span class="highlight-p">[</span><span class="highlight-k">add</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表级完整性约束</span><span class="highlight-o">&gt;</span><span class="highlight-p">]</span>
-<span class="highlight-ln">4</span><span class="highlight-p">[</span><span class="highlight-k">drop</span> <span class="highlight-p">[</span><span class="highlight-k">column</span><span class="highlight-p">]</span> <span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-k">cascade</span><span class="highlight-o">|</span><span class="highlight-k">restrict</span><span class="highlight-p">]]</span>
-<span class="highlight-ln">5</span><span class="highlight-p">[</span><span class="highlight-k">drop</span> <span class="highlight-k">constraint</span> <span class="highlight-o">&lt;</span><span class="highlight-err">完整性约束名</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-k">restrict</span><span class="highlight-o">|</span><span class="highlight-k">cascade</span><span class="highlight-p">]]</span>
-<span class="highlight-ln">6</span><span class="highlight-p">[</span><span class="highlight-k">alter</span> <span class="highlight-k">column</span> <span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-o">&gt;</span> <span class="highlight-o">&lt;</span><span class="highlight-err">数据类型</span><span class="highlight-o">&gt;</span><span class="highlight-p">];</span>
+<pre><code class="language-sql">alter table &lt;表名&gt;
+[add [column] &lt;新列名&gt; &lt;数据类型&gt; [完整性约束]]
+[add &lt;表级完整性约束&gt;]
+[drop [column] &lt;列名&gt; [cascade|restrict]]
+[drop constraint &lt;完整性约束名&gt; [restrict|cascade]]
+[alter column &lt;列名&gt; &lt;数据类型&gt;];
 </code></pre>
 <p><strong>表的删除</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">drop</span> <span class="highlight-k">table</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-k">cascade</span><span class="highlight-o">|</span><span class="highlight-k">restrict</span><span class="highlight-p">];</span>
+<pre><code class="language-sql">drop table &lt;表名&gt; [cascade|restrict];
 </code></pre>
 <p><strong>查询</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">select</span> <span class="highlight-o">&lt;</span><span class="highlight-err">目标列表达式</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[,</span><span class="highlight-o">&lt;</span><span class="highlight-err">目标列表达式</span><span class="highlight-o">&gt;</span><span class="highlight-p">]</span><span class="highlight-err">···</span>
-<span class="highlight-ln">2</span><span class="highlight-k">from</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span>
-<span class="highlight-ln">3</span><span class="highlight-p">[</span><span class="highlight-k">group</span> <span class="highlight-k">by</span> <span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-mi">1</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-k">having</span> <span class="highlight-o">&lt;</span><span class="highlight-err">条件表达式</span><span class="highlight-o">&gt;</span><span class="highlight-p">]]</span>     <span class="highlight-c1">--分组
-</span><span class="highlight-ln">4</span><span class="highlight-c1"></span><span class="highlight-p">[</span><span class="highlight-k">order</span> <span class="highlight-k">by</span> <span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-mi">2</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-k">asc</span><span class="highlight-o">|</span><span class="highlight-k">desc</span><span class="highlight-p">]]</span>             <span class="highlight-c1">--升序或降序
-</span></code></pre>
+<pre><code class="language-sql">select &lt;目标列表达式&gt; [,&lt;目标列表达式&gt;]···
+from &lt;表名&gt;
+[group by &lt;列名1&gt; [having &lt;条件表达式&gt;]]     --分组
+[order by &lt;列名2&gt; [asc|desc]]             --升序或降序
+</code></pre>
 <p>like的查找匹配查找</p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">where</span> <span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-mi">1</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-k">not</span><span class="highlight-p">]</span> <span class="highlight-k">like</span> <span class="highlight-err">‘匹配字符串’</span> <span class="highlight-p">[</span><span class="highlight-k">escape</span> <span class="highlight-err">‘</span><span class="highlight-o">&lt;</span><span class="highlight-err">换码字符</span><span class="highlight-o">&gt;</span><span class="highlight-err">’</span><span class="highlight-p">]</span>
+<pre><code class="language-sql">where &lt;列名1&gt; [not] like ‘匹配字符串’ [escape ‘&lt;换码字符&gt;’]
 </code></pre>
 <p>%（百分号）代表任意长度（长度可以为0）的字符串</p>
 <p>_（下横线）代表任意单个字符</p>
 <p><strong>插入数据</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[(</span><span class="highlight-o">&lt;</span><span class="highlight-err">属性列</span><span class="highlight-mi">1</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[,</span><span class="highlight-o">&lt;</span><span class="highlight-err">属性列</span><span class="highlight-mi">2</span><span class="highlight-o">&gt;</span><span class="highlight-p">]</span><span class="highlight-err">···</span><span class="highlight-p">)]</span> <span class="highlight-k">values</span> <span class="highlight-p">(</span><span class="highlight-o">&lt;</span><span class="highlight-err">常量</span><span class="highlight-mi">1</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[,</span><span class="highlight-o">&lt;</span><span class="highlight-err">常量</span><span class="highlight-mi">2</span><span class="highlight-o">&gt;</span><span class="highlight-err">···</span><span class="highlight-p">]);</span>
+<pre><code class="language-sql">insert into &lt;表名&gt; [(&lt;属性列1&gt; [,&lt;属性列2&gt;]···)] values (&lt;常量1&gt; [,&lt;常量2&gt;···]);
 </code></pre>
 <p><strong>插入子查询结果</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">insert</span> <span class="highlight-k">into</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[(</span><span class="highlight-o">&lt;</span><span class="highlight-err">属性列</span><span class="highlight-mi">1</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[,</span><span class="highlight-o">&lt;</span><span class="highlight-err">属性列</span><span class="highlight-mi">2</span><span class="highlight-o">&gt;</span><span class="highlight-err">···</span><span class="highlight-p">])]</span>
-<span class="highlight-ln">2</span><span class="highlight-k">select</span> <span class="highlight-o">&lt;</span><span class="highlight-err">目标列表达式</span><span class="highlight-mi">1</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[,</span><span class="highlight-o">&lt;</span><span class="highlight-err">目标列表达式</span><span class="highlight-mi">2</span><span class="highlight-o">&gt;</span><span class="highlight-p">]</span><span class="highlight-err">···</span><span class="highlight-k">from</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span>  <span class="highlight-c1">--子查询结果
-</span></code></pre>
+<pre><code class="language-sql">insert into &lt;表名&gt; [(&lt;属性列1&gt; [,&lt;属性列2&gt;···])]
+select &lt;目标列表达式1&gt; [,&lt;目标列表达式2&gt;]···from &lt;表名&gt;  --子查询结果
+</code></pre>
 <p><strong>修改数据</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">update</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span> <span class="highlight-k">set</span> <span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-o">&gt;=&lt;</span><span class="highlight-err">表达式</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[,</span><span class="highlight-o">&lt;</span><span class="highlight-err">列名</span><span class="highlight-o">&gt;=&lt;</span><span class="highlight-err">表达式</span><span class="highlight-o">&gt;</span><span class="highlight-err">···</span><span class="highlight-p">]</span> <span class="highlight-p">[</span><span class="highlight-k">where</span> <span class="highlight-o">&lt;</span><span class="highlight-err">条件</span><span class="highlight-o">&gt;</span><span class="highlight-p">];</span>
+<pre><code class="language-sql">update &lt;表名&gt; set &lt;列名&gt;=&lt;表达式&gt; [,&lt;列名&gt;=&lt;表达式&gt;···] [where &lt;条件&gt;];
 </code></pre>
 <p><strong>删除数据</strong></p>
-<pre><code class="language-sql highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-k">delete</span> <span class="highlight-k">from</span> <span class="highlight-o">&lt;</span><span class="highlight-err">表名</span><span class="highlight-o">&gt;</span> <span class="highlight-p">[</span><span class="highlight-k">where</span> <span class="highlight-o">&lt;</span><span class="highlight-err">条件</span><span class="highlight-o">&gt;</span><span class="highlight-p">];</span>
+<pre><code class="language-sql">delete from &lt;表名&gt; [where &lt;条件&gt;];
 </code></pre>
                 <div>
                     <hr>
@@ -231,7 +231,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -240,7 +240,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -248,11 +248,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466416549",
@@ -270,4 +270,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 43ms, 2020/04/07 11:38:50 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 36ms, 2020/04/07 14:57:08 -->

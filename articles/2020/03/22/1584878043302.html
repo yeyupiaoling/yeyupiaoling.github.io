@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android使用SharedPreferences保存账号密码 - 夜雨飘零</title><meta name="description" content="有很多的应用都会有保存密码和账号的功能，比如QQ。接下来就讲讲使用SharedPreferences来保存密码和账号，也许有些人会考虑的数据库，但是我个人认为对于保存简单的数据，使用的数据库就大材小用了，SharedPreferences比较轻量级 首先写好布局，只有两个输入框和一个按钮 &lt;EditText android:id=&quot;@+id/number&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;number&quot; /&gt; &lt;EditText android:id=&quot;@+id/password&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;textPassword&quot; /&gt; &lt;Button android:id=&quot;@+id/save&quot; android:text=&quot;保存&quot; android...."/><meta property="og:description" content="有很多的应用都会有保存密码和账号的功能，比如QQ。接下来就讲讲使用SharedPreferences来保存密码和账号，也许有些人会考虑的数据库，但是我个人认为对于保存简单的数据，使用的数据库就大材小用了，SharedPreferences比较轻量级 首先写好布局，只有两个输入框和一个按钮 &lt;EditText android:id=&quot;@+id/number&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;number&quot; /&gt; &lt;EditText android:id=&quot;@+id/password&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;textPassword&quot; /&gt; &lt;Button android:id=&quot;@+id/save&quot; android:text=&quot;保存&quot; android...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android使用SharedPreferences保存账号密码 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584878043302.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android使用SharedPreferences保存账号密码 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584878043302.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Android使用SharedPreferences保存账号密码 - 夜雨飘零</title><meta name="description" content="有很多的应用都会有保存密码和账号的功能，比如QQ。接下来就讲讲使用SharedPreferences来保存密码和账号，也许有些人会考虑的数据库，但是我个人认为对于保存简单的数据，使用的数据库就大材小用了，SharedPreferences比较轻量级 首先写好布局，只有两个输入框和一个按钮 &lt;EditText android:id=&quot;@+id/number&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;number&quot; /&gt; &lt;EditText android:id=&quot;@+id/password&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;textPassword&quot; /&gt; &lt;Button android:id=&quot;@+id/save&quot; android:text=&quot;保存&quot; android...."/><meta property="og:description" content="有很多的应用都会有保存密码和账号的功能，比如QQ。接下来就讲讲使用SharedPreferences来保存密码和账号，也许有些人会考虑的数据库，但是我个人认为对于保存简单的数据，使用的数据库就大材小用了，SharedPreferences比较轻量级 首先写好布局，只有两个输入框和一个按钮 &lt;EditText android:id=&quot;@+id/number&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;number&quot; /&gt; &lt;EditText android:id=&quot;@+id/password&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;wrap_content&quot; android:inputType=&quot;textPassword&quot; /&gt; &lt;Button android:id=&quot;@+id/save&quot; android:text=&quot;保存&quot; android...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Android使用SharedPreferences保存账号密码 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/22/1584878043302.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Android使用SharedPreferences保存账号密码 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584878043302.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Android读取短信和联系人" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584877543084.html">
             <link rel="next" title="Android网络框架OKhttp3学习笔记" href="https://yeyupiaoling.github.io/articles/2020/03/22/1584878384548.html">
     <!-- 百度统计 -->
@@ -117,69 +117,69 @@ var _hmt = _hmt || [];
             <p><img src="https://img.hacpai.com/bing/20200208.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
 <p>有很多的应用都会有保存密码和账号的功能，比如QQ。接下来就讲讲使用SharedPreferences来保存密码和账号，也许有些人会考虑的数据库，但是我个人认为对于保存简单的数据，使用的数据库就大材小用了，SharedPreferences比较轻量级</p>
 <p>首先写好布局，只有两个输入框和一个按钮</p>
-<pre><code class="language-html highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-p">&lt;</span><span class="highlight-nt">EditText</span>
-<span class="highlight-ln"> 2</span>        <span class="highlight-na">android:id</span><span class="highlight-o">=</span><span class="highlight-s">"@+id/number"</span>
-<span class="highlight-ln"> 3</span>        <span class="highlight-na">android:layout_width</span><span class="highlight-o">=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln"> 4</span>        <span class="highlight-na">android:layout_height</span><span class="highlight-o">=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln"> 5</span>        <span class="highlight-na">android:inputType</span><span class="highlight-o">=</span><span class="highlight-s">"number"</span> <span class="highlight-p">/&gt;</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-p">&lt;</span><span class="highlight-nt">EditText</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-na">android:id</span><span class="highlight-o">=</span><span class="highlight-s">"@+id/password"</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-na">android:layout_width</span><span class="highlight-o">=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">10</span>        <span class="highlight-na">android:layout_height</span><span class="highlight-o">=</span><span class="highlight-s">"wrap_content"</span>
-<span class="highlight-ln">11</span>        <span class="highlight-na">android:inputType</span><span class="highlight-o">=</span><span class="highlight-s">"textPassword"</span> <span class="highlight-p">/&gt;</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-p">&lt;</span><span class="highlight-nt">Button</span>
-<span class="highlight-ln">14</span>        <span class="highlight-na">android:id</span><span class="highlight-o">=</span><span class="highlight-s">"@+id/save"</span>
-<span class="highlight-ln">15</span>        <span class="highlight-na">android:text</span><span class="highlight-o">=</span><span class="highlight-s">"保存"</span>
-<span class="highlight-ln">16</span>        <span class="highlight-na">android:layout_width</span><span class="highlight-o">=</span><span class="highlight-s">"match_parent"</span>
-<span class="highlight-ln">17</span>        <span class="highlight-na">android:layout_height</span><span class="highlight-o">=</span><span class="highlight-s">"wrap_content"</span> <span class="highlight-p">/&gt;</span>
-<span class="highlight-ln">18</span>
+<pre><code class="language-html">&lt;EditText
+        android:id="@+id/number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number" /&gt;
+
+    &lt;EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword" /&gt;
+
+    &lt;Button
+        android:id="@+id/save"
+        android:text="保存"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" /&gt;
+
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/03/GdpIw8.png" alt=""></p>
 <p>获取取控件</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span>    <span class="highlight-kd">private</span> <span class="highlight-n">EditText</span> <span class="highlight-n">number</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span>    <span class="highlight-kd">private</span> <span class="highlight-n">EditText</span> <span class="highlight-n">password</span><span class="highlight-o">;</span>
-<span class="highlight-ln">3</span>    <span class="highlight-kd">private</span> <span class="highlight-n">Button</span> <span class="highlight-n">save</span><span class="highlight-o">;</span>
-<span class="highlight-ln">4</span>
-<span class="highlight-ln">5</span>     <span class="highlight-n">number</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">EditText</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">number</span><span class="highlight-o">);</span>
-<span class="highlight-ln">6</span>     <span class="highlight-n">password</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">EditText</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">password</span><span class="highlight-o">);</span>
-<span class="highlight-ln">7</span>     <span class="highlight-n">save</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">save</span><span class="highlight-o">);</span><span class="highlight-kd">private</span> <span class="highlight-n">EditText</span> <span class="highlight-n">number</span><span class="highlight-o">;</span>
+<pre><code class="language-java">    private EditText number;
+    private EditText password;
+    private Button save;
+
+     number = (EditText) findViewById(R.id.number);
+     password = (EditText) findViewById(R.id.password);
+     save = (Button) findViewById(R.id.save);private EditText number;
 </code></pre>
 <p>在获取控件之后，还要获取SharedPreferences，第一参数为保存的文件名，第二个为保存的模型，当文件存在就读取，如果不存在就创建</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">private</span> <span class="highlight-n">SharedPreferences</span> <span class="highlight-n">sp</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span><span class="highlight-c1">//第一参数为保存的文件名，第二个为保存的模型，当文件存在就读取，如果不存在就创建
-</span><span class="highlight-ln">3</span><span class="highlight-c1"></span><span class="highlight-n">sp</span> <span class="highlight-o">=</span> <span class="highlight-n">getSharedPreferences</span><span class="highlight-o">(</span><span class="highlight-s">"info"</span><span class="highlight-o">,</span><span class="highlight-n">MODE_PRIVATE</span><span class="highlight-o">);</span>
+<pre><code class="language-java">private SharedPreferences sp;
+//第一参数为保存的文件名，第二个为保存的模型，当文件存在就读取，如果不存在就创建
+sp = getSharedPreferences("info",MODE_PRIVATE);
 </code></pre>
 <p>增加按钮点击事件，点击按钮保存账号和密码</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-n">save</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 2</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln"> 3</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 4</span>                <span class="highlight-c1">//获取输入框的账号和密码
-</span><span class="highlight-ln"> 5</span><span class="highlight-c1"></span>                <span class="highlight-n">String</span> <span class="highlight-n">numberStr</span> <span class="highlight-o">=</span> <span class="highlight-n">number</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 6</span>                <span class="highlight-n">String</span> <span class="highlight-n">passwordStr</span> <span class="highlight-o">=</span> <span class="highlight-n">password</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 7</span>                <span class="highlight-c1">//判断是否为空
-</span><span class="highlight-ln"> 8</span><span class="highlight-c1"></span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">numberStr</span><span class="highlight-o">.</span><span class="highlight-na">isEmpty</span><span class="highlight-o">()</span> <span class="highlight-o">||</span> <span class="highlight-n">passwordStr</span><span class="highlight-o">.</span><span class="highlight-na">isEmpty</span><span class="highlight-o">()){</span>
-<span class="highlight-ln"> 9</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getApplicationContext</span><span class="highlight-o">(),</span><span class="highlight-s">"账号或密码不能为空"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">10</span>                <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">11</span>                    <span class="highlight-c1">//获取Editor
-</span><span class="highlight-ln">12</span><span class="highlight-c1"></span>                    <span class="highlight-n">SharedPreferences</span><span class="highlight-o">.</span><span class="highlight-na">Editor</span> <span class="highlight-n">editor</span> <span class="highlight-o">=</span> <span class="highlight-n">sp</span><span class="highlight-o">.</span><span class="highlight-na">edit</span><span class="highlight-o">();</span>
-<span class="highlight-ln">13</span>                    <span class="highlight-c1">//输入内容
-</span><span class="highlight-ln">14</span><span class="highlight-c1"></span>                    <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">putString</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">,</span><span class="highlight-n">numberStr</span><span class="highlight-o">);</span>
-<span class="highlight-ln">15</span>                    <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">putString</span><span class="highlight-o">(</span><span class="highlight-s">"password"</span><span class="highlight-o">,</span><span class="highlight-n">passwordStr</span><span class="highlight-o">);</span>
-<span class="highlight-ln">16</span>                    <span class="highlight-c1">//必须提交才会生效，也可以使用apply
-</span><span class="highlight-ln">17</span><span class="highlight-c1"></span>                    <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">commit</span><span class="highlight-o">();</span>
-<span class="highlight-ln">18</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getApplicationContext</span><span class="highlight-o">(),</span><span class="highlight-s">"保存成功"</span><span class="highlight-o">,</span><span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">19</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">20</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">21</span>        <span class="highlight-o">});</span>
+<pre><code class="language-java">save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //获取输入框的账号和密码
+                String numberStr = number.getText().toString().trim();
+                String passwordStr = password.getText().toString().trim();
+                //判断是否为空
+                if (numberStr.isEmpty() || passwordStr.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"账号或密码不能为空",Toast.LENGTH_SHORT).show();
+                }else {
+                    //获取Editor
+                    SharedPreferences.Editor editor = sp.edit();
+                    //输入内容
+                    editor.putString("number",numberStr);
+                    editor.putString("password",passwordStr);
+                    //必须提交才会生效，也可以使用apply
+                    editor.commit();
+                    Toast.makeText(getApplicationContext(),"保存成功",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 </code></pre>
 <p>当我们保存账号和密码后，想要在第二次打开应用时直接写密码和账号，还有在加载页面时获取数据</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-c1">//获取info文件的内容，第一参数为保存时的key，第二个是如果获取不到的默认值
-</span><span class="highlight-ln">2</span><span class="highlight-c1"></span>        <span class="highlight-n">String</span> <span class="highlight-n">numberStr1</span> <span class="highlight-o">=</span> <span class="highlight-n">sp</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">,</span><span class="highlight-s">""</span><span class="highlight-o">);</span>
-<span class="highlight-ln">3</span>        <span class="highlight-n">String</span> <span class="highlight-n">passwordStr2</span> <span class="highlight-o">=</span> <span class="highlight-n">sp</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-s">"password"</span><span class="highlight-o">,</span><span class="highlight-s">""</span><span class="highlight-o">);</span>
-<span class="highlight-ln">4</span>        <span class="highlight-n">number</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">numberStr1</span><span class="highlight-o">);</span>
-<span class="highlight-ln">5</span>        <span class="highlight-n">password</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">passwordStr2</span><span class="highlight-o">);</span>
+<pre><code class="language-java">//获取info文件的内容，第一参数为保存时的key，第二个是如果获取不到的默认值
+        String numberStr1 = sp.getString("number","");
+        String passwordStr2 = sp.getString("password","");
+        number.setText(numberStr1);
+        password.setText(passwordStr2);
 </code></pre>
 <p>效果图</p>
 <p><img src="https://s1.ax1x.com/2020/03/30/Gmc50H.gif" alt=""></p>
@@ -197,130 +197,130 @@ var _hmt = _hmt || [];
 <p>②通过sp.getXXX(key,defValue)直接可以获得数据</p>
 <p>** 加密**</p>
 <p>明文保存好像很不安全，那我们就对密码简单加密，下面是加密和解密的方法</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln"> 2</span><span class="highlight-cm">     * 加密方法
-</span><span class="highlight-ln"> 3</span><span class="highlight-cm">     * @param str 要加密的字符串
-</span><span class="highlight-ln"> 4</span><span class="highlight-cm">     * @param key 加密的密匙
-</span><span class="highlight-ln"> 5</span><span class="highlight-cm">     * @return 返回加密后的字符串
-</span><span class="highlight-ln"> 6</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln"> 7</span>    <span class="highlight-kd">public</span> <span class="highlight-n">String</span> <span class="highlight-nf">encryptionString</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">str</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">key</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln"> 8</span>        <span class="highlight-kt">char</span><span class="highlight-o">[]</span> <span class="highlight-n">chars</span> <span class="highlight-o">=</span> <span class="highlight-n">str</span><span class="highlight-o">.</span><span class="highlight-na">toCharArray</span><span class="highlight-o">();</span>
-<span class="highlight-ln"> 9</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">chars</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">10</span>            <span class="highlight-n">chars</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">char</span><span class="highlight-o">)</span> <span class="highlight-o">(</span><span class="highlight-n">chars</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">]</span> <span class="highlight-o">+</span> <span class="highlight-n">key</span><span class="highlight-o">);</span>
-<span class="highlight-ln">11</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">12</span>        <span class="highlight-k">return</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">chars</span><span class="highlight-o">);</span>
-<span class="highlight-ln">13</span>    <span class="highlight-o">}</span>
+<pre><code class="language-java">    /**
+     * 加密方法
+     * @param str 要加密的字符串
+     * @param key 加密的密匙
+     * @return 返回加密后的字符串
+     */
+    public String encryptionString(String str, int key) {
+        char[] chars = str.toCharArray();
+        for (int i = 0; i &lt; chars.length; i++) {
+            chars[i] = (char) (chars[i] + key);
+        }
+        return String.valueOf(chars);
+    }
 </code></pre>
 <p>在保存密码前要对密码加密</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">DECODE_ENCRYPTION_KEY</span> <span class="highlight-o">=</span> <span class="highlight-n">64</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-n">String</span> <span class="highlight-n">passwordStr</span> <span class="highlight-o">=</span> <span class="highlight-n">password</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln">4</span><span class="highlight-c1">//对密码进行加密
-</span><span class="highlight-ln">5</span><span class="highlight-c1"></span><span class="highlight-n">passwordStr</span> <span class="highlight-o">=</span> <span class="highlight-n">encryptionString</span><span class="highlight-o">(</span><span class="highlight-n">passwordStr</span><span class="highlight-o">,</span> <span class="highlight-n">DECODE_ENCRYPTION_KEY</span><span class="highlight-o">);</span>
-<span class="highlight-ln">6</span><span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">putString</span><span class="highlight-o">(</span><span class="highlight-s">"password"</span><span class="highlight-o">,</span> <span class="highlight-n">passwordStr</span><span class="highlight-o">);</span> 
+<pre><code class="language-java">public static final int DECODE_ENCRYPTION_KEY = 64;
+
+String passwordStr = password.getText().toString().trim();
+//对密码进行加密
+passwordStr = encryptionString(passwordStr, DECODE_ENCRYPTION_KEY);
+editor.putString("password", passwordStr); 
 </code></pre>
 <p><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="" title="点击并拖拽以移动"></p>
 <p>显示密码前要对密码解密</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln">1</span><span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">DECODE_ENCRYPTION_KEY</span> <span class="highlight-o">=</span> <span class="highlight-n">64</span><span class="highlight-o">;</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span><span class="highlight-n">String</span> <span class="highlight-n">passwordStr2</span> <span class="highlight-o">=</span> <span class="highlight-n">sp</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-s">"password"</span><span class="highlight-o">,</span> <span class="highlight-s">""</span><span class="highlight-o">);</span>
-<span class="highlight-ln">4</span><span class="highlight-c1">//对密码进行解密
-</span><span class="highlight-ln">5</span><span class="highlight-c1"></span><span class="highlight-n">passwordStr2</span> <span class="highlight-o">=</span> <span class="highlight-n">decodeString</span><span class="highlight-o">(</span><span class="highlight-n">passwordStr2</span><span class="highlight-o">,</span><span class="highlight-n">DECODE_ENCRYPTION_KEY</span><span class="highlight-o">);</span>
-<span class="highlight-ln">6</span><span class="highlight-n">password</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">passwordStr2</span><span class="highlight-o">);</span>
+<pre><code class="language-java">public static final int DECODE_ENCRYPTION_KEY = 64;
+
+String passwordStr2 = sp.getString("password", "");
+//对密码进行解密
+passwordStr2 = decodeString(passwordStr2,DECODE_ENCRYPTION_KEY);
+password.setText(passwordStr2);
 </code></pre>
 <p>在保存后，就算别人看到也不知道真实的密码是什么，下面的图是加密后的，真实密码是654321</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GQXHlq.png" alt=""></p>
 <p>整个代码如下：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.content.SharedPreferences</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.os.Bundle</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.support.v7.app.AppCompatActivity</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.view.View</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Button</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.EditText</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">android.widget.Toast</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 8</span>
-<span class="highlight-ln"> 9</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">MainActivity</span> <span class="highlight-kd">extends</span> <span class="highlight-n">AppCompatActivity</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">10</span>
-<span class="highlight-ln">11</span>    <span class="highlight-kd">private</span> <span class="highlight-n">EditText</span> <span class="highlight-n">number</span><span class="highlight-o">;</span>
-<span class="highlight-ln">12</span>    <span class="highlight-kd">private</span> <span class="highlight-n">EditText</span> <span class="highlight-n">password</span><span class="highlight-o">;</span>
-<span class="highlight-ln">13</span>    <span class="highlight-kd">private</span> <span class="highlight-n">Button</span> <span class="highlight-n">save</span><span class="highlight-o">;</span>
-<span class="highlight-ln">14</span>    <span class="highlight-kd">private</span> <span class="highlight-n">SharedPreferences</span> <span class="highlight-n">sp</span><span class="highlight-o">;</span>
-<span class="highlight-ln">15</span>    <span class="highlight-kd">public</span> <span class="highlight-kd">static</span> <span class="highlight-kd">final</span> <span class="highlight-kt">int</span> <span class="highlight-n">DECODE_ENCRYPTION_KEY</span> <span class="highlight-o">=</span> <span class="highlight-n">64</span><span class="highlight-o">;</span>
-<span class="highlight-ln">16</span>
-<span class="highlight-ln">17</span>    <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">18</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">Bundle</span> <span class="highlight-n">savedInstanceState</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">19</span>        <span class="highlight-kd">super</span><span class="highlight-o">.</span><span class="highlight-na">onCreate</span><span class="highlight-o">(</span><span class="highlight-n">savedInstanceState</span><span class="highlight-o">);</span>
-<span class="highlight-ln">20</span>        <span class="highlight-n">setContentView</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">layout</span><span class="highlight-o">.</span><span class="highlight-na">activity_main</span><span class="highlight-o">);</span>
-<span class="highlight-ln">21</span>
-<span class="highlight-ln">22</span>        <span class="highlight-n">number</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">EditText</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">number</span><span class="highlight-o">);</span>
-<span class="highlight-ln">23</span>        <span class="highlight-n">password</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">EditText</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">password</span><span class="highlight-o">);</span>
-<span class="highlight-ln">24</span>        <span class="highlight-n">save</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-n">Button</span><span class="highlight-o">)</span> <span class="highlight-n">findViewById</span><span class="highlight-o">(</span><span class="highlight-n">R</span><span class="highlight-o">.</span><span class="highlight-na">id</span><span class="highlight-o">.</span><span class="highlight-na">save</span><span class="highlight-o">);</span>
-<span class="highlight-ln">25</span>
-<span class="highlight-ln">26</span>        <span class="highlight-c1">//第一参数为保存的文件名，第二个为保存的模型，当文件存在就读取，如果不存在就创建
-</span><span class="highlight-ln">27</span><span class="highlight-c1"></span>        <span class="highlight-n">sp</span> <span class="highlight-o">=</span> <span class="highlight-n">getSharedPreferences</span><span class="highlight-o">(</span><span class="highlight-s">"info"</span><span class="highlight-o">,</span> <span class="highlight-n">MODE_PRIVATE</span><span class="highlight-o">);</span>
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>        <span class="highlight-c1">//获取info文件的内容，第一参数为保存时的key，第二个是如果获取不到的默认值
-</span><span class="highlight-ln">30</span><span class="highlight-c1"></span>        <span class="highlight-n">String</span> <span class="highlight-n">numberStr1</span> <span class="highlight-o">=</span> <span class="highlight-n">sp</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">,</span> <span class="highlight-s">""</span><span class="highlight-o">);</span>
-<span class="highlight-ln">31</span>        <span class="highlight-n">String</span> <span class="highlight-n">passwordStr2</span> <span class="highlight-o">=</span> <span class="highlight-n">sp</span><span class="highlight-o">.</span><span class="highlight-na">getString</span><span class="highlight-o">(</span><span class="highlight-s">"password"</span><span class="highlight-o">,</span> <span class="highlight-s">""</span><span class="highlight-o">);</span>
-<span class="highlight-ln">32</span>        <span class="highlight-c1">//对密码进行解密
-</span><span class="highlight-ln">33</span><span class="highlight-c1"></span>        <span class="highlight-n">passwordStr2</span> <span class="highlight-o">=</span> <span class="highlight-n">decodeString</span><span class="highlight-o">(</span><span class="highlight-n">passwordStr2</span><span class="highlight-o">,</span><span class="highlight-n">DECODE_ENCRYPTION_KEY</span><span class="highlight-o">);</span>
-<span class="highlight-ln">34</span>        <span class="highlight-n">password</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">passwordStr2</span><span class="highlight-o">);</span>
-<span class="highlight-ln">35</span>        <span class="highlight-n">number</span><span class="highlight-o">.</span><span class="highlight-na">setText</span><span class="highlight-o">(</span><span class="highlight-n">numberStr1</span><span class="highlight-o">);</span>
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>
-<span class="highlight-ln">38</span>        <span class="highlight-n">save</span><span class="highlight-o">.</span><span class="highlight-na">setOnClickListener</span><span class="highlight-o">(</span><span class="highlight-k">new</span> <span class="highlight-n">View</span><span class="highlight-o">.</span><span class="highlight-na">OnClickListener</span><span class="highlight-o">()</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">39</span>            <span class="highlight-nd">@Override</span>
-<span class="highlight-ln">40</span>            <span class="highlight-kd">public</span> <span class="highlight-kt">void</span> <span class="highlight-nf">onClick</span><span class="highlight-o">(</span><span class="highlight-n">View</span> <span class="highlight-n">v</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">41</span>                <span class="highlight-c1">//获取输入框的账号和密码
-</span><span class="highlight-ln">42</span><span class="highlight-c1"></span>                <span class="highlight-n">String</span> <span class="highlight-n">numberStr</span> <span class="highlight-o">=</span> <span class="highlight-n">number</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln">43</span>                <span class="highlight-n">String</span> <span class="highlight-n">passwordStr</span> <span class="highlight-o">=</span> <span class="highlight-n">password</span><span class="highlight-o">.</span><span class="highlight-na">getText</span><span class="highlight-o">().</span><span class="highlight-na">toString</span><span class="highlight-o">().</span><span class="highlight-na">trim</span><span class="highlight-o">();</span>
-<span class="highlight-ln">44</span>                <span class="highlight-c1">//对密码进行加密
-</span><span class="highlight-ln">45</span><span class="highlight-c1"></span>                <span class="highlight-n">passwordStr</span> <span class="highlight-o">=</span> <span class="highlight-n">encryptionString</span><span class="highlight-o">(</span><span class="highlight-n">passwordStr</span><span class="highlight-o">,</span> <span class="highlight-n">DECODE_ENCRYPTION_KEY</span><span class="highlight-o">);</span>
-<span class="highlight-ln">46</span>                <span class="highlight-c1">//判断是否为空
-</span><span class="highlight-ln">47</span><span class="highlight-c1"></span>                <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">numberStr</span><span class="highlight-o">.</span><span class="highlight-na">isEmpty</span><span class="highlight-o">()</span> <span class="highlight-o">||</span> <span class="highlight-n">passwordStr</span><span class="highlight-o">.</span><span class="highlight-na">isEmpty</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">48</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getApplicationContext</span><span class="highlight-o">(),</span> <span class="highlight-s">"账号或密码不能为空"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">49</span>                <span class="highlight-o">}</span> <span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">50</span>                    <span class="highlight-c1">//获取Editor
-</span><span class="highlight-ln">51</span><span class="highlight-c1"></span>                    <span class="highlight-n">SharedPreferences</span><span class="highlight-o">.</span><span class="highlight-na">Editor</span> <span class="highlight-n">editor</span> <span class="highlight-o">=</span> <span class="highlight-n">sp</span><span class="highlight-o">.</span><span class="highlight-na">edit</span><span class="highlight-o">();</span>
-<span class="highlight-ln">52</span>                    <span class="highlight-c1">//输入内容
-</span><span class="highlight-ln">53</span><span class="highlight-c1"></span>                    <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">putString</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">,</span> <span class="highlight-n">numberStr</span><span class="highlight-o">);</span>
-<span class="highlight-ln">54</span>                    <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">putString</span><span class="highlight-o">(</span><span class="highlight-s">"password"</span><span class="highlight-o">,</span> <span class="highlight-n">passwordStr</span><span class="highlight-o">);</span>
-<span class="highlight-ln">55</span>                    <span class="highlight-c1">//必须提交才会生效，也可以使用apply
-</span><span class="highlight-ln">56</span><span class="highlight-c1"></span>                    <span class="highlight-n">editor</span><span class="highlight-o">.</span><span class="highlight-na">commit</span><span class="highlight-o">();</span>
-<span class="highlight-ln">57</span>                    <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">makeText</span><span class="highlight-o">(</span><span class="highlight-n">getApplicationContext</span><span class="highlight-o">(),</span> <span class="highlight-s">"保存成功"</span><span class="highlight-o">,</span> <span class="highlight-n">Toast</span><span class="highlight-o">.</span><span class="highlight-na">LENGTH_SHORT</span><span class="highlight-o">).</span><span class="highlight-na">show</span><span class="highlight-o">();</span>
-<span class="highlight-ln">58</span>                <span class="highlight-o">}</span>
-<span class="highlight-ln">59</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">60</span>        <span class="highlight-o">});</span>
-<span class="highlight-ln">61</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">62</span>
-<span class="highlight-ln">63</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">64</span><span class="highlight-cm">     * 加密方法
-</span><span class="highlight-ln">65</span><span class="highlight-cm">     * @param str 要加密的字符串
-</span><span class="highlight-ln">66</span><span class="highlight-cm">     * @param key 加密的密匙
-</span><span class="highlight-ln">67</span><span class="highlight-cm">     * @return 返回加密后的字符串
-</span><span class="highlight-ln">68</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">69</span>    <span class="highlight-kd">public</span> <span class="highlight-n">String</span> <span class="highlight-nf">encryptionString</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">str</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">key</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">70</span>        <span class="highlight-kt">char</span><span class="highlight-o">[]</span> <span class="highlight-n">chars</span> <span class="highlight-o">=</span> <span class="highlight-n">str</span><span class="highlight-o">.</span><span class="highlight-na">toCharArray</span><span class="highlight-o">();</span>
-<span class="highlight-ln">71</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">chars</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">72</span>            <span class="highlight-n">chars</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">char</span><span class="highlight-o">)</span> <span class="highlight-o">(</span><span class="highlight-n">chars</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">]</span> <span class="highlight-o">+</span> <span class="highlight-n">key</span><span class="highlight-o">);</span>
-<span class="highlight-ln">73</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">74</span>        <span class="highlight-k">return</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">chars</span><span class="highlight-o">);</span>
-<span class="highlight-ln">75</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">76</span>
-<span class="highlight-ln">77</span>    <span class="highlight-cm">/**
-</span><span class="highlight-ln">78</span><span class="highlight-cm">     * 解密方法
-</span><span class="highlight-ln">79</span><span class="highlight-cm">     * @param str 要解密的字符串
-</span><span class="highlight-ln">80</span><span class="highlight-cm">     * @param key 解密的密匙，跟加密一样
-</span><span class="highlight-ln">81</span><span class="highlight-cm">     * @return 返回解密后的字符串
-</span><span class="highlight-ln">82</span><span class="highlight-cm">     */</span>
-<span class="highlight-ln">83</span>    <span class="highlight-kd">public</span> <span class="highlight-n">String</span> <span class="highlight-nf">decodeString</span><span class="highlight-o">(</span><span class="highlight-n">String</span> <span class="highlight-n">str</span><span class="highlight-o">,</span> <span class="highlight-kt">int</span> <span class="highlight-n">key</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">84</span>        <span class="highlight-kt">char</span><span class="highlight-o">[]</span> <span class="highlight-n">chars</span> <span class="highlight-o">=</span> <span class="highlight-n">str</span><span class="highlight-o">.</span><span class="highlight-na">toCharArray</span><span class="highlight-o">();</span>
-<span class="highlight-ln">85</span>        <span class="highlight-k">for</span> <span class="highlight-o">(</span><span class="highlight-kt">int</span> <span class="highlight-n">i</span> <span class="highlight-o">=</span> <span class="highlight-n">0</span><span class="highlight-o">;</span> <span class="highlight-n">i</span> <span class="highlight-o">&lt;</span> <span class="highlight-n">chars</span><span class="highlight-o">.</span><span class="highlight-na">length</span><span class="highlight-o">;</span> <span class="highlight-n">i</span><span class="highlight-o">++)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">86</span>            <span class="highlight-n">chars</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">]</span> <span class="highlight-o">=</span> <span class="highlight-o">(</span><span class="highlight-kt">char</span><span class="highlight-o">)</span> <span class="highlight-o">(</span><span class="highlight-n">chars</span><span class="highlight-o">[</span><span class="highlight-n">i</span><span class="highlight-o">]</span> <span class="highlight-o">-</span> <span class="highlight-n">key</span><span class="highlight-o">);</span>
-<span class="highlight-ln">87</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">88</span>        <span class="highlight-k">return</span> <span class="highlight-n">String</span><span class="highlight-o">.</span><span class="highlight-na">valueOf</span><span class="highlight-o">(</span><span class="highlight-n">chars</span><span class="highlight-o">);</span>
-<span class="highlight-ln">89</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">90</span><span class="highlight-o">}</span>
+<pre><code class="language-java">import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText number;
+    private EditText password;
+    private Button save;
+    private SharedPreferences sp;
+    public static final int DECODE_ENCRYPTION_KEY = 64;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        number = (EditText) findViewById(R.id.number);
+        password = (EditText) findViewById(R.id.password);
+        save = (Button) findViewById(R.id.save);
+
+        //第一参数为保存的文件名，第二个为保存的模型，当文件存在就读取，如果不存在就创建
+        sp = getSharedPreferences("info", MODE_PRIVATE);
+
+        //获取info文件的内容，第一参数为保存时的key，第二个是如果获取不到的默认值
+        String numberStr1 = sp.getString("number", "");
+        String passwordStr2 = sp.getString("password", "");
+        //对密码进行解密
+        passwordStr2 = decodeString(passwordStr2,DECODE_ENCRYPTION_KEY);
+        password.setText(passwordStr2);
+        number.setText(numberStr1);
+
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //获取输入框的账号和密码
+                String numberStr = number.getText().toString().trim();
+                String passwordStr = password.getText().toString().trim();
+                //对密码进行加密
+                passwordStr = encryptionString(passwordStr, DECODE_ENCRYPTION_KEY);
+                //判断是否为空
+                if (numberStr.isEmpty() || passwordStr.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "账号或密码不能为空", Toast.LENGTH_SHORT).show();
+                } else {
+                    //获取Editor
+                    SharedPreferences.Editor editor = sp.edit();
+                    //输入内容
+                    editor.putString("number", numberStr);
+                    editor.putString("password", passwordStr);
+                    //必须提交才会生效，也可以使用apply
+                    editor.commit();
+                    Toast.makeText(getApplicationContext(), "保存成功", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /**
+     * 加密方法
+     * @param str 要加密的字符串
+     * @param key 加密的密匙
+     * @return 返回加密后的字符串
+     */
+    public String encryptionString(String str, int key) {
+        char[] chars = str.toCharArray();
+        for (int i = 0; i &lt; chars.length; i++) {
+            chars[i] = (char) (chars[i] + key);
+        }
+        return String.valueOf(chars);
+    }
+
+    /**
+     * 解密方法
+     * @param str 要解密的字符串
+     * @param key 解密的密匙，跟加密一样
+     * @return 返回解密后的字符串
+     */
+    public String decodeString(String str, int key) {
+        char[] chars = str.toCharArray();
+        for (int i = 0; i &lt; chars.length; i++) {
+            chars[i] = (char) (chars[i] - key);
+        }
+        return String.valueOf(chars);
+    }
+}
 </code></pre>
 <p><strong>项目源代码：<a href="http://download.csdn.net/download/qq_33200967/9929339" target="_blank">http://download.csdn.net/download/qq_33200967/9929339</a></strong></p>
                 <div>
@@ -398,7 +398,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -407,7 +407,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -415,11 +415,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466402480",
@@ -437,4 +437,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 57ms, 2020/04/07 11:38:50 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 36ms, 2020/04/07 14:57:08 -->

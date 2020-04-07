@@ -6,7 +6,7 @@
     "name": "夜雨飘零",
     "start_url": ".",
     "description": "记录精彩的程序人生",
-    "short_name": "${shortName}",
+    "short_name": "夜雨飘零",
     "icons": [
         {
             "sizes": "48x48",

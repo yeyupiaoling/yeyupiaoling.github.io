@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在CentOS上使用Nginx和Tomcat搭建高可用高并发网站 - 夜雨飘零</title><meta name="description" content="前言 本篇文章将介绍如何搭建使用Nginx和Tomcat的高可用高并发的网站，我们将会在CentOS系统上搭建这样一个网站后端。这个系统的架构如下： 虚拟IP地址：192.168.204.221 主虚拟服务器：192.168.204.121 备虚拟服务器：192.168.204.122 Nginx服务器1：192.168.204.123 Nginx服务器2：192.168.204.124 Tomcat服务器1：192.168.204.123 Tomcat服务器2：192.168.204.124 创建CentOS虚拟机 我们这次安装的虚拟机是CentOS迷你版，镜像为：CentOS-6.5-x86_64-minimal.iso，该镜像可以到这里下载：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso。参考笔者的这一篇文章CentOS搭建云服务平台的前半部分创建4个CentOS虚拟机，用来模仿后台的多个系统，要注意的是这篇文章CentOS搭建云服务平台安装的的桌面版，我们在本文章用的迷你版，但是安...."/><meta property="og:description" content="前言 本篇文章将介绍如何搭建使用Nginx和Tomcat的高可用高并发的网站，我们将会在CentOS系统上搭建这样一个网站后端。这个系统的架构如下： 虚拟IP地址：192.168.204.221 主虚拟服务器：192.168.204.121 备虚拟服务器：192.168.204.122 Nginx服务器1：192.168.204.123 Nginx服务器2：192.168.204.124 Tomcat服务器1：192.168.204.123 Tomcat服务器2：192.168.204.124 创建CentOS虚拟机 我们这次安装的虚拟机是CentOS迷你版，镜像为：CentOS-6.5-x86_64-minimal.iso，该镜像可以到这里下载：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso。参考笔者的这一篇文章CentOS搭建云服务平台的前半部分创建4个CentOS虚拟机，用来模仿后台的多个系统，要注意的是这篇文章CentOS搭建云服务平台安装的的桌面版，我们在本文章用的迷你版，但是安...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在CentOS上使用Nginx和Tomcat搭建高可用高并发网站 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972693454.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在CentOS上使用Nginx和Tomcat搭建高可用高并发网站 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972693454.html">        <link rel="stylesheet"
-              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586176279294"/>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在CentOS上使用Nginx和Tomcat搭建高可用高并发网站 - 夜雨飘零</title><meta name="description" content="前言 本篇文章将介绍如何搭建使用Nginx和Tomcat的高可用高并发的网站，我们将会在CentOS系统上搭建这样一个网站后端。这个系统的架构如下： 虚拟IP地址：192.168.204.221 主虚拟服务器：192.168.204.121 备虚拟服务器：192.168.204.122 Nginx服务器1：192.168.204.123 Nginx服务器2：192.168.204.124 Tomcat服务器1：192.168.204.123 Tomcat服务器2：192.168.204.124 创建CentOS虚拟机 我们这次安装的虚拟机是CentOS迷你版，镜像为：CentOS-6.5-x86_64-minimal.iso，该镜像可以到这里下载：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso。参考笔者的这一篇文章CentOS搭建云服务平台的前半部分创建4个CentOS虚拟机，用来模仿后台的多个系统，要注意的是这篇文章CentOS搭建云服务平台安装的的桌面版，我们在本文章用的迷你版，但是安...."/><meta property="og:description" content="前言 本篇文章将介绍如何搭建使用Nginx和Tomcat的高可用高并发的网站，我们将会在CentOS系统上搭建这样一个网站后端。这个系统的架构如下： 虚拟IP地址：192.168.204.221 主虚拟服务器：192.168.204.121 备虚拟服务器：192.168.204.122 Nginx服务器1：192.168.204.123 Nginx服务器2：192.168.204.124 Tomcat服务器1：192.168.204.123 Tomcat服务器2：192.168.204.124 创建CentOS虚拟机 我们这次安装的虚拟机是CentOS迷你版，镜像为：CentOS-6.5-x86_64-minimal.iso，该镜像可以到这里下载：http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso。参考笔者的这一篇文章CentOS搭建云服务平台的前半部分创建4个CentOS虚拟机，用来模仿后台的多个系统，要注意的是这篇文章CentOS搭建云服务平台安装的的桌面版，我们在本文章用的迷你版，但是安...."/>    <meta name="keywords" content="PaddlePaddle,Tensorflow,人工智能,深度学习,夜雨飘零"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在CentOS上使用Nginx和Tomcat搭建高可用高并发网站 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/2020/03/23/1584972693454.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在CentOS上使用Nginx和Tomcat搭建高可用高并发网站 - 夜雨飘零" href="/opensearch.xml"><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972693454.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1586242016339"/>
             <link rel="prev" title="Ubuntu安装和卸载CUDA和CUDNN" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972613663.html">
             <link rel="next" title="CentOS下安装和使用Mycat实现分布式数据库" href="https://yeyupiaoling.github.io/articles/2020/03/23/1584972765438.html">
     <!-- 百度统计 -->
@@ -78,40 +78,40 @@ var _hmt = _hmt || [];
             <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
 <ul class="article__toc">
         <li class="toc__h1">
-            <a href="#前言">前言</a>
+            <a href="#toc_h1_0">前言</a>
         </li>
         <li class="toc__h1">
-            <a href="#创建CentOS虚拟机">创建CentOS虚拟机</a>
+            <a href="#toc_h1_1">创建CentOS虚拟机</a>
         </li>
         <li class="toc__h1">
-            <a href="#安装Nginx">安装Nginx</a>
+            <a href="#toc_h1_2">安装Nginx</a>
         </li>
         <li class="toc__h1">
-            <a href="#安装Tomcat">安装Tomcat</a>
+            <a href="#toc_h1_3">安装Tomcat</a>
         </li>
         <li class="toc__h1">
-            <a href="#安装lvs和keepalived">安装lvs和keepalived</a>
+            <a href="#toc_h1_4">安装lvs和keepalived</a>
         </li>
         <li class="toc__h1">
-            <a href="#反向代理">反向代理</a>
+            <a href="#toc_h1_5">反向代理</a>
         </li>
         <li class="toc__h1">
-            <a href="#部署网站">部署网站</a>
+            <a href="#toc_h1_6">部署网站</a>
         </li>
         <li class="toc__h2">
-            <a href="#搭建数据库">搭建数据库</a>
+            <a href="#toc_h2_7">搭建数据库</a>
         </li>
         <li class="toc__h2">
-            <a href="#编写网站项目">编写网站项目</a>
+            <a href="#toc_h2_8">编写网站项目</a>
         </li>
         <li class="toc__h1">
-            <a href="#解决session一致性">解决session一致性</a>
+            <a href="#toc_h1_9">解决session一致性</a>
         </li>
         <li class="toc__h1">
-            <a href="#注意">注意</a>
+            <a href="#toc_h1_10">注意</a>
         </li>
         <li class="toc__h1">
-            <a href="#参考资料">参考资料</a>
+            <a href="#toc_h1_11">参考资料</a>
         </li>
 </ul>        </div>
 </div>
@@ -155,7 +155,7 @@ var _hmt = _hmt || [];
 
         <section class="abstract vditor-reset">
             <p><img src="https://img.hacpai.com/bing/20180827.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
-<h1 id="前言">前言</h1>
+<h1 id="toc_h1_0">前言</h1>
 <p>本篇文章将介绍如何搭建使用Nginx和Tomcat的高可用高并发的网站，我们将会在CentOS系统上搭建这样一个网站后端。这个系统的架构如下：</p>
 <p><img src="https://s1.ax1x.com/2020/03/31/GQXWm8.png" alt="这里写图片描述"></p>
 <ul>
@@ -167,660 +167,660 @@ var _hmt = _hmt || [];
 <li>Tomcat服务器1：192.168.204.123</li>
 <li>Tomcat服务器2：192.168.204.124</li>
 </ul>
-<h1 id="创建CentOS虚拟机">创建CentOS虚拟机</h1>
-<p>我们这次安装的虚拟机是CentOS迷你版，镜像为：CentOS-6.5-x86_64-minimal.iso，该镜像可以到这里下载：<a href="http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso" target="_blank">http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso</a>。参考笔者的这一篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80579557" target="_blank">CentOS搭建云服务平台</a>的前半部分创建4个CentOS虚拟机，用来模仿后台的多个系统，要注意的是这篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80579557" target="_blank">CentOS搭建云服务平台</a>安装的的桌面版，我们在本文章用的迷你版，但是安装步骤差不多，可以参考b部分的安装操作。关于创建CentOS虚拟机就不用重复介绍了，主要是说明这四个虚拟机的网络配置。当然读者的网段跟读者的可能不一样，所以读者要根据自己的情况配置网络。</p>
+<h1 id="toc_h1_1">创建CentOS虚拟机</h1>
+<p>我们这次安装的虚拟机是CentOS迷你版，镜像为：CentOS-6.5-x86_64-minimal.iso，该镜像可以到这里下载：<a href="http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso。参考笔者的这一篇文章" target="_blank">http://vault.centos.org/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso。参考笔者的这一篇文章</a><a href="https://blog.csdn.net/qq_33200967/article/details/80579557" target="_blank">CentOS搭建云服务平台</a>的前半部分创建4个CentOS虚拟机，用来模仿后台的多个系统，要注意的是这篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80579557" target="_blank">CentOS搭建云服务平台</a>安装的的桌面版，我们在本文章用的迷你版，但是安装步骤差不多，可以参考b部分的安装操作。关于创建CentOS虚拟机就不用重复介绍了，主要是说明这四个虚拟机的网络配置。当然读者的网段跟读者的可能不一样，所以读者要根据自己的情况配置网络。</p>
 <p>node1的网络配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>DEVICE=eth0
-<span class="highlight-ln">2</span>TYPE=Ethernet
-<span class="highlight-ln">3</span>ONBOOT=yes
-<span class="highlight-ln">4</span>NM_CONTROLLED=yes
-<span class="highlight-ln">5</span>BOOTPROTO=static
-<span class="highlight-ln">6</span>IPADDR=192.168.204.121
-<span class="highlight-ln">7</span>NETMASK=255.255.255.0
-<span class="highlight-ln">8</span>GATEWAY=192.168.204.2
+<pre><code class="language-text">DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=static
+IPADDR=192.168.204.121
+NETMASK=255.255.255.0
+GATEWAY=192.168.204.2
 </code></pre>
 <p>node2的网络配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>DEVICE=eth0
-<span class="highlight-ln">2</span>TYPE=Ethernet
-<span class="highlight-ln">3</span>ONBOOT=yes
-<span class="highlight-ln">4</span>NM_CONTROLLED=yes
-<span class="highlight-ln">5</span>BOOTPROTO=static
-<span class="highlight-ln">6</span>IPADDR=192.168.204.122
-<span class="highlight-ln">7</span>NETMASK=255.255.255.0
-<span class="highlight-ln">8</span>GATEWAY=192.168.204.2
+<pre><code class="language-text">DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=static
+IPADDR=192.168.204.122
+NETMASK=255.255.255.0
+GATEWAY=192.168.204.2
 </code></pre>
 <p>node3的网络配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>DEVICE=eth0
-<span class="highlight-ln">2</span>TYPE=Ethernet
-<span class="highlight-ln">3</span>ONBOOT=yes
-<span class="highlight-ln">4</span>NM_CONTROLLED=yes
-<span class="highlight-ln">5</span>BOOTPROTO=static
-<span class="highlight-ln">6</span>IPADDR=192.168.204.123
-<span class="highlight-ln">7</span>NETMASK=255.255.255.0
-<span class="highlight-ln">8</span>GATEWAY=192.168.204.2
+<pre><code class="language-text">DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=static
+IPADDR=192.168.204.123
+NETMASK=255.255.255.0
+GATEWAY=192.168.204.2
 </code></pre>
 <p>node4的网络配置：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>DEVICE=eth0
-<span class="highlight-ln">2</span>TYPE=Ethernet
-<span class="highlight-ln">3</span>ONBOOT=yes
-<span class="highlight-ln">4</span>NM_CONTROLLED=yes
-<span class="highlight-ln">5</span>BOOTPROTO=static
-<span class="highlight-ln">6</span>IPADDR=192.168.204.124
-<span class="highlight-ln">7</span>NETMASK=255.255.255.0
-<span class="highlight-ln">8</span>GATEWAY=192.168.204.2
+<pre><code class="language-text">DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=static
+IPADDR=192.168.204.124
+NETMASK=255.255.255.0
+GATEWAY=192.168.204.2
 </code></pre>
-<h1 id="安装Nginx">安装Nginx</h1>
+<h1 id="toc_h1_2">安装Nginx</h1>
 <p>接下来是安装Nginx服务器，这个也是一个完整的服务器，可以当做普通的网站服务器。但是在这个结构中，我们是使用它来做反向代理，使它代理更多的Tomcat，在起分流的同时，也有高可用的作用，因为就算一个Nginx服务器泵机了，还有其他的运行。我们在node3和node4的虚拟机下安装Nginx。</p>
 <p>安装Nginx之前，先要安装依赖库：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install gcc openssl-devel pcre-devel zlib-devel
+<pre><code class="language-text">yum -y install gcc openssl-devel pcre-devel zlib-devel
 </code></pre>
 <p>如果没有安装 <code>wget</code>命令，要先安装这个命令，因为下面会用到这个命令：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install wget
+<pre><code class="language-text">yum -y install wget
 </code></pre>
 <p>下载Nginx并放在 <code>/opt</code>下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cd /opt
-<span class="highlight-ln">2</span>wget http://tengine.taobao.org/download/tengine-2.1.0.tar.gz
+<pre><code class="language-text">cd /opt
+wget http://tengine.taobao.org/download/tengine-2.1.0.tar.gz
 </code></pre>
 <p>解压Nginx压缩包：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>tar -zxvf tengine-2.1.0.tar.gz
+<pre><code class="language-text">tar -zxvf tengine-2.1.0.tar.gz
 </code></pre>
 <p>进入到刚才解压得到的文件夹 <code>tengine-2.1.0</code>，开始配置tengine，配置命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>./configure \
-<span class="highlight-ln"> 2</span>  --prefix=/opt/sxt/soft/tengine-2.1.0/ \
-<span class="highlight-ln"> 3</span>  --error-log-path=/var/log/nginx/error.log \
-<span class="highlight-ln"> 4</span>  --http-log-path=/var/log/nginx/access.log \
-<span class="highlight-ln"> 5</span>  --pid-path=/var/run/nginx/nginx.pid  \
-<span class="highlight-ln"> 6</span>  --lock-path=/var/lock/nginx.lock \
-<span class="highlight-ln"> 7</span>  --with-http_ssl_module \
-<span class="highlight-ln"> 8</span>  --with-http_flv_module \
-<span class="highlight-ln"> 9</span>  --with-http_stub_status_module \
-<span class="highlight-ln">10</span>  --with-http_gzip_static_module \
-<span class="highlight-ln">11</span>  --http-client-body-temp-path=/var/tmp/nginx/client/ \
-<span class="highlight-ln">12</span>  --http-proxy-temp-path=/var/tmp/nginx/proxy/ \
-<span class="highlight-ln">13</span>  --http-fastcgi-temp-path=/var/tmp/nginx/fcgi/ \
-<span class="highlight-ln">14</span>  --http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
-<span class="highlight-ln">15</span>  --http-scgi-temp-path=/var/tmp/nginx/scgi \
-<span class="highlight-ln">16</span>  --with-pcre 
+<pre><code class="language-text">./configure \
+  --prefix=/opt/sxt/soft/tengine-2.1.0/ \
+  --error-log-path=/var/log/nginx/error.log \
+  --http-log-path=/var/log/nginx/access.log \
+  --pid-path=/var/run/nginx/nginx.pid  \
+  --lock-path=/var/lock/nginx.lock \
+  --with-http_ssl_module \
+  --with-http_flv_module \
+  --with-http_stub_status_module \
+  --with-http_gzip_static_module \
+  --http-client-body-temp-path=/var/tmp/nginx/client/ \
+  --http-proxy-temp-path=/var/tmp/nginx/proxy/ \
+  --http-fastcgi-temp-path=/var/tmp/nginx/fcgi/ \
+  --http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
+  --http-scgi-temp-path=/var/tmp/nginx/scgi \
+  --with-pcre 
 </code></pre>
 <p>配置完成之后，开始安装，执行安装之后，tengine会安装在 <code>/opt/sxt/soft/tengine-2.1.0/</code>目录下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>make &amp;&amp; make install
+<pre><code class="language-text">make &amp;&amp; make install
 </code></pre>
 <p>使用vim命令创建一个文件 <code>/etc/init.d/nginx</code>用于启动服务的，并添加以下内容：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">  1</span>#!/bin/bash
-<span class="highlight-ln">  2</span>#
-<span class="highlight-ln">  3</span># chkconfig: - 85 15
-<span class="highlight-ln">  4</span># description: nginx is a World Wide Web server. It is used to serve
-<span class="highlight-ln">  5</span># Source function library.
-<span class="highlight-ln">  6</span>. /etc/rc.d/init.d/functions
-<span class="highlight-ln">  7</span>
-<span class="highlight-ln">  8</span># Source networking configuration.
-<span class="highlight-ln">  9</span>. /etc/sysconfig/network
-<span class="highlight-ln"> 10</span>
-<span class="highlight-ln"> 11</span># Check that networking is up.
-<span class="highlight-ln"> 12</span>[ "$NETWORKING" = "no" ] &amp;&amp; exit 0
-<span class="highlight-ln"> 13</span>
-<span class="highlight-ln"> 14</span>nginx="/opt/sxt/soft/tengine-2.1.0/sbin/nginx"
-<span class="highlight-ln"> 15</span>prog=$(basename $nginx)
-<span class="highlight-ln"> 16</span>
-<span class="highlight-ln"> 17</span>NGINX_CONF_FILE="/opt/sxt/soft/tengine-2.1.0/conf/nginx.conf"
-<span class="highlight-ln"> 18</span>
-<span class="highlight-ln"> 19</span>#[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
-<span class="highlight-ln"> 20</span>
-<span class="highlight-ln"> 21</span>lockfile=/var/lock/subsys/nginx
-<span class="highlight-ln"> 22</span>
-<span class="highlight-ln"> 23</span>
-<span class="highlight-ln"> 24</span>start() {
-<span class="highlight-ln"> 25</span>    [ -x $nginx ] || exit 5
-<span class="highlight-ln"> 26</span>    [ -f $NGINX_CONF_FILE ] || exit 6
-<span class="highlight-ln"> 27</span>    echo -n $"Starting $prog: "
-<span class="highlight-ln"> 28</span>    daemon $nginx -c $NGINX_CONF_FILE
-<span class="highlight-ln"> 29</span>    retval=$?
-<span class="highlight-ln"> 30</span>    echo
-<span class="highlight-ln"> 31</span>    [ $retval -eq 0 ] &amp;&amp; touch $lockfile
-<span class="highlight-ln"> 32</span>    return $retval
-<span class="highlight-ln"> 33</span>}
-<span class="highlight-ln"> 34</span>
-<span class="highlight-ln"> 35</span>stop() {
-<span class="highlight-ln"> 36</span>    echo -n $"Stopping $prog: "
-<span class="highlight-ln"> 37</span>    killproc $prog -QUIT
-<span class="highlight-ln"> 38</span>    retval=$?
-<span class="highlight-ln"> 39</span>    echo
-<span class="highlight-ln"> 40</span>    [ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
-<span class="highlight-ln"> 41</span>    return $retval
-<span class="highlight-ln"> 42</span>}
-<span class="highlight-ln"> 43</span>
-<span class="highlight-ln"> 44</span>restart() {
-<span class="highlight-ln"> 45</span>    configtest || return $?
-<span class="highlight-ln"> 46</span>    stop
-<span class="highlight-ln"> 47</span>    sleep 1
-<span class="highlight-ln"> 48</span>    start
-<span class="highlight-ln"> 49</span>}
-<span class="highlight-ln"> 50</span>
-<span class="highlight-ln"> 51</span>reload() {
-<span class="highlight-ln"> 52</span>    configtest || return $?
-<span class="highlight-ln"> 53</span>    echo -n $"Reloading $prog: "
-<span class="highlight-ln"> 54</span>#  -HUP是nginx平滑重启参数  
-<span class="highlight-ln"> 55</span>    killproc $nginx -HUP
-<span class="highlight-ln"> 56</span>    RETVAL=$?
-<span class="highlight-ln"> 57</span>    echo
-<span class="highlight-ln"> 58</span>}
-<span class="highlight-ln"> 59</span>
-<span class="highlight-ln"> 60</span>force_reload() {
-<span class="highlight-ln"> 61</span>    restart
-<span class="highlight-ln"> 62</span>}
-<span class="highlight-ln"> 63</span>
-<span class="highlight-ln"> 64</span>configtest() {
-<span class="highlight-ln"> 65</span>  $nginx -t -c $NGINX_CONF_FILE
-<span class="highlight-ln"> 66</span>}
-<span class="highlight-ln"> 67</span>
-<span class="highlight-ln"> 68</span>rh_status() {
-<span class="highlight-ln"> 69</span>    status $prog
-<span class="highlight-ln"> 70</span>}
-<span class="highlight-ln"> 71</span>
-<span class="highlight-ln"> 72</span>rh_status_q() {
-<span class="highlight-ln"> 73</span>    rh_status &gt;/dev/null 2&gt;&amp;1
-<span class="highlight-ln"> 74</span>}
-<span class="highlight-ln"> 75</span>
-<span class="highlight-ln"> 76</span>case "$1" in
-<span class="highlight-ln"> 77</span>    start)
-<span class="highlight-ln"> 78</span>        rh_status_q &amp;&amp; exit 0
-<span class="highlight-ln"> 79</span>        $1
-<span class="highlight-ln"> 80</span>        ;;
-<span class="highlight-ln"> 81</span>    stop)
-<span class="highlight-ln"> 82</span>        rh_status_q || exit 0
-<span class="highlight-ln"> 83</span>        $1
-<span class="highlight-ln"> 84</span>        ;;
-<span class="highlight-ln"> 85</span>    restart|configtest)
-<span class="highlight-ln"> 86</span>        $1
-<span class="highlight-ln"> 87</span>        ;;
-<span class="highlight-ln"> 88</span>    reload)
-<span class="highlight-ln"> 89</span>        rh_status_q || exit 7
-<span class="highlight-ln"> 90</span>        $1
-<span class="highlight-ln"> 91</span>        ;;
-<span class="highlight-ln"> 92</span>    force-reload)
-<span class="highlight-ln"> 93</span>        force_reload
-<span class="highlight-ln"> 94</span>        ;;
-<span class="highlight-ln"> 95</span>    status)
-<span class="highlight-ln"> 96</span>        rh_status
-<span class="highlight-ln"> 97</span>        ;;
-<span class="highlight-ln"> 98</span>    condrestart|try-restart)
-<span class="highlight-ln"> 99</span>        rh_status_q || exit 0
-<span class="highlight-ln">100</span>            ;;
-<span class="highlight-ln">101</span>    *)
-<span class="highlight-ln">102</span>        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
-<span class="highlight-ln">103</span>        exit 2
-<span class="highlight-ln">104</span>esac
+<pre><code class="language-text">#!/bin/bash
+#
+# chkconfig: - 85 15
+# description: nginx is a World Wide Web server. It is used to serve
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] &amp;&amp; exit 0
+
+nginx="/opt/sxt/soft/tengine-2.1.0/sbin/nginx"
+prog=$(basename $nginx)
+
+NGINX_CONF_FILE="/opt/sxt/soft/tengine-2.1.0/conf/nginx.conf"
+
+#[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
+
+lockfile=/var/lock/subsys/nginx
+
+
+start() {
+    [ -x $nginx ] || exit 5
+    [ -f $NGINX_CONF_FILE ] || exit 6
+    echo -n $"Starting $prog: "
+    daemon $nginx -c $NGINX_CONF_FILE
+    retval=$?
+    echo
+    [ $retval -eq 0 ] &amp;&amp; touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog -QUIT
+    retval=$?
+    echo
+    [ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    configtest || return $?
+    stop
+    sleep 1
+    start
+}
+
+reload() {
+    configtest || return $?
+    echo -n $"Reloading $prog: "
+#  -HUP是nginx平滑重启参数  
+    killproc $nginx -HUP
+    RETVAL=$?
+    echo
+}
+
+force_reload() {
+    restart
+}
+
+configtest() {
+  $nginx -t -c $NGINX_CONF_FILE
+}
+
+rh_status() {
+    status $prog
+}
+
+rh_status_q() {
+    rh_status &gt;/dev/null 2&gt;&amp;1
+}
+
+case "$1" in
+    start)
+        rh_status_q &amp;&amp; exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart|configtest)
+        $1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+            ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
+        exit 2
+esac
 </code></pre>
 <p>然后对刚才创建的文件分配权限：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>chmod +x /etc/init.d/nginx
+<pre><code>chmod +x /etc/init.d/nginx
 </code></pre>
 <p>添加该文件到系统服务中</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig --add /etc/init.d/nginx
+<pre><code class="language-text">chkconfig --add /etc/init.d/nginx
 </code></pre>
 <p>查看是否添加成功：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig --list nginx
+<pre><code class="language-text">chkconfig --list nginx
 </code></pre>
 <p>创建一个临时目录：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mkdir -p /var/tmp/nginx/client/
+<pre><code class="language-text">mkdir -p /var/tmp/nginx/client/
 </code></pre>
 <p>启动Nginx：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>service nginx start
+<pre><code>service nginx start
 </code></pre>
 <p>关闭防火墙：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+<pre><code>service iptables stop
 </code></pre>
 <p>最后输入对应的IP地址，就可以访问Nginx的网站了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>http://192.168.204.123
-<span class="highlight-ln">2</span>http://192.168.204.124
+<pre><code class="language-text">http://192.168.204.123
+http://192.168.204.124
 </code></pre>
-<h1 id="安装Tomcat">安装Tomcat</h1>
+<h1 id="toc_h1_3">安装Tomcat</h1>
 <p>接下来就是安装我们最终的服务器，Tomcat服务器是我们真正部署网站的服务器，因为我们搭建的是一个Java web网站。所以这一部分介绍如何在CentOS下安装Tomcat。我们在node3和node4的虚拟机下安装Tomcat，理论上面Tomcat不应该是跟Nginx同一个机器的，但是由于笔者的电脑安装不了那么多的虚拟机，就暂且公用一个机器。</p>
 <p>首先要先有Java环境，先是下载JDK：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm
+<pre><code class="language-text">wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm
 </code></pre>
 <p>下载完成之后可以进行安装JDK：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>rpm -ivh jdk-8u131-linux-x64.rpm
+<pre><code>rpm -ivh jdk-8u131-linux-x64.rpm
 </code></pre>
 <p>安装完成之后，可以使用以下命令检测安装版本，如果正常输出版本信息，那证明安装成功了：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>java -version
+<pre><code>java -version
 </code></pre>
 <p>在 <code>/opt</code>中下载Tomcat压缩包：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd /opt
-<span class="highlight-ln">2</span>wget http://mirrors.hust.edu.cn/apache/tomcat/tomcat-7/v7.0.88/bin/apache-tomcat-7.0.88.tar.gz
+<pre><code>cd /opt
+wget http://mirrors.hust.edu.cn/apache/tomcat/tomcat-7/v7.0.88/bin/apache-tomcat-7.0.88.tar.gz
 </code></pre>
 <p>下载完成之后，要解压Tomcat：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>tar -zxvf apache-tomcat-7.0.88.tar.gz
+<pre><code>tar -zxvf apache-tomcat-7.0.88.tar.gz
 </code></pre>
 <p>解压之后可以得到一个文件夹 <code>apache-tomcat-7.0.88</code>，然后我们可以启动Tomcat：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cd /opt/apache-tomcat-7.0.88/bin
-<span class="highlight-ln">2</span>./startup.sh
+<pre><code class="language-text">cd /opt/apache-tomcat-7.0.88/bin
+./startup.sh
 </code></pre>
 <p>如果需要外界访问的话，还要关闭防火墙：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+<pre><code>service iptables stop
 </code></pre>
 <p>访问网网站：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>http://192.168.204.123:8080
-<span class="highlight-ln">2</span>http://192.168.204.124:8080
+<pre><code class="language-text">http://192.168.204.123:8080
+http://192.168.204.124:8080
 </code></pre>
-<h1 id="安装lvs和keepalived">安装lvs和keepalived</h1>
+<h1 id="toc_h1_4">安装lvs和keepalived</h1>
 <p>我们安装lvs和keepalived是为了保证高可用，首先使用l可以设置虚拟IP，这样我们就可以只需要访问一个虚拟IP就可以访问所有的服务器了。keepalived是为了保证虚拟服务器一直在运行，当主服务器挂掉了，马上就启动备用服务器，以确保网站一直正常运行。以下的操作在node1和node2下操作。</p>
 <p><strong>一、配置负载均衡服务器</strong></p>
 <p>首先安装lvs和keepalived，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install ipvsadm keepalived
+<pre><code class="language-text">yum -y install ipvsadm keepalived
 </code></pre>
 <p>备份keepalived的配置文件，如果以后需要还可以使用：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cp -a /etc/keepalived/keepalived.conf /etc/keepalived/backup.keepalived.conf
+<pre><code class="language-text">cp -a /etc/keepalived/keepalived.conf /etc/keepalived/backup.keepalived.conf
 </code></pre>
 <p>在主的负载均衡服务器中编辑配置文件 <code>/etc/keepalived/keepalived.conf</code>，清空里面的内容，加入以下的配置信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>! Configuration File for keepalived
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span>global_defs {
-<span class="highlight-ln"> 4</span>   notification_email {
-<span class="highlight-ln"> 5</span>     root@localhost   #发送提醒邮件的目标地址可有多个
-<span class="highlight-ln"> 6</span>     goldbin@126.com
-<span class="highlight-ln"> 7</span>  }
-<span class="highlight-ln"> 8</span>   notification_email_from test@localhost   #发送邮件的from地址，可以随意写，邮件地址不存在都无所谓
-<span class="highlight-ln"> 9</span>   smtp_server 127.0.0.1    #邮件服务的地址，一般写本地
-<span class="highlight-ln">10</span>   smtp_connect_timeout 30
-<span class="highlight-ln">11</span>   router_id LVS_DEVEL
-<span class="highlight-ln">12</span>}
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span>vrrp_instance VI_1 {
-<span class="highlight-ln">15</span>    state MASTER      # MASTER 主 和 BACKUP 从
-<span class="highlight-ln">16</span>    interface eth0    #VIP需要绑定的网卡名称
-<span class="highlight-ln">17</span>    virtual_router_id 51
-<span class="highlight-ln">18</span>    priority 101      #优先级 主的优先级要高
-<span class="highlight-ln">19</span>    advert_int 1
-<span class="highlight-ln">20</span>    authentication {
-<span class="highlight-ln">21</span>        auth_type PASS
-<span class="highlight-ln">22</span>        auth_pass 1111
-<span class="highlight-ln">23</span>    }
-<span class="highlight-ln">24</span>    virtual_ipaddress {
-<span class="highlight-ln">25</span>        192.168.204.221/24 dev eth0 label eth0:0    #设置VIP
-<span class="highlight-ln">26</span>    }
-<span class="highlight-ln">27</span>}
-<span class="highlight-ln">28</span>
-<span class="highlight-ln">29</span>virtual_server 192.168.204.221 80 {    #设置虚拟lvs服务，VIP PORT
-<span class="highlight-ln">30</span>    delay_loop 6
-<span class="highlight-ln">31</span>    lb_algo rr    #调度算法wrr
-<span class="highlight-ln">32</span>    lb_kind DR    #lvs的模式
-<span class="highlight-ln">33</span>    nat_mask 255.255.255.0
-<span class="highlight-ln">34</span>    persistence_timeout 50   #同一个IP地址在50秒内lvs转发给同一个后端服务器
-<span class="highlight-ln">35</span>    protocol TCP
-<span class="highlight-ln">36</span>
-<span class="highlight-ln">37</span>    real_server 192.168.204.123 80 {   #设置真实服务器的心跳机制 RID PORT
-<span class="highlight-ln">38</span>        weight 1      #权重
-<span class="highlight-ln">39</span>        HTTP_GET {    #心跳检测的方式
-<span class="highlight-ln">40</span>            url {
-<span class="highlight-ln">41</span>              path /  #心跳检查的地址
-<span class="highlight-ln">42</span>              status_code 200   #心跳检查返回的状态
-<span class="highlight-ln">43</span>            }
-<span class="highlight-ln">44</span>            connect_timeout 2    #超时时间
-<span class="highlight-ln">45</span>            nb_get_retry 3       #重复检查3次
-<span class="highlight-ln">46</span>            delay_before_retry 1 #每隔1秒钟再次检查
-<span class="highlight-ln">47</span>        }
-<span class="highlight-ln">48</span>    }
-<span class="highlight-ln">49</span>    real_server 192.168.204.124 80 {  #第二个真实服务器设置
-<span class="highlight-ln">50</span>        weight 1
-<span class="highlight-ln">51</span>        HTTP_GET {
-<span class="highlight-ln">52</span>            url {
-<span class="highlight-ln">53</span>              path /
-<span class="highlight-ln">54</span>              status_code 200
-<span class="highlight-ln">55</span>            }
-<span class="highlight-ln">56</span>            connect_timeout 2
-<span class="highlight-ln">57</span>            nb_get_retry 3
-<span class="highlight-ln">58</span>            delay_before_retry 1
-<span class="highlight-ln">59</span>        }
-<span class="highlight-ln">60</span>    }
-<span class="highlight-ln">61</span>}
+<pre><code class="language-text">! Configuration File for keepalived
+
+global_defs {
+   notification_email {
+     root@localhost   #发送提醒邮件的目标地址可有多个
+     goldbin@126.com
+  }
+   notification_email_from test@localhost   #发送邮件的from地址，可以随意写，邮件地址不存在都无所谓
+   smtp_server 127.0.0.1    #邮件服务的地址，一般写本地
+   smtp_connect_timeout 30
+   router_id LVS_DEVEL
+}
+
+vrrp_instance VI_1 {
+    state MASTER      # MASTER 主 和 BACKUP 从
+    interface eth0    #VIP需要绑定的网卡名称
+    virtual_router_id 51
+    priority 101      #优先级 主的优先级要高
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        192.168.204.221/24 dev eth0 label eth0:0    #设置VIP
+    }
+}
+
+virtual_server 192.168.204.221 80 {    #设置虚拟lvs服务，VIP PORT
+    delay_loop 6
+    lb_algo rr    #调度算法wrr
+    lb_kind DR    #lvs的模式
+    nat_mask 255.255.255.0
+    persistence_timeout 50   #同一个IP地址在50秒内lvs转发给同一个后端服务器
+    protocol TCP
+
+    real_server 192.168.204.123 80 {   #设置真实服务器的心跳机制 RID PORT
+        weight 1      #权重
+        HTTP_GET {    #心跳检测的方式
+            url {
+              path /  #心跳检查的地址
+              status_code 200   #心跳检查返回的状态
+            }
+            connect_timeout 2    #超时时间
+            nb_get_retry 3       #重复检查3次
+            delay_before_retry 1 #每隔1秒钟再次检查
+        }
+    }
+    real_server 192.168.204.124 80 {  #第二个真实服务器设置
+        weight 1
+        HTTP_GET {
+            url {
+              path /
+              status_code 200
+            }
+            connect_timeout 2
+            nb_get_retry 3
+            delay_before_retry 1
+        }
+    }
+}
 </code></pre>
 <p>在备的负载均衡服务器中同样以上的配置方式，但需要修改两个地方，一个是 <code>state</code>设置为 <code>BACKUP</code>，也就是备用的意思。另一个是 <code>priority</code>，这个是优先级，需要设置比主的要低。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>vrrp_instance VI_1 {
-<span class="highlight-ln"> 2</span>    state BACKUP      # MASTER 主 和 BACKUP 从
-<span class="highlight-ln"> 3</span>    interface eth0    #VIP需要绑定的网卡名称
-<span class="highlight-ln"> 4</span>    virtual_router_id 51
-<span class="highlight-ln"> 5</span>    priority 50      #优先级 主的优先级要高
-<span class="highlight-ln"> 6</span>    advert_int 1
-<span class="highlight-ln"> 7</span>    authentication {
-<span class="highlight-ln"> 8</span>        auth_type PASS
-<span class="highlight-ln"> 9</span>        auth_pass 1111
-<span class="highlight-ln">10</span>    }
-<span class="highlight-ln">11</span>    virtual_ipaddress {
-<span class="highlight-ln">12</span>        192.168.204.221/24 dev eth0 label eth0:0    #设置VIP
-<span class="highlight-ln">13</span>    }
-<span class="highlight-ln">14</span>}
+<pre><code>vrrp_instance VI_1 {
+    state BACKUP      # MASTER 主 和 BACKUP 从
+    interface eth0    #VIP需要绑定的网卡名称
+    virtual_router_id 51
+    priority 50      #优先级 主的优先级要高
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        192.168.204.221/24 dev eth0 label eth0:0    #设置VIP
+    }
+}
 </code></pre>
 <p>配置好keepalived之后就可以启动它了，命令如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>service keepalived start
+<pre><code>service keepalived start
 </code></pre>
 <p>然后使用 <code>ipvsadm -L</code>查看映射的IP地址，启动一会再查看，因为可能不会那么快就映射，正常的话应该输出以下信息，主备虚拟服务器都是一样：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>IP Virtual Server version 1.2.1 (size=4096)
-<span class="highlight-ln">2</span>Prot LocalAddress:Port Scheduler Flags
-<span class="highlight-ln">3</span>  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
-<span class="highlight-ln">4</span>TCP  192.168.204.221:http rr persistent 50
-<span class="highlight-ln">5</span>  -&gt; 192.168.204.123:http         Route   1      0          0     
-<span class="highlight-ln">6</span>  -&gt; 192.168.204.124:http         Route   1      0          2     
+<pre><code>IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  192.168.204.221:http rr persistent 50
+  -&gt; 192.168.204.123:http         Route   1      0          0     
+  -&gt; 192.168.204.124:http         Route   1      0          2     
 </code></pre>
 <p><strong>二、配置真实服务器</strong></p>
 <p>负载均衡服务器（虚拟服务器）设置好了，然后就可以设置真实服务器（Nginx服务器）了。通过命令输入有点麻烦，我们可以编写一个脚本，让它来帮我们处理这些。node3和node4这个两真实服务器都要配置，创建文件 <code>vim realserver.sh</code>并添加以下信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln"> 1</span>#!/bin/bash
-<span class="highlight-ln"> 2</span>#description: Config realserver
-<span class="highlight-ln"> 3</span>
-<span class="highlight-ln"> 4</span>VIP=192.168.204.221
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span>/etc/rc.d/init.d/functions
-<span class="highlight-ln"> 7</span>
-<span class="highlight-ln"> 8</span>case "$1" in
-<span class="highlight-ln"> 9</span>start)
-<span class="highlight-ln">10</span>       /sbin/ifconfig lo:0 $VIP netmask 255.255.255.255 broadcast $VIP
-<span class="highlight-ln">11</span>       /sbin/route add -host $VIP dev lo:0
-<span class="highlight-ln">12</span>       echo "1" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
-<span class="highlight-ln">13</span>       echo "2" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
-<span class="highlight-ln">14</span>       echo "1" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
-<span class="highlight-ln">15</span>       echo "2" &gt;/proc/sys/net/ipv4/conf/all/arp_announce
-<span class="highlight-ln">16</span>       sysctl -p &gt;/dev/null 2&gt;&amp;1
-<span class="highlight-ln">17</span>       echo "RealServer Start OK"
-<span class="highlight-ln">18</span>       ;;
-<span class="highlight-ln">19</span>stop)
-<span class="highlight-ln">20</span>       /sbin/ifconfig lo:0 down
-<span class="highlight-ln">21</span>       /sbin/route del $VIP &gt;/dev/null 2&gt;&amp;1
-<span class="highlight-ln">22</span>       echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
-<span class="highlight-ln">23</span>       echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
-<span class="highlight-ln">24</span>       echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
-<span class="highlight-ln">25</span>       echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_announce
-<span class="highlight-ln">26</span>       echo "RealServer Stoped"
-<span class="highlight-ln">27</span>       ;;
-<span class="highlight-ln">28</span>*)
-<span class="highlight-ln">29</span>       echo "Usage: $0 {start|stop}"
-<span class="highlight-ln">30</span>       exit 1
-<span class="highlight-ln">31</span>esac
-<span class="highlight-ln">32</span>
-<span class="highlight-ln">33</span>exit 0
+<pre><code class="language-text">#!/bin/bash
+#description: Config realserver
+
+VIP=192.168.204.221
+
+/etc/rc.d/init.d/functions
+
+case "$1" in
+start)
+       /sbin/ifconfig lo:0 $VIP netmask 255.255.255.255 broadcast $VIP
+       /sbin/route add -host $VIP dev lo:0
+       echo "1" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+       echo "2" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+       echo "1" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+       echo "2" &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+       sysctl -p &gt;/dev/null 2&gt;&amp;1
+       echo "RealServer Start OK"
+       ;;
+stop)
+       /sbin/ifconfig lo:0 down
+       /sbin/route del $VIP &gt;/dev/null 2&gt;&amp;1
+       echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+       echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+       echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+       echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+       echo "RealServer Stoped"
+       ;;
+*)
+       echo "Usage: $0 {start|stop}"
+       exit 1
+esac
+
+exit 0
 </code></pre>
 <p>然后执行这个脚本就可以自动配置了，命令如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>sh realserver.sh start
+<pre><code class="language-text">sh realserver.sh start
 </code></pre>
 <p>然后使用 <code>ifconfig</code>查看是否有添加以下网络信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>lo:0      Link encap:Local Loopback  
-<span class="highlight-ln">2</span>          inet addr:192.168.204.221  Mask:255.255.255.255
-<span class="highlight-ln">3</span>          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+<pre><code class="language-text">lo:0      Link encap:Local Loopback  
+          inet addr:192.168.204.221  Mask:255.255.255.255
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
 </code></pre>
 <p>安装完成之后，可以测试是否可以正常工作，如何还没启动Nginx，首先启动Nginx：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>service nginx start
+<pre><code>service nginx start
 </code></pre>
 <p>需要关闭防火墙：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>service iptables stop
+<pre><code>service iptables stop
 </code></pre>
 <p>最后我们只需要通过虚拟IP地址就可以访问真实服务器了。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>http://192.168.204.221
+<pre><code class="language-text">http://192.168.204.221
 </code></pre>
 <p>我们可以手动关闭keepalived，观察是否会自动启动备的服务器。这就是keepalived的作用，当主服务器挂了，会自动启动备虚拟服务器来指向真实服务器。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service keepalived stop
+<pre><code class="language-text">service keepalived stop
 </code></pre>
-<h1 id="反向代理">反向代理</h1>
+<h1 id="toc_h1_5">反向代理</h1>
 <p>我们希望是使用Nginx来代理更多的Tomcat服务器，来对用户进行分流，以应对高并发时对单个服务器的压力。所以我们要设置node3和node4的Nginx。</p>
 <p>要配置这个反向代理，只要修改一个配置文件就可以了。如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>vim /opt/sxt/soft/tengine-2.1.0/conf/nginx.conf
+<pre><code>vim /opt/sxt/soft/tengine-2.1.0/conf/nginx.conf
 </code></pre>
 <p>我们主要是添加 <code>upstream cluster1</code>这个内容，这就是反向代理的服务器IP地址，同时也可以设置健康检查的配置信息。<br>
 然后要在server中添加反向代理，还可以创建对各个代理的服务器进行健康检查 <code>location /status</code>。其他的地方不用修改。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>upstream cluster1 {
-<span class="highlight-ln"> 2</span>    # 服务器访问的路径，可以指定多个服务器
-<span class="highlight-ln"> 3</span>    server 192.168.204.123:8080;
-<span class="highlight-ln"> 4</span>    server 192.168.204.124:8080;
-<span class="highlight-ln"> 5</span>
-<span class="highlight-ln"> 6</span>    # 健康检查
-<span class="highlight-ln"> 7</span>    check interval=3000 rise=2 fall=5 timeout=1000 type=http;
-<span class="highlight-ln"> 8</span>    check_http_send "HEAD / HTTP/1.0\r\n\r\n";
-<span class="highlight-ln"> 9</span>    check_http_expect_alive http_2xx http_3xx;
-<span class="highlight-ln">10</span>}
-<span class="highlight-ln">11</span>
-<span class="highlight-ln">12</span>server {
-<span class="highlight-ln">13</span>    listen       80;
-<span class="highlight-ln">14</span>    server_name  localhost;
-<span class="highlight-ln">15</span>
-<span class="highlight-ln">16</span>    # 根目录访问路径
-<span class="highlight-ln">17</span>    location / {
-<span class="highlight-ln">18</span>        # 指定反向代理，跟上面的名称一样cluster1
-<span class="highlight-ln">19</span>        proxy_pass http://cluster1;
-<span class="highlight-ln">20</span>        root   html;
-<span class="highlight-ln">21</span>        index  index.html index.htm;
-<span class="highlight-ln">22</span>    }
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    # 健康检查路径
-<span class="highlight-ln">25</span>    location /status {
-<span class="highlight-ln">26</span>        check_status;
-<span class="highlight-ln">27</span>    }
-<span class="highlight-ln">28</span>}
+<pre><code>upstream cluster1 {
+    # 服务器访问的路径，可以指定多个服务器
+    server 192.168.204.123:8080;
+    server 192.168.204.124:8080;
+
+    # 健康检查
+    check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+    check_http_send "HEAD / HTTP/1.0\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+
+server {
+    listen       80;
+    server_name  localhost;
+
+    # 根目录访问路径
+    location / {
+        # 指定反向代理，跟上面的名称一样cluster1
+        proxy_pass http://cluster1;
+        root   html;
+        index  index.html index.htm;
+    }
+
+    # 健康检查路径
+    location /status {
+        check_status;
+    }
+}
 </code></pre>
 <p>修改配置文件之后，需要重启Nginx：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>service nginx restart
+<pre><code>service nginx restart
 </code></pre>
 <p>在访问之前，要确保Tomcat是正常启动了，因为我们是反向代理了Tomcat的服务器，所以需要启动Tomcat服务器。</p>
 <p>如果在访问路径的时候加上健康检查的路径 <code>/status</code>，就可查看各个服务器的健康问题。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>http://192.168.204.123/status
-<span class="highlight-ln">2</span>http://192.168.204.124/status
+<pre><code class="language-text">http://192.168.204.123/status
+http://192.168.204.124/status
 </code></pre>
 <p>通过访问上面的地址就可以看到类似以下的页面信息：</p>
 <p><img src="https://s1.ax1x.com/2020/04/02/GG1TFP.png" alt="这里写图片描述"></p>
 <p>最后我们在正常访问Nginx服务器的时候，就会访问都Tomcat服务器了。而且Nginx是访问到多个Tomcat。<br>
 比如笔者只是访问其中的一个Nginx，如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>http://192.168.204.123
+<pre><code class="language-text">http://192.168.204.123
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/02/GYOy4K.png" alt="这里写图片描述"></p>
 <p><img src="https://s1.ax1x.com/2020/04/04/G0ydjx.png" alt="这里写图片描述"></p>
 <p>上面是访问Nginx服务器的IP地址的，我们在安装lvs和keepalived这部分设置了虚拟IP，所以我们可以直接访问这个虚拟IP就可以了。最终网站只需要访问一个IP地址就可以了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>http://192.168.204.221/
+<pre><code class="language-text">http://192.168.204.221/
 </code></pre>
 <p><img src="https://s1.ax1x.com/2020/04/02/GG3iSU.png" alt="这里写图片描述"></p>
-<h1 id="部署网站">部署网站</h1>
+<h1 id="toc_h1_6">部署网站</h1>
 <p>经过上面的搭建，已经组建好一个高可用高并发的的服务器，现在我们只要把Java web项目部署到Tomcat服务器就可以。接下来我们编写一个简单的实现登录的网站。</p>
-<h2 id="搭建数据库">搭建数据库</h2>
+<h2 id="toc_h2_7">搭建数据库</h2>
 <p>我们使用的是MySQL数据库，所以我们需要先安装MySQL数据库，然后对它进行一些配置就可以使用。现在我们在node4服务器上操作。</p>
 <p>我们可以使用以下命令查看MySQL是否安装了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rpm -qa | grep mysql
+<pre><code class="language-text">rpm -qa | grep mysql
 </code></pre>
 <p>应该会输出一下日志：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>[root@localhost ~]# rpm -qa | grep mysql
-<span class="highlight-ln">2</span>mysql-libs-5.1.71-1.el6.x86_64
+<pre><code class="language-text">[root@localhost ~]# rpm -qa | grep mysql
+mysql-libs-5.1.71-1.el6.x86_64
 </code></pre>
 <p>然后我们可以先移除这个MySQL，重新安装一个：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y remove mysql-libs-5.1.71-1.el6.x86_64
+<pre><code class="language-text">yum -y remove mysql-libs-5.1.71-1.el6.x86_64
 </code></pre>
 <p>移除之前的MySQL之后，可以重新安装MySQL：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>yum -y install mysql-server mysql mysql-devel
+<pre><code class="language-text">yum -y install mysql-server mysql mysql-devel
 </code></pre>
 <p>最后在查看安装情况：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>rpm -qa | grep mysql
+<pre><code class="language-text">rpm -qa | grep mysql
 </code></pre>
 <p>正常的应该会输出以下信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql-5.1.73-8.el6_8.x86_64
-<span class="highlight-ln">2</span>mysql-libs-5.1.73-8.el6_8.x86_64
-<span class="highlight-ln">3</span>mysql-server-5.1.73-8.el6_8.x86_64
-<span class="highlight-ln">4</span>mysql-devel-5.1.73-8.el6_8.x86_64
+<pre><code class="language-text">mysql-5.1.73-8.el6_8.x86_64
+mysql-libs-5.1.73-8.el6_8.x86_64
+mysql-server-5.1.73-8.el6_8.x86_64
+mysql-devel-5.1.73-8.el6_8.x86_64
 </code></pre>
 <p>如果已经安装了MySQL，那么我们可以直接启动MySQL：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service mysqld start
+<pre><code class="language-text">service mysqld start
 </code></pre>
 <p>然后我们可以把MySQL服务添加到开机自动启，这样就不用每次都启动了。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig mysqld on
+<pre><code class="language-text">chkconfig mysqld on
 </code></pre>
 <p>我们可以使用以下的命令查看是否成功添加到开机服务中了。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>chkconfig --list | grep mysqld
+<pre><code class="language-text">chkconfig --list | grep mysqld
 </code></pre>
 <p>设置MySQL数据库的密码：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysqladmin -u root password 'root'
+<pre><code class="language-text">mysqladmin -u root password 'root'
 </code></pre>
 <p>登录数据库，输入该命令之后还有输入数据库的密码，这个密码就是上面设置的 <code>root</code>：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql -u root -p
+<pre><code class="language-text">mysql -u root -p
 </code></pre>
 <p>因为我们的网站是在其他的服务器，当连接这个数据库的话，就是远程连接数据库了，所以要设置数据库支持远程连接，在登录数据库之后输入以下命令：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-<span class="highlight-ln">2</span>mysql&gt; FLUSH PRIVILEGES;
+<pre><code>mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+mysql&gt; FLUSH PRIVILEGES;
 </code></pre>
 <p>配置好数据库之后，就可以创建数据表了，我们在MySQL自带的 <code>test</code>数据库上面创建一张 <code>user</code>表。</p>
 <p>首先我们可以使用命令查看当前有那些数据库了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; SHOW DATABASES;
+<pre><code class="language-text">mysql&gt; SHOW DATABASES;
 </code></pre>
 <p>以下是输出信息，可以看到有3个数据库，我们使用test数据库作为我们的项目数据库：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>+--------------------+
-<span class="highlight-ln">2</span>| Database           |
-<span class="highlight-ln">3</span>+--------------------+
-<span class="highlight-ln">4</span>| information_schema |
-<span class="highlight-ln">5</span>| mysql              |
-<span class="highlight-ln">6</span>| test               |
-<span class="highlight-ln">7</span>+--------------------+
-<span class="highlight-ln">8</span>3 rows in set (0.01 sec)
+<pre><code>+--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| test               |
++--------------------+
+3 rows in set (0.01 sec)
 </code></pre>
 <p>然后我们使用test数据库，开始创建数据表。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; USE test
+<pre><code class="language-text">mysql&gt; USE test
 </code></pre>
 <p>然后在这个数据库中创建一个user表，这个表只要两个字段。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; CREATE TABLE user(`number` VARCHAR(100) NOT NULL, `password` VARCHAR(100) NOT NULL);
+<pre><code class="language-text">mysql&gt; CREATE TABLE user(`number` VARCHAR(100) NOT NULL, `password` VARCHAR(100) NOT NULL);
 </code></pre>
 <p>然后在user表中添加一条数据，方便之后的登录。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; INSERT INTO user(number, password) VALUES('hello', 'world');
+<pre><code class="language-text">mysql&gt; INSERT INTO user(number, password) VALUES('hello', 'world');
 </code></pre>
 <p>然后我们查询看看有没有添加成功数据：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>mysql&gt; select * from user;
+<pre><code class="language-text">mysql&gt; select * from user;
 </code></pre>
 <p>可以看到已经成功添加数据了：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>+--------+----------+
-<span class="highlight-ln">2</span>| number | password |
-<span class="highlight-ln">3</span>+--------+----------+
-<span class="highlight-ln">4</span>| hello  | world    |
-<span class="highlight-ln">5</span>+--------+----------+
-<span class="highlight-ln">6</span>1 row in set (0.00 sec)
+<pre><code class="language-text">+--------+----------+
+| number | password |
++--------+----------+
+| hello  | world    |
++--------+----------+
+1 row in set (0.00 sec)
 </code></pre>
-<h2 id="编写网站项目">编写网站项目</h2>
+<h2 id="toc_h2_8">编写网站项目</h2>
 <p>我们这项目比较简单，只有登录功能。虽然是简单，但是完全可以测试整个网站的运行情况了。我们主要的创建3个页面和一个Servlet，具体代码如下：</p>
 <p><code>index.jsp</code>代码，主要完成登录页面：</p>
-<pre><code class="language-jsp highlight-chroma"><span class="highlight-ln"> 1</span>&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
-<span class="highlight-ln"> 2</span>&lt;html&gt;
-<span class="highlight-ln"> 3</span>&lt;head&gt;
-<span class="highlight-ln"> 4</span>    &lt;title&gt;登录&lt;/title&gt;
-<span class="highlight-ln"> 5</span>&lt;/head&gt;
-<span class="highlight-ln"> 6</span>&lt;body&gt;
-<span class="highlight-ln"> 7</span>&lt;form action="/Test2/login" method="post"&gt;
-<span class="highlight-ln"> 8</span>    账号：&lt;input type="text" name="number"&gt;&lt;br&gt;
-<span class="highlight-ln"> 9</span>    密码：&lt;input type="password" name="password"&gt;&lt;br&gt;
-<span class="highlight-ln">10</span>    &lt;button type="submit"&gt;登录&lt;/button&gt;
-<span class="highlight-ln">11</span>&lt;/form&gt;
-<span class="highlight-ln">12</span>&lt;/body&gt;
-<span class="highlight-ln">13</span>&lt;/html&gt;
+<pre><code class="language-jsp">&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;登录&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="/Test2/login" method="post"&gt;
+    账号：&lt;input type="text" name="number"&gt;&lt;br&gt;
+    密码：&lt;input type="password" name="password"&gt;&lt;br&gt;
+    &lt;button type="submit"&gt;登录&lt;/button&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 <p><code>success.jsp</code>代码，主要是完成登录成功页面，可以在session中获取登录成功的用户名：</p>
-<pre><code class="language-jsp highlight-chroma"><span class="highlight-ln">1</span>&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
-<span class="highlight-ln">2</span>&lt;html&gt;
-<span class="highlight-ln">3</span>&lt;head&gt;
-<span class="highlight-ln">4</span>    &lt;title&gt;登录成功&lt;/title&gt;
-<span class="highlight-ln">5</span>&lt;/head&gt;
-<span class="highlight-ln">6</span>&lt;body&gt;
-<span class="highlight-ln">7</span>&lt;h1&gt;登录成功，欢迎&lt;% out.print(session.getAttribute("number"));%&gt;&lt;/h1&gt;
-<span class="highlight-ln">8</span>&lt;/body&gt;
-<span class="highlight-ln">9</span>&lt;/html&gt;
+<pre><code class="language-jsp">&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;登录成功&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;登录成功，欢迎&lt;% out.print(session.getAttribute("number"));%&gt;&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 <p><code>fail.jsp</code>代码，登录失败页面：</p>
-<pre><code class="language-jsp highlight-chroma"><span class="highlight-ln">1</span>&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
-<span class="highlight-ln">2</span>&lt;html&gt;
-<span class="highlight-ln">3</span>&lt;head&gt;
-<span class="highlight-ln">4</span>    &lt;title&gt;登录失败&lt;/title&gt;
-<span class="highlight-ln">5</span>&lt;/head&gt;
-<span class="highlight-ln">6</span>&lt;body&gt;
-<span class="highlight-ln">7</span>&lt;h1&gt;登录失败&lt;/h1&gt;
-<span class="highlight-ln">8</span>&lt;/body&gt;
-<span class="highlight-ln">9</span>&lt;/html&gt;
+<pre><code class="language-jsp">&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;登录失败&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;登录失败&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 <p><code>LoginServlet.java</code>代码，登录验证Servlet：</p>
-<pre><code class="language-java highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nn">com.test.test</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.ServletException</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.annotation.WebServlet</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.http.HttpServlet</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 6</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.http.HttpServletRequest</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 7</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.http.HttpServletResponse</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 8</span><span class="highlight-kn">import</span> <span class="highlight-nn">javax.servlet.http.HttpSession</span><span class="highlight-o">;</span>
-<span class="highlight-ln"> 9</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.io.IOException</span><span class="highlight-o">;</span>
-<span class="highlight-ln">10</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.sql.PreparedStatement</span><span class="highlight-o">;</span>
-<span class="highlight-ln">11</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.sql.ResultSet</span><span class="highlight-o">;</span>
-<span class="highlight-ln">12</span><span class="highlight-kn">import</span> <span class="highlight-nn">java.sql.SQLException</span><span class="highlight-o">;</span>
-<span class="highlight-ln">13</span>
-<span class="highlight-ln">14</span><span class="highlight-nd">@WebServlet</span><span class="highlight-o">(</span><span class="highlight-n">name</span> <span class="highlight-o">=</span> <span class="highlight-s">"LoginServlet"</span><span class="highlight-o">,</span><span class="highlight-n">urlPatterns</span> <span class="highlight-o">=</span> <span class="highlight-o">{</span><span class="highlight-s">"/login"</span><span class="highlight-o">})</span>
-<span class="highlight-ln">15</span><span class="highlight-kd">public</span> <span class="highlight-kd">class</span> <span class="highlight-nc">LoginServlet</span> <span class="highlight-kd">extends</span> <span class="highlight-n">HttpServlet</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">16</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">doPost</span><span class="highlight-o">(</span><span class="highlight-n">HttpServletRequest</span> <span class="highlight-n">request</span><span class="highlight-o">,</span> <span class="highlight-n">HttpServletResponse</span> <span class="highlight-n">response</span><span class="highlight-o">)</span> <span class="highlight-kd">throws</span> <span class="highlight-n">ServletException</span><span class="highlight-o">,</span> <span class="highlight-n">IOException</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">17</span>        <span class="highlight-k">this</span><span class="highlight-o">.</span><span class="highlight-na">doGet</span><span class="highlight-o">(</span><span class="highlight-n">request</span><span class="highlight-o">,</span> <span class="highlight-n">response</span><span class="highlight-o">);</span>
-<span class="highlight-ln">18</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">19</span>
-<span class="highlight-ln">20</span>    <span class="highlight-kd">protected</span> <span class="highlight-kt">void</span> <span class="highlight-nf">doGet</span><span class="highlight-o">(</span><span class="highlight-n">HttpServletRequest</span> <span class="highlight-n">request</span><span class="highlight-o">,</span> <span class="highlight-n">HttpServletResponse</span> <span class="highlight-n">response</span><span class="highlight-o">)</span> <span class="highlight-kd">throws</span> <span class="highlight-n">ServletException</span><span class="highlight-o">,</span> <span class="highlight-n">IOException</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">21</span>        <span class="highlight-n">ConnectionDBUtil</span> <span class="highlight-n">dbUtil</span> <span class="highlight-o">=</span> <span class="highlight-k">new</span> <span class="highlight-n">ConnectionDBUtil</span><span class="highlight-o">();</span>
-<span class="highlight-ln">22</span>        <span class="highlight-n">String</span> <span class="highlight-n">number</span> <span class="highlight-o">=</span> <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">getParameter</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">23</span>        <span class="highlight-n">String</span> <span class="highlight-n">password</span> <span class="highlight-o">=</span> <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">getParameter</span><span class="highlight-o">(</span><span class="highlight-s">"password"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">24</span>        <span class="highlight-n">String</span> <span class="highlight-n">sql</span> <span class="highlight-o">=</span> <span class="highlight-s">"SELECT  * FROM user WHERE number = ? AND password = ?"</span><span class="highlight-o">;</span>
-<span class="highlight-ln">25</span>        <span class="highlight-n">Boolean</span> <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-kc">false</span><span class="highlight-o">;</span>
-<span class="highlight-ln">26</span>        <span class="highlight-k">try</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">27</span>            <span class="highlight-n">PreparedStatement</span> <span class="highlight-n">ps</span> <span class="highlight-o">=</span> <span class="highlight-n">dbUtil</span><span class="highlight-o">.</span><span class="highlight-na">getConn</span><span class="highlight-o">().</span><span class="highlight-na">prepareStatement</span><span class="highlight-o">(</span><span class="highlight-n">sql</span><span class="highlight-o">);</span>
-<span class="highlight-ln">28</span>            <span class="highlight-n">ps</span><span class="highlight-o">.</span><span class="highlight-na">setString</span><span class="highlight-o">(</span><span class="highlight-n">1</span><span class="highlight-o">,</span> <span class="highlight-n">number</span><span class="highlight-o">);</span>
-<span class="highlight-ln">29</span>            <span class="highlight-n">ps</span><span class="highlight-o">.</span><span class="highlight-na">setString</span><span class="highlight-o">(</span><span class="highlight-n">2</span><span class="highlight-o">,</span> <span class="highlight-n">password</span><span class="highlight-o">);</span>
-<span class="highlight-ln">30</span>            <span class="highlight-n">ResultSet</span> <span class="highlight-n">rs</span> <span class="highlight-o">=</span> <span class="highlight-n">ps</span><span class="highlight-o">.</span><span class="highlight-na">executeQuery</span><span class="highlight-o">();</span>
-<span class="highlight-ln">31</span>            <span class="highlight-k">while</span> <span class="highlight-o">(</span><span class="highlight-n">rs</span><span class="highlight-o">.</span><span class="highlight-na">next</span><span class="highlight-o">())</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">32</span>                <span class="highlight-n">result</span> <span class="highlight-o">=</span> <span class="highlight-kc">true</span><span class="highlight-o">;</span>
-<span class="highlight-ln">33</span>            <span class="highlight-o">}</span>
-<span class="highlight-ln">34</span>            <span class="highlight-n">ps</span><span class="highlight-o">.</span><span class="highlight-na">close</span><span class="highlight-o">();</span>
-<span class="highlight-ln">35</span>        <span class="highlight-o">}</span> <span class="highlight-k">catch</span> <span class="highlight-o">(</span><span class="highlight-n">SQLException</span> <span class="highlight-n">e</span><span class="highlight-o">)</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">36</span>            <span class="highlight-n">e</span><span class="highlight-o">.</span><span class="highlight-na">printStackTrace</span><span class="highlight-o">();</span>
-<span class="highlight-ln">37</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">38</span>        <span class="highlight-n">dbUtil</span><span class="highlight-o">.</span><span class="highlight-na">closeConn</span><span class="highlight-o">();</span>
-<span class="highlight-ln">39</span>        <span class="highlight-k">if</span> <span class="highlight-o">(</span><span class="highlight-n">result</span><span class="highlight-o">){</span>
-<span class="highlight-ln">40</span>            <span class="highlight-n">HttpSession</span> <span class="highlight-n">session</span> <span class="highlight-o">=</span> <span class="highlight-n">request</span><span class="highlight-o">.</span><span class="highlight-na">getSession</span><span class="highlight-o">();</span>
-<span class="highlight-ln">41</span>            <span class="highlight-n">session</span><span class="highlight-o">.</span><span class="highlight-na">setAttribute</span><span class="highlight-o">(</span><span class="highlight-s">"number"</span><span class="highlight-o">,</span> <span class="highlight-n">number</span><span class="highlight-o">);</span>
-<span class="highlight-ln">42</span>            <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-na">sendRedirect</span><span class="highlight-o">(</span><span class="highlight-s">"/Test2/success.jsp"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">43</span>        <span class="highlight-o">}</span><span class="highlight-k">else</span> <span class="highlight-o">{</span>
-<span class="highlight-ln">44</span>            <span class="highlight-n">response</span><span class="highlight-o">.</span><span class="highlight-na">sendRedirect</span><span class="highlight-o">(</span><span class="highlight-s">"/Test2/fail.jsp"</span><span class="highlight-o">);</span>
-<span class="highlight-ln">45</span>        <span class="highlight-o">}</span>
-<span class="highlight-ln">46</span>    <span class="highlight-o">}</span>
-<span class="highlight-ln">47</span><span class="highlight-o">}</span>
+<pre><code class="language-java">package com.test.test;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@WebServlet(name = "LoginServlet",urlPatterns = {"/login"})
+public class LoginServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        this.doGet(request, response);
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ConnectionDBUtil dbUtil = new ConnectionDBUtil();
+        String number = request.getParameter("number");
+        String password = request.getParameter("password");
+        String sql = "SELECT  * FROM user WHERE number = ? AND password = ?";
+        Boolean result = false;
+        try {
+            PreparedStatement ps = dbUtil.getConn().prepareStatement(sql);
+            ps.setString(1, number);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result = true;
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dbUtil.closeConn();
+        if (result){
+            HttpSession session = request.getSession();
+            session.setAttribute("number", number);
+            response.sendRedirect("/Test2/success.jsp");
+        }else {
+            response.sendRedirect("/Test2/fail.jsp");
+        }
+    }
+}
 </code></pre>
 <p><code>ConnectionDBUtil.jsp</code>代码，主要的用于连接数据库的工具，别忘了还要导入连接数据库的jar包 <code>mysql-connector-java-5.1.46-bin.jar</code>。我们连接数据库的node4的数据库，所以IP地址是 <code>192.168.204.124</code>。</p>
-<pre><code class="language-go highlight-chroma"><span class="highlight-ln"> 1</span><span class="highlight-kn">package</span> <span class="highlight-nx">com</span><span class="highlight-p">.</span><span class="highlight-nx">test</span><span class="highlight-p">.</span><span class="highlight-nx">test</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 2</span>
-<span class="highlight-ln"> 3</span><span class="highlight-kn">import</span> <span class="highlight-nx">java</span><span class="highlight-p">.</span><span class="highlight-nx">sql</span><span class="highlight-p">.</span><span class="highlight-nx">Connection</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 4</span><span class="highlight-kn">import</span> <span class="highlight-nx">java</span><span class="highlight-p">.</span><span class="highlight-nx">sql</span><span class="highlight-p">.</span><span class="highlight-nx">DriverManager</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 5</span><span class="highlight-kn">import</span> <span class="highlight-nx">java</span><span class="highlight-p">.</span><span class="highlight-nx">sql</span><span class="highlight-p">.</span><span class="highlight-nx">SQLException</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 6</span>
-<span class="highlight-ln"> 7</span><span class="highlight-nx">public</span> <span class="highlight-nx">class</span> <span class="highlight-nx">ConnectionDBUtil</span> <span class="highlight-p">{</span>
-<span class="highlight-ln"> 8</span>    <span class="highlight-nx">private</span> <span class="highlight-nx">Connection</span> <span class="highlight-nx">conn</span><span class="highlight-p">=</span> <span class="highlight-nx">null</span><span class="highlight-p">;</span>
-<span class="highlight-ln"> 9</span>    <span class="highlight-nx">private</span> <span class="highlight-nx">static</span> <span class="highlight-nx">final</span> <span class="highlight-nx">String</span> <span class="highlight-nx">DBURL</span> <span class="highlight-p">=</span> <span class="highlight-s">"jdbc:mysql://192.168.204.124:3306/test"</span><span class="highlight-p">;</span>
-<span class="highlight-ln">10</span>    <span class="highlight-nx">private</span> <span class="highlight-nx">static</span> <span class="highlight-nx">final</span> <span class="highlight-nx">String</span> <span class="highlight-nx">DBUSER</span> <span class="highlight-p">=</span> <span class="highlight-s">"root"</span><span class="highlight-p">;</span>
-<span class="highlight-ln">11</span>    <span class="highlight-nx">private</span> <span class="highlight-nx">static</span> <span class="highlight-nx">final</span> <span class="highlight-nx">String</span> <span class="highlight-nx">DBPASSWD</span> <span class="highlight-p">=</span> <span class="highlight-s">"root"</span><span class="highlight-p">;</span>
-<span class="highlight-ln">12</span>
-<span class="highlight-ln">13</span>    <span class="highlight-nx">public</span> <span class="highlight-nf">ConnectionDBUtil</span><span class="highlight-p">(){</span>
-<span class="highlight-ln">14</span>        <span class="highlight-nx">try</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">15</span>            <span class="highlight-nx">Class</span><span class="highlight-p">.</span><span class="highlight-nf">forName</span><span class="highlight-p">(</span><span class="highlight-s">"com.mysql.jdbc.Driver"</span><span class="highlight-p">);</span>
-<span class="highlight-ln">16</span>            <span class="highlight-nx">conn</span> <span class="highlight-p">=</span> <span class="highlight-nx">DriverManager</span><span class="highlight-p">.</span><span class="highlight-nf">getConnection</span><span class="highlight-p">(</span><span class="highlight-nx">DBURL</span><span class="highlight-p">,</span> <span class="highlight-nx">DBUSER</span><span class="highlight-p">,</span>  <span class="highlight-nx">DBPASSWD</span><span class="highlight-p">);</span>
-<span class="highlight-ln">17</span>        <span class="highlight-p">}</span> <span class="highlight-nf">catch</span> <span class="highlight-p">(</span><span class="highlight-nx">ClassNotFoundException</span> <span class="highlight-nx">e</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">18</span>            <span class="highlight-nx">e</span><span class="highlight-p">.</span><span class="highlight-nf">printStackTrace</span><span class="highlight-p">();</span>
-<span class="highlight-ln">19</span>        <span class="highlight-p">}</span> <span class="highlight-nf">catch</span> <span class="highlight-p">(</span><span class="highlight-nx">SQLException</span> <span class="highlight-nx">e</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">20</span>            <span class="highlight-nx">e</span><span class="highlight-p">.</span><span class="highlight-nf">printStackTrace</span><span class="highlight-p">();</span>
-<span class="highlight-ln">21</span>        <span class="highlight-p">}</span>
-<span class="highlight-ln">22</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln">23</span>
-<span class="highlight-ln">24</span>    <span class="highlight-nx">public</span> <span class="highlight-nx">Connection</span> <span class="highlight-nf">getConn</span><span class="highlight-p">(){</span>
-<span class="highlight-ln">25</span>        <span class="highlight-k">return</span> <span class="highlight-nx">conn</span><span class="highlight-p">;</span>
-<span class="highlight-ln">26</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln">27</span>
-<span class="highlight-ln">28</span>    <span class="highlight-nx">public</span> <span class="highlight-nx">void</span> <span class="highlight-nf">closeConn</span><span class="highlight-p">(){</span>
-<span class="highlight-ln">29</span>        <span class="highlight-k">if</span> <span class="highlight-p">(</span><span class="highlight-nx">conn</span> <span class="highlight-o">!=</span> <span class="highlight-nx">null</span><span class="highlight-p">){</span>
-<span class="highlight-ln">30</span>            <span class="highlight-nx">try</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">31</span>                <span class="highlight-nx">conn</span><span class="highlight-p">.</span><span class="highlight-nb">close</span><span class="highlight-p">();</span>
-<span class="highlight-ln">32</span>            <span class="highlight-p">}</span> <span class="highlight-nf">catch</span> <span class="highlight-p">(</span><span class="highlight-nx">SQLException</span> <span class="highlight-nx">e</span><span class="highlight-p">)</span> <span class="highlight-p">{</span>
-<span class="highlight-ln">33</span>                <span class="highlight-nx">e</span><span class="highlight-p">.</span><span class="highlight-nf">printStackTrace</span><span class="highlight-p">();</span>
-<span class="highlight-ln">34</span>            <span class="highlight-p">}</span>
-<span class="highlight-ln">35</span>        <span class="highlight-p">}</span>
-<span class="highlight-ln">36</span>    <span class="highlight-p">}</span>
-<span class="highlight-ln">37</span><span class="highlight-p">}</span>
+<pre><code>package com.test.test;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class ConnectionDBUtil {
+    private Connection conn= null;
+    private static final String DBURL = "jdbc:mysql://192.168.204.124:3306/test";
+    private static final String DBUSER = "root";
+    private static final String DBPASSWD = "root";
+
+    public ConnectionDBUtil(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DBURL, DBUSER,  DBPASSWD);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Connection getConn(){
+        return conn;
+    }
+
+    public void closeConn(){
+        if (conn != null){
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
 </code></pre>
 <p>然后使用这些代码在开发环境上编译，得到一个war的文件或者是文件夹，然后我们把这个文件或者文件夹放在node3和node4的Tomcat服务器上，目录为 <code>/opt/apache-tomcat-7.0.88/webapps</code>。最后可以在浏览器上访问我们的虚拟IP地址加上项目名称就可以访问到这个网站了。如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>http://192.168.204.221/Test2/
+<pre><code class="language-text">http://192.168.204.221/Test2/
 </code></pre>
 <p>这个是登录的页面：<br>
 <img src="https://s1.ax1x.com/2020/03/30/GecxqH.png" alt="这里写图片描述"></p>
@@ -829,110 +829,110 @@ var _hmt = _hmt || [];
 <p>这个是登录失败的页面：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GQXj7F.png" alt="这里写图片描述"></p>
 <p>这个就是我们的网站项目，虽然是简单，但是我们已经让这个项目在我们的高可用高并发的服务器上正常运行工作了。这个已经证明我们的服务器已经可以正常工作了。</p>
-<h1 id="解决session一致性">解决session一致性</h1>
+<h1 id="toc_h1_9">解决session一致性</h1>
 <p>现在有一个问题，就是我们的Tomcat服务器有好几个，而且都不在同一个机器上，那问题就来了。我们使用session保存了用户名，但是当我们在次访问的时候，也行不是原来的那个Tomcat服务器，那之前保存的session就不存在了，我们可以验证看看。</p>
 <p>这个是我们的登录成功的界面，我们在登录成功之后，会把用户名保存的session中。然后在这个页面就可以查看到，但是我们通过不断刷新，可以看到用户名有时候会为空，这就是去到了其他的Tomcat服务器，也就没有了之前保存的session。</p>
 <p>在当前登录成功的服务器上：<br>
-<img src="https://img.hacpai.com/file/2020/04/TIM%E6%88%AA%E5%9B%BE20200404221229-8a49ecdb.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="TIM截图20200404221229.png"></p>
+<img src="https://img.hacpai.com/file/2020/04/TIM截图20200404221229-8a49ecdb.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="TIM截图20200404221229.png"></p>
 <p>已经去到其他服务器了：<br>
 <img src="https://img.hacpai.com/file/2020/04/20180622154709456-83e2365e.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="20180622154709456.png"></p>
 <p>那么我们现在就来解决这个session一致性问题。我们是使用Redis来解决session一致性的。以下操作在node3和node4下操作。</p>
 <p><a href="https://download.csdn.net/download/qq_33200967/10493303" target="_blank">下载session一致性的jar包</a>，把里面的三个jar包复制到Tomcat的lib目录下，路径如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>cd /opt/apache-tomcat-7.0.88/lib/
+<pre><code>cd /opt/apache-tomcat-7.0.88/lib/
 </code></pre>
 <p>然后编辑server.xml配置文件，node3和node4都要操作：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim /opt/apache-tomcat-7.0.61/conf/server.xml
+<pre><code class="language-text">vim /opt/apache-tomcat-7.0.61/conf/server.xml
 </code></pre>
 <p>第一个Tomcat的上找到Engine，然后在上面加上 <code>jvmRoute="tomcat1"</code>，同样在第二个Tomcat加上 <code>jvmRoute="tomcat2"</code>，如下：</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln">1</span>    <span class="highlight-nt">&lt;Engine</span> <span class="highlight-na">name=</span><span class="highlight-s">"Catalina"</span> <span class="highlight-na">defaultHost=</span><span class="highlight-s">"localhost"</span> <span class="highlight-na">jvmRoute=</span><span class="highlight-s">"tomcat1"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span>      <span class="highlight-c">&lt;!--For clustering, please take a look at documentation at:
-</span><span class="highlight-ln">4</span><span class="highlight-c">          /docs/cluster-howto.html  (simple how to)
-</span><span class="highlight-ln">5</span><span class="highlight-c">          /docs/config/cluster.html (reference documentation) --&gt;</span>
-<span class="highlight-ln">6</span>
+<pre><code class="language-xml">    &lt;Engine name="Catalina" defaultHost="localhost" jvmRoute="tomcat1"&gt;
+
+      &lt;!--For clustering, please take a look at documentation at:
+          /docs/cluster-howto.html  (simple how to)
+          /docs/config/cluster.html (reference documentation) --&gt;
+
 </code></pre>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln">1</span>    <span class="highlight-nt">&lt;Engine</span> <span class="highlight-na">name=</span><span class="highlight-s">"Catalina"</span> <span class="highlight-na">defaultHost=</span><span class="highlight-s">"localhost"</span> <span class="highlight-na">jvmRoute=</span><span class="highlight-s">"tomcat2"</span><span class="highlight-nt">&gt;</span>
-<span class="highlight-ln">2</span>
-<span class="highlight-ln">3</span>      <span class="highlight-c">&lt;!--For clustering, please take a look at documentation at:
-</span><span class="highlight-ln">4</span><span class="highlight-c">          /docs/cluster-howto.html  (simple how to)
-</span><span class="highlight-ln">5</span><span class="highlight-c">          /docs/config/cluster.html (reference documentation) --&gt;</span>
+<pre><code class="language-xml">    &lt;Engine name="Catalina" defaultHost="localhost" jvmRoute="tomcat2"&gt;
+
+      &lt;!--For clustering, please take a look at documentation at:
+          /docs/cluster-howto.html  (simple how to)
+          /docs/config/cluster.html (reference documentation) --&gt;
 </code></pre>
 <p>然后编辑context.xml配置文件，node3和node4都要操作：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim /opt/apache-tomcat-7.0.61/conf/context.xml
+<pre><code class="language-text">vim /opt/apache-tomcat-7.0.61/conf/context.xml
 </code></pre>
 <p>在 <code>&lt;Context&gt;</code>和 <code>&lt;/Context&gt;</code>之间添加如下内容，其中host是Redis所在的服务器，笔者在node3上安装Redis，所以这里是node3的IP地址。</p>
-<pre><code class="language-xml highlight-chroma"><span class="highlight-ln">1</span>    <span class="highlight-nt">&lt;Valve</span> <span class="highlight-na">className=</span><span class="highlight-s">"com.orangefunction.tomcat.redissessions.RedisSessionHandlerValve"</span> <span class="highlight-nt">/&gt;</span>
-<span class="highlight-ln">2</span>    <span class="highlight-nt">&lt;Manager</span> <span class="highlight-na">className=</span><span class="highlight-s">"com.orangefunction.tomcat.redissessions.RedisSessionManager"</span>
-<span class="highlight-ln">3</span>        <span class="highlight-na">host=</span><span class="highlight-s">"192.168.204.123"</span>
-<span class="highlight-ln">4</span>        <span class="highlight-na">port=</span><span class="highlight-s">"6379"</span>
-<span class="highlight-ln">5</span>        <span class="highlight-na">database=</span><span class="highlight-s">"0"</span>
-<span class="highlight-ln">6</span>        <span class="highlight-na">maxInactiveInterval=</span><span class="highlight-s">"60"</span> <span class="highlight-nt">/&gt;</span>
+<pre><code class="language-xml">    &lt;Valve className="com.orangefunction.tomcat.redissessions.RedisSessionHandlerValve" /&gt;
+    &lt;Manager className="com.orangefunction.tomcat.redissessions.RedisSessionManager"
+        host="192.168.204.123"
+        port="6379"
+        database="0"
+        maxInactiveInterval="60" /&gt;
 </code></pre>
 <p>上面说到Redis缓存数据库，所以我们还有安装Redis缓存数据库。我们在node3上安装Redis缓存数据库。</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>cd /opt/
-<span class="highlight-ln">2</span>wget http://download.redis.io/releases/redis-4.0.2.tar.gz
-<span class="highlight-ln">3</span>tar -zxvf redis-4.0.2.tar.gz
-<span class="highlight-ln">4</span>cd redis-4.0.2
-<span class="highlight-ln">5</span>make
-<span class="highlight-ln">6</span>make install
+<pre><code class="language-text">cd /opt/
+wget http://download.redis.io/releases/redis-4.0.2.tar.gz
+tar -zxvf redis-4.0.2.tar.gz
+cd redis-4.0.2
+make
+make install
 </code></pre>
 <p>安装完成之后，我们编辑 <code>vim /opt/redis-4.0.2/redis.conf</code>这个配置文件，修改里面的bind地址，把地址改成node3的IP地址。如下：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span># bind 127.0.0.1
-<span class="highlight-ln">2</span>bind 192.168.204.123
+<pre><code class="language-text"># bind 127.0.0.1
+bind 192.168.204.123
 </code></pre>
 <p>然后就可以启动Redis了，注意这里要回车两次。</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln">1</span>/opt/redis-4.0.2/src/redis-server /opt/redis-4.0.2/redis.conf &amp;
+<pre><code>/opt/redis-4.0.2/src/redis-server /opt/redis-4.0.2/redis.conf &amp;
 </code></pre>
 <p>启动的界面如下：</p>
-<pre><code class="highlight-chroma"><span class="highlight-ln"> 1</span>[root@node3 src]# /opt/redis-4.0.2/src/redis-server /opt/redis-4.0.2/redis.conf &amp;
-<span class="highlight-ln"> 2</span>[2] 4809
-<span class="highlight-ln"> 3</span>[1]   Done                    /opt/redis-4.0.2/src/redis-server redis.conf  (wd: /opt/redis-4.0.2)
-<span class="highlight-ln"> 4</span>(wd now: /opt/redis-4.0.2/src)
-<span class="highlight-ln"> 5</span>[root@node3 src]# 4809:C 22 Jun 16:21:13.162 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
-<span class="highlight-ln"> 6</span>4809:C 22 Jun 16:21:13.162 # Redis version=4.0.2, bits=64, commit=00000000, modified=0, pid=4809, just started
-<span class="highlight-ln"> 7</span>4809:C 22 Jun 16:21:13.162 # Configuration loaded
-<span class="highlight-ln"> 8</span>4809:M 22 Jun 16:21:13.165 * Increased maximum number of open files to 10032 (it was originally set to 1024).
-<span class="highlight-ln"> 9</span>                _._                                              
-<span class="highlight-ln">10</span>           _.-``__ ''-._                                         
-<span class="highlight-ln">11</span>      _.-``    `.  `_.  ''-._           Redis 4.0.2 (00000000/0) 64 bit
-<span class="highlight-ln">12</span>  .-`` .-```.  ```\/    _.,_ ''-._                               
-<span class="highlight-ln">13</span> (    '      ,       .-`  | `,    )     Running in standalone mode
-<span class="highlight-ln">14</span> |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
-<span class="highlight-ln">15</span> |    `-._   `._    /     _.-'    |     PID: 4809
-<span class="highlight-ln">16</span>  `-._    `-._  `-./  _.-'    _.-'                               
-<span class="highlight-ln">17</span> |`-._`-._    `-.__.-'    _.-'_.-'|                              
-<span class="highlight-ln">18</span> |    `-._`-._        _.-'_.-'    |           http://redis.io    
-<span class="highlight-ln">19</span>  `-._    `-._`-.__.-'_.-'    _.-'                               
-<span class="highlight-ln">20</span> |`-._`-._    `-.__.-'    _.-'_.-'|                              
-<span class="highlight-ln">21</span> |    `-._`-._        _.-'_.-'    |                              
-<span class="highlight-ln">22</span>  `-._    `-._`-.__.-'_.-'    _.-'                               
-<span class="highlight-ln">23</span>      `-._    `-.__.-'    _.-'                                   
-<span class="highlight-ln">24</span>          `-._        _.-'                                       
-<span class="highlight-ln">25</span>              `-.__.-'                                           
-<span class="highlight-ln">26</span>
-<span class="highlight-ln">27</span>4809:M 22 Jun 16:21:13.171 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
-<span class="highlight-ln">28</span>4809:M 22 Jun 16:21:13.171 # Server initialized
-<span class="highlight-ln">29</span>
+<pre><code>[root@node3 src]# /opt/redis-4.0.2/src/redis-server /opt/redis-4.0.2/redis.conf &amp;
+[2] 4809
+[1]   Done                    /opt/redis-4.0.2/src/redis-server redis.conf  (wd: /opt/redis-4.0.2)
+(wd now: /opt/redis-4.0.2/src)
+[root@node3 src]# 4809:C 22 Jun 16:21:13.162 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+4809:C 22 Jun 16:21:13.162 # Redis version=4.0.2, bits=64, commit=00000000, modified=0, pid=4809, just started
+4809:C 22 Jun 16:21:13.162 # Configuration loaded
+4809:M 22 Jun 16:21:13.165 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+                _._                                              
+           _.-``__ ''-._                                         
+      _.-``    `.  `_.  ''-._           Redis 4.0.2 (00000000/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ ''-._                               
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+ |    `-._   `._    /     _.-'    |     PID: 4809
+  `-._    `-._  `-./  _.-'    _.-'                               
+ |`-._`-._    `-.__.-'    _.-'_.-'|                              
+ |    `-._`-._        _.-'_.-'    |           http://redis.io    
+  `-._    `-._`-.__.-'_.-'    _.-'                               
+ |`-._`-._    `-.__.-'    _.-'_.-'|                              
+ |    `-._`-._        _.-'_.-'    |                              
+  `-._    `-._`-.__.-'_.-'    _.-'                               
+      `-._    `-.__.-'    _.-'                                   
+          `-._        _.-'                                       
+              `-.__.-'                                           
+
+4809:M 22 Jun 16:21:13.171 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+4809:M 22 Jun 16:21:13.171 # Server initialized
+
 </code></pre>
 <p>最后启动Tomcat服务器就可以了，如果之前已经启动过了，需要关闭Tomcat再重新启动，node3和node4都需要。</p>
 <p>启动之后，再重新登录，在登录成功页面无论我们如何刷新都会显示用户名，这是因为我们已经保持了每一个Tomcat的session都是一一致的。<br>
 <img src="https://s1.ax1x.com/2020/04/02/GG1OyQ.png" alt="这里写图片描述"></p>
 <p>本章是介绍网站的逻辑部分的分布式部署，要应对真实的高并发还有对数据库做分布式部署，以应对庞大的数据查询。在下一章的<a href="https://blog.csdn.net/qq_33200967/article/details/80863305" target="_blank">《CentOS下安装和使用Mycat实现分布式数据库》</a>介绍如何在CentOS上部署分布式数据库。</p>
-<h1 id="注意">注意</h1>
+<h1 id="toc_h1_10">注意</h1>
 <p>这里要说一下的是，我们为了方便外界可以访问到服务器的端口，我们把防火墙关闭了，但是这种是非常不安全的。所以我们可以单独开放某一端口，比如我们要开放MySQL数据库的3306端口号，操作如下：</p>
 <p>编辑防火墙配置文件：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>vim /etc/sysconfig/iptables
+<pre><code class="language-text">vim /etc/sysconfig/iptables
 </code></pre>
 <p>添加以下信息：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
+<pre><code class="language-text">-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
 </code></pre>
 <p>如下图所示：<br>
 <img src="https://s1.ax1x.com/2020/03/31/GM2fYQ.png" alt="这里写图片描述"></p>
 <p>保存退出，最后重启防火墙：</p>
-<pre><code class="language-text highlight-chroma"><span class="highlight-ln">1</span>service iptables restart
+<pre><code class="language-text">service iptables restart
 </code></pre>
 <p>开放其他端口也是同样的操作。</p>
-<h1 id="参考资料">参考资料</h1>
+<h1 id="toc_h1_11">参考资料</h1>
 <ol>
 <li><a href="https://blog.csdn.net/u010392801/article/details/52085394" target="_blank">https://blog.csdn.net/u010392801/article/details/52085394</a></li>
 <li><a href="https://blog.csdn.net/u012852986/article/details/52412174" target="_blank">https://blog.csdn.net/u012852986/article/details/52412174</a></li>
@@ -1015,7 +1015,7 @@ var _hmt = _hmt || [];
         <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
         <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
         <span class="fn-right">
-            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a>
+            Powered by <a href="https://solo.b3log.org" target="_blank">Solo</a> & <a rel="friend" href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
         </span>
     </div>
     <span onclick="Util.goTop()" class="icon-goup"></span>
@@ -1024,7 +1024,7 @@ var _hmt = _hmt || [];
   var Label = {
     servePath: "https://yeyupiaoling.github.io",
     staticServePath: "https://yeyupiaoling.github.io",
-    luteAvailable: true,
+    luteAvailable: false,
     hljsStyle: 'github',
     langLabel: "zh_CN",
     version: "4.0.0",
@@ -1032,11 +1032,11 @@ var _hmt = _hmt || [];
     showCodeBlockLn: true,
   }
 </script>
-<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586176279294"></script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1586242016339"></script>
 
 
 <script type="text/javascript">
-    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586176279294', 'soloPageScript')
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1586242016339', 'soloPageScript')
     var page = new Page({
         "commentContentCannotEmptyLabel": "评论内容只能为 2 到 500 个字符！",
         "oId": "1585466400333",
@@ -1054,4 +1054,4 @@ var _hmt = _hmt || [];
 </body>
 </html>
 
-<!-- Generated by Latke (https://github.com/88250/latke) in 66ms, 2020/04/07 11:38:46 -->
+<!-- Generated by Latke (https://github.com/88250/latke) in 23ms, 2020/04/07 14:57:08 -->
