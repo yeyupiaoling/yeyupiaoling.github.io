@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>双目摄像头测量距离 - 夜雨飘零</title><meta name="description" content="在计算机视觉中，可以通过双目摄像头实现，常用的有BM 算法和SGBM 算法等，双目测距跟激光不同，双目测距不需要激光光源，是人眼安全的，只需要摄像头，成本非常底，也用于应用到大多数的项目中。本章我们就来介绍如何使用双目摄像头和SGBM 算法实现距离测量。"/><meta property="og:description" content="在计算机视觉中，可以通过双目摄像头实现，常用的有BM 算法和SGBM 算法等，双目测距跟激光不同，双目测距不需要激光光源，是人眼安全的，只需要摄像头，成本非常底，也用于应用到大多数的项目中。本章我们就来介绍如何使用双目摄像头和SGBM 算法实现距离测量。"/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="双目摄像头测量距离 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1642516237551.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="双目摄像头测量距离 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1642516237551.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="基于PaddlePaddle实现声纹识别" href="https://yeyupiaoling.github.io/articles/1642515820791.html">
+            <link rel="next" title="Python实现常见的排序算法" href="https://yeyupiaoling.github.io/articles/1642516665233.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">相机标定</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">拍摄标定图像</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">图像标定</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">距离测量</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1642516237551.html">
+                    双目摄像头测量距离
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Android">
+                        Android</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1642516237551.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1642516237551">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1642516237551.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1642516237551.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://b3logfile.com/bing/20210215.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>在计算机视觉中，可以通过双目摄像头实现，常用的有BM 算法和SGBM 算法等，双目测距跟激光不同，双目测距不需要激光光源，是人眼安全的，只需要摄像头，成本非常底，也用于应用到大多数的项目中。本章我们就来介绍如何使用双目摄像头和SGBM 算法实现距离测量。</p>
+<h1 id="toc_h1_1">相机标定</h1>
+<p>每个种双目摄像头都不一样，他们之间的距离，畸变等其他的原因，这些都会导致他们定位算法参数的差异，所以我们通常是通过相机标定来得到他们的算法参数。标定的目的是为了消除畸变以及得到内外参数矩阵，内参数矩阵可以理解为焦距相关，它是一个从平面到像素的转换，焦距不变它就不变，所以确定以后就可以重复使用，而外参数矩阵反映的是摄像机坐标系与世界坐标系的转换，至于畸变参数，一般也包含在内参数矩阵中。从作用上来看，内参数矩阵是为了得到镜头的信息，并消除畸变，使得到的图像更为准确，外参数矩阵是为了得到相机相对于世界坐标的联系，是为了最终的测距。</p>
+<h2 id="toc_h2_2">拍摄标定图像</h2>
+<p>我们需要通过摄像头拍摄标定图片，拍摄得到的是左目摄像头和右目摄像头的图像，笔者一般是拍摄16张左右。通常双目摄像头拍摄得到的图像是左目摄像头拍摄的在第一位，然后是右目摄像头，使用OpenCV拍摄的图像，可以通过裁剪的方式把他们分开分别存储。以下是笔者提供的拍摄标定图像的Python代码，通过按<code>回车</code>键保存图像。注意在拍摄前需要调整好摄像头的焦距，调整之后就不要再动了。</p>
+<pre><code class="language-python">import cv2
+
+imageWidth = 1280
+imageHeight = 720
+
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth * 2)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHeight)
+i = 0
+
+while True:
+    # 从摄像头读取图片
+    success, img = cap.read()
+    if success:
+        # 获取左右摄像头的图像
+        rgbImageL = img[:, 0:imageWidth, :]
+        rgbImageR = img[:, imageWidth:imageWidth * 2, :]
+        cv2.imshow('Left', rgbImageL)
+        cv2.imshow('Right', rgbImageR)
+        # 按“回车”保存图片
+        c = cv2.waitKey(1) &amp; 0xff
+        if c == 13:
+            cv2.imwrite('Left%d.bmp' % i, rgbImageL)
+            cv2.imwrite('Right%d.bmp' % i, rgbImageR)
+            print("Save %d image" % i)
+            i += 1
+
+cap.release()
+</code></pre>
+<p>以下图像是相机标定是所需的棋盘，可以使用A3纸打印出来，使用木板等固定好，不要弯曲，最好是使用专业棋盘。摄像头拍摄的棋盘应该占拍摄区域的三分之一以上。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-1595399400192019094-ee9ba0c3.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<h1 id="toc_h1_3">图像标定</h1>
+<p>拍摄完成图像之后，使用MATLAB对其进行标定。笔者使用的是MATLAB R2016a，其他的版本应该也可以。</p>
+<p>打开MATLAB R2016a，添加<code>TOOLBOX_calib</code>的路径，<code>TOOLBOX_calib</code>下载地址：<a href="https://resource.doiduoyi.com/#w0w0sko" target="_blank">https://resource.doiduoyi.com/#w0w0sko</a>，下载之后把它解压到D盘的根目录，如下下图所示：<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-15586811060591790787-460f46e9.jpeg?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"><br>
+然后在MATLAB R2016a命令区输入：<code>cd d:\calib_example</code>打开标定图片的文件夹，如果读者保存的图片是其他路径，就打开对应的路径。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-16259166007803406174-e6e7f96e.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>还是在刚才的命令区，输入命令：<code>calib_gui</code>，打开标定工具，即可启动标定工具，界面如下，然后点击<code>Standard(all the images are stored in memory)</code>按钮。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-11977084650377937988-5a6cdc56.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>执行上一步之后会弹出以下界面，然后点击<code>Image names</code>按钮，这个主要是为了通过图像的名称来列出所需的标定图像。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-16707670762580208275-30de0549.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>点击<code>Image names</code>按钮之后，会列出当前目录的图像，首先我们标定左目摄像头拍摄的图像。我们在拍摄图像保存时，保存的名字变化主要在名字最后的数字，这样我们就可以通过固定图像名称的前半部分和后缀名来列出将要标定的图像。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-4504705278290261582-9fbb2028.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>输入如下，指定名称为<code>Left</code>，后缀名为<code>bmp</code>，这就可以把左目摄像头的图像都加载进来了。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-9721368773205286526-72c5d4e5.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>加载完成之后会弹以下窗口，这些就是将要标定的图像。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-12949419261781420343-d5cc73df.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>然后回到标定工具的功能选择界面，点击<code>Extract grid corners</code>按钮，开始标定。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-13810802300307463724-882106ef.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>执行上一步之后，需要回到命令区，需要对接下来的标定做好配置。其他基本可以默认，直接回车就好，有两个参数需要更加推荐输入，读者可能跟我的不一样。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-3093113452358564940-9734470f.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>执行完上面之后，会弹出一个标定图像的窗口，标定时需要按照左上、右上、右下、左下顺序点击 4 个边界角点，如图所示。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-16572811177801788923-9c69a2d7.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>回到命令区，标定第一张图像时，需要输入棋盘中每个格子的大小，笔者使用A3纸打印的，每个格子大概是28.8mm，这个需要读者去测量自己其他每个格子的大小。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-1591676098129084288-24d73774.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>输入上面的数据之后，会在每个格子的对角都标注，这样对畸变的图像进一步调整的，如果使用的是无畸变的图像，那到这一步基本上是完成了。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-482265802167609868-083c56bc.jpeg?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>如果是无畸变的摄像头，在命令去看到以下输出时，直接回车就可以开始标注下一张图像了。如果是有畸变的摄像头，需要输入1，然后根据提示输入调整参数，参数范围在[-1, 1]，通过调整使得红色的标记都在每个格子的对角上。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-17325336046423329604-feb128e7.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>全部标记完成之后，再次回到标定功能选择菜单上，然后点击<code>Calibration</code>按钮。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-4224657887828789298-fd707c97.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>点击上面按钮之后，会输入类似以下的信息。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-3886842424285614595-b81e57c2.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>最后点击保存标注信息，文件会被保存为<code>Calib_Results.mat</code>，我们需要将标定结果文件重命名为： <code>Calib_Results_left.mat</code>，这是为了修改成下一步默认路径。左目摄像头标定完成后，按照同样的方法标定右目摄像头，将标定结果文件重命名为：<code>Calib_Results_right.mat</code>，之后可以进行双目标定。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-1937944079338416190-6a590713.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>上面都完成之后，应该有<code>Calib_Results_left.mat</code>和<code>Calib_Results_right.mat</code>这两个文件。然后在命令区输入命令：<code>stereo_gui</code>，会弹出以下界面，点击<code>Load left and right calibration files</code>按钮。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-5097935151865473105-120495cc.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>执行上一步之后会输入以下信息，这次产生就是我们测距算法所需的参数，不同我们还可以对这些参数进行优化。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-11044613201049902856-e602db63.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>点击<code>Run stereo calibration</code>按钮对结果进行优化。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-10008587937865397213-165a6206.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>最后输出的是经过优化的参数，输出如下，这些参数非常重要。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-14951830872761113862-3630247e.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>以下为每个参数值对应的双目测距的参数。他们的介绍如下：<br>
+<code>fc_left</code>：左目镜头像素级焦距值，fc_left × 像元尺寸 = 左目镜头物理焦距值，像<br>
+元尺寸见双目相机产品参数表。<br>
+<code>cc_left</code>：左目光心位置坐标。<br>
+<code>kc_left</code>：左目镜头畸变系数。<br>
+<code>alpha_c_left</code>: 偏斜系数。<br>
+<code>om</code>：旋转向量。<br>
+<code>T</code>：平移向量。T_01，双目间距（即：双目基线）</p>
+<pre><code>Focal Length:          fc_left = [ 781.69191   781.93358 ]  [ 3.14543   3.14792 ]
+                                            【fc_left_x     fc_left_y】      【误差1，  误差2】
+Principal point:       cc_left = [ 319.50000   239.50000 ]   [ 0.00000   0.00000 ]
+                                            【cc_left_x     cc_left_y】     【误差1     误差2】
+Skew:             alpha_c_left = [ 0.00000 ]   [ 0.00000  ]   =&gt; angle of pixel axes = 90.00000   0.00000 degrees
+Distortion:            kc_left = [ 0.02704   0.10758   -0.00408   -0.01769  0.00000 ]   [ 0.01402   0.07915   0.00047   0.00072  0.00000 ]
+                                           【kc_left_01,  kc_left_02,  kc_left_03,  kc_left_04,   kc_left_05】【误差1 误差2 误差3 误差4 误差5】
+
+
+Intrinsic parameters of right camera:
+
+Focal Length:          fc_right = [ 781.98159   784.43429 ]   [ 3.23167   3.20482 ]
+                                            【fc_right_x     fc_right_y】      【误差1，  误差2】
+Principal point:       cc_right = [ 319.50000   239.50000 ]   [ 0.00000   0.00000 ]
+                                            【cc_right_x     cc_right_y】     【误差1     误差2】
+Skew:             alpha_c_right = [ 0.00000 ]   [ 0.00000  ]   =&gt; angle of pixel axes = 90.00000   0.00000 degrees
+Distortion:            kc_right = [ 0.00679   0.18063   -0.00633   -0.00190  0.00000 ]   [ 0.01585   0.12209   0.00054   0.00056  0.00000 ]
+                                             【kc_right_01,  kc_right_02,  kc_right_03,  kc_right_04,   kc_right_05】【误差1 误差2 误差3 误差4 误差5】
+
+
+Extrinsic parameters (position of right camera wrt left camera):
+
+                                     【rec旋转向量】
+Rotation vector:             om = [ -0.01044   -0.04553  -0.00143 ]   [ 0.00026   0.00033  0.00018 ]
+
+                                     【T平移向量】
+Translation vector:           T = [ -60.87137   0.15622  0.01502 ]   [ 0.17816   0.16723  1.12660 ]
+</code></pre>
+<h1 id="toc_h1_4">距离测量</h1>
+<p>本章教程我们使用的是SGBM算法，SGBM算法作为一种全局匹配算法，立体匹配的效果明显好于局部匹配算法，但是同时复杂度上也要远远大于局部匹配算法。</p>
+<p>SGBM算法在OpenCV中已经开源，该算法的函数为<code>cv2.StereoSGBM_create</code>。下面我们就使用Python实现这个双目测距的程序，为了简单，该程序只是使用本地保存的左目图像和右目图像，如何读者想使用摄像头拍摄，可以参考文章开头提供的拍照代码，两者结合，实时检测距离。</p>
+<p>这个SGBM算法的实现和相关函数都可以通过OpenCV完成，<code>imageWidth</code>是单目摄像头拍摄的宽度。</p>
+<pre><code class="language-python">import cv2
+import numpy as np
+
+imageWidth = 1280
+imageHeight = 720
+imageSize = (imageWidth, imageHeight)
+</code></pre>
+<p>以下是相机标定的参数，按照相机标定生成的参数对应修改这些参数值。</p>
+<pre><code class="language-python">'''左目相机标定参数
+fc_left_x   0            cc_left_x
+0           fc_left_y    cc_left_y
+0           0            1
+'''
+cameraMatrixL = np.array([[849.38718, 0, 720.28472],
+                          [0, 850.60613, 373.88887],
+                          [0, 0, 1]])
+# [kc_left_01,  kc_left_02,  kc_left_03,  kc_left_04,   kc_left_05]
+distCoeffL = np.array([0.01053, 0.02881, 0.00144, 0.00192, 0.00000])
+
+'''右目相机标定参数
+fc_right_x   0              cc_right_x
+0            fc_right_y     cc_right_y
+0            0              1
+'''
+cameraMatrixR = np.array([[847.54814, 0, 664.36648],
+                          [0, 847.75828, 368.46946],
+                          [0, 0, 1]])
+
+# kc_right_01,  kc_right_02,  kc_right_03,  kc_right_04,   kc_right_05
+distCoeffR = np.array([0.00905, 0.02094, 0.00082, 0.00183, 0.00000])
+
+# T平移向量
+T = np.array([-59.32102, 0.27563, -0.79807])
+
+# rec旋转向量
+rec = np.array([-0.00927, -0.00228, -0.00070])
+</code></pre>
+<p>以下就是使用左右目摄像头拍摄到的两张图像，利用SGBM算法技术图像中物体距离摄像头的距离。最后输出的<code>xyz</code>是图像中的三维坐标，通过这个结果可以获取图像中每个点的三维坐标。</p>
+<pre><code class="language-python"># 立体校正
+R = cv2.Rodrigues(rec)[0]
+Rl, Rr, Pl, Pr, Q, validROIL, validROIR = cv2.stereoRectify(cameraMatrixL, distCoeffL, cameraMatrixR, distCoeffR,
+                                                            imageSize, R, T, flags=cv2.CALIB_ZERO_DISPARITY, alpha=0,
+                                                            newImageSize=imageSize)
+
+# 计算更正map
+mapLx, mapLy = cv2.initUndistortRectifyMap(cameraMatrixL, distCoeffL, Rl, Pl, imageSize, cv2.CV_32FC1)
+mapRx, mapRy = cv2.initUndistortRectifyMap(cameraMatrixR, distCoeffR, Rr, Pr, imageSize, cv2.CV_32FC1)
+
+# 读取图片
+rgbImageL = cv2.imread("Left3.bmp")
+grayImageL = cv2.cvtColor(rgbImageL, cv2.COLOR_BGR2GRAY)
+rgbImageR = cv2.imread("Right3.bmp")
+grayImageR = cv2.cvtColor(rgbImageR, cv2.COLOR_BGR2GRAY)
+
+# 经过remap之后，左右相机的图像已经共面并且行对齐
+rectifyImageL = cv2.remap(grayImageL, mapLx, mapLy, cv2.INTER_LINEAR)
+rectifyImageR = cv2.remap(grayImageR, mapRx, mapRy, cv2.INTER_LINEAR)
+
+# SGBM算法重要的参数
+mindisparity = 32
+SADWindowSize = 16
+ndisparities = 176
+# 惩罚系数
+P1 = 4 * 1 * SADWindowSize * SADWindowSize
+P2 = 32 * 1 * SADWindowSize * SADWindowSize
+
+# BM算法
+sgbm = cv2.StereoSGBM_create(mindisparity, ndisparities, SADWindowSize)
+sgbm.setP1(P1)
+sgbm.setP2(P2)
+
+sgbm.setPreFilterCap(60)
+sgbm.setUniquenessRatio(30)
+sgbm.setSpeckleRange(2)
+sgbm.setSpeckleWindowSize(200)
+sgbm.setDisp12MaxDiff(1)
+disp = sgbm.compute(rectifyImageL, rectifyImageR)
+
+# 在实际求距离时，ReprojectTo3D出来的X / W, Y / W, Z / W都要乘以16
+xyz = cv2.reprojectImageTo3D(disp, Q, handleMissingValues=True)
+xyz = xyz * 16
+</code></pre>
+<p><code>xyz</code>是一个矩阵，不能直观体现图像中物体的距离，所以我们可以把他们转换成一张灰度图，更加颜色的深浅就知道他们的大概情况了。然后我们还可以添加一个鼠标点击事件，这样通过点击图像上的点，直接输出该点的三维坐标。</p>
+<pre><code class="language-python"># 用于显示处理
+disp = disp.astype(np.float32) / 16.0
+disp8U = cv2.normalize(disp, disp, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+disp8U = cv2.medianBlur(disp8U, 9)
+
+
+# 鼠标点击事件
+def onMouse(event, x, y, flags, param):
+    if event == cv2.EVENT_LBUTTONDOWN:
+        print('点 (%d, %d) 的三维坐标 (%f, %f, %f)' % (x, y, xyz[y, x, 0], xyz[y, x, 1], xyz[y, x, 2]))
+
+
+# 显示图片
+cv2.imshow("disparity", disp8U)
+cv2.setMouseCallback("disparity", onMouse, 0)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+</code></pre>
+<p>通过<code>xyz</code>最终生成的图像类似如下，全黑的区域是无法测量的距离或者过远的距离。直接使用鼠标点击图像的位置就可以输出该点的三维坐标了。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-2061352668563470459-b2e3c8f0.jpeg?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<pre><code>点 (777, 331) 的三维坐标 (57.852905, -23.240721, 519.846985)
+点 (553, 383) 的三维坐标 (-70.191200, 6.370971, 525.825806)
+点 (573, 305) 的三维坐标 (-58.206013, -38.124424, 521.407104)
+点 (1012, 694) 的三维坐标 (96.540405, 92.311638, 262.277863)
+</code></pre>
+<p>以上的源码笔者提供了下载，包括测试图像。<br>
+<strong>源码下载地址：</strong> <a href="https://resource.doiduoyi.com/#ckg1m1u" target="_blank">https://resource.doiduoyi.com/#ckg1m1u</a></p>
+                <div>
+                    <hr>
+
+标题：双目摄像头测量距离<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1642516237551.html" target="_blank">https://yeyupiaoling.github.io/articles/1642516237551.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1642515820791.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 基于PaddlePaddle实现声纹识别&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1642516665233.html">
+                            <span>Python实现常见的排序算法&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="双目摄像头测量距离"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1642516237551.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1642516237551"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1642516237551",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1642516237551",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1642516237551', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

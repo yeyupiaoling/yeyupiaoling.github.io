@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化 - 夜雨飘零</title><meta name="description" content="前言 VisualDL是一个面向深度学习任务设计的可视化工具，包含了scalar、参数分布、模型结构、图像可视化等功能。可以这样说：“所见即所得”。我们可以借助VisualDL来观察我们训练的情况，方便我们对训练的模型进行分析，改善模型的收敛情况。 scalar，趋势图，可用于训练测试误差的展示 image, 图片的可视化，可用于卷积层或者其他参数的图形化展示 histogram, 用于参数分布及变化趋势的展示 graph，用于训练模型结构的可视化 以上的图像来自VisualDL的Github 既然那么方便，那么我们就来尝试一下吧。VisualDL底层采用C++编写，但是它在提供C++ SDK的同时，也支持Python SDK，我们主要是使用Python的SDK。顺便说一下，VisualDL除了支持PaddlePaddle,之外，还支持pytorch, mxnet在内的大部分主流DNN平台。 VisualDL的安装 本章只讲述在Ubuntu系统上的安装和使用，Mac的操作应该也差不多。 使用pip安装 使用pip安装非常简单，只要一条命令就够了，如下： pip3 insta...."/><meta property="og:description" content="前言 VisualDL是一个面向深度学习任务设计的可视化工具，包含了scalar、参数分布、模型结构、图像可视化等功能。可以这样说：“所见即所得”。我们可以借助VisualDL来观察我们训练的情况，方便我们对训练的模型进行分析，改善模型的收敛情况。 scalar，趋势图，可用于训练测试误差的展示 image, 图片的可视化，可用于卷积层或者其他参数的图形化展示 histogram, 用于参数分布及变化趋势的展示 graph，用于训练模型结构的可视化 以上的图像来自VisualDL的Github 既然那么方便，那么我们就来尝试一下吧。VisualDL底层采用C++编写，但是它在提供C++ SDK的同时，也支持Python SDK，我们主要是使用Python的SDK。顺便说一下，VisualDL除了支持PaddlePaddle,之外，还支持pytorch, mxnet在内的大部分主流DNN平台。 VisualDL的安装 本章只讲述在Ubuntu系统上的安装和使用，Mac的操作应该也差不多。 使用pip安装 使用pip安装非常简单，只要一条命令就够了，如下： pip3 insta...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584974915236.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584974915236.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="《PaddlePaddle从入门到炼丹》九——迁移学习" href="https://yeyupiaoling.github.io/articles/1584974849177.html">
+            <link rel="next" title="《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别" href="https://yeyupiaoling.github.io/articles/1584974968544.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">VisualDL的安装</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">使用pip安装</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_3">使用源码安装</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">简单使用VisualDL</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">在PaddlePaddle使用VisualDL</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_6">定义MobileNet V2神经网络</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_7">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584974915236.html">
+                    《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584974915236.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584974915191">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584974915236.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584974915236.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180128.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>VisualDL是一个面向深度学习任务设计的可视化工具，包含了scalar、参数分布、模型结构、图像可视化等功能。可以这样说：“所见即所得”。我们可以借助VisualDL来观察我们训练的情况，方便我们对训练的模型进行分析，改善模型的收敛情况。</p>
+<ol>
+<li><code>scalar</code>，趋势图，可用于训练测试误差的展示<br>
+<img src="https://s1.ax1x.com/2020/03/31/GMKacV.gif" alt="这里写图片描述"></li>
+<li><code>image</code>, 图片的可视化，可用于卷积层或者其他参数的图形化展示<br>
+<img src="https://s1.ax1x.com/2020/04/02/GJys1g.gif" alt="这里写图片描述"></li>
+<li><code>histogram</code>, 用于参数分布及变化趋势的展示<br>
+<img src="https://s1.ax1x.com/2020/04/03/GdplLV.gif" alt="这里写图片描述"></li>
+<li><code>graph</code>，用于训练模型结构的可视化<br>
+<img src="https://s1.ax1x.com/2020/03/31/GM2oyq.gif" alt="这里写图片描述"><br>
+以上的图像来自<a href="https://github.com/PaddlePaddle/VisualDL" target="_blank">VisualDL的Github</a></li>
+</ol>
+<p>既然那么方便，那么我们就来尝试一下吧。VisualDL底层采用C++编写，但是它在提供C++ SDK的同时，也支持Python SDK，我们主要是使用Python的SDK。顺便说一下，VisualDL除了支持PaddlePaddle,之外，还支持pytorch, mxnet在内的大部分主流DNN平台。</p>
+<h1 id="toc_h1_1">VisualDL的安装</h1>
+<p>本章只讲述在Ubuntu系统上的安装和使用，Mac的操作应该也差不多。</p>
+<h2 id="toc_h2_2">使用pip安装</h2>
+<p>使用pip安装非常简单，只要一条命令就够了，如下：</p>
+<pre><code class="language-shell">pip3 install --upgrade visualdl
+</code></pre>
+<p>测试一下是否安装成功了，运行一个例子下载日志文件：</p>
+<pre><code class="language-shell"># 在当前位置下载一个日志
+vdl_create_scratch_log
+</code></pre>
+<p>然后再输入，启动VisualDL并加载这个日志信息：</p>
+<pre><code class="language-shell">visualdl --logdir=scratch_log/ --port=8080
+</code></pre>
+<p>这里说明一下，visualDL的参数：</p>
+<ul>
+<li><code>host</code> 设定IP</li>
+<li><code>port</code> 设定端口</li>
+<li><code>model_pb</code> 指定 ONNX 格式的模型文件，这木方我们还没要用到</li>
+</ul>
+<p><strong>注意：</strong> 如果是报以下的错误，那是因为protobuf版本过低的原因。</p>
+<pre><code>root@test:/home/test/VisualDL# visualdl --logdir ./scratch_log --port 8080
+Traceback (most recent call last):
+  File "/usr/local/bin/visualdl", line 29, in &lt;module&gt;
+    import visualdl.server.graph as vdl_graph
+  File "/usr/local/lib/python2.7/dist-packages/visualdl/server/graph.py", line 23, in &lt;module&gt;
+    from . import onnx
+  File "/usr/local/lib/python2.7/dist-packages/visualdl/server/onnx/__init__.py", line 8, in &lt;module&gt;
+    from .onnx_pb2 import ModelProto
+  File "/usr/local/lib/python2.7/dist-packages/visualdl/server/onnx/onnx_pb2.py", line 213, in &lt;module&gt;
+    options=None, file=DESCRIPTOR),
+TypeError: __init__() got an unexpected keyword argument 'file'
+</code></pre>
+<p>protobuf的版本要不小于3.5.0，如何小于这个版本可以使用以下命令升级：</p>
+<pre><code>pip3 install protobuf -U
+</code></pre>
+<p>然后在浏览器上输入：</p>
+<pre><code>http://127.0.0.1:8080
+</code></pre>
+<p>即可看到一个可视化的界面，如下：<br>
+<img src="https://s1.ax1x.com/2020/04/04/GdWhvR.png" alt="这里写图片描述"></p>
+<h2 id="toc_h2_3">使用源码安装</h2>
+<p>如果读者出于各种情况，使用pip安装不能满足需求，那可以考虑使用源码安装VisualDL，操作如下：<br>
+首先要安装依赖库：</p>
+<pre><code class="language-shell"># 安装npm
+apt install npm
+# 安装node
+apt install nodejs-legacy
+# 安装cmake
+apt install cmake
+# 安装unzip
+apt install unzip
+</code></pre>
+<p>然后在GitHub上clone最新的源码并打开：</p>
+<pre><code class="language-shell">git clone https://github.com/PaddlePaddle/VisualDL.git
+cd VisualDL
+</code></pre>
+<p>之后是编译生成<code>whl</code>安装包：</p>
+<pre><code class="language-shell">python3 setup.py bdist_wheel
+</code></pre>
+<p>生成<code>whl</code>安装包之后，就可以使用pip命令安装这个安装包了，<code>*</code>号对应的是visualdl版本号，读者要根据实际情况来安装：</p>
+<pre><code class="language-shell">pip3 install --upgrade dist/visualdl-*.whl
+</code></pre>
+<p>安装完成之后，同样可以使用在上一部分的<a href="http://mp.csdn.net/mdeditor/79127175#%E4%BD%BF%E7%94%A8pip%E5%AE%89%E8%A3%85" target="_blank">使用pip安装</a>的测试方法测试安装是否成功。</p>
+<h1 id="toc_h1_4">简单使用VisualDL</h1>
+<p>我们编写下面这一小段的代码来学习VisualDL的使用，<code>test_visualdl.py</code>的代码如下：</p>
+<pre><code class="language-python"># 导入VisualDL的包
+from visualdl import LogWriter
+
+# 创建一个LogWriter，第一个参数是指定存放数据的路径，
+# 第二个参数是指定多少次写操作执行一次内存到磁盘的数据持久化
+logw = LogWriter("./random_log", sync_cycle=10000)
+
+# 创建训练和测试的scalar图，
+# mode是标注线条的名称，
+# scalar标注的是指定这个组件的tag
+with logw.mode('train') as logger:
+    scalar0 = logger.scalar("scratch/scalar")
+
+with logw.mode('test') as logger:
+    scalar1 = logger.scalar("scratch/scalar")
+
+# 读取数据
+for step in range(1000):
+    scalar0.add_record(step, step * 1. / 1000)
+    scalar1.add_record(step, 1. - step * 1. / 1000)
+</code></pre>
+<p>运行Python代码之后，在终端上输入，从上面的代码可以看到我们定义的路径是<code>./random_log</code>：</p>
+<pre><code class="language-shell">visualdl --logdir=random_log/ --port=8080
+</code></pre>
+<p>然后在浏览器上输入：</p>
+<pre><code>http://127.0.0.1:8080
+</code></pre>
+<p>然后就可以看到刚才编写Python代码生成的图像了：<br>
+<img src="https://s1.ax1x.com/2020/03/30/Gn9zS1.png" alt="这里写图片描述"></p>
+<p>经过这个例子，读者对VisualDL有了进一步的了解了，那么在接下来的我们就在实际的PaddlePaddle例子中使用我们的VisualDL。</p>
+<h1 id="toc_h1_5">在PaddlePaddle使用VisualDL</h1>
+<p>下面就介绍在PaddlePaddle训练中使用VisualDL，通过在训练的时候使用VisualDL不断收集训练的数据集，最终通过可视化展示出来。</p>
+<h2 id="toc_h2_6">定义MobileNet V2神经网络</h2>
+<p>创建一个<code>mobilenet_v2.py</code>来定义一个MobileNet V2神经网络。MobileNet V2是MobileNet V1的升级版，从名字可以看出这个网络是为例移动设备而诞生的，它最大的特点就是模型小，预测速度快，适合部署在移动设备上。MobileNet V2是将MobileNet V1和残差网络ResNet的残差单元结合起来，用Depthwise Convolutions代替残差单元的bottleneck，最重要的是与residuals block相反，通常的residuals block是先经过1×1的卷积，降低feature map通道数，然后再通过3×3卷积，最后重新经过1×1卷积将feature map通道数扩张回去；而且为了避免ReLU对特征的破坏，用线性层替换channel数较少层后的ReLU非线性激活。</p>
+<pre><code class="language-python">import paddle.fluid as fluid
+
+def conv_bn_layer(input, filter_size, num_filters, stride, padding, num_groups=1, if_act=True, use_cudnn=True):
+    conv = fluid.layers.conv2d(input=input,
+                               num_filters=num_filters,
+                               filter_size=filter_size,
+                               stride=stride,
+                               padding=padding,
+                               groups=num_groups,
+                               use_cudnn=use_cudnn,
+                               bias_attr=False)
+    bn = fluid.layers.batch_norm(input=conv)
+    if if_act:
+        return fluid.layers.relu6(bn)
+    else:
+        return bn
+
+
+def shortcut(input, data_residual):
+    return fluid.layers.elementwise_add(input, data_residual)
+
+
+def inverted_residual_unit(input,
+                           num_in_filter,
+                           num_filters,
+                           ifshortcut,
+                           stride,
+                           filter_size,
+                           padding,
+                           expansion_factor):
+    num_expfilter = int(round(num_in_filter * expansion_factor))
+
+    channel_expand = conv_bn_layer(input=input,
+                                   num_filters=num_expfilter,
+                                   filter_size=1,
+                                   stride=1,
+                                   padding=0,
+                                   num_groups=1,
+                                   if_act=True)
+
+    bottleneck_conv = conv_bn_layer(input=channel_expand,
+                                    num_filters=num_expfilter,
+                                    filter_size=filter_size,
+                                    stride=stride,
+                                    padding=padding,
+                                    num_groups=num_expfilter,
+                                    if_act=True,
+                                    use_cudnn=False)
+
+    linear_out = conv_bn_layer(input=bottleneck_conv,
+                               num_filters=num_filters,
+                               filter_size=1,
+                               stride=1,
+                               padding=0,
+                               num_groups=1,
+                               if_act=False)
+    if ifshortcut:
+        out = shortcut(input=input, data_residual=linear_out)
+        return out
+    else:
+        return linear_out
+
+def invresi_blocks(input, in_c, t, c, n, s, name=None):
+    first_block = inverted_residual_unit(input=input,
+                                         num_in_filter=in_c,
+                                         num_filters=c,
+                                         ifshortcut=False,
+                                         stride=s,
+                                         filter_size=3,
+                                         padding=1,
+                                         expansion_factor=t)
+
+    last_residual_block = first_block
+    last_c = c
+
+    for i in range(1, n):
+        last_residual_block = inverted_residual_unit(input=last_residual_block,
+                                                     num_in_filter=last_c,
+                                                     num_filters=c,
+                                                     ifshortcut=True,
+                                                     stride=1,
+                                                     filter_size=3,
+                                                     padding=1,
+                                                     expansion_factor=t)
+    return last_residual_block
+
+
+def net(input, class_dim, scale=1.0):
+    bottleneck_params_list = [
+        (1, 16, 1, 1),
+        (6, 24, 2, 2),
+        (6, 32, 3, 2),
+        (6, 64, 4, 2),
+        (6, 96, 3, 1),
+        (6, 160, 3, 2),
+        (6, 320, 1, 1),
+    ]
+
+    # conv1
+    input = conv_bn_layer(input,
+                          num_filters=int(32 * scale),
+                          filter_size=3,
+                          stride=2,
+                          padding=1,
+                          if_act=True)
+
+    # bottleneck sequences
+    i = 1
+    in_c = int(32 * scale)
+    for layer_setting in bottleneck_params_list:
+        t, c, n, s = layer_setting
+        i += 1
+        input = invresi_blocks(input=input,
+                               in_c=in_c,
+                               t=t,
+                               c=int(c * scale),
+                               n=n,
+                               s=s,
+                               name='conv' + str(i))
+        in_c = int(c * scale)
+    # last_conv
+    input = conv_bn_layer(input=input,
+                          num_filters=int(1280 * scale) if scale &gt; 1.0 else 1280,
+                          filter_size=1,
+                          stride=1,
+                          padding=0,
+                          if_act=True)
+
+    feature = fluid.layers.pool2d(input=input,
+                                  pool_size=7,
+                                  pool_stride=1,
+                                  pool_type='avg',
+                                  global_pooling=True)
+    net = fluid.layers.fc(input=feature,
+                          size=class_dim,
+                          act='softmax')
+    return net
+</code></pre>
+<p>创建一个<code>train.py</code>开始训练。首先导入相关的依赖包。</p>
+<pre><code class="language-python">import paddle as paddle
+import paddle.dataset.cifar as cifar
+import paddle.fluid as fluid
+import mobilenet_v2
+from visualdl import LogWriter
+</code></pre>
+<p>创建VisualDL的记录器，通过这个记录器可以记录每次训练的数据，并存储在<code>log/</code>目录下。</p>
+<pre><code class="language-python"># 创建记录器
+log_writer = LogWriter(dir='log/', sync_cycle=10)
+
+# 创建训练和测试记录数据工具
+with log_writer.mode('train') as writer:
+    train_cost_writer = writer.scalar('cost')
+    train_acc_writer = writer.scalar('accuracy')
+    histogram = writer.histogram('histogram', num_buckets=50)
+
+with log_writer.mode('test') as writer:
+    test_cost_writer = writer.scalar('cost')
+    test_acc_writer = writer.scalar('accuracy')
+</code></pre>
+<p>这里是定义一系列的操作，如定义输入层，获取MobileNet V2的分类器，克隆预测程序，定义优化方法。</p>
+<pre><code class="language-python"># 定义输入层
+image = fluid.layers.data(name='image', shape=[3, 32, 32], dtype='float32')
+label = fluid.layers.data(name='label', shape=[1], dtype='int64')
+
+# 获取分类器
+model = mobilenet_v2.net(image, 10)
+
+# 获取损失函数和准确率函数
+cost = fluid.layers.cross_entropy(input=model, label=label)
+avg_cost = fluid.layers.mean(cost)
+acc = fluid.layers.accuracy(input=model, label=label)
+
+# 获取训练和测试程序
+test_program = fluid.default_main_program().clone(for_test=True)
+
+# 定义优化方法
+optimizer = fluid.optimizer.AdamOptimizer(learning_rate=1e-3)
+opts = optimizer.minimize(avg_cost)
+</code></pre>
+<p>获取CIFAR的训练数据和测试数据，并创建一个执行器，MobileNet V2这个模型虽然使用在手机上的，但是在训练起来却不是那么快，最好使用GPU进行训练，要不是相当的慢。</p>
+<pre><code class="language-python"># 获取CIFAR数据
+train_reader = paddle.batch(cifar.train10(), batch_size=32)
+test_reader = paddle.batch(cifar.test10(), batch_size=32)
+
+# 定义一个使用CPU的执行器
+place = fluid.CUDAPlace(0)
+# place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+# 进行参数初始化
+exe.run(fluid.default_startup_program())
+
+# 定义输入数据维度
+feeder = fluid.DataFeeder(place=place, feed_list=[image, label])
+</code></pre>
+<p>这里从初始化程序中获取全部参数的名称，用于之后训练过程中输出参数的值，并记录到VisualDL中。</p>
+<pre><code class="language-python"># 定义日志的开始位置和获取参数名称
+train_step = 0
+test_step = 0
+params_name = fluid.default_startup_program().global_block().all_parameters()[0].name
+</code></pre>
+<p>开始训练模型，在训练过程中，把训练时的损失值保存到<code>train_cost_writer</code>中，把训练时的准确率保存到<code>train_acc_writer</code>中，把训练过程中的参数变化保存到<code>histogram</code>中。把测试时的损失值保存到<code>test_cost_writer</code>中，把测试时的准确率保存到<code>test_acc_writer</code>中。</p>
+<pre><code class="language-python"># 训练10次
+for pass_id in range(10):
+    # 进行训练
+    for batch_id, data in enumerate(train_reader()):
+        train_cost, train_acc, params = exe.run(program=fluid.default_main_program(),
+                                                feed=feeder.feed(data),
+                                                fetch_list=[avg_cost, acc, params_name])
+        # 保存训练的日志数据
+        train_step += 1
+        train_cost_writer.add_record(train_step, train_cost[0])
+        train_acc_writer.add_record(train_step, train_acc[0])
+        histogram.add_record(train_step, params.flatten())
+
+        # 每100个batch打印一次信息
+        if batch_id % 100 == 0:
+            print('Pass:%d, Batch:%d, Cost:%0.5f, Accuracy:%0.5f' %
+                  (pass_id, batch_id, train_cost[0], train_acc[0]))
+
+    # 进行测试
+    test_accs = []
+    test_costs = []
+    for batch_id, data in enumerate(test_reader()):
+        test_cost, test_acc = exe.run(program=test_program,
+                                      feed=feeder.feed(data),
+                                      fetch_list=[avg_cost, acc])
+        # 保存测试的日志数据
+        test_step += 1
+        test_cost_writer.add_record(test_step, test_cost[0])
+        test_acc_writer.add_record(test_step, test_acc[0])
+
+        test_accs.append(test_acc[0])
+        test_costs.append(test_cost[0])
+    # 求测试结果的平均值
+    test_cost = (sum(test_costs) / len(test_costs))
+    test_acc = (sum(test_accs) / len(test_accs))
+    print('Test:%d, Cost:%0.5f, Accuracy:%0.5f' % (pass_id, test_cost, test_acc))
+</code></pre>
+<p>训练时输出的信息：</p>
+<pre><code>Pass:0, Batch:0, Cost:2.79566, Accuracy:0.03125
+Pass:0, Batch:100, Cost:2.48199, Accuracy:0.15625
+Pass:0, Batch:200, Cost:2.49757, Accuracy:0.18750
+Pass:0, Batch:300, Cost:2.10605, Accuracy:0.28125
+Pass:0, Batch:400, Cost:2.24151, Accuracy:0.15625
+Pass:0, Batch:500, Cost:1.99807, Accuracy:0.21875
+Pass:0, Batch:600, Cost:1.92178, Accuracy:0.34375
+Pass:0, Batch:700, Cost:1.81583, Accuracy:0.28125
+Pass:0, Batch:800, Cost:2.22559, Accuracy:0.25000
+Pass:0, Batch:900, Cost:1.79611, Accuracy:0.34375
+Pass:0, Batch:1000, Cost:2.00520, Accuracy:0.25000
+</code></pre>
+<p>训练结束之后，启动VisualDL工具，指定日志文件的目录和端口号。</p>
+<pre><code>visualdl --logdir=log/ --port=8080
+</code></pre>
+<p>访问网页地址：<code>http://localhost:8080/</code>，我们会得到以下的图片。</p>
+<ul>
+<li>训练时的准确率和损失值的变化，从这些图片可以看到模型正在收敛，准确率在不断提升。<br>
+<img src="https://s1.ax1x.com/2020/04/03/GdpYi4.png" alt="在这里插入图片描述"></li>
+<li>下图是使用测试集的准确率和损失值，从图中可以看出后期的测试情况准确率在下降，损失值在增大，也对比上图训练的准确率还在上升，证明模型出现过拟合的情况。<br>
+<img src="https://s1.ax1x.com/2020/03/30/Gn9hJs.png" alt="在这里插入图片描述"></li>
+<li>下图是训练是参数的histogram图，从图中可以看出参数正在趋于稳定，同时的没有出现异常值，如极大值或者极小值。<br>
+<img src="https://s1.ax1x.com/2020/03/31/GM2syt.png" alt="在这里插入图片描述"></li>
+</ul>
+<p>本章关于VisualDL的使用就介绍到这里，读者在实际开发中可以使用VisualDL，通过利用VisualDL给予的训练可视化，不断优化模型。</p>
+<p>同步到百度AI Studio平台：<a href="https://aistudio.baidu.com/aistudio/projectDetail/38856" target="_blank">https://aistudio.baidu.com/aistudio/projectDetail/38856</a><br>
+同步到科赛网K-Lab平台：<a href="https://www.kesci.com/home/project/5c3f495589f4aa002b845d6b" target="_blank">https://www.kesci.com/home/project/5c3f495589f4aa002b845d6b</a><br>
+项目代码GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note10" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note10</a></p>
+<p><strong>注意：</strong> 最新代码以GitHub上的为准</p>
+<h1 id="toc_h1_7">参考资料</h1>
+<ol>
+<li><a href="https://blog.csdn.net/qq_33200967/article/details/79127175" target="_blank">https://blog.csdn.net/qq_33200967/article/details/79127175</a></li>
+<li><a href="https://github.com/PaddlePaddle/VisualDL" target="_blank">https://github.com/PaddlePaddle/VisualDL</a></li>
+<li><a href="https://www.jianshu.com/p/4c9404d4998c" target="_blank">https://www.jianshu.com/p/4c9404d4998c</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584974915236.html" target="_blank">https://yeyupiaoling.github.io/articles/1584974915236.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584974849177.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《PaddlePaddle从入门到炼丹》九——迁移学习&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584974968544.html">
+                            <span>《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584974915236.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584974915191"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584974915191",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584974915191",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584974915191', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 5ms, 2022/01/22 16:08:29 -->

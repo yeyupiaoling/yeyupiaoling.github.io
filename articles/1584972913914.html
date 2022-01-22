@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零</title><meta name="description" content="前言 笔者在《MySQL数据库实现主从复制》这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。 在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式： 一主一从： 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Myc...."/><meta property="og:description" content="前言 笔者在《MySQL数据库实现主从复制》这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。 在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式： 一主一从： 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Myc...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584972913914.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Mycat中间件实现一主一从和双主双从的读写分离 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584972913914.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="MySQL数据库实现主从复制" href="https://yeyupiaoling.github.io/articles/1584972836923.html">
+            <link rel="next" title="TensorFlow的安装" href="https://yeyupiaoling.github.io/articles/1584972978949.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">一主一从读写分离</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">MySQL数据库配置</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_3">Mycat的配置</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_4">测试</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">双主双从读写分离</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_6">MySQL数据库配置</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_7">Mycat的配置</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_8">测试</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_9">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584972913914.html">
+                    Mycat中间件实现一主一从和双主双从的读写分离
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93">
+                        数据库</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8">
+                        服务器</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584972913914.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584972913028">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584972913914.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584972913914.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20191103.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>笔者在<a href="https://blog.csdn.net/qq_33200967/article/details/80939040" target="_blank">《MySQL数据库实现主从复制》</a>这一篇文章中有提到读写分离这个技术，这个技术时基于主从复制之后的一种技术。在数据库主从复制中，一个主数据库有一个或者多个从数据库，我们可以对主数据库进行写入操作（insert，delete，update），对一个或者多个从数据库进行读取操作（select）。这个的操作方式，就是大量的查询请求也会分布到各个从数据库上，达到负载均衡，比如3个从数据库，有9条查询请求，那么每一个从数据库只要处理3条查询请求就可以了，大大减少了数据库的查询压力。</p>
+<p>在Mycat中，读写分离可以说有两种，一种是一主一从，另一种是一主多从。我们分别来介绍这两种方式：</p>
+<p><strong>一主一从：</strong> 是一个主数据库一个从数据库，如果我们对主数据库进行写入操作，那么从数据库也会执行相应的操作。笔者把一主多从也归为这种方式，因为一主多从其实也就是增加多几个从数据库而已，具体的结构每个变动太大。在一主一从中，最大的好处是实现了读写分离，在Mycat的调度下，把所有写的操作都是在主数据库中，把所有的读的操作都放在从数据库中。可能有读者可能会有疑问，这中读取分离也可以使用后端代码实现，为什么要使用Mycat呢。主要是使用Mycat配置会更加简单，更容易维护，当数据库的位置发生了变化，如果是使用代码实现的，那么网站的后端代码要全部修改了，对于分布式的后端服务器来说，那工作量是非常大的。再且使用后端代码实现的读写分离也很难实现数据库的分布式。而使用Mycat都能解决这些问题。</p>
+<p>如图所示：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQjSh9.png" alt="这里写图片描述"></p>
+<p><strong>双主双从：</strong> 这个主要是保证数据的安全，保证数据库的高可用。在这篇文章<a href="https://blog.csdn.net/qq_33200967/article/details/80939040" target="_blank">《MySQL数据库实现主从复制》</a>中，笔者也介绍到主从复制最大的作用就是保证数据的安全。在一主一从中，我们的从数据库在数据安全性上并没有发挥到最好，只是为了提供读写分离和查询负载均衡。当主数据库服务器挂掉了，那么就无法进行写入数据，整个数据库就无法正常工作了。所以双主双从或者多主多从的出现就是为了解决这个问题的，在双主双从模式下(M1 -&gt;S1 ， M2-&gt;S2，M1-&gt;M2，M2-&gt;M1并且 M1 与 M2 互为主备)，这种双主双从的模型，只要我们对M1或者M2任意一个主数据库插入数据，其他3个数据库也会作相应的改动。因为M1和M2是互为主从数据库，所以两个数据库是互相同步的，另外两个数据库是他们的从数据库，写入操作也会更新从数据库。当M1挂掉了，会自动启动M2作为该数据库的主数据库，保证了网站的正确运行。同时在正常情况下，M2,S1,S2 都参与查询的负载均衡。</p>
+<p>如图所示：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQeh4I.png" alt="这里写图片描述"></p>
+<p>那么下面就介绍Mycat中间件实现一主一从和双主双从的读写分离，在阅读下面教程之前，读者应该先阅读笔者之前的两篇文章，分别是<a href="https://blog.csdn.net/qq_33200967/article/details/80863305" target="_blank">《CentOS下安装和使用Mycat实现分布式数据库》</a>和<a href="https://blog.csdn.net/qq_33200967/article/details/80939040" target="_blank">《MySQL数据库实现主从复制》</a>，在接下来的教程中会运用到这两篇文章的知识，所以读者要阅读并理解这两篇文件的知识。好，我们现在开始吧。</p>
+<h1 id="toc_h1_1">一主一从读写分离</h1>
+<p>我们一共使用5个虚拟机，每个机器的作用如下：</p>
+<table>
+<thead>
+<tr><th align="center">主机名</th><th align="center">IP地址</th><th align="center">任务角色</th><th align="center">数据库</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">node1</td><td align="center">192.168.204.121</td><td align="center">Mycat</td><td align="center">无</td></tr>
+<tr><td align="center">node2</td><td align="center">192.168.204.122</td><td align="center">master1</td><td align="center">MySQL</td></tr>
+<tr><td align="center">node3</td><td align="center">192.168.204.123</td><td align="center">slave1</td><td align="center">MySQL</td></tr>
+<tr><td align="center">node4</td><td align="center">192.168.204.124</td><td align="center">master2</td><td align="center">MySQL</td></tr>
+<tr><td align="center">node5</td><td align="center">192.168.204.125</td><td align="center">slave2</td><td align="center">MySQL</td></tr>
+</tbody>
+</table>
+<h2 id="toc_h2_2">MySQL数据库配置</h2>
+<p>首先我们要在node2、node3、node4和node5上安装MySQL数据库，安装方式 可以参考<a href="https://blog.csdn.net/qq_33200967/article/details/80939040#%E5%AE%89%E8%A3%85mysql" target="_blank">《MySQL数据库实现主从复制》的安装MySQL</a>部分，这里就不展开讲了。安装完成之后要对数据库做一些配置，如下：<br>
+node2的数据库是node3的数据库的主数据库，所以node2数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=1        # 设置server-id
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>node3的数据库是node2上数据库的从数据库，所以不用修改太多。node3数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=2 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>node4的数据库是node5的数据库的主数据库，所以node4数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=3        # 设置server-id
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>node5的数据库是node4上数据库的从数据库，所以不用修改太多。node5数据库的配置文件<code>/etc/my.cnf</code>如下：</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=4 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>方便之后的操作，我们关闭了全部虚拟机的防火墙：</p>
+<pre><code class="language-text">service iptables stop
+</code></pre>
+<p>全部都修改了配置文件，所以全部都要重启MySQL数据库：</p>
+<pre><code class="language-text">service mysqld restart
+</code></pre>
+<p>我们进入到node2数据库中，输入以下命令查看相关信息：</p>
+<pre><code class="language-text">mysql&gt; show master status;
+</code></pre>
+<p>得到的信息如下：</p>
+<pre><code class="language-text">mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000007 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+<p>根据node2这个主数据库的信息，开始配置node3的从数据库，进入到node3数据库 中，输入以下命令，注意<code>master_log_file</code>和<code>master_log_pos</code>来自于上一步获取到的node2主数据库的信息：</p>
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.122', master_user='root', master_password='root', master_log_file='mysql-bin.000007', master_log_pos=106;
+</code></pre>
+<p>在执行上一条命令之前，要保证slave是关闭的，如果没用关闭，使用以下命令关闭：</p>
+<pre><code class="language-text">mysql&gt; stop slave;
+</code></pre>
+<p>配置完成之后，要启动slave，执行下面的命令启动slave：</p>
+<pre><code class="language-text">mysql&gt; start slave;
+</code></pre>
+<p>其中完成之后使用以下命令查看启动的情况：</p>
+<pre><code>mysql&gt; show slave status\G;
+</code></pre>
+<p>正常情况下输出以下内容，要保证<code>Slave_IO_Running</code>和<code>Slave_SQL_Running</code>是<code>Yes</code>：</p>
+<pre><code class="language-text">mysql&gt; show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.204.122
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000007
+          Read_Master_Log_Pos: 106
+               Relay_Log_File: mysqld-relay-bin.000002
+                Relay_Log_Pos: 251
+        Relay_Master_Log_File: mysql-bin.000007
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 106
+              Relay_Log_Space: 407
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+</code></pre>
+<p>接下来开始配置node4数据库中，进入到node4数据库并输入以下命令查看相关信息：</p>
+<pre><code class="language-text">mysql&gt; show master status;
+</code></pre>
+<p>得到的信息如下：</p>
+<pre><code class="language-text">mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000001 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+<p>根据node4这个主数据库的信息，开始配置node5的从数据库，进入到node5数据库 中，输入以下命令，注意<code>master_log_file</code>和<code>master_log_pos</code>来自于上一步获取到的node4主数据库的信息：</p>
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.124', master_user='root', master_password='root', master_log_file='mysql-bin.000001', master_log_pos=106;
+</code></pre>
+<p>在执行上一条命令之前，要保证slave是关闭的，如果没用关闭，使用以下命令关闭：</p>
+<pre><code class="language-text">mysql&gt; stop slave;
+</code></pre>
+<p>配置完成之后，要启动slave，执行下面的命令启动slave：</p>
+<pre><code class="language-text">mysql&gt; start slave;
+</code></pre>
+<p>其中完成之后使用以下命令查看启动的情况：</p>
+<pre><code>mysql&gt; show slave status\G;
+</code></pre>
+<p>正常情况下输出以下内容，要保证<code>Slave_IO_Running</code>和<code>Slave_SQL_Running</code>是<code>Yes</code>：</p>
+<pre><code class="language-text">mysql&gt; show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.204.124
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000001
+          Read_Master_Log_Pos: 106
+               Relay_Log_File: mysqld-relay-bin.000002
+                Relay_Log_Pos: 251
+        Relay_Master_Log_File: mysql-bin.000001
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 106
+              Relay_Log_Space: 407
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+</code></pre>
+<h2 id="toc_h2_3">Mycat的配置</h2>
+<p>关于Mycat的安装可以参考<a href="https://blog.csdn.net/qq_33200967/article/details/80863305#%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AEmycat" target="_blank">《CentOS下安装和使用Mycat实现分布式数据库》安装和配置Mycat</a>，这里就不再介绍Mycat的安装了，这一部分主要是介绍Mycat配置读写分离。</p>
+<p>安装完成之后，开始配置<code>schema.xml</code>文件，我们的读写分离主要是在这里配置的。</p>
+<pre><code class="language-text">vim $MYCAT_HOME/conf/schema.xml
+</code></pre>
+<p>该配置文件如下，我们创建了两个数据库，分别是<code>yeyupiaoling1</code>和<code>yeyupiaoling2</code>，主要是分布式数据库，数据采用分片存储。这个两个数据库都有同一张<code>employee</code>表，也可以配置多个表。我们的读写分离主要是在<code>dataHost</code>里配置。主要的配置有三个<code>balance="1" writeType="0" switchType="1"</code>，它们的作用分别是：</p>
+<p>balance 属性负载均衡类型，目前的取值有 4 种：</p>
+<ul>
+<li><code>balance="0"</code>，不开启读写分离机制，所有读操作都发送到当前可用的writeHost 上。</li>
+<li><code>balance="1"</code>，全部的 readHost 与 stand by writeHost 参与 select 语句的负载均衡，简单的说，当双主双从模式(M1 -&gt;S1 ， M2-&gt;S2，并且 M1 与 M2 互为主备)，正常情况下， M2,S1,S2 都参与 select 语句的负载均衡。</li>
+<li><code>balance="2"</code>，所有读操作都随机的在 writeHost、 readhost 上分发。</li>
+<li><code>balance="3"</code>， 所有读请求随机的分发到 wiriterHost 对应的 readhost 执行,writerHost 不负担读压力，注意 balance=3 只在 1.4 及其以后版本有， 1.3 没有。</li>
+</ul>
+<p>writeType 属性，负载均衡类型，目前的取值有 3 种：</p>
+<ul>
+<li><code>writeType="0"</code>，所有写操作发送到配置的第一个 writeHost，第一个挂了切到还生存的第二个writeHost，重新启动后已切换后的为准，切换记录在配置文件中:dnindex.properties .</li>
+<li><code>writeType="1"</code>，所有写操作都随机的发送到配置的 writeHost，1.5 以后废弃不推荐。</li>
+<li><code>writeType="2"</code>，官方文档没有介绍。</li>
+</ul>
+<p>switchType 属性：</p>
+<ul>
+<li>-1 表示不自动切换</li>
+<li>1 默认值，自动切换</li>
+<li>2 基于MySQL 主从同步的状态决定是否切换</li>
+</ul>
+<p>下面就是<code>schema.xml</code>文件全部配置信息：</p>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF8"?&gt;
+&lt;!DOCTYPE mycat:schema SYSTEM "schema.dtd"&gt;
+&lt;mycat:schema xmlns:mycat="http://org.opencloudb/"&gt;
+
+    &lt;!-- 设置表的存储方式.schema name="JamesMycatSchema" 与 server.xml中的 JamesMycatSchema 设置一致  --&gt;
+    &lt;schema name="JamesMycatSchema" checkSQLschema="false" sqlMaxLimit="100"&gt;
+        &lt;table name="employee" primaryKey="ID" dataNode="dn2,dn3" rule="sharding-by-intfile" /&gt;
+    &lt;/schema&gt;
+
+    &lt;!--数据节点dn1，对应的主机c1,对应是数据库db1 --&gt;
+    &lt;dataNode name="dn2" dataHost="node2" database="yeyupiaoling1" /&gt;
+    &lt;dataNode name="dn3" dataHost="node4" database="yeyupiaoling2" /&gt;
+
+    &lt;!-- 主机C2--&gt;
+    &lt;dataHost name="node2" maxCon="1000" minCon="10" balance="1" writeType="0" switchType="1"
+        dbType="mysql" dbDriver="native"&gt;
+        &lt;heartbeat&gt;select user()&lt;/heartbeat&gt;
+
+        &lt;!--MySQL的写的数据，master1 --&gt;
+        &lt;writeHost host="hostM2" url="192.168.204.122:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave1 --&gt;
+            &lt;readHost host="hostM3" url="192.168.204.123:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+    &lt;/dataHost&gt;
+
+    &lt;!-- 主机C3--&gt;
+    &lt;dataHost name="node4" maxCon="1000" minCon="10" balance="1" writeType="0" switchType="1"
+        dbType="mysql" dbDriver="native"&gt;
+        &lt;heartbeat&gt;select user()&lt;/heartbeat&gt;
+
+        &lt;!--MySQL的写的数据，master2 --&gt;
+        &lt;writeHost host="hostM4" url="192.168.204.124:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave2 --&gt;
+            &lt;readHost host="hostM5" url="192.168.204.125:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+    &lt;/dataHost&gt;
+
+&lt;/mycat:schema&gt;
+</code></pre>
+<p>然后配置<code>server.xml</code>，这里主要是配置Mycat的登录账户和密码的，其中<code>schemas</code>的值要对应<code>schema.xml</code>中的<code>schema</code>的<code>name</code>的值。</p>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE mycat:server SYSTEM "server.dtd"&gt;
+&lt;mycat:server xmlns:mycat="http://org.opencloudb/"&gt;
+        &lt;system&gt;
+                &lt;property name="defaultSqlParser"&gt;druidparser&lt;/property&gt;
+        &lt;/system&gt;
+
+        &lt;user name="mycat"&gt;
+                &lt;property name="password"&gt;123456&lt;/property&gt;
+                &lt;property name="schemas"&gt;JamesMycatSchema&lt;/property&gt;
+        &lt;/user&gt;
+&lt;/mycat:server&gt;
+</code></pre>
+<p>配置完成之后，可以重启Mycat：</p>
+<pre><code class="language-text">mycat restart
+</code></pre>
+<p>启动之后，可以分别查看输出的日志信息，观察是否正常启动了：</p>
+<pre><code class="language-text">tail -f $MYCAT_HOME/logs/wrapper.log
+tail -f $MYCAT_HOME/logs/mycat.log
+</code></pre>
+<h2 id="toc_h2_4">测试</h2>
+<p>正常其中之后，可以测试整个数据库是否符合了分布式切片存储和读写分离。笔者使用的是NavicatForMySQL连接数据库，读者可以使用自己熟悉的连接工具，或者是直接在命令行上直接操作。</p>
+<p>首先连接node2数据库并在上面创建一个<code>yeyupiaoling1</code>数据库：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQmpvT.png" alt="这里写图片描述"></p>
+<p>然后在node2的<code>yeyupiaoling1</code>数据库上创建一张<code>employee</code>表：</p>
+<pre><code class="language-sql">create table employee(id int not null primary key,name varchar(100),sharding_id int not null);
+</code></pre>
+<p>可以在新建查询上执行这个SQL语句，其中字段<code>sharding_id</code>非常重要，我们选择的规则就是Mycat是根据这个字段来分片存储数据库。<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYXAKJ.png" alt="这里写图片描述"></p>
+<p>同样连接node4数据库并在上面创建一个<code>yeyupiaoling2</code>数据库：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQXX0U.png" alt="这里写图片描述"></p>
+<p>然后在node4的<code>yeyupiaoling2</code>数据库上创建一张<code>employee</code>表，同样的执行方式，就不重复介绍了。</p>
+<pre><code class="language-sql">create table employee(id int not null primary key,name varchar(100),sharding_id int not null);
+</code></pre>
+<p><img src="https://s1.ax1x.com/2020/03/31/GMuIWq.png" alt="这里写图片描述"></p>
+<p>然后连接node1的Mycat，记得Mycat默认的端口是8066，账号和密码是<code>server.xml</code>中设置的。连接之后可以看到一个<code>JamesMycatSchema</code>数据库，这个就是我们在<code>schema.xml</code>配置的，可以看到有一张<code>employee</code>表，我们新建查询在这里插入一些数据：</p>
+<pre><code class="language-sql">insert into employee(id,name,sharding_id) values(1, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(2, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(3, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(4, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(5, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(6, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(7, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(8, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(9, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(10, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(11, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(12, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(13, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(14, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(15, 'I am db3',10010);
+insert into employee(id,name,sharding_id) values(16, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(17, 'I am db2',10010);
+insert into employee(id,name,sharding_id) values(18, 'I am db3',10010);
+</code></pre>
+<p><img src="https://s1.ax1x.com/2020/04/03/GaAC5T.png" alt="这里写图片描述"></p>
+<p>在Mycat中可以可以看到<code>employee</code>表已经插入的全部数据。<br>
+<img src="https://s1.ax1x.com/2020/03/31/GlnQv6.png" alt="这里写图片描述"></p>
+<p>然后在node2和node3的数据库中都可以看到插入的数据库，根据分片规则存储方式，这里是就是这个数据库存储的数据。<br>
+<img src="https://s1.ax1x.com/2020/04/04/GdWd3j.png" alt="这里写图片描述"></p>
+<p>同样在node4和node5上也存储了另一部分的数据。<br>
+<img src="https://s1.ax1x.com/2020/03/31/GM2XY4.png" alt="这里写图片描述"><br>
+从上面来看，分布式存储和主从复制已经没有问题了，那么我们如何支持是不是读写分离呢，那么我们接下来就测试一下是不是读写分离。</p>
+<p>首先我们把node5数据库的数据库全部清空，也就是node4的从数据库。<br>
+<img src="https://s1.ax1x.com/2020/04/03/GdppRA.png" alt="这里写图片描述"></p>
+<p>node5的数据库的数据清空了，但node5的主数据库node4数据库并没清空，数据还是存在的。如果在Mycat上查询不到node4数据库的数据，那么就证明在查询的时候只是查询的从数据库的数据，也就是在<code>schema.xml</code>的<code>dataHost</code>配置<code>dataHost</code>指定的数据库。<br>
+<img src="https://s1.ax1x.com/2020/04/02/GJyu01.png" alt="这里写图片描述"></p>
+<p>经过在Mycat上查询，发现结果如预想的一样，所以证明了是读写分离的。<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYXP8U.png" alt="这里写图片描述"></p>
+<h1 id="toc_h1_5">双主双从读写分离</h1>
+<p>在这一部分，我们来实现双主双从读写分离，主要在上一步的基础之上做一些修改。在上一部分的一主一从读写分离中，M1-&gt;S1，M2-&gt;S2，但是M1和M2是没有关系的。而在双主双从上M1和M2是互为主从关系，它们各自是对方的主从数据库，这样的话，无论是M1或者M2发生数据变化，其他的数据库也会发生相应的变化。在开始之前，先清空数库之前的数据，保证各个数据库一致。</p>
+<h2 id="toc_h2_6">MySQL数据库配置</h2>
+<p>在上一部分的MySQL的配置基础上，这部分的修改并不多，但为了读者更清楚了解各个配置文件的内容，笔者将会展示所有的配置信息：</p>
+<p>node2（master1）的MySQL配置文件<code>/etc/my.cnf</code>，主要是增加了<code>log-slave-updates</code>，增加这个的作用主要是为了当node2（master1）的数据库作为node4（master2）的从数据库时，node4（master2）的数据发生更改时，作为从数据库的node2（master1）也会发生相应改变，但是如果没有添加<code>log-slave-updates</code>的话，作为从数据库的node2（master1）在跟着node4进行写入操作时，这个写入操作node2（master1）并不会添加到bin二进制文件中，所以node2（master1）的从数据库node3（slave1）就不会跟着改变，这样的话就node3就不会跟node4（master2）的数据同步。</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=1        # 设置server-id
+log-slave-updates  # 在作为从数据库的时候，有写入操作也要更新二进制日志文件
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>node3数据库的配置文件<code>/etc/my.cnf</code>，这个配置不用做修改：</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=2 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>node4的配置跟node2一样，主要不同的是<code>server-id</code>：</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+default-character-set=utf8   # 设置编码方式
+lower_case_table_names=1     # 不区分字母大小写
+
+log-bin=mysql-bin  # 开启二进制日志
+server-id=3        # 设置server-id
+log-slave-updates  # 在作为从数据库的时候，有写入操作也要更新二进制日志文件
+
+# 不同步哪些数据库  
+binlog-ignore-db = mysql
+binlog-ignore-db = test
+binlog-ignore-db = information_schema
+
+# 只同步哪些数据库，除此之外，其他不同步  
+# binlog-do-db = game  
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>node5数据库的配置文件<code>/etc/my.cnf</code>，也是一样只要修改<code>server-id</code>：</p>
+<pre><code class="language-text">[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+default-character-set=utf8
+lower_case_table_names=1
+
+server-id=4 #设置server-id，必须唯一
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<p>node2的MySQL的信息如下：</p>
+<pre><code>mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000008 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+<p>配置node2的从数据库，需要配置的是node3和node4的数据库，配置如下：</p>
+<p>首先要关闭slave：</p>
+<pre><code class="language-text">mysql&gt; stop slave;
+</code></pre>
+<p>配置信息，注意<code>master_log_file</code>和<code>master_log_pos</code>的值：</p>
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.122', master_user='root', master_password='root', master_log_file='mysql-bin.000008', master_log_pos=106;
+</code></pre>
+<p>然后启动slave：</p>
+<pre><code class="language-text">mysql&gt; start slave;
+</code></pre>
+<p>node4的MySQL的信息如下：</p>
+<pre><code>mysql&gt; show master status;
+mysql&gt; show master status;
++------------------+----------+--------------+-------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB              |
++------------------+----------+--------------+-------------------------------+
+| mysql-bin.000002 |      106 |              | mysql,test,information_schema |
++------------------+----------+--------------+-------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+<p>配置node4的从数据库，需要配置的是node2和node5的数据库，配置如下：</p>
+<p>首先要关闭slave：</p>
+<pre><code class="language-text">mysql&gt; stop slave;
+</code></pre>
+<p>配置信息，注意<code>master_log_file</code>和<code>master_log_pos</code>的值：</p>
+<pre><code class="language-text">mysql&gt; change master to master_host='192.168.204.124', master_user='root', master_password='root', master_log_file='mysql-bin.000002', master_log_pos=106;
+</code></pre>
+<p>然后启动slave：</p>
+<pre><code class="language-text">mysql&gt; start slave;
+</code></pre>
+<p>配置完成就可以查看各个数据库的配置信息了，观察是否配置成功了，以下是node2的配置信息：</p>
+<pre><code class="language-text">mysql&gt; show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.204.124
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 106
+               Relay_Log_File: mysqld-relay-bin.000002
+                Relay_Log_Pos: 251
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 106
+              Relay_Log_Space: 407
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+</code></pre>
+<p>然后我们可以使用NavicatForMySQL连接node2数据库，我们可以测试只对master1数据库执行写操作，其他的数据库是不是也会做相应的改变。</p>
+<p>比如我们在node2的数据库创建一个<code>yeyupiaoling</code>数据库：<br>
+<img src="https://s1.ax1x.com/2020/03/30/GnC9OK.png" alt="这里写图片描述"></p>
+<p>然后在这个数据库上创建一张<code>employee</code>表：</p>
+<pre><code class="language-text">create table employee(id int not null primary key,name varchar(100),sharding_id int not null);
+</code></pre>
+<p>然后我们发现其它的数据库也会做相应的改变：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYwZK1.png" alt="这里写图片描述"></p>
+<p>证明了我们的配置是正确的。</p>
+<h2 id="toc_h2_7">Mycat的配置</h2>
+<p>我们首先配置<code>schema.xml</code>：</p>
+<pre><code class="language-text">vim $MYCAT_HOME/conf/schema.xml
+</code></pre>
+<p>配置信息如下：</p>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF8"?&gt;
+&lt;!DOCTYPE mycat:schema SYSTEM "schema.dtd"&gt;
+&lt;mycat:schema xmlns:mycat="http://org.opencloudb/"&gt;
+
+    &lt;!-- 设置表的存储方式.schema name="JamesMycatSchema" 与 server.xml中的 JamesMycatSchema 设置一致  --&gt;
+    &lt;schema name="JamesMycatSchema" checkSQLschema="false" sqlMaxLimit="100"&gt;
+        &lt;table name="employee" primaryKey="ID" dataNode="dn2" rule="sharding-by-intfile" /&gt;
+    &lt;/schema&gt;
+
+    &lt;!--数据节点dn1，对应的主机c1,对应是数据库db1 --&gt;
+    &lt;dataNode name="dn2" dataHost="node2" database="yeyupiaoling" /&gt;
+
+    &lt;!-- 主机C2--&gt;
+    &lt;dataHost name="node2" maxCon="1000" minCon="10" balance="1" writeType="0" switchType="1"
+        dbType="mysql" dbDriver="native"&gt;
+        &lt;heartbeat&gt;select user()&lt;/heartbeat&gt;
+
+        &lt;!--MySQL的写的数据，master1 --&gt;
+        &lt;writeHost host="hostM2" url="192.168.204.122:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave1 --&gt;
+            &lt;readHost host="hostM3" url="192.168.204.123:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+
+        &lt;!--MySQL的写的数据，master2 --&gt;
+        &lt;writeHost host="hostM4" url="192.168.204.124:3306" user="root" password="root"&gt;
+            &lt;!--MySQL读的数据库，slave2 --&gt;
+            &lt;readHost host="hostM5" url="192.168.204.125:3306" user="root" password="root"/&gt;
+        &lt;/writeHost&gt;
+
+    &lt;/dataHost&gt;
+
+&lt;/mycat:schema&gt;
+</code></pre>
+<p>然后配置<code>server.xml</code>：</p>
+<pre><code class="language-text">vim $MYCAT_HOME/conf/server.xml
+</code></pre>
+<p>配置信息如下：</p>
+<pre><code class="language-text">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE mycat:server SYSTEM "server.dtd"&gt;
+&lt;mycat:server xmlns:mycat="http://org.opencloudb/"&gt;
+        &lt;system&gt;
+                &lt;property name="defaultSqlParser"&gt;druidparser&lt;/property&gt;
+        &lt;/system&gt;
+
+        &lt;user name="mycat"&gt;
+                &lt;property name="password"&gt;123456&lt;/property&gt;
+                &lt;property name="schemas"&gt;JamesMycatSchema&lt;/property&gt;
+        &lt;/user&gt;
+&lt;/mycat:server&gt;
+</code></pre>
+<p>配置<code>partition-hash-int.txt</code>：</p>
+<pre><code class="language-text">vim $MYCAT_HOME/conf/partition-hash-int.txt
+</code></pre>
+<p>因为我们选择的分片规则是<code>sharding-by-intfile</code>，所以Mycat会根据<code>sharding_id</code>进行分片存储到不同的数据库节点的上，因为我们上面配置的数据库只是配置了一个数据库节点，所以这个文件只是配置了一个：</p>
+<pre><code class="language-text">10000=0
+</code></pre>
+<p>配置完成之后，要重新启动Mycat：</p>
+<pre><code class="language-text">mycat restart
+</code></pre>
+<p>启动之后，可以分别查看输出的日志信息，观察是否正常启动了：</p>
+<pre><code class="language-text">tail -f $MYCAT_HOME/logs/wrapper.log
+tail -f $MYCAT_HOME/logs/mycat.log
+</code></pre>
+<p>正常启动启动之后，测试是否一切正常了。</p>
+<h2 id="toc_h2_8">测试</h2>
+<p>首先我们连接Mycat，然后在Mycat上对<code>employee</code>表添加数据：</p>
+<pre><code class="language-text">insert into employee(id,name,sharding_id) values(1, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(2, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(3, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(4, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(5, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(6, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(7, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(8, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(9, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(10, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(11, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(12, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(13, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(14, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(15, 'I am db3',10000);
+insert into employee(id,name,sharding_id) values(16, 'I am db1',10000);
+insert into employee(id,name,sharding_id) values(17, 'I am db2',10000);
+insert into employee(id,name,sharding_id) values(18, 'I am db3',10000);
+</code></pre>
+<p>操作如下：<br>
+<img src="https://s1.ax1x.com/2020/04/04/GdWHUO.png" alt="这里写图片描述"></p>
+<p>然后我们连接4个数据库，查看它们的数据，发现是跟预期的一样，每个数据库都插入了数据：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GG1ves.png" alt="这里写图片描述"></p>
+<p>读写分离在上一部分已经测试过了，这里主要是测试一下查询负载均衡，这里笔者删除了node5（slave2）的id为10之后的数据：<br>
+<img src="https://s1.ax1x.com/2020/03/30/Gmc8Ts.png" alt="这里写图片描述"></p>
+<p>node3（slave1）数据库的删除id为10之前的：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GM25Ss.png" alt="这里写图片描述"></p>
+<p>node4（master2）的数据库的数据不做修改：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYOg3D.png" alt="这里写图片描述"></p>
+<p>然后我们在Mycat上不断进行查询操作，观察查询到的结果，就可以判断是不是slave1、master2、slave2都查询。从查询的结果来看，的确slave1、master2、slave2都查询。<br>
+<img src="https://s1.ax1x.com/2020/03/30/Gmc1mQ.png" alt="这里写图片描述"></p>
+<p><img src="https://s1.ax1x.com/2020/03/31/GM2DSA.png" alt="这里写图片描述"></p>
+<p><img src="https://s1.ax1x.com/2020/04/02/GJyR7q.png" alt="这里写图片描述"></p>
+<p>然后测试高可用作用，我们手动关闭node2（master1）数据库，看看是不是自动启用node4（master2）作为主数据库了。当我们关闭了node2（master1）的数据库，发现Mycat还能正常工作，但是无论我们怎么刷新查询操作，都只能查询到一下的数据，这个是node5（slave2）数据库中的数据。这种情况证明了两件事情，一是当node2（master）数据库挂掉了，会自动启用node4（master2）作为主数据库，二是如果主数据库挂掉了，其的从数据库也不会参与查询操作，这样保证了数据的一致性。</p>
+<p>关闭数据库命令：</p>
+<pre><code class="language-text">service mysqld stop
+</code></pre>
+<p><img src="https://s1.ax1x.com/2020/03/30/Gmc1mQ.png" alt="这里写图片描述"></p>
+<p>然后我们在node4数据库上插入一条数据，主要是观察当再次启动node2的数据库时，会不会保证数据库的数据一致。</p>
+<pre><code class="language-text">insert into employee(id,name,sharding_id) values(20, 'hello',10000);
+</code></pre>
+<p><img src="https://s1.ax1x.com/2020/03/31/GQer36.png" alt="这里写图片描述"></p>
+<p>然后我们再启动MySQL数据库，观察到在node4添加的数据也被添加到这里了。</p>
+<p>启动数据库命令：</p>
+<pre><code class="language-text">service mysqld start
+</code></pre>
+<p><img src="https://s1.ax1x.com/2020/04/03/Gdp8dU.png" alt="这里写图片描述"></p>
+<p>最后有一点要说的是，在真实的项目中，不应该对从数据库（slave）做写入操作，这样会破坏数据的一致性的。上面笔者的操作主要是为了测试使用的。</p>
+<h1 id="toc_h1_9">参考资料</h1>
+<ol>
+<li><a href="https://blog.csdn.net/ydyang1126/article/details/70224185" target="_blank">https://blog.csdn.net/ydyang1126/article/details/70224185</a></li>
+<li><a href="https://www.cnblogs.com/biglittleant/p/7059569.html" target="_blank">https://www.cnblogs.com/biglittleant/p/7059569.html</a></li>
+<li><a href="https://blog.csdn.net/qq_33200967/article/details/80939040" target="_blank">https://blog.csdn.net/qq_33200967/article/details/80939040</a></li>
+<li><a href="https://blog.csdn.net/qq_33200967/article/details/80863305" target="_blank">https://blog.csdn.net/qq_33200967/article/details/80863305</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：Mycat中间件实现一主一从和双主双从的读写分离<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584972913914.html" target="_blank">https://yeyupiaoling.github.io/articles/1584972913914.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584972836923.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; MySQL数据库实现主从复制&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584972978949.html">
+                            <span>TensorFlow的安装&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="Mycat中间件实现一主一从和双主双从的读写分离"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584972913914.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584972913028"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584972913028",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584972913028",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584972913028', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

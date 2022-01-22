@@ -2,18 +2,12 @@
  * Solo - A small and beautiful blogging system written in Java.
  * Copyright (c) 2010-present, b3log.org
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Solo is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *         http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 /**
  *  about for admin
@@ -46,7 +40,7 @@ admin.about = {
     })
 
     $.ajax({
-      url: 'https://hacpai.com/apis/sponsors',
+      url: 'https://ld246.com/apis/sponsors',
       type: 'GET',
       dataType: 'jsonp',
       jsonp: 'callback',
@@ -56,7 +50,7 @@ admin.about = {
         for (var i = 0; i < payments.length; i++) {
           var userName = '<b>匿名好心人</b>'
           if (payments[i].paymentUserName) {
-            userName = '<a href="https://hacpai.com/member/' +
+            userName = '<a href="https://ld246.com/member/' +
               payments[i].paymentUserName + '"><b>' + payments[i].paymentUserName +
               '</b></a>'
           }

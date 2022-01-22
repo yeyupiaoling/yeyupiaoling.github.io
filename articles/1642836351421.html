@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型 - 夜雨飘零</title><meta name="description" content="本项目是PaddlePaddle 2.0动态图实现的CRNN文字识别模型，可支持长短不一的图片输入。CRNN是一种端到端的识别模式，不需要通过分割图片即可完成图片中全部的文字识别。CRNN的结构主要是CNN+RNN+CTC，它们分别的作用是，使用深度CNN，对输入图像提取特征，得到特征图。使用双向RNN（BLSTM）对特征序列进行预测，对序列中的每个特征向量进行学习，并输出预测标签（真实值）分布。使用 CTC Loss，把从循环层获取的一系列标签分布转换成最终的标签序列。"/><meta property="og:description" content="本项目是PaddlePaddle 2.0动态图实现的CRNN文字识别模型，可支持长短不一的图片输入。CRNN是一种端到端的识别模式，不需要通过分割图片即可完成图片中全部的文字识别。CRNN的结构主要是CNN+RNN+CTC，它们分别的作用是，使用深度CNN，对输入图像提取特征，得到特征图。使用双向RNN（BLSTM）对特征序列进行预测，对序列中的每个特征向量进行学习，并输出预测标签（真实值）分布。使用 CTC Loss，把从循环层获取的一系列标签分布转换成最终的标签序列。"/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1642836351421.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1642836351421.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="基于PaddlePaddle2.0验证码端到端的识别" href="https://yeyupiaoling.github.io/articles/1642836291979.html">
+            <link rel="next" title="基于MXNET实现的年龄性别识别" href="https://yeyupiaoling.github.io/articles/1642836400566.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">CRNN</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">准备数据集</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">训练</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">预测</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1642836351421.html">
+                    基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89">
+                        计算机视觉</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1642836351421.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1642836351421">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1642836351421.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1642836351421.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://b3logfile.com/bing/20180115.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">CRNN</h1>
+<p>本项目是PaddlePaddle 2.0动态图实现的CRNN文字识别模型，可支持长短不一的图片输入。CRNN是一种端到端的识别模式，不需要通过分割图片即可完成图片中全部的文字识别。CRNN的结构主要是CNN+RNN+CTC，它们分别的作用是，使用深度CNN，对输入图像提取特征，得到特征图。使用双向RNN（BLSTM）对特征序列进行预测，对序列中的每个特征向量进行学习，并输出预测标签（真实值）分布。使用 CTC Loss，把从循环层获取的一系列标签分布转换成最终的标签序列。<br>
+<img src="https://img-blog.csdnimg.cn/2021040311401668.png" alt="在这里插入图片描述"><br>
+CRNN的结构如下，一张高为32的图片，宽度随意，一张图片经过多层卷积之后，高度就变成了1，经过<code>paddle.squeeze()</code>就去掉了高度，也就说从输入的图片<code>BCHW</code>经过卷积之后就成了<code>BCW</code>。然后把特征顺序从<code>BCW</code>改为<code>WBC</code>输入到RNN中，经过两次的RNN之后，模型的最终输入为<code>(W, B, Class_num)</code>。这恰好是CTCLoss函数的输入。<br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-3885900078501262211-15056fd3.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="在这里插入图片描述"></p>
+<p>使用环境：</p>
+<ul>
+<li>PaddlePaddle 2.0.1</li>
+<li>Python 3.7</li>
+</ul>
+<p><strong>源码地址：<a href="https://github.com/yeyupiaoling/PaddlePaddle-CRNN" target="_blank">https://github.com/yeyupiaoling/PaddlePaddle-CRNN</a></strong></p>
+<p><strong>在线运行一下：<a href="https://aistudio.baidu.com/aistudio/projectdetail/1751953" target="_blank">https://aistudio.baidu.com/aistudio/projectdetail/1751953</a></strong></p>
+<h1 id="toc_h1_1">准备数据集</h1>
+<ul>
+<li>贴心的笔者准备了一个生成长度不一的验证码图片作为数据集，该程序可以自动生成图片以及数据列表和数据词汇表，需要读者修改自己字体文件的路径<code>font_path</code>，网上下载一搜一大把，笔者用的是这个字体<a href="https://down7.pc6.com/qd3/simsun.zip" target="_blank">点击下载</a> 。</li>
+</ul>
+<pre><code class="language-shell">python create_image.py
+</code></pre>
+<p>执行上面程序生成的图片会放在<code>dataset/images</code>目录下，生成的训练数据列表和测试数据列表分别放在<code>dataset/train_list.txt</code>和<code>dataset/test_list.txt</code>，最后还有个数据词汇表<code>dataset/vocabulary.txt</code>。</p>
+<p>数据列表的格式如下，左边是图片的路径，右边是文字标签。</p>
+<pre><code class="language-shell">dataset/images/1617420021182_c1dw.jpg	c1dw
+dataset/images/1617420021204_uvht.jpg	uvht
+dataset/images/1617420021227_hb30.jpg	hb30
+dataset/images/1617420021266_4nkx.jpg	4nkx
+dataset/images/1617420021296_80nv.jpg	80nv
+</code></pre>
+<p>以下是数据集词汇表的格式，一行一个字符，第一行是空格，不代表任何字符。</p>
+<pre><code class="language-shell"> 
+f
+s
+2
+7
+3
+n
+d
+w
+</code></pre>
+<p><strong>训练自定义数据，参考上面的格式即可。</strong></p>
+<h1 id="toc_h1_2">训练</h1>
+<p>不管你是自定义数据集还是使用上面生成的数据，只要文件路径正确，即可开始进行训练。该训练支持长度不一的图片输入，但是每一个batch的数据的数据长度还是要一样的，这种情况下，笔者就用了<code>collate_fn()</code>函数，该函数可以把数据最长的找出来，然后把其他的数据补0，加到相同的长度。同时该函数还要输出它其中每条数据标签的实际长度，因为损失函数需要输入标签的实际长度。</p>
+<pre><code class="language-shell">python train.py
+</code></pre>
+<ul>
+<li>在训练过程中，程序会使用VisualDL记录训练结果，可以通过以下的命令启动VisualDL。</li>
+</ul>
+<pre><code class="language-shell">visualdl --logdir=log --host=0.0.0.0
+</code></pre>
+<ul>
+<li>然后再浏览器上访问<code>http://localhost:8040</code>可以查看结果显示，如下。</li>
+</ul>
+<p><img src="https://b3logfile.com/file/2022/01/solo-fetchupload-15837250296221435156-a705bf4d.png?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="Learning rate"><br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-8799610429196895532-c51ac0f1.jpeg?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="Test Cer"><br>
+<img src="https://b3logfile.com/file/2022/01/solo-fetchupload-5402731682736409392-e6468e55.jpeg?imageView2/2/w/1280/format/jpg/interlace/1/q/100" alt="Train Loss"></p>
+<h1 id="toc_h1_3">预测</h1>
+<p>训练结束之后，使用保存的模型进行预测。通过修改<code>image_path</code>指定需要预测的图片路径，解码方法，笔者使用了一个最简单的贪心策略。</p>
+<pre><code class="language-shell">python infer.py
+</code></pre>
+<p>输出如下：</p>
+<pre><code>预测结果：2gmnt93e
+</code></pre>
+                <div>
+                    <hr>
+
+标题：基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1642836351421.html" target="_blank">https://yeyupiaoling.github.io/articles/1642836351421.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1642836291979.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 基于PaddlePaddle2.0验证码端到端的识别&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1642836400566.html">
+                            <span>基于MXNET实现的年龄性别识别&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1642836351421.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1642836351421"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1642836351421",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1642836351421",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1642836351421', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

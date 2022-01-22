@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>基于MTCNN和MobileFaceNet实现的人脸识别 - 夜雨飘零</title><meta name="description" content="本教程是教程是介绍如何使用Tensorflow实现的MTCNN和MobileFaceNet实现的人脸识别，并不介绍如何训练模型。关于如何训练MTCNN和MobileFaceNet，请阅读这两篇教程 MTCNN-Tensorflow 和 MobileFaceNet_TF ，这两个模型都是比较轻量的模型，所以就算这两个模型在CPU环境下也有比较好的预测速度，众所周知，笔者比较喜欢轻量级的模型，如何让我从准确率和预测速度上选择，我会更倾向于速度，因本人主要是研究深度学习在移动设备等嵌入式设备上的的部署。好了，下面就来介绍如何实现这两个模型实现三种人脸识别，使用路径进行人脸注册和人脸识别，使用摄像头实现人脸注册和人脸识别，通过HTTP实现人脸注册和人脸识别。"/><meta property="og:description" content="本教程是教程是介绍如何使用Tensorflow实现的MTCNN和MobileFaceNet实现的人脸识别，并不介绍如何训练模型。关于如何训练MTCNN和MobileFaceNet，请阅读这两篇教程 MTCNN-Tensorflow 和 MobileFaceNet_TF ，这两个模型都是比较轻量的模型，所以就算这两个模型在CPU环境下也有比较好的预测速度，众所周知，笔者比较喜欢轻量级的模型，如何让我从准确率和预测速度上选择，我会更倾向于速度，因本人主要是研究深度学习在移动设备等嵌入式设备上的的部署。好了，下面就来介绍如何实现这两个模型实现三种人脸识别，使用路径进行人脸注册和人脸识别，使用摄像头实现人脸注册和人脸识别，通过HTTP实现人脸注册和人脸识别。"/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="基于MTCNN和MobileFaceNet实现的人脸识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1642600316693.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="基于MTCNN和MobileFaceNet实现的人脸识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1642600316693.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="基于Kersa实现的中文语音声纹识别" href="https://yeyupiaoling.github.io/articles/1642599621293.html">
+            <link rel="next" title="基于Tensorflow2 Lite在Android手机上实现图像分类" href="https://yeyupiaoling.github.io/articles/1642600494965.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">本地人脸图像识别</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">相机人脸识别</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">通过服务接口识别</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1642600316693.html">
+                    基于MTCNN和MobileFaceNet实现的人脸识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Tensorflow">
+                        Tensorflow</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1642600316693.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1642600316693">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1642600316693.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1642600316693.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://b3logfile.com/bing/20210316.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>本教程是教程是介绍如何使用Tensorflow实现的MTCNN和MobileFaceNet实现的人脸识别，并不介绍如何训练模型。关于如何训练MTCNN和MobileFaceNet，请阅读这两篇教程 <a href="https://github.com/AITTSMD/MTCNN-Tensorflow" target="_blank">MTCNN-Tensorflow</a> 和 <a href="https://github.com/sirius-ai/MobileFaceNet_TF" target="_blank">MobileFaceNet_TF</a> ，这两个模型都是比较轻量的模型，所以就算这两个模型在CPU环境下也有比较好的预测速度，众所周知，笔者比较喜欢轻量级的模型，如何让我从准确率和预测速度上选择，我会更倾向于速度，因本人主要是研究深度学习在移动设备等嵌入式设备上的的部署。好了，下面就来介绍如何实现这两个模型实现三种人脸识别，使用路径进行人脸注册和人脸识别，使用摄像头实现人脸注册和人脸识别，通过HTTP实现人脸注册和人脸识别。</p>
+<p><strong>本教程源码：<a href="https://github.com/yeyupiaoling/Tensorflow-FaceRecognition" target="_blank">https://github.com/yeyupiaoling/Tensorflow-FaceRecognition</a></strong></p>
+<h1 id="toc_h1_1">本地人脸图像识别</h1>
+<p>本地人脸图像识别就是要通过路径读取本地的图像进行人脸注册或者人脸识别，对应的代码为<code>path_infer.py</code>。首先要加载好人脸识别的两个模型，一个是人脸检测和关键点检测模型MTCNN和人脸识别模型MobileFaceNet，加载这两个模型已经封装在一个工具中了，方便加载。<br>
+然后<code>add_faces()</code>这个函数是从<code>temp</code>路径中读取手动添加的图片的人脸库中，具体来说，例如你有100张已经用人脸中对应人名字来命名图片文件名，但是你不能直接添加到人脸库<code>face_db</code>中，因为人脸库中是存放经过MTCNN模型处理过的图片，所以大规模添加人脸图片需要通过暂存在<code>temp</code>文件夹中的方式来然程序自动添加。最后是读取人脸库中图像，通过MobileFaceNet预测获取每张人脸的特征值存放在到一个列表中，等着之后的人脸对比识别。</p>
+<pre><code class="language-python"># 检测人脸检测模型
+mtcnn_detector = load_mtcnn()
+# 加载人脸识别模型
+face_sess, inputs_placeholder, embeddings = load_mobilefacenet()
+# 添加人脸
+add_faces(mtcnn_detector)
+# 加载已经注册的人脸
+faces_db = load_faces(face_sess, inputs_placeholder, embeddings)
+</code></pre>
+<p>人脸注册是通过图像路径读取人脸图像，然后使用MTCNN检测图像中的人脸，并通过人脸关键点进行人脸对齐，最后裁剪并缩放成112*112的图片，并以注册名命名文件存储在人脸库中。</p>
+<pre><code class="language-python">def face_register(img_path, name):
+    image = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
+    faces, landmarks = mtcnn_detector.detect(image)
+    if faces.shape[0] is not 0:
+        faces_sum = 0
+        bbox = []
+        points = []
+        for i, face in enumerate(faces):
+            if round(faces[i, 4], 6) &gt; 0.95:
+                bbox = faces[i, 0:4]
+                points = landmarks[i, :].reshape((5, 2))
+                faces_sum += 1
+        if faces_sum == 1:
+            nimg = face_preprocess.preprocess(image, bbox, points, image_size='112,112')
+            cv2.imencode('.png', nimg)[1].tofile('face_db/%s.png' % name)
+            print("注册成功！")
+        else:
+            print('注册图片有错，图片中有且只有一个人脸')
+    else:
+        print('注册图片有错，图片中有且只有一个人脸')
+</code></pre>
+<p>人脸识别是通过图像路径读取将要识别的人脸，通过经过MTCNN的检测人脸和对其，在使用MobileFaceNet预测人脸的特征，最终得到特征和人脸库中的特征值比较相似度，最终得到阈值超过0.6的最高相似度结果，对应的名称就是该人脸识别的结果。最后把结果在图像中画框和标记上名称并显示出来。</p>
+<pre><code class="language-python">def face_recognition(img_path):
+    image = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
+    faces, landmarks = mtcnn_detector.detect(image)
+    if faces.shape[0] is not 0:
+        faces_sum = 0
+        for i, face in enumerate(faces):
+            if round(faces[i, 4], 6) &gt; 0.95:
+                faces_sum += 1
+        if faces_sum &gt; 0:
+            # 人脸信息
+            info_location = np.zeros(faces_sum)
+            info_location[0] = 1
+            info_name = []
+            probs = []
+            # 提取图像中的人脸
+            input_images = np.zeros((faces.shape[0], 112, 112, 3))
+            for i, face in enumerate(faces):
+                if round(faces[i, 4], 6) &gt; 0.95:
+                    bbox = faces[i, 0:4]
+                    points = landmarks[i, :].reshape((5, 2))
+                    nimg = face_preprocess.preprocess(image, bbox, points, image_size='112,112')
+                    nimg = nimg - 127.5
+                    nimg = nimg * 0.0078125
+                    input_images[i, :] = nimg
+
+            # 进行人脸识别
+            feed_dict = {inputs_placeholder: input_images}
+            emb_arrays = face_sess.run(embeddings, feed_dict=feed_dict)
+            emb_arrays = sklearn.preprocessing.normalize(emb_arrays)
+            for i, embedding in enumerate(emb_arrays):
+                embedding = embedding.flatten()
+                temp_dict = {}
+                # 比较已经存在的人脸数据库
+                for com_face in faces_db:
+                    ret, sim = feature_compare(embedding, com_face["feature"], 0.70)
+                    temp_dict[com_face["name"]] = sim
+                dict = sorted(temp_dict.items(), key=lambda d: d[1], reverse=True)
+                if dict[0][1] &gt; VERIFICATION_THRESHOLD:
+                    name = dict[0][0]
+                    probs.append(dict[0][1])
+                    info_name.append(name)
+                else:
+                    probs.append(dict[0][1])
+                    info_name.append("unknown")
+
+            for k in range(faces_sum):
+                # 写上人脸信息
+                x1, y1, x2, y2 = faces[k][0], faces[k][1], faces[k][2], faces[k][3]
+                x1 = max(int(x1), 0)
+                y1 = max(int(y1), 0)
+                x2 = min(int(x2), image.shape[1])
+                y2 = min(int(y2), image.shape[0])
+                prob = '%.2f' % probs[k]
+                label = "{}, {}".format(info_name[k], prob)
+                cv2img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                pilimg = Image.fromarray(cv2img)
+                draw = ImageDraw.Draw(pilimg)
+                font = ImageFont.truetype('font/simfang.ttf', 18, encoding="utf-8")
+                draw.text((x1, y1 - 18), label, (255, 0, 0), font=font)
+                image = cv2.cvtColor(np.array(pilimg), cv2.COLOR_RGB2BGR)
+                cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+    cv2.imshow('image', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+</code></pre>
+<p>最后的动时选择是人脸注册还是人脸识别。</p>
+<pre><code class="language-python">if __name__ == '__main__':
+    i = int(input("请选择功能，1为注册人脸，2为识别人脸："))
+    image_path = input("请输入图片路径：")
+    if i == 1:
+        user_name = input("请输入注册名：")
+        face_register(image_path, user_name)
+    elif i == 2:
+        face_recognition(image_path)
+    else:
+        print("功能选择错误")
+</code></pre>
+<p>日志输出如下：</p>
+<pre><code>loaded face: 张伟.png
+loaded face: 迪丽热巴.png
+请选择功能，1为注册人脸，2为识别人脸：1
+请输入图片路径：test.png
+请输入注册名：夜雨飘零
+注册成功！
+</code></pre>
+<h1 id="toc_h1_2">相机人脸识别</h1>
+<p>在<code>camera_infer.py</code>实现使用相机的人脸识别，通过调用相机获取图像，进行人脸注册和人脸识别，在使用人脸注册或者人脸识别之前，同样先加载人脸检测模型MTCNN和MobileFaceNet，并将临时<code>temp</code>文件夹中的人脸经过MTCNN处理添加到人脸库中，最后把人脸库中的人脸使用MobileFaceNet预测得到特征值，并报特征值和对应的人脸名称存放在列表中。</p>
+<pre><code class="language-python"># 检测人脸检测模型
+mtcnn_detector = load_mtcnn()
+# 加载人脸识别模型
+face_sess, inputs_placeholder, embeddings = load_mobilefacenet()
+# 添加人脸
+add_faces(mtcnn_detector)
+# 加载已经注册的人脸
+faces_db = load_faces(face_sess, inputs_placeholder, embeddings)
+</code></pre>
+<p>通过使用摄像头实时获取图像，在人脸注册这里当摄像头拍摄到人脸之后，可以点击y键拍照，拍照获得到图片之后，需要经过MTCNN检测判断是否存在人脸，检测成功之后，会对人脸进行裁剪并以注册名直接存储在人脸库中<code>face_db</code>。</p>
+<pre><code class="language-python">def face_register():
+    print("点击y确认拍照！")
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            cv2.imshow('image', frame)
+            if cv2.waitKey(1) &amp; 0xFF == ord('y'):
+                faces, landmarks = mtcnn_detector.detect(frame)
+                if faces.shape[0] is not 0:
+                    faces_sum = 0
+                    bbox = []
+                    points = []
+                    for i, face in enumerate(faces):
+                        if round(faces[i, 4], 6) &gt; 0.95:
+                            bbox = faces[i, 0:4]
+                            points = landmarks[i, :].reshape((5, 2))
+                            faces_sum += 1
+                    if faces_sum == 1:
+                        nimg = face_preprocess.preprocess(frame, bbox, points, image_size='112,112')
+                        user_name = input("请输入注册名：")
+                        cv2.imencode('.png', nimg)[1].tofile('face_db/%s.png' % user_name)
+                        print("注册成功！")
+                    else:
+                        print('注册图片有错，图片中有且只有一个人脸')
+                else:
+                    print('注册图片有错，图片中有且只有一个人脸')
+                break
+</code></pre>
+<p>在人脸识别中，通过调用摄像头实时获取图像，通过使用MTCNN检测人脸的位置，并使用MobileFaceNet进行识别，最终在图像上画框并写上识别的名字，结果会跟着摄像头获取的图像实时识别的。</p>
+<pre><code class="language-python">def face_recognition():
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            faces, landmarks = mtcnn_detector.detect(frame)
+            if faces.shape[0] is not 0:
+                faces_sum = 0
+                for i, face in enumerate(faces):
+                    if round(faces[i, 4], 6) &gt; 0.95:
+                        faces_sum += 1
+                if faces_sum == 0:
+                    continue
+                # 人脸信息
+                info_location = np.zeros(faces_sum)
+                info_location[0] = 1
+                info_name = []
+                probs = []
+                # 提取图像中的人脸
+                input_images = np.zeros((faces.shape[0], 112, 112, 3))
+                for i, face in enumerate(faces):
+                    if round(faces[i, 4], 6) &gt; 0.95:
+                        bbox = faces[i, 0:4]
+                        points = landmarks[i, :].reshape((5, 2))
+                        nimg = face_preprocess.preprocess(frame, bbox, points, image_size='112,112')
+                        nimg = nimg - 127.5
+                        nimg = nimg * 0.0078125
+                        input_images[i, :] = nimg
+
+                # 进行人脸识别
+                feed_dict = {inputs_placeholder: input_images}
+                emb_arrays = face_sess.run(embeddings, feed_dict=feed_dict)
+                emb_arrays = sklearn.preprocessing.normalize(emb_arrays)
+                for i, embedding in enumerate(emb_arrays):
+                    embedding = embedding.flatten()
+                    temp_dict = {}
+                    # 比较已经存在的人脸数据库
+                    for com_face in faces_db:
+                        ret, sim = feature_compare(embedding, com_face["feature"], 0.70)
+                        temp_dict[com_face["name"]] = sim
+                    dict = sorted(temp_dict.items(), key=lambda d: d[1], reverse=True)
+                    if dict[0][1] &gt; VERIFICATION_THRESHOLD:
+                        name = dict[0][0]
+                        probs.append(dict[0][1])
+                        info_name.append(name)
+                    else:
+                        probs.append(dict[0][1])
+                        info_name.append("unknown")
+
+                for k in range(faces_sum):
+                    # 写上人脸信息
+                    x1, y1, x2, y2 = faces[k][0], faces[k][1], faces[k][2], faces[k][3]
+                    x1 = max(int(x1), 0)
+                    y1 = max(int(y1), 0)
+                    x2 = min(int(x2), frame.shape[1])
+                    y2 = min(int(y2), frame.shape[0])
+                    prob = '%.2f' % probs[k]
+                    label = "{}, {}".format(info_name[k], prob)
+                    cv2img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    pilimg = Image.fromarray(cv2img)
+                    draw = ImageDraw.Draw(pilimg)
+                    font = ImageFont.truetype('font/simfang.ttf', 18, encoding="utf-8")
+                    draw.text((x1, y1 - 18), label, (255, 0, 0), font=font)
+                    frame = cv2.cvtColor(np.array(pilimg), cv2.COLOR_RGB2BGR)
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+        cv2.imshow('image', frame)
+        if cv2.waitKey(1) &amp; 0xFF == ord('q'):
+            break
+</code></pre>
+<p>在启动程序中，通过选择功能，选择注册人脸或者是识别人脸。</p>
+<pre><code class="language-python">if __name__ == '__main__':
+    i = int(input("请选择功能，1为注册人脸，2为识别人脸："))
+    if i == 1:
+        face_register()
+    elif i == 2:
+        face_recognition()
+    else:
+        print("功能选择错误")
+</code></pre>
+<p>日志输出如下：</p>
+<pre><code>loaded face: 张伟.png
+loaded face: 迪丽热巴.png
+请选择功能，1为注册人脸，2为识别人脸：1
+点击y确认拍照！
+请输入注册名：夜雨飘零
+
+注册成功！
+</code></pre>
+<h1 id="toc_h1_3">通过服务接口识别</h1>
+<p>程序在<code>server_main.py</code>中实现，通过使用Flask提供网络服务接口，如果要允许跨域访问需要设置<code>CORS(app)</code>，本程序虽然是默认开启跨域访问，但是为了可以在浏览器上调用摄像头，启动的host设置为<code>localhost</code>。另外还要加载MTCNN模型和MobileFaceNet模型，并报人脸库的图像加载到程序中。</p>
+<pre><code class="language-python">app = Flask(__name__)
+# 允许跨越访问
+CORS(app)
+
+# 人脸识别阈值
+VERIFICATION_THRESHOLD = config.VERIFICATION_THRESHOLD
+# 检测人脸检测模型
+mtcnn_detector = load_mtcnn()
+# 加载人脸识别模型
+face_sess, inputs_placeholder, embeddings = load_mobilefacenet()
+# 加载已经注册的人脸
+faces_db = load_faces(face_sess, inputs_placeholder, embeddings)
+</code></pre>
+<p>提供一个<code>/register</code>的人脸注册接口，通过表单上传的图像和注册名，经过MTCNN检测，是否包含人脸，如果注册成功，将会把图像裁剪并储存在人脸库中<code>face_db</code>。并更新已经加载的人脸库，注意这是全部重新读取更新。</p>
+<pre><code class="language-python">@app.route("/register", methods=['POST'])
+def register():
+    global faces_db
+    upload_file = request.files['image']
+    user_name = request.values.get("name")
+    if upload_file:
+        try:
+            image = cv2.imdecode(np.frombuffer(upload_file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+            faces, landmarks = mtcnn_detector.detect(image)
+            if faces.shape[0] is not 0:
+                faces_sum = 0
+                bbox = []
+                points = []
+                for i, face in enumerate(faces):
+                    if round(faces[i, 4], 6) &gt; 0.95:
+                        bbox = faces[i, 0:4]
+                        points = landmarks[i, :].reshape((5, 2))
+                        faces_sum += 1
+                if faces_sum == 1:
+                    nimg = face_preprocess.preprocess(image, bbox, points, image_size='112,112')
+                    cv2.imencode('.png', nimg)[1].tofile('face_db/%s.png' % user_name)
+                    # 更新人脸库
+                    faces_db = load_faces(face_sess, inputs_placeholder, embeddings)
+                    return str({"code": 0, "msg": "success"})
+            return str({"code": 3, "msg": "image not or much face"})
+        except:
+            return str({"code": 2, "msg": "this file is not image or not face"})
+    else:
+        return str({"code": 1, "msg": "file is None"})
+</code></pre>
+<p>提供<code>/recognition</code>人脸识别接口，通过上传图片进行人脸识别，把识别的结果返回给用户，返回的结果不仅包括的识别的名字，还包括人脸框和关键点。因为也提供了一个<code>is_chrome_camera</code>参数，这个是方便在浏览器上调用摄像头获取图像进行预测，因为如果直接把浏览器拍摄到的图像直接预测会出现错误，所以如果是浏览器拍照识别，需要先存储起来，然后重新读取。</p>
+<pre><code class="language-python">@app.route("/recognition", methods=['POST'])
+def recognition():
+    start_time1 = time.time()
+    upload_file = request.files['image']
+    is_chrome_camera = request.values.get("is_chrome_camera")
+    if upload_file:
+        try:
+            img = cv2.imdecode(np.frombuffer(upload_file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+            # 兼容浏览器摄像头拍照识别
+            if is_chrome_camera == "True":
+                cv2.imwrite('test.png', img)
+                img = cv2.imdecode(np.fromfile('test.png', dtype=np.uint8), 1)
+        except:
+            return str({"error": 2, "msg": "this file is not image"})
+        try:
+            info_name, probs, info_bbox, info_landmarks = recognition_face(img)
+            if info_name is None:
+                return str({"error": 3, "msg": "image not have face"})
+        except:
+            return str({"error": 3, "msg": "image not have face"})
+        # 封装识别结果
+        data_faces = []
+        for i in range(len(info_name)):
+            data_faces.append(
+                {"name": info_name[i], "probability": probs[i],
+                 "bbox": list_to_json(np.around(info_bbox[i], decimals=2).tolist()),
+                 "landmarks": list_to_json(np.around(info_landmarks[i], decimals=2).tolist())})
+        data = str({"code": 0, "msg": "success", "data": data_faces}).replace("'", '"')
+        print('duration:[%.0fms]' % ((time.time() - start_time1) * 1000), data)
+        return data
+    else:
+        return str({"error": 1, "msg": "file is None"})
+</code></pre>
+<p>在<code>templates</code>目录下创建<code>index.html</code>文件，主要是以下两个表单和一个拍摄实时显示的<code>video</code>，拍照的图像在<code>canvas</code>显示，最后上传。</p>
+<pre><code class="language-html">&lt;form action="/register" enctype="multipart/form-data" method="post"&gt;
+    注册人脸：&lt;input type="file" required accept="image/*" name="image"&gt;&lt;br&gt;
+    注册名称：&lt;input type="text" name="name"&gt;&lt;br&gt;
+
+    &lt;input type="submit" value="上传"&gt;
+&lt;/form&gt;
+
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;form action="/recognition" enctype="multipart/form-data" method="post"&gt;
+    预测人脸：&lt;input type="file" required accept="image/*" name="image"&gt;&lt;br&gt;
+    &lt;input type="submit" value="上传"&gt;
+&lt;/form&gt;
+
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;video id="video" width="640" height="480" autoplay&gt;&lt;/video&gt;
+&lt;button id="snap"&gt;拍照&lt;/button&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;canvas id="canvas" width="640" height="480"&gt;&lt;/canvas&gt;
+&lt;button id="upload"&gt;上传&lt;/button&gt;
+</code></pre>
+<p>通过下面启动整个服务。</p>
+<pre><code class="language-python">@app.route('/')
+def home():
+    return render_template("index.html")
+
+
+if __name__ == '__main__':
+    app.run(host=config.HOST, port=config.POST)
+</code></pre>
+<p>日志输出如下：</p>
+<pre><code>loaded face: 张伟.png
+loaded face: 迪丽热巴.png
+ * Serving Flask app "server_main" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://localhost:5000/ (Press CTRL+C to quit)
+</code></pre>
+                <div>
+                    <hr>
+
+标题：基于MTCNN和MobileFaceNet实现的人脸识别<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1642600316693.html" target="_blank">https://yeyupiaoling.github.io/articles/1642600316693.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1642599621293.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 基于Kersa实现的中文语音声纹识别&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1642600494965.html">
+                            <span>基于Tensorflow2 Lite在Android手机上实现图像分类&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="基于MTCNN和MobileFaceNet实现的人脸识别"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1642600316693.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1642600316693"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1642600316693",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1642600316693",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1642600316693', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

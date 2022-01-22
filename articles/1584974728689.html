@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零</title><meta name="description" content="前言 本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在Gym官网上了解。我们这次玩的是一个CartPole-v1游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。 PaddlePaddle程序 创建一个DQN.py的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令pip3 install gym安装。 import numpy as np import paddle.fluid as fluid import random import gym from collections import deque from paddle.fluid.param_attr import ParamAttr 定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个...."/><meta property="og:description" content="前言 本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在Gym官网上了解。我们这次玩的是一个CartPole-v1游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。 PaddlePaddle程序 创建一个DQN.py的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令pip3 install gym安装。 import numpy as np import paddle.fluid as fluid import random import gym from collections import deque from paddle.fluid.param_attr import ParamAttr 定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584974728689.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》七——强化学习 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584974728689.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="《PaddlePaddle从入门到炼丹》六——生成对抗网络" href="https://yeyupiaoling.github.io/articles/1584974661687.html">
+            <link rel="next" title="《PaddlePaddle从入门到炼丹》八——模型的保存与使用" href="https://yeyupiaoling.github.io/articles/1584974792165.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">PaddlePaddle程序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584974728689.html">
+                    《PaddlePaddle从入门到炼丹》七——强化学习
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584974728689.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584974728005">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584974728689.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584974728689.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20190203.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>本章介绍使用PaddlePaddle实现强化学习，通过自我学习，完成一个经典控制类的游戏，相关游戏介绍可以在<a href="https://gym.openai.com/envs/#classic_control" target="_blank">Gym官网</a>上了解。我们这次玩的是一个<code>CartPole-v1</code>游戏，操作就是通过控制滑块的左右移动，不让竖着的柱子掉下来。利用强化学习的方法，不断自我学习，通过在玩游戏的过程中获取到奖励或者惩罚，学习到一个模型。在王者荣耀中的超强人机使用的AI技术也类似这样。<br>
+<img src="https://s1.ax1x.com/2020/04/03/Gakzbq.gif" alt="在这里插入图片描述"></p>
+<h1 id="toc_h1_1">PaddlePaddle程序</h1>
+<p>创建一个<code>DQN.py</code>的Python文件。导入项目所需的依赖库，如果还没安装gym的话，可以通过命令<code>pip3 install gym</code>安装。</p>
+<pre><code class="language-python">import numpy as np
+import paddle.fluid as fluid
+import random
+import gym
+from collections import deque
+from paddle.fluid.param_attr import ParamAttr
+</code></pre>
+<p>定义一个简单的网络，这个网络只是由4个全连接层组成，并为每个全连接层指定参数的名称。指定参数的作用是为了之后更新模型参数使用的，因为之后会通过这个网络生成两个模型，而且没有模型参数更新不一样。</p>
+<pre><code class="language-python"># 定义一个深度神经网络，通过指定参数名称，用于之后更新指定的网络参数
+def DQNetWork(ipt, variable_field):
+    fc1 = fluid.layers.fc(input=ipt,
+                          size=24,
+                          act='relu',
+                          param_attr=ParamAttr(name='{}_fc1'.format(variable_field)),
+                          bias_attr=ParamAttr(name='{}_fc1_b'.format(variable_field)))
+    fc2 = fluid.layers.fc(input=fc1,
+                          size=24,
+                          act='relu',
+                          param_attr=ParamAttr(name='{}_fc2'.format(variable_field)),
+                          bias_attr=ParamAttr(name='{}_fc2_b'.format(variable_field)))
+    out = fluid.layers.fc(input=fc2,
+                          size=2,
+                          param_attr=ParamAttr(name='{}_fc3'.format(variable_field)),
+                          bias_attr=ParamAttr(name='{}_fc3_b'.format(variable_field)))
+    return out
+</code></pre>
+<p>定义一个更新参数的函数，这个函数是通过指定的参数名称，通过修剪参数的方式完成模型更新。</p>
+<pre><code class="language-python"># 定义更新参数程序
+def _build_sync_target_network():
+    # 获取所有的参数
+    vars = list(fluid.default_main_program().list_vars())
+    # 把两个网络的参数分别过滤出来
+    policy_vars = list(filter(lambda x: 'GRAD' not in x.name and 'policy' in x.name, vars))
+    target_vars = list(filter(lambda x: 'GRAD' not in x.name and 'target' in x.name, vars))
+    policy_vars.sort(key=lambda x: x.name)
+    target_vars.sort(key=lambda x: x.name)
+
+    # 从主程序中克隆一个程序用于更新参数
+    sync_program = fluid.default_main_program().clone()
+    with fluid.program_guard(sync_program):
+        sync_ops = []
+        for i, var in enumerate(policy_vars):
+            sync_op = fluid.layers.assign(policy_vars[i], target_vars[i])
+            sync_ops.append(sync_op)
+    # 修剪第二个玩了个的参数，完成更新参数
+    sync_program = sync_program._prune(sync_ops)
+    return sync_program
+</code></pre>
+<p>定义5个数据输出层，<code>state_data</code>是当前游戏状态的数据输入层，<code>action_data</code>是对游戏操作动作的数据输入层，只有两个动作0和1，<code>reward_data</code>是当前游戏给出的奖励的数据输入层，<code>next_state_data</code>是游戏下一个状态的数据输入层，<code>done_data</code>是游戏是否结束的数据输入层。</p>
+<pre><code class="language-python"># 定义输入数据
+state_data = fluid.layers.data(name='state', shape=[4], dtype='float32')
+action_data = fluid.layers.data(name='action', shape=[1], dtype='int64')
+reward_data = fluid.layers.data(name='reward', shape=[], dtype='float32')
+next_state_data = fluid.layers.data(name='next_state', shape=[4], dtype='float32')
+done_data = fluid.layers.data(name='done', shape=[], dtype='float32') 
+</code></pre>
+<p>定义一些必要的训练参数，比如epsilon-greedy 探索策略参数。</p>
+<pre><code class="language-python"># 定义训练的参数
+batch_size = 32
+num_episodes = 300
+num_exploration_episodes = 100
+max_len_episode = 1000
+learning_rate = 1e-3
+gamma = 1.0
+initial_epsilon = 1.0
+final_epsilon = 0.01
+</code></pre>
+<p>创建一个游戏，通过指定游戏的名称<code>CartPole-v1</code>就可以获取前言部分所说的游戏。也可以创建其他更多的有些，具体可以参照官方的游戏名称。</p>
+<pre><code class="language-python"># 实例化一个游戏环境，参数为游戏名称
+env = gym.make("CartPole-v1")
+replay_buffer = deque(maxlen=10000)
+</code></pre>
+<p>获取第一个网络模型，并指定参数名称内包含<code>policy</code>字符串。</p>
+<pre><code class="language-python"># 获取网络
+state_model = DQNetWork(state_data, 'policy')
+</code></pre>
+<p>这里从主程序中克隆一个预测程序，这个预测程序是之后预测游戏的下一个动作的，也就是说它在操作游戏。</p>
+<pre><code class="language-python"># 克隆预测程序
+predict_program = fluid.default_main_program().clone()
+</code></pre>
+<p>这里定义损失函数，强化学习中的损失函数跟之后我们使用的损失函数有点不一样。虽然最终还是使用平方差损失函数，但是输入的不只是普通的输入数据和标签。</p>
+<pre><code class="language-python"># 定义损失函数
+action_onehot = fluid.layers.one_hot(action_data, 2)
+action_value = fluid.layers.elementwise_mul(action_onehot, state_model)
+pred_action_value = fluid.layers.reduce_sum(action_value, dim=1)
+
+targetQ_predict_value = DQNetWork(next_state_data, 'target')
+best_v = fluid.layers.reduce_max(targetQ_predict_value, dim=1)
+best_v.stop_gradient = True
+target = reward_data + gamma * best_v * (1.0 - done_data)
+
+cost = fluid.layers.square_error_cost(pred_action_value, target)
+avg_cost = fluid.layers.reduce_mean(cost)
+</code></pre>
+<p>这里获取一个更新参数的程序，用于之后执行更新参数。</p>
+<pre><code class="language-python"># 获取更新参数程序
+_sync_program = _build_sync_target_network()
+</code></pre>
+<p>定义一个优化方法，这里还是用AdamOptimizer，笔者也是比较喜欢使用这个优化方法。</p>
+<pre><code class="language-python"># 定义优化方法
+optimizer = fluid.optimizer.AdamOptimizer(learning_rate=learning_rate, epsilon=1e-3)
+opt = optimizer.minimize(avg_cost)
+</code></pre>
+<p>开始创建执行器</p>
+<pre><code class="language-python"># 创建执行器并进行初始化
+place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+exe.run(fluid.default_startup_program())
+epsilon = initial_epsilon
+</code></pre>
+<p>这个循环有点大，不过因为是一个整体，不好拆分出来，所以就一起介绍吧。</p>
+<ul>
+<li>在每次循环开始，就开始获取游戏的状态，这个是游戏结束之后再执行的。</li>
+<li>定义一个epsilon-greedy探索策略，这个策略是根据训练的进度，开始选择自动操作的动作或者是模型预测的动作的概率。</li>
+<li>接下来就是一局游戏的的循环，在这里可以显示游戏的界面</li>
+<li>下面就是通过使用epsilon-greedy探索策略，决定使用随机生成动作，还是预测生成动作，使用随机动作可以增加数据的多样性，通过使用模型预测就是让模型根据当前的游戏状态来预测下一步动作是怎么才是正确的，随着模型的不断训练，这个预测也是越来越正确。</li>
+<li>然后更加随机生成的动作，或者模型预测的动作，传递个游戏，得到游戏的相关输出，比如游戏的下一个状态，游戏的奖励，游戏是否结束等等。</li>
+<li>如果游戏结束了，应当给游戏一个负奖励，惩罚它做出了一个错误的操作。</li>
+<li>然后把这些数据存储起来，用于之后训练使用。</li>
+<li>当存储的数据大于或等于Batch size，就可以开始训练。</li>
+</ul>
+<pre><code class="language-python">update_num = 0
+# 开始玩游戏
+for epsilon_id in range(num_episodes):
+    # 初始化环境，获得初始状态
+    state = env.reset()
+    epsilon = max(initial_epsilon * (num_exploration_episodes - epsilon_id) /
+                  num_exploration_episodes, final_epsilon)
+    for t in range(max_len_episode):
+        # 显示游戏界面
+        # env.render()
+        state = np.expand_dims(state, axis=0)
+        # epsilon-greedy 探索策略
+        if random.random() &lt; epsilon:
+            # 以 epsilon 的概率选择随机下一步动作
+            action = env.action_space.sample()
+        else:
+            # 使用模型预测作为结果下一步动作
+            action = exe.run(predict_program,
+                             feed={'state': state.astype('float32')},
+                             fetch_list=[state_model])[0]
+            action = np.squeeze(action, axis=0)
+            action = np.argmax(action)
+
+        # 让游戏执行动作，获得执行完 动作的下一个状态，动作的奖励，游戏是否已结束以及额外信息
+        next_state, reward, done, info = env.step(action)
+
+        # 如果游戏结束，就进行惩罚
+        reward = -10 if done else reward
+        # 记录游戏输出的结果，作为之后训练的数据
+        replay_buffer.append((state, action, reward, next_state, done))
+        state = next_state
+
+        # 如果游戏结束，就重新玩游戏
+        if done:
+            print('Pass:%d, epsilon:%f, score:%d' % (epsilon_id, epsilon, t))
+            break
+
+        # 如果收集的数据大于Batch的大小，就开始训练
+        if len(replay_buffer) &gt;= batch_size:
+            batch_state, batch_action, batch_reward, batch_next_state, batch_done = \
+                [np.array(a, np.float32) for a in zip(*random.sample(replay_buffer, batch_size))]
+
+            # 更新参数
+            if update_num % 200 == 0:
+                exe.run(program=_sync_program)
+            update_num += 1
+
+            # 调整数据维度
+            batch_action = np.expand_dims(batch_action, axis=-1)
+            batch_next_state = np.expand_dims(batch_next_state, axis=1)
+
+            # 执行训练
+            exe.run(program=fluid.default_main_program(),
+                    feed={'state': batch_state,
+                          'action': batch_action.astype('int64'),
+                          'reward': batch_reward,
+                          'next_state': batch_next_state,
+                          'done': batch_done})
+</code></pre>
+<p>输出训练信息：</p>
+<pre><code>......
+Pass:70, epsilon:0.300000, score:234
+Pass:71, epsilon:0.290000, score:272
+Pass:72, epsilon:0.280000, score:254
+Pass:73, epsilon:0.270000, score:148
+Pass:74, epsilon:0.260000, score:147
+Pass:75, epsilon:0.250000, score:342
+Pass:76, epsilon:0.240000, score:295
+Pass:77, epsilon:0.230000, score:290
+Pass:78, epsilon:0.220000, score:276
+Pass:79, epsilon:0.210000, score:279
+......
+</code></pre>
+<p>关于通过使用PaddlePaddle实现强化学习，并玩一个小游戏就介绍完成了。强化学习还有很多好玩的地方，比如应用于机器人的避障等一些智能控制上。</p>
+<p>同步到百度AI Studio平台：<a href="http://aistudio.baidu.com/aistudio/projectdetail/31310" target="_blank">http://aistudio.baidu.com/aistudio/projectdetail/31310</a><br>
+同步到科赛网K-Lab平台：<a href="https://www.kesci.com/home/project/5c3eaac54223d9002bfef5ae" target="_blank">https://www.kesci.com/home/project/5c3eaac54223d9002bfef5ae</a><br>
+项目代码GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note7" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note7</a></p>
+<p><strong>注意：</strong> 最新代码以GitHub上的为准</p>
+<h1 id="toc_h1_2">参考资料</h1>
+<ol>
+<li><a href="https://github.com/PaddlePaddle/models/blob/develop/fluid/DeepQNetwork/README_cn.md" target="_blank">https://github.com/PaddlePaddle/models/blob/develop/fluid/DeepQNetwork/README_cn.md</a></li>
+<li><a href="https://github.com/snowkylin/TensorFlow-cn" target="_blank">https://github.com/snowkylin/TensorFlow-cn</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《PaddlePaddle从入门到炼丹》七——强化学习<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584974728689.html" target="_blank">https://yeyupiaoling.github.io/articles/1584974728689.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584974661687.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《PaddlePaddle从入门到炼丹》六——生成对抗网络&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584974792165.html">
+                            <span>《PaddlePaddle从入门到炼丹》八——模型的保存与使用&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《PaddlePaddle从入门到炼丹》七——强化学习"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584974728689.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584974728005"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584974728005",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584974728005",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584974728005', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

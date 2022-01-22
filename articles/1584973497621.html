@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在Android手机上使用MACE实现图像分类 - 夜雨飘零</title><meta name="description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用小米的开源手机深度学习框架MACE来实现在Android手机实现图像分类。 MACE的GitHub地址：https://github.com/XiaoMi/mace 编译MACE库和模型 编译MACE库和模型有两种方式，一种是在Ubuntu本地上编译，另一种是使用docker编译。下面就介绍使用这两种编译方式。 使用Ubuntu编译 使用Ubuntu编译源码比较麻烦的是就要自己配置环境，所以下面我们就来配置一下环境。以下是官方给出的环境依赖： 所需依赖 SoftwareInstallation commandTested version Python 2.7 Bazelbazel installation guide0.13.0 CMakeapt-get install cmake&gt;= 3.11.3 Jinja2pip install -I jinja2==2.102.10 PyYamlpip install...."/><meta property="og:description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用小米的开源手机深度学习框架MACE来实现在Android手机实现图像分类。 MACE的GitHub地址：https://github.com/XiaoMi/mace 编译MACE库和模型 编译MACE库和模型有两种方式，一种是在Ubuntu本地上编译，另一种是使用docker编译。下面就介绍使用这两种编译方式。 使用Ubuntu编译 使用Ubuntu编译源码比较麻烦的是就要自己配置环境，所以下面我们就来配置一下环境。以下是官方给出的环境依赖： 所需依赖 SoftwareInstallation commandTested version Python 2.7 Bazelbazel installation guide0.13.0 CMakeapt-get install cmake&gt;= 3.11.3 Jinja2pip install -I jinja2==2.102.10 PyYamlpip install...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在Android手机上使用MACE实现图像分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584973497621.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在Android手机上使用MACE实现图像分类 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584973497621.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="Caffe模型转PaddlePaddle的Fluid版本预测模型" href="https://yeyupiaoling.github.io/articles/1584973420477.html">
+            <link rel="next" title="在Android手机上使用腾讯的ncnn实现图像分类" href="https://yeyupiaoling.github.io/articles/1584973588191.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">编译MACE库和模型</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">使用Ubuntu编译</a>
+        </li>
+        <li class="toc__h3">
+            <a href="#toc_h3_3">安装依赖环境</a>
+        </li>
+        <li class="toc__h3">
+            <a href="#toc_h3_4">编译库和模型</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_5">使用Docker编译</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_6">开发Android项目</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_7">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584973497621.html">
+                    在Android手机上使用MACE实现图像分类
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Android">
+                        Android</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584973497621.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584973497029">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584973497621.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584973497621.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180110.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>在之前笔者有介绍过<a href="https://blog.csdn.net/qq_33200967/article/details/81066970" target="_blank">《在Android设备上使用PaddleMobile实现图像分类》</a>，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用小米的开源手机深度学习框架MACE来实现在Android手机实现图像分类。</p>
+<p>MACE的GitHub地址：<a href="https://github.com/XiaoMi/mace" target="_blank">https://github.com/XiaoMi/mace</a></p>
+<h1 id="toc_h1_1">编译MACE库和模型</h1>
+<p>编译MACE库和模型有两种方式，一种是在Ubuntu本地上编译，另一种是使用docker编译。下面就介绍使用这两种编译方式。</p>
+<h2 id="toc_h2_2">使用Ubuntu编译</h2>
+<p>使用Ubuntu编译源码比较麻烦的是就要自己配置环境，所以下面我们就来配置一下环境。以下是官方给出的环境依赖：</p>
+<p><strong>所需依赖</strong></p>
+<table>
+<thead>
+<tr><th align="center">Software</th><th align="center">Installation command</th><th align="center">Tested version</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">Python</td><td align="center"> </td><td align="center">2.7</td></tr>
+<tr><td align="center">Bazel</td><td align="center">bazel installation guide</td><td align="center">0.13.0</td></tr>
+<tr><td align="center">CMake</td><td align="center">apt-get install cmake</td><td align="center">&gt;= 3.11.3</td></tr>
+<tr><td align="center">Jinja2</td><td align="center">pip install -I jinja2==2.10</td><td align="center">2.10</td></tr>
+<tr><td align="center">PyYaml</td><td align="center">pip install -I pyyaml==3.12</td><td align="center">3.12.0</td></tr>
+<tr><td align="center">sh</td><td align="center">pip install -I sh==1.12.14</td><td align="center">1.12.14</td></tr>
+<tr><td align="center">Numpy</td><td align="center">pip install -I numpy==1.14.0</td><td align="center">Required by model validation</td></tr>
+<tr><td align="center">six</td><td align="center">pip install -I six==1.11.0</td><td align="center">Required for Python 2 and 3 compatibility</td></tr>
+</tbody>
+</table>
+<p><strong>可选依赖</strong></p>
+<table>
+<thead>
+<tr><th align="center">Software</th><th align="center">Installation command</th><th align="center">Remark</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">Android NDK</td><td align="center">NDK installation guide</td><td align="center">Required by Android build, r15b, r15c, r16b, r17b</td></tr>
+<tr><td align="center">ADB</td><td align="center">apt-get install android-tools-adb</td><td align="center">Required by Android run, &gt;= 1.0.32</td></tr>
+<tr><td align="center">TensorFlow</td><td align="center">pip install -I tensorflow==1.6.0</td><td align="center">Required by TensorFlow model</td></tr>
+<tr><td align="center">Docker</td><td align="center">docker installation guide</td><td align="center">Required by docker mode for Caffe model</td></tr>
+<tr><td align="center">Scipy</td><td align="center">pip install -I scipy==1.0.0</td><td align="center">Required by model validation</td></tr>
+<tr><td align="center">FileLock</td><td align="center">pip install -I filelock==3.0.0</td><td align="center">Required by run on Android</td></tr>
+</tbody>
+</table>
+<h3 id="toc_h3_3">安装依赖环境</h3>
+<ul>
+<li>安装Bazel</li>
+</ul>
+<pre><code>export BAZEL_VERSION=0.13.1
+mkdir /bazel &amp;&amp; \
+    cd /bazel &amp;&amp; \
+    wget https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/bazel-$BAZEL_VERSION-installer-linux-x86_64.sh &amp;&amp; \
+    chmod +x bazel-*.sh &amp;&amp; \
+    ./bazel-$BAZEL_VERSION-installer-linux-x86_64.sh &amp;&amp; \
+    cd / &amp;&amp; \
+    rm -f /bazel/bazel-$BAZEL_VERSION-installer-linux-x86_64.sh
+</code></pre>
+<ul>
+<li>安装Android NDK</li>
+</ul>
+<pre><code># Download NDK r15c
+cd /opt/ &amp;&amp; \
+    wget -q https://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip &amp;&amp; \
+    unzip -q android-ndk-r15c-linux-x86_64.zip &amp;&amp; \
+    rm -f android-ndk-r15c-linux-x86_64.zip
+
+export ANDROID_NDK_VERSION=r15c
+export ANDROID_NDK=/opt/android-ndk-${ANDROID_NDK_VERSION}
+export ANDROID_NDK_HOME=${ANDROID_NDK}
+
+# add to PATH
+export PATH=${PATH}:${ANDROID_NDK_HOME}
+</code></pre>
+<ul>
+<li>安装其他工具</li>
+</ul>
+<pre><code>apt-get install -y --no-install-recommends \
+    cmake \
+    android-tools-adb
+pip install -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com setuptools
+pip install -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com \
+    "numpy&gt;=1.14.0" \
+    scipy \
+    jinja2 \
+    pyyaml \
+    sh==1.12.14 \
+    pycodestyle==2.4.0 \
+    filelock
+</code></pre>
+<ul>
+<li>安装TensorFlow</li>
+</ul>
+<pre><code>pip install -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com tensorflow==1.6.0
+</code></pre>
+<h3 id="toc_h3_4">编译库和模型</h3>
+<ul>
+<li>克隆MACE源码</li>
+</ul>
+<pre><code>git clone https://github.com/XiaoMi/mace.git
+</code></pre>
+<ul>
+<li>进入到官方的Android Demo上</li>
+</ul>
+<pre><code>cd mace/mace/examples/android/
+</code></pre>
+<ul>
+<li>修改当前目录下的<code>build.sh</code>，修成如下：</li>
+</ul>
+<pre><code class="language-bash">#!/usr/bin/env bash
+
+set -e -u -o pipefail
+
+pushd ../../../
+
+TARGET_ABI=armeabi-v7a
+LIBRARY_DIR=mace/examples/android/macelibrary/src/main/cpp/
+INCLUDE_DIR=$LIBRARY_DIR/include/mace/public/
+LIBMACE_DIR=$LIBRARY_DIR/lib/$TARGET_ABI/
+
+rm -rf $LIBRARY_DIR/include/
+mkdir -p $INCLUDE_DIR
+
+rm -rf $LIBRARY_DIR/lib/
+mkdir -p $LIBMACE_DIR
+
+rm -rf $LIBRARY_DIR/model/
+
+python tools/converter.py convert --config=mace/examples/android/mobilenet.yml --target_abis=$TARGET_ABI
+cp -rf builds/mobilenet/include/mace/public/*.h $INCLUDE_DIR
+cp -rf builds/mobilenet/model $LIBRARY_DIR
+
+bazel build --config android --config optimization mace/libmace:libmace_static --define neon=true --define openmp=true --define opencl=true --cpu=$TARGET_ABI
+cp -rf mace/public/*.h $INCLUDE_DIR
+cp -rf bazel-genfiles/mace/libmace/libmace.a $LIBMACE_DIR
+
+popd
+</code></pre>
+<ul>
+<li>修改模型的配置文件<code>mobilenet.yml</code>，修改成如下，这些属性的文件可以查看<a href="https://mace.readthedocs.io/en/latest/user_guide/advanced_usage.html#deployment-file" target="_blank">官方的文档</a>，各个模型的配置可以参考<a href="https://github.com/XiaoMi/mace-models" target="_blank">Mobile Model Zoo</a>下的各个模型，以下是以为MobileNet V2为例。</li>
+</ul>
+<pre><code class="language-yml">library_name: mobilenet
+target_abis: [armeabi-v7a]
+model_graph_format: code
+model_data_format: code
+models:
+  mobilenet_v2:
+    platform: tensorflow
+    model_file_path: https://cnbj1.fds.api.xiaomi.com/mace/miai-models/mobilenet-v2/mobilenet-v2-1.0.pb
+    model_sha256_checksum: 369f9a5f38f3c15b4311c1c84c032ce868da9f371b5f78c13d3ea3c537389bb4
+    subgraphs:
+      - input_tensors:
+          - input
+        input_shapes:
+          - 1,224,224,3
+        output_tensors:
+          - MobilenetV2/Predictions/Reshape_1
+        output_shapes:
+          - 1,1001
+    runtime: cpu+gpu
+    limit_opencl_kernel_time: 0
+    nnlib_graph_mode: 0
+    obfuscate: 0
+    winograd: 0
+</code></pre>
+<ul>
+<li>开始编译</li>
+</ul>
+<pre><code>./build.sh
+</code></pre>
+<ul>
+<li>编译完成之后，可以在<code>mace/mace/examples/android/macelibrary/src/main/cpp/</code>看到多了3个文件：</li>
+</ul>
+<ol>
+<li><code>include</code>是存放调用mace接口和模型配置的头文件</li>
+<li><code>lib</code>是存放编译好的mace库</li>
+<li><code>model</code>是存放模型的文件夹，比如我们编译的MobileNet V2模型</li>
+</ol>
+<h2 id="toc_h2_5">使用Docker编译</h2>
+<ul>
+<li>首先安装docker，命令如下：</li>
+</ul>
+<pre><code>apt-get install docker.io
+</code></pre>
+<ul>
+<li>拉取mace镜像：</li>
+</ul>
+<pre><code>docker pull registry.cn-hangzhou.aliyuncs.com/xiaomimace/mace-dev
+</code></pre>
+<ul>
+<li>获取MACE源码，并按照上一步修改<code>mace/mace/examples/android/</code>目录下的<code>build.sh</code>和<code>mobilenet.yml</code>这个两个文件。</li>
+</ul>
+<pre><code>git clone https://github.com/XiaoMi/mace.git
+</code></pre>
+<ul>
+<li>进入到MACE的根目录，执行以下命令：</li>
+</ul>
+<pre><code>docker run -it -v $PWD:/mace registry.cn-hangzhou.aliyuncs.com/xiaomimace/mace-dev
+</code></pre>
+<ul>
+<li>接着执行以下命令：</li>
+</ul>
+<pre><code>cd mace/mace/examples/android/
+./build.sh
+</code></pre>
+<p>执行之后便可得到跟上一步获取的一样的文件。使用docker就简单很多，少了很多安装依赖环境的步骤。</p>
+<h1 id="toc_h1_6">开发Android项目</h1>
+<ul>
+<li>创建Android项目</li>
+</ul>
+<p>在创建项目是要选择C++支持。<br>
+<img src="https://s1.ax1x.com/2020/03/31/GlnLGR.png" alt="这里写图片描述"></p>
+<p>因为MACE最低支持版本是Android5.0，所以这里要选择Android5.0。<br>
+<img src="https://s1.ax1x.com/2020/04/03/GaAiPU.png" alt="这里写图片描述"></p>
+<p>MACE使用的是C++11。<br>
+<img src="https://s1.ax1x.com/2020/04/03/GdpMMq.png" alt="这里写图片描述"></p>
+<ul>
+<li>复制C++文件。删除<code>cpp</code>目录下自动生产的C++文件，并复制上一步编译得到的3个目录和本来就有的两C++文件到Android项目的<code>cpp</code>目录下。如下图：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GJyZ6J.png" alt="这里写图片描述"></li>
+<li>修改<code>CMakeLists.txt</code>编译文件，修改如下，编译对应的是我们上一步复制的C++文件：</li>
+</ul>
+<pre><code># For more information about using CMake with Android Studio, read the
+# documentation: https://d.android.com/studio/projects/add-native-code.html
+
+# Sets the minimum version of CMake required to build the native library.
+
+cmake_minimum_required(VERSION 3.4.1)
+
+# Creates and names a library, sets it as either STATIC
+# or SHARED, and provides the relative paths to its source code.
+# You can define multiple libraries, and CMake builds them for you.
+# Gradle automatically packages shared libraries with your APK.
+
+
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../app/libs/${ANDROID_ABI})
+
+include_directories(${CMAKE_SOURCE_DIR}/)
+include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/include)
+set(mace_lib ${CMAKE_SOURCE_DIR}/src/main/cpp/lib/armeabi-v7a/libmace.a)
+set(mobilenet_lib ${CMAKE_SOURCE_DIR}/src/main/cpp/model/armeabi-v7a/mobilenet.a)
+add_library (mace_lib STATIC IMPORTED)
+set_target_properties(mace_lib PROPERTIES IMPORTED_LOCATION ${mace_lib})
+add_library (mobilenet_lib STATIC IMPORTED)
+set_target_properties(mobilenet_lib PROPERTIES IMPORTED_LOCATION ${mobilenet_lib})
+
+add_library( # Sets the name of the library.
+             mace_mobile_jni
+
+             # Sets the library as a shared library.
+             SHARED
+
+             # Provides a relative path to your source file(s).
+             src/main/cpp/image_classify.cc )
+
+# Searches for a specified prebuilt library and stores the path as a
+# variable. Because CMake includes system libraries in the search path by
+# default, you only need to specify the name of the public NDK library
+# you want to add. CMake verifies that the library exists before
+# completing its build.
+
+find_library( # Sets the name of the path variable.
+              log-lib
+
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              log )
+
+# Specifies libraries CMake should link to your target library. You
+# can link multiple libraries, such as libraries you define in this
+# build script, prebuilt third-party libraries, or system libraries.
+
+target_link_libraries( # Specifies the target library.
+                       mace_mobile_jni
+                       mace_lib
+                       mobilenet_lib
+                       # Links the target library to the log library
+                       # included in the NDK.
+                       ${log-lib} )
+</code></pre>
+<ul>
+<li>修改<code>app</code>目录下的<code>build.gradle</code>，修改如下：</li>
+</ul>
+<p>把原来的</p>
+<pre><code>externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11"
+            }
+        }
+</code></pre>
+<p>修改成，因为我们只编译了<code>armeabi-v7a</code>支持：</p>
+<pre><code>externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11 -fopenmp"
+                abiFilters "armeabi-v7a"
+            }
+        }
+</code></pre>
+<p>在<code>android</code>下加上：</p>
+<pre><code>    sourceSets {
+        main {
+            jniLibs.srcDirs = ["src/main/jniLibs"]
+            jni.srcDirs = ['src/cpp']
+        }
+    }
+</code></pre>
+<ul>
+<li>修改Android项目使用的NDK版本，我们编译的时候是使用r15c，所以我们在Android项目上也要使用r15c，如下：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GGWhon.png" alt="这里写图片描述"></li>
+<li>创建一个<code>com.xiaomi.mace</code>包，并复制官方demo中的java类<code>JniMaceUtils.java</code>到该包中，代码如下，这个就是使用mace的JNI接口：</li>
+</ul>
+<pre><code class="language-java">package com.xiaomi.mace;
+
+public class JniMaceUtils {
+
+    static {
+        System.loadLibrary("mace_mobile_jni");
+    }
+	// 设置模型属性
+    public static native int maceMobilenetSetAttrs(int ompNumThreads, int cpuAffinityPolicy, int gpuPerfHint, int gpuPriorityHint, String kernelPath);
+	// 加载模型和选择使用GPU或CPU
+    public static native int maceMobilenetCreateEngine(String model, String device);
+	// 预测图片
+    public static native float[] maceMobilenetClassify(float[] input);
+}
+</code></pre>
+<ul>
+<li>在项目的包下创建一个<code>InitData.java</code>类，这个是配置mace的信息类，比如使用CPU还是GPU来预测，加载的是那个模型等等：</li>
+</ul>
+<pre><code class="language-java">package com.example.myapplication;
+
+import android.os.Environment;
+
+import java.io.File;
+
+public class InitData {
+
+    public static final String[] DEVICES = new String[]{"CPU", "GPU"};
+    public static final String[] MODELS = new String[]{"mobilenet_v1", "mobilenet_v2"};
+
+    private String model;
+    private String device = "";
+    private int ompNumThreads;
+    private int cpuAffinityPolicy;
+    private int gpuPerfHint;
+    private int gpuPriorityHint;
+    private String kernelPath = "";
+
+    public InitData() {
+        model = MODELS[1];
+        ompNumThreads = 4;
+        cpuAffinityPolicy = 0;
+        gpuPerfHint = 3;
+        gpuPriorityHint = 3;
+        device = DEVICES[0];
+        kernelPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mace";
+        File file = new File(kernelPath);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getDevice() {
+        return device;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
+
+    public int getOmpNumThreads() {
+        return ompNumThreads;
+    }
+
+    public void setOmpNumThreads(int ompNumThreads) {
+        this.ompNumThreads = ompNumThreads;
+    }
+
+    public int getCpuAffinityPolicy() {
+        return cpuAffinityPolicy;
+    }
+
+    public void setCpuAffinityPolicy(int cpuAffinityPolicy) {
+        this.cpuAffinityPolicy = cpuAffinityPolicy;
+    }
+
+    public int getGpuPerfHint() {
+        return gpuPerfHint;
+    }
+
+    public void setGpuPerfHint(int gpuPerfHint) {
+        this.gpuPerfHint = gpuPerfHint;
+    }
+
+    public int getGpuPriorityHint() {
+        return gpuPriorityHint;
+    }
+
+    public void setGpuPriorityHint(int gpuPriorityHint) {
+        this.gpuPriorityHint = gpuPriorityHint;
+    }
+
+    public String getKernelPath() {
+        return kernelPath;
+    }
+
+    public void setKernelPath(String kernelPath) {
+        this.kernelPath = kernelPath;
+    }
+}
+</code></pre>
+<ul>
+<li>同样是在项目的包下创建<code>PhotoUtil.java</code>类，这是一个工具类，包括启动相机获拍摄图片并返回该图片的绝对路径，还有一个是把图片转换成预测的数据，mace读取的预测数据是一个float数组。</li>
+</ul>
+<pre><code class="language-java">package com.example.myapplication;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.FloatBuffer;
+
+
+public class PhotoUtil {
+
+    // start camera
+    public static Uri start_camera(Activity activity, int requestCode) {
+        Uri imageUri;
+        // save image in cache path
+        File outputImage = new File(activity.getExternalCacheDir(), "out_image.jpg");
+        try {
+            if (outputImage.exists()) {
+                outputImage.delete();
+            }
+            outputImage.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (Build.VERSION.SDK_INT &gt;= 24) {
+            // compatible with Android 7.0 or over
+            imageUri = FileProvider.getUriForFile(activity,
+                    "com.example.myapplication", outputImage);
+        } else {
+            imageUri = Uri.fromFile(outputImage);
+        }
+        // set system camera Action
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // set save photo path
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        // set photo quality, min is 0, max is 1
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+        activity.startActivityForResult(intent, requestCode);
+        return imageUri;
+    }
+
+    // get picture in photo
+    public static void use_photo(Activity activity, int requestCode){
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    // get photo from Uri
+    public static String get_path_from_URI(Context context, Uri uri) {
+        String result;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor == null) {
+            result = uri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
+
+    // Compress the image to the size of the training image
+    public static float[] getScaledMatrix(Bitmap bitmap, int desWidth,
+                                          int desHeight) {
+        // create data buffer
+        float[] floatValues = new float[desWidth * desHeight * 3];
+        FloatBuffer floatBuffer = FloatBuffer.wrap(floatValues, 0, desWidth * desHeight * 3);
+        floatBuffer.rewind();
+        // get image pixel
+        int[] pixels = new int[desWidth * desHeight];
+        Bitmap bm = Bitmap.createScaledBitmap(bitmap, desWidth, desHeight, false);
+        bm.getPixels(pixels, 0, bm  .getWidth(), 0, 0, desWidth, desHeight);
+        // pixel to data
+        for (int clr : pixels) {
+            floatBuffer.put((((clr &gt;&gt; 16) &amp; 0xFF) - 128f) / 128f);
+            floatBuffer.put((((clr &gt;&gt; 8) &amp; 0xFF) - 128f) / 128f);
+            floatBuffer.put(((clr &amp; 0xFF) - 128f) / 128f);
+        }
+        if (bm.isRecycled()) {
+            bm.recycle();
+        }
+        return floatBuffer.array();
+    }
+
+    // compress picture
+    public static Bitmap getScaleBitmap(String filePath) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, opt);
+
+        int bmpWidth = opt.outWidth;
+        int bmpHeight = opt.outHeight;
+
+        int maxSize = 500;
+
+        // compress picture with inSampleSize
+        opt.inSampleSize = 1;
+        while (true) {
+            if (bmpWidth / opt.inSampleSize &lt; maxSize || bmpHeight / opt.inSampleSize &lt; maxSize) {
+                break;
+            }
+            opt.inSampleSize *= 2;
+        }
+        opt.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, opt);
+    }
+}
+</code></pre>
+<ul>
+<li>修改<code>MainActivity.java</code>，修改如下，主要是有两个功能，第一个是打开相册选择图片进行预测，另一个是启动相机拍摄图片进行预测。在进入应用是就调用<code>init_model()</code>方法来设置mace的配置信息和加载模型，其中可以通过调用<code>load_model(String model)</code>该更换模型。通过调用<code>predict_image(String image_path)</code>方法预测图片并显示结果：</li>
+</ul>
+<pre><code class="language-java">package com.example.myapplication;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.xiaomi.mace.JniMaceUtils;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getName();
+    private static final int USE_PHOTO = 1001;
+    private static final int START_CAMERA = 1002;
+    private Uri camera_image_path;
+    private ImageView show_image;
+    private TextView result_text;
+    private boolean load_result = false;
+    private int[] ddims = {1, 3, 224, 224};
+    private int model_index = 1;
+    private InitData initData = new InitData();
+    private List&lt;String&gt; resultLabel = new ArrayList&lt;&gt;();
+
+    private static final String[] PADDLE_MODEL = {
+            "mobilenet_v1",
+            "mobilenet_v2"
+    };
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        init_view();
+        init_model();
+        readCacheLabelFromLocalFile();
+    }
+
+    // initialize view
+    private void init_view() {
+        request_permissions();
+        show_image = (ImageView) findViewById(R.id.show_image);
+        result_text = (TextView) findViewById(R.id.result_text);
+        result_text.setMovementMethod(ScrollingMovementMethod.getInstance());
+        Button use_photo = (Button) findViewById(R.id.use_photo);
+        Button start_photo = (Button) findViewById(R.id.start_camera);
+
+
+        // use photo click
+        use_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!load_result) {
+                    Toast.makeText(MainActivity.this, "never load model", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                PhotoUtil.use_photo(MainActivity.this, USE_PHOTO);
+            }
+        });
+
+        // start camera click
+        start_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!load_result) {
+                    Toast.makeText(MainActivity.this, "never load model", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                camera_image_path = PhotoUtil.start_camera(MainActivity.this, START_CAMERA);
+            }
+        });
+    }
+
+    // init mace environment
+    private void init_model() {
+        int result = JniMaceUtils.maceMobilenetSetAttrs(
+                initData.getOmpNumThreads(), initData.getCpuAffinityPolicy(),
+                initData.getGpuPerfHint(), initData.getGpuPriorityHint(),
+                initData.getKernelPath());
+        Log.i(TAG, "maceMobilenetSetAttrs result = " + result);
+
+        load_model(PADDLE_MODEL[model_index]);
+    }
+
+    // load infer model
+    private void load_model(String model) {
+        // set will load model name
+        initData.setModel(model);
+        // load model
+        int result = JniMaceUtils.maceMobilenetCreateEngine(initData.getModel(), initData.getDevice());
+        Log.i(TAG, "maceMobilenetCreateEngine result = " + result);
+        // set load model result
+        load_result = result == 0;
+        if (load_result) {
+            Toast.makeText(MainActivity.this, model + " model load success", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, model + " model load success");
+        } else {
+            Toast.makeText(MainActivity.this, model + " model load fail", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, model + " model load fail");
+        }
+    }
+
+
+    private void readCacheLabelFromLocalFile() {
+        try {
+            AssetManager assetManager = getApplicationContext().getAssets();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("cacheLabel.txt")));
+            String readLine = null;
+            while ((readLine = reader.readLine()) != null) {
+                resultLabel.add(readLine);
+            }
+            reader.close();
+        } catch (Exception e) {
+            Log.e("labelCache", "error " + e);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String image_path;
+        RequestOptions options = new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case USE_PHOTO:
+                    if (data == null) {
+                        Log.w(TAG, "user photo data is null");
+                        return;
+                    }
+                    Uri image_uri = data.getData();
+                    Glide.with(MainActivity.this).load(image_uri).apply(options).into(show_image);
+                    // get image path from uri
+                    image_path = PhotoUtil.get_path_from_URI(MainActivity.this, image_uri);
+                    // predict image
+                    predict_image(image_path);
+                    break;
+                case START_CAMERA:
+                    // show photo
+                    Glide.with(MainActivity.this).load(camera_image_path).apply(options).into(show_image);
+                    image_path = PhotoUtil.get_path_from_URI(MainActivity.this, camera_image_path);
+                    // predict image
+                    predict_image(image_path);
+                    break;
+            }
+        }
+    }
+
+    //  predict image
+    private void predict_image(String image_path) {
+        // picture to float array
+        Bitmap bmp = PhotoUtil.getScaleBitmap(image_path);
+        float[] inputData = PhotoUtil.getScaledMatrix(bmp, ddims[2], ddims[3]);
+        try {
+            // Data format conversion takes too long
+            // Log.d("inputData", Arrays.toString(inputData));
+            long start = System.currentTimeMillis();
+            // get predict result
+            float[] result = JniMaceUtils.maceMobilenetClassify(inputData);
+            long end = System.currentTimeMillis();
+            Log.d(TAG, "origin predict result:" + Arrays.toString(result));
+            long time = end - start;
+            Log.d("result length", String.valueOf(result.length));
+            // show predict result and time
+            int r = get_max_result(result);
+            String show_text = "result：" + r + "\nname：" + resultLabel.get(r) + "\nprobability：" + result[r] + "\ntime：" + time + "ms";
+            result_text.setText(show_text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // get max probability label
+    private int get_max_result(float[] result) {
+        float probability = result[0];
+        int r = 0;
+        for (int i = 0; i &lt; result.length; i++) {
+            if (probability &lt; result[i]) {
+                probability = result[i];
+                r = i;
+            }
+        }
+        return r;
+    }
+
+    // request permissions
+    private void request_permissions() {
+
+        List&lt;String&gt; permissionList = new ArrayList&lt;&gt;();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.CAMERA);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        // if list is not empty will request permissions
+        if (!permissionList.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length &gt; 0) {
+                    for (int i = 0; i &lt; grantResults.length; i++) {
+
+                        int grantResult = grantResults[i];
+                        if (grantResult == PackageManager.PERMISSION_DENIED) {
+                            String s = permissions[i];
+                            Toast.makeText(this, s + " permission was denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>在<code>main</code>下创建一个<code>asset</code>目录并加入<a href="https://github.com/XiaoMi/mace/blob/master/mace/examples/android/app/src/main/assets/cacheLabel.txt" target="_blank">这个文件</a></li>
+<li>最后别忘了在配置文件<code>AndroidManifest.xml</code>上加上权限</li>
+</ul>
+<pre><code class="language-xml">&lt;uses-permission android:name="android.permission.CAMERA"/&gt;
+&lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/&gt;
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/&gt;
+</code></pre>
+<p>最后运行得到的结果如下图：<br>
+<img src="https://s1.ax1x.com/2020/03/30/GnCdmT.png" alt="在这里插入图片描述"></p>
+<p>注意：该项目对Android7.0相机兼容不是很好。<br>
+上面已经是全部代码了，如果读者想更方便使用，可以直接<a href="https://download.csdn.net/download/qq_33200967/10619505" target="_blank">下载该项目</a></p>
+<h1 id="toc_h1_7">参考资料</h1>
+<ol>
+<li><a href="https://github.com/XiaoMi/mace" target="_blank">https://github.com/XiaoMi/mace</a></li>
+<li><a href="https://mace.readthedocs.io/en/latest/" target="_blank">https://mace.readthedocs.io/en/latest/</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：在Android手机上使用MACE实现图像分类<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584973497621.html" target="_blank">https://yeyupiaoling.github.io/articles/1584973497621.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584973420477.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; Caffe模型转PaddlePaddle的Fluid版本预测模型&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584973588191.html">
+                            <span>在Android手机上使用腾讯的ncnn实现图像分类&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="在Android手机上使用MACE实现图像分类"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584973497621.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584973497029"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584973497029",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584973497029",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584973497029', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>深度学习神经网络中权重的初始化 - 夜雨飘零</title><meta name="description" content="前言 良好的初始化权重有以下的好处： 加快梯度下降的收敛速度 增加梯度下降收敛到较低训练（和泛化）错误的几率 所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式： 零初始化，将权重参数初始化为零。 随机初始化，使用随机的方式，初始化权重参数。 He初始化，这个公式的初始化方式。 我们来尝试这个三种方法吧。 模型函数 编写一个 model函数，使用这个函数可以测试各种初始化权重参数的效果。 在编写 model函数之前，我们先要导入对于依赖包，其中有些依赖包可以在这里下载。 # coding=utf-8 import numpy as np from init_utils import compute_loss, forward_propagation, backward_propagation from init_utils import update_parameters, predict, load_dataset # 加载图像数据集:蓝色/红点在圆圈中 train_X, train_Y, test_X, test_Y = load_dataset() 其中使用的...."/><meta property="og:description" content="前言 良好的初始化权重有以下的好处： 加快梯度下降的收敛速度 增加梯度下降收敛到较低训练（和泛化）错误的几率 所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式： 零初始化，将权重参数初始化为零。 随机初始化，使用随机的方式，初始化权重参数。 He初始化，这个公式的初始化方式。 我们来尝试这个三种方法吧。 模型函数 编写一个 model函数，使用这个函数可以测试各种初始化权重参数的效果。 在编写 model函数之前，我们先要导入对于依赖包，其中有些依赖包可以在这里下载。 # coding=utf-8 import numpy as np from init_utils import compute_loss, forward_propagation, backward_propagation from init_utils import update_parameters, predict, load_dataset # 加载图像数据集:蓝色/红点在圆圈中 train_X, train_Y, test_X, test_Y = load_dataset() 其中使用的...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="深度学习神经网络中权重的初始化 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584972080351.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="深度学习神经网络中权重的初始化 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584972080351.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="《Improving Deep Neural Networks》的理论知识点" href="https://yeyupiaoling.github.io/articles/1584971993833.html">
+            <link rel="next" title="深度学习神经网络中正则化的使用" href="https://yeyupiaoling.github.io/articles/1584972209709.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">模型函数</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">零初始化</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">随机初始化</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">He初始化</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">总结</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_6">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584972080351.html">
+                    深度学习神经网络中权重的初始化
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584972080351.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584972080037">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584972080351.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584972080351.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20191013.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>良好的初始化权重有以下的好处：</p>
+<ul>
+<li>加快梯度下降的收敛速度</li>
+<li>增加梯度下降收敛到较低训练（和泛化）错误的几率</li>
+</ul>
+<p>所以一个良好的初始化也是非常重要的，这里尝试三种初始化化方式：</p>
+<ol>
+<li>零初始化，将权重参数初始化为零。</li>
+<li>随机初始化，使用随机的方式，初始化权重参数。</li>
+<li>He初始化，这个公式的初始化方式。</li>
+</ol>
+<p>我们来尝试这个三种方法吧。</p>
+<h1 id="toc_h1_1">模型函数</h1>
+<p>编写一个 <code>model</code>函数，使用这个函数可以测试各种初始化权重参数的效果。<br>
+在编写 <code>model</code>函数之前，我们先要导入对于依赖包，其中有些依赖包可以在<a href="https://download.csdn.net/download/qq_33200967/10350347" target="_blank">这里下载</a>。</p>
+<pre><code class="language-python"># coding=utf-8
+import numpy as np
+from init_utils import compute_loss, forward_propagation, backward_propagation
+from init_utils import update_parameters, predict, load_dataset
+
+# 加载图像数据集:蓝色/红点在圆圈中
+train_X, train_Y, test_X, test_Y = load_dataset()
+</code></pre>
+<p>其中使用的数据集是这个样子的：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYXEr9.png" alt="这里写图片描述"></p>
+<p>然后就可以编写 <code>model</code>函数了。</p>
+<pre><code class="language-python">def model(X, Y, learning_rate=0.01, num_iterations=15000, print_cost=True, initialization="he"):
+    """
+    实现一个三层神经网络:LINEAR&gt;RELU-&gt;LINEAR-&gt;RELU-&gt;LINEAR-&gt;SIGMOID。
+
+    Arguments:
+    X -- 输入数据，形状(2，样本数量)
+    Y -- 真正的“标签”向量(包含0代表红点;(1)形状(1，样本数目)
+    learning_rate -- 梯度下降的学习速率。
+    num_iterations -- 运行梯度下降的迭代次数。
+    print_cost -- 如果是真的，打印每1000次迭代的成本。
+    initialization -- 选择使用哪个初始化(“0”、“随机”或“He”)
+
+    Returns:
+    parameters -- 由模型学习的参数。
+    """
+
+    global parameters
+    grads = {}
+    costs = []  # to keep track of the loss
+    m = X.shape[1]  # number of examples
+    layers_dims = [X.shape[0], 10, 5, 1]
+
+    # 字典初始化参数。
+    if initialization == "zeros":
+        parameters = initialize_parameters_zeros(layers_dims)
+    elif initialization == "random":
+        parameters = initialize_parameters_random(layers_dims)
+    elif initialization == "he":
+        parameters = initialize_parameters_he(layers_dims)
+
+    # 循环(梯度下降)
+    for i in range(0, num_iterations):
+
+        # 前向传播: LINEAR -&gt; RELU -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID.
+        a3, cache = forward_propagation(X, parameters)
+
+        # Loss
+        cost = compute_loss(a3, Y)
+
+        # 反向传播。
+        grads = backward_propagation(X, Y, cache)
+
+        # 更新参数。
+        parameters = update_parameters(parameters, grads, learning_rate)
+
+        # 每1000次迭代打印一次损失。
+        if print_cost and i % 1000 == 0:
+            print("Cost after iteration {}: {}".format(i, cost))
+            costs.append(cost)
+    return parameters
+</code></pre>
+<h1 id="toc_h1_2">零初始化</h1>
+<p>在神经网络中初始化的参数有两种类型：</p>
+<ul>
+<li>权重矩阵 $(W^{[1]}, W^{[2]}, W^{[3]}, ..., W^{[L-1]}, W^{[L]})$</li>
+<li>偏差向量 $(b^{[1]}, b^{[2]}, b^{[3]}, ..., b^{[L-1]}, b^{[L]})$</li>
+</ul>
+<pre><code class="language-python">def initialize_parameters_zeros(layers_dims):
+    """
+    Arguments:
+    layer_dims——python数组(list)，包含每个层的大小。
+
+    Returns:
+    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
+                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
+                    b1 -- 形状偏置向量(layers_dims[1]， 1)
+                    ...
+                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
+                    bL -- 形状的偏置向量(layers_dims[L]， 1)
+    """
+
+    parameters = {}
+    L = len(layers_dims)  # 网络中的层数
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.zeros((layers_dims[l], layers_dims[l - 1]))
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
+</code></pre>
+<p>然后运行测试一下，会看cost并不怎么收敛，这是因为它没有“破坏对称性”。</p>
+<pre><code class="language-python">if __name__ == "__main__":
+    parameters = model(train_X, train_Y, initialization="zeros")
+    print ("On the train set:")
+    predictions_train = predict(train_X, train_Y, parameters)
+    print ("On the test set:")
+    predictions_test = predict(test_X, test_Y, parameters)
+</code></pre>
+<p>输出的日志信息：</p>
+<pre><code class="language-text">Cost after iteration 0: 0.69314718056
+Cost after iteration 1000: 0.69314718056
+Cost after iteration 2000: 0.69314718056
+Cost after iteration 3000: 0.69314718056
+Cost after iteration 4000: 0.69314718056
+Cost after iteration 5000: 0.69314718056
+Cost after iteration 6000: 0.69314718056
+Cost after iteration 7000: 0.69314718056
+Cost after iteration 8000: 0.69314718056
+Cost after iteration 9000: 0.69314718056
+Cost after iteration 10000: 0.69314718056
+Cost after iteration 11000: 0.69314718056
+Cost after iteration 12000: 0.69314718056
+Cost after iteration 13000: 0.69314718056
+Cost after iteration 14000: 0.69314718056
+On the train set:
+Accuracy: 0.5
+On the test set:
+Accuracy: 0.5
+</code></pre>
+<p>如果使用图表来显示的话，是这样子的：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQeHKS.png" alt="这里写图片描述"></p>
+<h1 id="toc_h1_3">随机初始化</h1>
+<p>随机初始化可以打破对称，让我们随机初始化权重。在随机初始化之后，每个神经元可以继续学习其输入的不同功能。我们只是随机初始化权重参数，偏差还是继续初始化为零。</p>
+<pre><code class="language-python">def initialize_parameters_random(layers_dims):
+    """
+    Arguments:
+    layer_dims -- python数组(list)，包含每个层的大小。
+
+    Returns:
+    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
+                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
+                    b1 -- 形状偏置向量(layers_dims[1]， 1)
+                    ...
+                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
+                    bL -- 形状的偏置向量(layers_dims[L]， 1)
+    """
+
+    parameters = {}
+    L = len(layers_dims)  # 表示层数的整数。
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.random.randn(layers_dims[l], layers_dims[l - 1]) * 10
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
+</code></pre>
+<p>运行一下，可以看到已经破坏了对称性，模型并开始收敛了。</p>
+<pre><code class="language-python">if __name__ == "__main__":
+    parameters = model(train_X, train_Y, initialization="random")
+    print ("On the train set:")
+    predictions_train = predict(train_X, train_Y, parameters)
+    print ("On the test set:")
+    predictions_test = predict(test_X, test_Y, parameters)
+</code></pre>
+<p>输出的日志如下，看到在0次迭代的时候是“inf”，这是因为数值舍入的：</p>
+<pre><code class="language-text">Cost after iteration 0: inf
+Cost after iteration 1000: 0.386009576858
+Cost after iteration 2000: 0.276065073598
+Cost after iteration 3000: 0.267517603676
+Cost after iteration 4000: 0.261640832949
+Cost after iteration 5000: 0.254131922349
+Cost after iteration 6000: 0.31200805047
+Cost after iteration 7000: 0.243035498545
+Cost after iteration 8000: 0.22011133348
+Cost after iteration 9000: 0.217258906612
+Cost after iteration 10000: 0.214850990347
+Cost after iteration 11000: 0.212760572669
+Cost after iteration 12000: 0.210936153771
+Cost after iteration 13000: 0.209300028106
+Cost after iteration 14000: 0.207868192424
+On the train set:
+Accuracy: 0.883333333333
+On the test set:
+Accuracy: 0.85
+</code></pre>
+<p>如果用图表来显示的话，是这个样子的：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GQeQNn.png" alt="这里写图片描述"></p>
+<h1 id="toc_h1_4">He初始化</h1>
+<p>He初始化跟上面的随机初始化类似 <code>initialize_parameters_random(...)</code>。唯一的区别是，不是 <code>np.random.randn(..,..)*10</code>的乘以10，而是乘以$\sqrt{\frac{2}{\text{dimension of the previous layer}}}$，这是He初始化为具有ReLU激活的图层推荐的内容。</p>
+<pre><code class="language-python">def initialize_parameters_he(layers_dims):
+    """
+    Arguments:
+    layer_dims -- python数组(list)，包含每个层的大小。
+
+    Returns:
+    parameters -- 包含参数的python字典 "W1", "b1", ..., "WL", "bL":
+                    W1 -- 形状权重矩阵(layers_dims[1]， layers_dims[0])
+                    b1 -- 形状偏置向量(layers_dims[1]， 1)
+                    ...
+                    WL -- 形状权重矩阵(layers_dims[L]， layers_dims[L-1])
+                    bL -- 形状的偏置向量(layers_dims[L]， 1)
+    """
+
+    np.random.seed(3)
+    parameters = {}
+    L = len(layers_dims) - 1  # 表示层数的整数
+
+    for l in range(1, L + 1):
+        parameters['W' + str(l)] = np.random.randn(layers_dims[l], layers_dims[l - 1]) * np.sqrt(
+            2. / layers_dims[l - 1])
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
+</code></pre>
+<p>运行这个初始化方式。</p>
+<pre><code class="language-python">if __name__ == "__main__":
+    parameters = model(train_X, train_Y, initialization="he")
+    print ("On the train set:")
+    predictions_train = predict(train_X, train_Y, parameters)
+    print ("On the test set:")
+    predictions_test = predict(test_X, test_Y, parameters)
+</code></pre>
+<p>输出的日志信息是：</p>
+<pre><code class="language-text">Cost after iteration 0: 0.883053746342
+Cost after iteration 1000: 0.687982591973
+Cost after iteration 2000: 0.675128626452
+Cost after iteration 3000: 0.652611776889
+Cost after iteration 4000: 0.608295897057
+Cost after iteration 5000: 0.530494449172
+Cost after iteration 6000: 0.413864581707
+Cost after iteration 7000: 0.311780346484
+Cost after iteration 8000: 0.236962153303
+Cost after iteration 9000: 0.185972872092
+Cost after iteration 10000: 0.150155562804
+Cost after iteration 11000: 0.123250792923
+Cost after iteration 12000: 0.0991774654653
+Cost after iteration 13000: 0.0845705595402
+Cost after iteration 14000: 0.0735789596268
+On the train set:
+Accuracy: 0.993333333333
+On the test set:
+Accuracy: 0.96
+</code></pre>
+<p>如果用图表来显示的话，应该是：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GMu7lV.png" alt="这里写图片描述"></p>
+<h1 id="toc_h1_5">总结</h1>
+<p>最后使用一个表格的方式来总结一下我们使用三个不同的初始化方式的训练准确率。</p>
+<table> 
+    <tbody><tr>
+        <td>
+        Model
+        </td>
+        <td>
+        Train accuracy
+        </td>
+        <td>
+        Problem/Comment
+        </td>
+    </tr>
+        <tr><td>
+        3-layer NN with zeros initialization
+        </td>
+        <td>
+        50%
+        </td>
+        <td>
+        fails to break symmetry
+        </td>
+    </tr><tr>
+        <td>
+        3-layer NN with large random initialization
+        </td>
+        <td>
+        83%
+        </td>
+        <td>
+        too large weights 
+        </td>
+    </tr>
+    <tr>
+        <td>
+        3-layer NN with He initialization
+        </td>
+        <td>
+        99%
+        </td>
+        <td>
+        recommended method
+        </td>
+    </tr>
+</tbody></table>
+<h1 id="toc_h1_6">参考资料</h1>
+<ol>
+<li><a href="http://deeplearning.ai/" target="_blank">http://deeplearning.ai/</a></li>
+</ol>
+<p><br><br><br></p>
+<blockquote>
+<p>该笔记是学习吴恩达老师的课程写的。初学者入门，如有理解有误的，欢迎批评指正！</p>
+</blockquote>
+                <div>
+                    <hr>
+
+标题：深度学习神经网络中权重的初始化<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584972080351.html" target="_blank">https://yeyupiaoling.github.io/articles/1584972080351.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584971993833.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《Improving Deep Neural Networks》的理论知识点&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584972209709.html">
+                            <span>深度学习神经网络中正则化的使用&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="深度学习神经网络中权重的初始化"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584972080351.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584972080037"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584972080037",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584972080037",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584972080037', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

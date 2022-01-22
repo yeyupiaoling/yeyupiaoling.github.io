@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上 - 夜雨飘零</title><meta name="description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15 前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。所以本章我们就来学如何包我们训练的PaddlePaddle预测模型部署到Android手机上。 编译paddle-mobile库 想要把PaddlePaddle训练好的预测库部署到Android手机上，还需要借助paddle-mobile框架。paddle-mobile框架主要是为了方便PaddlePaddle训练好的模型部署到移动设备上，比如Android手机，苹果手机，树莓派等等这些移动设备，有了paddle-mobile框架大大方便了...."/><meta property="og:description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15 前言 现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。所以本章我们就来学如何包我们训练的PaddlePaddle预测模型部署到Android手机上。 编译paddle-mobile库 想要把PaddlePaddle训练好的预测库部署到Android手机上，还需要借助paddle-mobile框架。paddle-mobile框架主要是为了方便PaddlePaddle训练好的模型部署到移动设备上，比如Android手机，苹果手机，树莓派等等这些移动设备，有了paddle-mobile框架大大方便了...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584975263604.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584975263604.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器" href="https://yeyupiaoling.github.io/articles/1584975208040.html">
+            <link rel="next" title="Python的Numpy实现深度学习常用的函数" href="https://yeyupiaoling.github.io/articles/1584976095161.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">编译paddle-mobile库</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">使用Docker编译</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_3">使用Ubuntu编译</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">创建Android项目</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584975263604.html">
+                    《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584975263604.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584975263104">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584975263604.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584975263604.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180509.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<p>GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note15</a></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>现在越来越多的手机要使用到深度学习了，比如一些图像分类，目标检测，风格迁移等等，之前都是把数据提交给服务器完成的。但是提交给服务器有几点不好，首先是速度问题，图片上传到服务器需要时间，客户端接收结果也需要时间，这一来回就占用了一大半的时间，会使得整体的预测速度都变慢了，再且现在手机的性能不断提高，足以做深度学习的预测。其二是隐私问题，如果只是在本地预测，那么用户根本就不用上传图片，安全性也大大提高了。所以本章我们就来学如何包我们训练的PaddlePaddle预测模型部署到Android手机上。</p>
+<h1 id="toc_h1_1">编译paddle-mobile库</h1>
+<p>想要把PaddlePaddle训练好的预测库部署到Android手机上，还需要借助paddle-mobile框架。paddle-mobile框架主要是为了方便PaddlePaddle训练好的模型部署到移动设备上，比如Android手机，苹果手机，树莓派等等这些移动设备，有了paddle-mobile框架大大方便了把PaddlePaddle的预测库部署到移动设备上，而且paddle-mobile框架针对移动设备做了大量的优化，使用这些预测库在移动设备上有了更好的预测性能。</p>
+<p>想要在Android手机上使用paddle-mobile，就要编译Android能够使用的CPP库，在这一部分中，我们介绍两种编译Android的paddle-mobile库，分别是使用Docker编译paddle-mobile库、使用Ubuntu交叉编译paddle-mobile库。</p>
+<h2 id="toc_h2_2">使用Docker编译</h2>
+<p>为了方便操作，以下的操作都是在root用户的执行的：</p>
+<ol>
+<li>安装Docker，以下是在Ubuntu下安装的的方式，只要一条命令就可以了：</li>
+</ol>
+<pre><code>apt-get install docker.io
+</code></pre>
+<ol start="2">
+<li>克隆paddle-mobile源码：</li>
+</ol>
+<pre><code>git clone https://github.com/PaddlePaddle/paddle-mobile.git
+</code></pre>
+<ol start="3">
+<li>进入到paddle-mobile根目录下编译docker镜像：</li>
+</ol>
+<pre><code>cd paddle-mobile
+# 编译生成进行，编译时间可能要很长
+docker build -t paddle-mobile:dev - &lt; Dockerfile
+</code></pre>
+<p>编译完成可以使用 <code>docker images</code>命令查看是否已经生成进行：</p>
+<pre><code>root@test:/home/test# docker images
+REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+paddle-mobile                       dev                 fffbd8779c68        20 hours ago        3.76 GB
+</code></pre>
+<ol start="4">
+<li>运行镜像并进入到容器里面，当前目录还是在paddle-mobile根目录下：</li>
+</ol>
+<pre><code>docker run -it -v $PWD:/paddle-mobile paddle-mobile:dev
+</code></pre>
+<ol start="5">
+<li>在容器里面执行以下两条命令：</li>
+</ol>
+<pre><code>root@fc6f7e9ebdf1:/# cd paddle-mobile/
+root@fc6f7e9ebdf1:/paddle-mobile# cmake -DCMAKE_TOOLCHAIN_FILE=tools/toolchains/arm-android-neon.cmake
+</code></pre>
+<ol start="6">
+<li>（可选）可以使用命令 <code>ccmake .</code>配置一些信息，比如可以设置 <code>NET</code>仅支持 <code>googlenet</code>，这样便于得到的paddle-mobile库会更小一些，修改完成之后，使用 <code>c</code>命令保存，使用 <code>g</code>退出。笔者一般跳过这个步骤。</li>
+</ol>
+<pre><code>                                                    Page 1 of 1
+ CMAKE_ASM_FLAGS                                                                                                                                                                            
+ CMAKE_ASM_FLAGS_DEBUG                                                                                                                                                                      
+ CMAKE_ASM_FLAGS_RELEASE                                                                                                                                                                    
+ CMAKE_BUILD_TYPE                                                                                                                                                                           
+ CMAKE_INSTALL_PREFIX             /usr/local                                                                                                                                                
+ CMAKE_TOOLCHAIN_FILE             /paddle-mobile/tools/toolchains/arm-android-neon.cmake                                                                                                    
+ CPU                              ON                                                                                                                                                        
+ DEBUGING                         ON                                                                                                                                                        
+ FPGA                             OFF                                                                                                                                                       
+ LOG_PROFILE                      ON                                                                                                                                                        
+ MALI_GPU                         OFF                                                                                                                                                       
+ NET                              defult                                                                                                                                                    
+ USE_EXCEPTION                    ON                                                                                                                                                        
+ USE_OPENMP                       ON                                                   
+</code></pre>
+<ol start="7">
+<li>最后执行一下 <code>make</code>就可以了，到这一步就完成了paddle-mobile的编译。</li>
+</ol>
+<pre><code>root@fc6f7e9ebdf1:/paddle-mobile# make
+</code></pre>
+<ol start="8">
+<li>使用 <code>exit</code>命令退出容器，回到Ubuntu本地上。</li>
+</ol>
+<pre><code>root@fc6f7e9ebdf1:/paddle-mobile# exit
+</code></pre>
+<ol start="9">
+<li>在paddle-mobile根目录下，有一个build目录，我们编译好的paddle-mobile库就在这里。</li>
+</ol>
+<pre><code>root@test:/home/test/paddle-mobile/build# ls
+libpaddle-mobile.so
+</code></pre>
+<p><code>libpaddle-mobile.so</code>就是我们在开发Android项目的时候使用到的paddle-mobile库。</p>
+<h2 id="toc_h2_3">使用Ubuntu编译</h2>
+<ol>
+<li>首先要下载和解压NDK。</li>
+</ol>
+<pre><code>wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
+unzip android-ndk-r17b-linux-x86_64.zip
+</code></pre>
+<ol start="2">
+<li>设置NDK环境变量，目录是NDK的解压目录。</li>
+</ol>
+<pre><code>export NDK_ROOT="/home/test/android-ndk-r17b"
+</code></pre>
+<p>设置好之后，可以使用以下的命令查看配置情况。</p>
+<pre><code>root@test:/home/test# echo $NDK_ROOT
+/home/test/android-ndk-r17b
+</code></pre>
+<ol start="3">
+<li>安装cmake，需要安装较高版本的，笔者的cmake版本是3.11.2。</li>
+</ol>
+<ul>
+<li>下载cmake源码</li>
+</ul>
+<pre><code>wget https://cmake.org/files/v3.11/cmake-3.11.2.tar.gz
+</code></pre>
+<ul>
+<li>解压cmake源码</li>
+</ul>
+<pre><code>tar -zxvf cmake-3.11.2.tar.gz
+</code></pre>
+<ul>
+<li>进入到cmake源码根目录，并执行 <code>bootstrap</code>。</li>
+</ul>
+<pre><code>cd cmake-3.11.2
+./bootstrap
+</code></pre>
+<ul>
+<li>最后执行以下两条命令开始安装cmake。</li>
+</ul>
+<pre><code>make
+make install
+</code></pre>
+<ul>
+<li>安装完成之后，可以使用 <code>cmake --version</code>是否安装成功.</li>
+</ul>
+<pre><code>root@test:/home/test/paddlepaddle# cmake --version
+cmake version 3.11.2
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+</code></pre>
+<ol start="4">
+<li>克隆paddle-mobile源码。</li>
+</ol>
+<pre><code>git clone https://github.com/PaddlePaddle/paddle-mobile.git
+</code></pre>
+<ol start="5">
+<li>进入到paddle-mobile目录下，执行编译。</li>
+</ol>
+<pre><code>cd paddle-mobile/
+cmake -DCMAKE_TOOLCHAIN_FILE=tools/toolchains/arm-android-neon.cmake
+make
+</code></pre>
+<ol start="6">
+<li>最后会在 <code>paddle-mobile/build</code>目录下生产paddle-mobile库。</li>
+</ol>
+<pre><code>root@test:/home/test/paddle-mobile/build# ls
+libpaddle-mobile.so
+</code></pre>
+<p><code>libpaddle-mobile.so</code>就是我们在开发Android项目的时候使用到的paddle-mobile库。</p>
+<h1 id="toc_h1_4">创建Android项目</h1>
+<p>首先使用Android Studio创建一个普通的Android项目，我们可以不用选择CPP的支持，因为我们已经编译好了CPP。之后按照以下的步骤开始执行：</p>
+<ol>
+<li>在 <code>main</code>目录下创建两个 <code>assets/infer_model</code>文件夹，这个文件夹我们将会使用它来存放PaddlePaddle训练好的预测模型，本章我们使用的预测模型是<a href="https://blog.csdn.net/qq_33200967/article/details/87895105" target="_blank">《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别</a>训练得到的预测模型，我们训练好的模型复制到这个文件夹下。</li>
+<li>在 <code>main</code>目录下创建一个 <code>jniLibs</code>文件夹，这个文件夹是存放CPP编译库的，就是<strong>编译paddle-mobile库</strong>部分编译的 <code>libpaddle-mobile.so</code></li>
+<li>在Android项目的配置文件夹中加上权限声明，因为我们要使用到读取相册和使用相机，所以加上以下的权限声明：</li>
+</ol>
+<pre><code class="language-xml">&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /&gt;
+&lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /&gt;
+</code></pre>
+<ol start="4">
+<li>修改 <code>activity_main.xml</code>界面，修改成如下：</li>
+</ol>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"&gt;
+
+    &lt;LinearLayout
+        android:id="@+id/ll"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"&gt;
+
+        &lt;Button
+            android:layout_weight="1"
+            android:id="@+id/load"
+            android:text="加载模型"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" /&gt;
+
+        &lt;Button
+            android:id="@+id/clear"
+            android:layout_weight="1"
+            android:text="清空模型"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" /&gt;
+
+        &lt;Button
+            android:id="@+id/infer"
+            android:layout_weight="1"
+            android:text="预测图片"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" /&gt;
+    &lt;/LinearLayout&gt;
+
+    &lt;TextView
+        android:layout_above="@id/ll"
+        android:id="@+id/show"
+        android:hint="这里显示预测结果"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" /&gt;
+
+    &lt;ImageView
+        android:id="@+id/image_view"
+        android:layout_above="@id/show"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /&gt;
+&lt;/RelativeLayout&gt;
+</code></pre>
+<ol start="5">
+<li>创建一个 <code>com.baidu.paddle</code>包，在这个包下创建的Java程序，这个Java程序就是用于调用paddle-mobile的CPP动态库的。它提供了多种方法给我们使用，我们主要使用到加载模型的方法 <code>load(String modelDir)</code>，清空已加载的方法 <code>clear()</code>，还有最最重要的预测方法 <code>predictImage(float[] buf, int[]ddims)</code>。</li>
+</ol>
+<pre><code class="language-java">package com.baidu.paddle;
+
+public class PML {
+    // set thread num
+    public static native void setThread(int threadCount);
+
+    //Load seperated parameters
+    public static native boolean load(String modelDir);
+
+    // load qualified model
+    public static native boolean loadQualified(String modelDir);
+
+    // Load combined parameters
+    public static native boolean loadCombined(String modelPath, String paramPath);
+
+    // load qualified model
+    public static native boolean loadCombinedQualified(String modelPath, String paramPath);
+
+    // object detection
+    public static native float[] predictImage(float[] buf, int[]ddims);
+
+    // predict yuv image
+    public static native float[] predictYuv(byte[] buf, int imgWidth, int imgHeight, int[] ddims, float[]meanValues);
+
+    // clear model
+    public static native void clear();
+}
+</code></pre>
+<ol start="6">
+<li>然后在项目的主要包下创建一个 <code>Utils.java</code>的工具类。这个工具类主要编写一些图像的处理方法，和一些模型复制方法等，我们下面将一一介绍这些方法。</li>
+</ol>
+<p>该方法是用于获取预测结果中概率最大的标签，参数是执行预测的结果，这个结果是对应没有类别的概率，这个方法就判断哪个类别的概率最大，然后就返回概率最大的标签。</p>
+<pre><code class="language-java">// 获取预测值中最大概率的标签
+public static int getMaxResult(float[] result) {
+    float probability = result[0];
+    int r = 0;
+    for (int i = 0; i &lt; result.length; i++) {
+        if (probability &lt; result[i]) {
+            probability = result[i];
+            r = i;
+        }
+    }
+    return r;
+}
+</code></pre>
+<p>该方法是把图片转换成预测需要用的数据格式浮点数组。在转换的过程中也对图像做了预处理，这个预处理需要跟训练的预处理的方式一样，否则无法正确预测。还有指定了处理后图片的大小，根据参数输入的宽度和高度，把图片压缩到这些自定的大小。还有把图片的通道顺序改为RGB，同时每个像素除以255，这个操作跟训练的时候一样。</p>
+<pre><code class="language-java">// 对将要预测的图片进行预处理
+public static float[] getScaledMatrix(Bitmap bitmap, int desWidth, int desHeight) {
+    float[] dataBuf = new float[3 * desWidth * desHeight];
+    int rIndex;
+    int gIndex;
+    int bIndex;
+    int[] pixels = new int[desWidth * desHeight];
+    Bitmap bm = Bitmap.createScaledBitmap(bitmap, desWidth, desHeight, false);
+    bm.getPixels(pixels, 0, desWidth, 0, 0, desWidth, desHeight);
+    int j = 0;
+    int k = 0;
+    for (int i = 0; i &lt; pixels.length; i++) {
+        int clr = pixels[i];
+        j = i / desHeight;
+        k = i % desWidth;
+        rIndex = j * desWidth + k;
+        gIndex = rIndex + desHeight * desWidth;
+        bIndex = gIndex + desHeight * desWidth;
+        // 转成RGB通道顺序，并除以255，跟训练的预处理一样
+        dataBuf[rIndex] = (float) (((clr &amp; 0x00ff0000) &gt;&gt; 16) / 255.0);
+        dataBuf[gIndex] = (float) (((clr &amp; 0x0000ff00) &gt;&gt; 8) / 255.0);
+        dataBuf[bIndex] = (float) (((clr &amp; 0x000000ff)) / 255.0);
+
+    }
+    if (bm.isRecycled()) {
+        bm.recycle();
+    }
+    return dataBuf;
+}
+</code></pre>
+<p>该方法是对图片进行压缩，避免图片过大，超过内存支出。把图片的最大长度压缩到500以内。</p>
+<pre><code class="language-java">// 压缩图片，避免图片过大
+public static Bitmap getScaleBitmap(String filePath) {
+    BitmapFactory.Options opt = new BitmapFactory.Options();
+    opt.inJustDecodeBounds = true;
+    BitmapFactory.decodeFile(filePath, opt);
+
+    int bmpWidth = opt.outWidth;
+    int bmpHeight = opt.outHeight;
+
+    int maxSize = 500;
+
+    // compress picture with inSampleSize
+    opt.inSampleSize = 1;
+    while (true) {
+        if (bmpWidth / opt.inSampleSize &lt; maxSize || bmpHeight / opt.inSampleSize &lt; maxSize) {
+            break;
+        }
+        opt.inSampleSize *= 2;
+    }
+    opt.inJustDecodeBounds = false;
+    return BitmapFactory.decodeFile(filePath, opt);
+}
+</code></pre>
+<p>该方法是根据相册返回的URI转换为图片的绝对路径，用于之后使用这个路径获取图片内容。</p>
+<pre><code class="language-java">// 根据相册返回的URI返回图片的绝对路径
+public static String getPathFromURI(Context context, Uri uri) {
+    String result;
+    Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+    if (cursor == null) {
+        result = uri.getPath();
+    } else {
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        result = cursor.getString(idx);
+        cursor.close();
+    }
+    return result;
+}
+</code></pre>
+<p>该方法是把 <code>assets</code>资源文件下的预测文件复制到缓存目录，用于之后加载模型文件。</p>
+<pre><code class="language-java">// 复制莫模型文件到缓存目录
+public static void copyFileFromAsset(Context context, String oldPath, String newPath) {
+    try {
+        // 预测模型文件在assets中的位置
+        String[] fileNames = context.getAssets().list(oldPath);
+        if (fileNames.length &gt; 0) {
+            // directory
+            File file = new File(newPath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            // copy recursivelyC
+            for (String fileName : fileNames) {
+                copyFileFromAsset(context, oldPath + "/" + fileName, newPath + "/" + fileName);
+            }
+        } else {
+            // file
+            File file = new File(newPath);
+            // if file exists will never copy
+            if (file.exists()) {
+                return;
+            }
+
+            // copy file to new path
+            InputStream is = context.getAssets().open(oldPath);
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int byteCount;
+            while ((byteCount = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, byteCount);
+            }
+            fos.flush();
+            is.close();
+            fos.close();
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+</code></pre>
+<ol start="7">
+<li>最后修改 <code>MainActivity.java</code>，修改如下：</li>
+</ol>
+<p>这里做一些初始化操作，如加载PaddleMobile的动态库，指定图片的形状。</p>
+<pre><code class="language-java">    private String model_path;
+    // 模型文件夹
+    private String assets_path = "infer_model";
+    private boolean load_result = false;
+    // 输入图片的形状，分别是：batch size、通道数、宽度、高度
+    private int[] ddims = {1, 3, 224, 224};
+    private ImageView imageView;
+    private TextView showTv;
+
+    // 加载PaddleMobile的动态库
+    static {
+        try {
+            System.loadLibrary("paddle-mobile");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+</code></pre>
+<p>该方法是初始化控件，和定义按钮的点击事件，如加载模型点击事件，清空模型点击事件，打开相册预测图片点击事件。</p>
+<pre><code class="language-java">    // 初始化控件
+    private void initView(){
+        Button loadBtn = findViewById(R.id.load);
+        Button clearBtn = findViewById(R.id.clear);
+        Button inferBtn = findViewById(R.id.infer);
+        showTv = findViewById(R.id.show);
+        imageView = findViewById(R.id.image_view);
+
+        // 加载模型点击事件
+        loadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                load_result = PML.load(model_path);
+                if (load_result) {
+                    Toast.makeText(MainActivity.this, "模型加载成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "模型加载失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // 清空模型点击事件
+        clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PML.clear();
+                load_result = false;
+                Toast.makeText(MainActivity.this, "模型已清空", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 打开相册选择图片预测点击事件
+        inferBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (load_result){
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, 1);
+                } else {
+                    Toast.makeText(MainActivity.this, "模型未加载", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+</code></pre>
+<p>该方法是一个回调方法，主要是打开相册后的回调预测操作。使用返回的URI转换为绝对路径，然后使用这个图片路径转换成Bitmap用于显示，同时也使用这个路径执行预测操作。</p>
+<pre><code class="language-java">    // 回调事件
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String image_path;
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case 1:
+                    if (data == null) {
+                        return;
+                    }
+                    // 获取相册返回的URI
+                    Uri image_uri = data.getData();
+                    // 根据图片的URI获取绝对路径
+                    image_path = Utils.getPathFromURI(MainActivity.this, image_uri);
+                    // 压缩图片用于显示
+                    Bitmap bitmap = Utils.getScaleBitmap(image_path);
+                    imageView.setImageBitmap(bitmap);
+                    // 开始预测图片
+                    predictImage(image_path);
+                    break;
+            }
+        }
+    }
+</code></pre>
+<p>该方法是预测操作的方法，参数是图片的绝对路径，首先根据图片获取已经压缩过的Bitmap，然后使用这个Bitmap转换成预处理后的浮点数组，最后执行预测操作。再根据预测结果提取最大概率的标签，并获取该标签的类别名称。</p>
+<pre><code class="language-java">    // 根据图片的路径预测图片
+    private void predictImage(String image_path) {
+        // 把图片进行压缩
+        Bitmap bmp = Utils.getScaleBitmap(image_path);
+        // 把图片转换成浮点数组，用于预测
+        float[] inputData = Utils.getScaledMatrix(bmp, ddims[2], ddims[3]);
+        try {
+            long start = System.currentTimeMillis();
+            // 执行预测，获取预测结果
+            float[] result = PML.predictImage(inputData, ddims);
+            long end = System.currentTimeMillis();
+            // 获取概率最大的标签
+            int r = Utils.getMaxResult(result);
+            // 获取标签对应的类别名称
+            String[] names = {"苹果", "哈密瓜", "胡萝卜", "樱桃", "黄瓜", "西瓜"};
+            String show_text = "标签：" + r + "\n名称：" + names[r] + "\n概率：" + result[r] + "\n时间：" + (end - start) + "ms";
+            // 显示预测结果
+            showTv.setText(show_text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+</code></pre>
+<p>这主要是用于动态获取权限，因为读取外部文件需要读取外部文件的权限，又因为读取外部文件权限是属于危险权限，需要动态获取。</p>
+<pre><code class="language-java">    // 多权限动态申请
+    private void requestPermissions() {
+        List&lt;String&gt; permissionList = new ArrayList&lt;&gt;();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        // if list is not empty will request permissions
+        if (!permissionList.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length &gt; 0) {
+                    for (int i = 0; i &lt; grantResults.length; i++) {
+
+                        int grantResult = grantResults[i];
+                        if (grantResult == PackageManager.PERMISSION_DENIED) {
+                            String s = permissions[i];
+                            Toast.makeText(this, s + " permission was denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+</code></pre>
+<p>然后修改 <code>onCreate</code>，首先获取缓存文件路径，然后初始化视图控件和动态获取权限，最后把预测模型文件复制到缓存路径下。</p>
+<pre><code class="language-java">    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        model_path = getCacheDir().getAbsolutePath() + File.separator + "infer_model";
+        // 初始化控件
+        initView();
+        // 动态请求权限
+        requestPermissions();
+        // 从assets中复制模型文件到缓存目录下
+        Utils.copyFileFromAsset(this, assets_path, model_path);
+    }
+</code></pre>
+<ol start="8">
+<li>最后运行项目，选择图片预测会得到以下的效果：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GG3nFx.jpg" alt="在这里插入图片描述"></li>
+</ol>
+<h1 id="toc_h1_5">参考资料</h1>
+<ol>
+<li><a href="https://github.com/PaddlePaddle/paddle-mobile" target="_blank">https://github.com/PaddlePaddle/paddle-mobile</a></li>
+<li><a href="https://blog.csdn.net/qq_33200967/article/details/81066970" target="_blank">https://blog.csdn.net/qq_33200967/article/details/81066970</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584975263604.html" target="_blank">https://yeyupiaoling.github.io/articles/1584975263604.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584975208040.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《PaddlePaddle从入门到炼丹》十四——把预测模型部署在服务器&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584976095161.html">
+                            <span>Python的Numpy实现深度学习常用的函数&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《PaddlePaddle从入门到炼丹》十五——把预测模型部署到Android手机上"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584975263604.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584975263104"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584975263104",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584975263104",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584975263104', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

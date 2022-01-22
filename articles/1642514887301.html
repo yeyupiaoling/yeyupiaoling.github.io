@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>使用Tensorflow实现声纹识别 - 夜雨飘零</title><meta name="description" content="本章介绍如何使用Tensorflow实现简单的声纹识别模型，首先你需要熟悉音频分类，没有了解的可以查看这篇文章《基于Tensorflow实现声音分类》。基于这个知识基础之上，我们训练一个声纹识别模型，通过这个模型我们可以识别说话的人是谁，可以应用在一些需要音频验证的项目。"/><meta property="og:description" content="本章介绍如何使用Tensorflow实现简单的声纹识别模型，首先你需要熟悉音频分类，没有了解的可以查看这篇文章《基于Tensorflow实现声音分类》。基于这个知识基础之上，我们训练一个声纹识别模型，通过这个模型我们可以识别说话的人是谁，可以应用在一些需要音频验证的项目。"/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="使用Tensorflow实现声纹识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1642514887301.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="使用Tensorflow实现声纹识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1642514887301.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="基于PaddlePaddle实现声音分类" href="https://yeyupiaoling.github.io/articles/1642514646600.html">
+            <link rel="next" title="基于PaddlePaddle实现声纹识别" href="https://yeyupiaoling.github.io/articles/1642515820791.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">环境准备</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">安装libsora</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_3">安装PyAudio</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_4">安装pydub</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">创建数据</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_6">训练模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_7">声纹对比</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_8">声纹识别</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_9">模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_10">其他版本</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1642514887301.html">
+                    使用Tensorflow实现声纹识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E8%AF%AD%E9%9F%B3">
+                        语音</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Tensorflow">
+                        Tensorflow</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1642514887301.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1642514887301">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1642514887301.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1642514887301.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://b3logfile.com/bing/20210215.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>本章介绍如何使用Tensorflow实现简单的声纹识别模型，首先你需要熟悉音频分类，没有了解的可以查看这篇文章<a href="https://blog.doiduoyi.com/articles/1587654005620.html" target="_blank">《基于Tensorflow实现声音分类》</a>。基于这个知识基础之上，我们训练一个声纹识别模型，通过这个模型我们可以识别说话的人是谁，可以应用在一些需要音频验证的项目。</p>
+<h1 id="toc_h1_1">环境准备</h1>
+<p>主要介绍libsora，PyAudio，pydub的安装，其他的依赖包根据需要自行安装。</p>
+<ul>
+<li>Python 3.7</li>
+<li>Tensorflow 2.0</li>
+</ul>
+<h2 id="toc_h2_2">安装libsora</h2>
+<p>最简单的方式就是使用pip命令安装，如下：</p>
+<pre><code class="language-shell">pip install pytest-runner
+pip install librosa
+</code></pre>
+<p>如果pip命令安装不成功，那就使用源码安装，下载源码：<a href="https://github.com/librosa/librosa/releases/" target="_blank">https://github.com/librosa/librosa/releases/</a>， windows的可以下载zip压缩包，方便解压。</p>
+<pre><code class="language-shell">pip install pytest-runner
+tar xzf librosa-&lt;版本号&gt;.tar.gz 或者 unzip librosa-&lt;版本号&gt;.tar.gz
+cd librosa-&lt;版本号&gt;/
+python setup.py install
+</code></pre>
+<p>如果出现<code>libsndfile64bit.dll': error 0x7e</code>错误，请指定安装版本0.6.3，如<code>pip install librosa==0.6.3</code></p>
+<h2 id="toc_h2_3">安装PyAudio</h2>
+<p>使用pip安装命令，如下：</p>
+<pre><code class="language-shell">pip install pyaudio
+</code></pre>
+<p>在安装的时候需要使用到C++库进行编译，如果读者的系统是windows，Python是3.7，可以在这里下载whl安装包，下载地址：<a href="https://github.com/intxcc/pyaudio_portaudio/releases" target="_blank">https://github.com/intxcc/pyaudio_portaudio/releases</a></p>
+<h2 id="toc_h2_4">安装pydub</h2>
+<p>使用pip命令安装，如下：</p>
+<pre><code class="language-shell">pip install pydub
+</code></pre>
+<h1 id="toc_h1_5">创建数据</h1>
+<p>本教程笔者使用的是<a href="http://www.openslr.org/38" target="_blank">Free ST Chinese Mandarin Corpus数据集</a>，这个数据集一共有855个人的语音数据，有102600条语音数据。如果读者有其他更好的数据集，可以混合在一起使用。</p>
+<p>如何已经读过笔者<a href="https://blog.doiduoyi.com/articles/1587654005620.html" target="_blank">《基于Tensorflow实现声音分类》</a>这篇文章，应该知道语音数据小而多，最好的方法就是把这些音频文件生成TFRecord，加快训练速度。所以创建<code>create_data.py</code>用于生成TFRecord文件。</p>
+<p>首先是创建一个数据列表，数据列表的格式为<code>&lt;语音文件路径\t语音分类标签&gt;</code>，创建这个列表主要是方便之后的读取，也是方便读取使用其他的语音数据集，不同的语音数据集，可以通过编写对应的生成数据列表的函数，把这些数据集都写在同一个数据列表中，这样就可以在下一步直接生成TFRecord文件了。</p>
+<pre><code class="language-python">def get_data_list(audio_path, list_path):
+    files = os.listdir(audio_path)
+
+    f_train = open(os.path.join(list_path, 'train_list.txt'), 'w')
+    f_test = open(os.path.join(list_path, 'test_list.txt'), 'w')
+
+    sound_sum = 0
+    s = set()
+    for file in files:
+        if '.wav' not in file:
+            continue
+        s.add(file[:15])
+        sound_path = os.path.join(audio_path, file)
+        if sound_sum % 100 == 0:
+            f_test.write('%s\t%d\n' % (sound_path.replace('\\', '/'), len(s) - 1))
+        else:
+            f_train.write('%s\t%d\n' % (sound_path.replace('\\', '/'), len(s) - 1))
+        sound_sum += 1
+
+    f_test.close()
+    f_train.close()
+
+if __name__ == '__main__':
+    get_data_list('dataset/ST-CMDS-20170001_1-OS', 'dataset')
+</code></pre>
+<p>有了上面创建的数据列表，就可以把语音数据转换成训练数据了，主要是把语音数据转换成梅尔频谱（Mel Spectrogram），使用librosa可以很方便得到音频的梅尔频谱，使用的API为<code>librosa.feature.melspectrogram()</code>，输出的是numpy值，可以直接用tensorflow训练和预测。关于梅尔频谱具体信息读者可以自行了解，跟梅尔频谱同样很重要的梅尔倒谱（MFCCs）更多用于语音识别中，对应的API为<code>librosa.feature.mfcc()</code>。在转换过程中，笔者还使用了<code>librosa.effects.split</code>裁剪掉静音部分的音频，这样可以减少训练数据的噪声，提供训练准确率。笔者目前默认每条语音的长度为2.04秒，这个读者可以根据自己的情况修改语音的长度，如果要修改训练语音的长度，需要根据注释的提示修改相应的数据值。如果语音长度比较长的，程序会随机裁剪20次，以达到数据增强的效果。</p>
+<pre><code class="language-python"># 获取浮点数组
+def _float_feature(value):
+    if not isinstance(value, list):
+        value = [value]
+    return tf.train.Feature(float_list=tf.train.FloatList(value=value))
+
+
+# 获取整型数据
+def _int64_feature(value):
+    if not isinstance(value, list):
+        value = [value]
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
+
+
+# 把数据添加到TFRecord中
+def data_example(data, label):
+    feature = {
+        'data': _float_feature(data),
+        'label': _int64_feature(label),
+    }
+    return tf.train.Example(features=tf.train.Features(feature=feature))
+
+
+# 开始创建tfrecord数据
+def create_data_tfrecord(data_list_path, save_path):
+    with open(data_list_path, 'r') as f:
+        data = f.readlines()
+    with tf.io.TFRecordWriter(save_path) as writer:
+        for d in tqdm(data):
+            try:
+                path, label = d.replace('\n', '').split('\t')
+                wav, sr = librosa.load(path, sr=16000)
+                intervals = librosa.effects.split(wav, top_db=20)
+                wav_output = []
+                # [可能需要修改参数] 音频长度 16000 * 秒数
+                wav_len = int(16000 * 2.04)
+                for sliced in intervals:
+                    wav_output.extend(wav[sliced[0]:sliced[1]])
+                for i in range(20):
+                    # 裁剪过长的音频，过短的补0
+                    if len(wav_output) &gt; wav_len:
+                        l = len(wav_output) - wav_len
+                        r = random.randint(0, l)
+                        wav_output = wav_output[r:wav_len + r]
+                    else:
+                        wav_output.extend(np.zeros(shape=[wav_len - len(wav_output)], dtype=np.float32))
+                    wav_output = np.array(wav_output)
+                    # 转成梅尔频谱
+                    ps = librosa.feature.melspectrogram(y=wav_output, sr=sr, hop_length=256).reshape(-1).tolist()
+                    # [可能需要修改参数] 梅尔频谱shape ，librosa.feature.melspectrogram(y=wav_output, sr=sr, hop_length=256).shape
+                    if len(ps) != 128 * 128: continue
+                    tf_example = data_example(ps, int(label))
+                    writer.write(tf_example.SerializeToString())
+                    if len(wav_output) &lt;= wav_len:
+                        break
+            except Exception as e:
+                print(e)
+if __name__ == '__main__':
+    create_data_tfrecord('dataset/train_list.txt', 'dataset/train.tfrecord')
+    create_data_tfrecord('dataset/test_list.txt', 'dataset/test.tfrecord')
+</code></pre>
+<p>在上面已经创建了TFRecord文件，为了可以在训练中读取TFRecord文件，创建<code>reader.py</code>程序用于读取训练数据，如果读者已经修改了训练数据的长度，需要修改<code>tf.io.FixedLenFeature</code>中的值。</p>
+<pre><code class="language-python">def _parse_data_function(example):
+    # [可能需要修改参数】 设置的梅尔频谱的shape相乘的值
+    data_feature_description = {
+        'data': tf.io.FixedLenFeature([16384], tf.float32),
+        'label': tf.io.FixedLenFeature([], tf.int64),
+    }
+    return tf.io.parse_single_example(example, data_feature_description)
+
+
+def train_reader_tfrecord(data_path, num_epochs, batch_size):
+    raw_dataset = tf.data.TFRecordDataset(data_path)
+    train_dataset = raw_dataset.map(_parse_data_function)
+    train_dataset = train_dataset.shuffle(buffer_size=1000) \
+        .repeat(count=num_epochs) \
+        .batch(batch_size=batch_size) \
+        .prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+    return train_dataset
+
+
+def test_reader_tfrecord(data_path, batch_size):
+    raw_dataset = tf.data.TFRecordDataset(data_path)
+    test_dataset = raw_dataset.map(_parse_data_function)
+    test_dataset = test_dataset.batch(batch_size=batch_size)
+    return test_dataset
+</code></pre>
+<h1 id="toc_h1_6">训练模型</h1>
+<p>创建<code>train.py</code>开始训练模型，搭建一个ResNet50分类模型，<code>input_shape</code>设置为<code>(128, None, 1))</code>主要是为了适配其他音频长度的输入和预测是任意大小的输入。<code>class_dim</code>为分类的总数，Free ST Chinese Mandarin Corpus数据集一共有855个人的语音数据，所以这里分类总数为855，可以使用之前训练过的权重初始化模型，下载看文章最后。</p>
+<pre><code class="language-python">class_dim = 855
+EPOCHS = 500
+BATCH_SIZE=32
+init_model = "models/model_weights.h5"
+
+model = tf.keras.models.Sequential([
+    tf.keras.applications.ResNet50V2(include_top=False, weights=None, input_shape=(128, None, 1)),
+    tf.keras.layers.ActivityRegularization(l2=0.5),
+    tf.keras.layers.Dropout(rate=0.5),
+    tf.keras.layers.GlobalMaxPooling2D(),
+    tf.keras.layers.Dense(units=class_dim, activation=tf.nn.softmax)
+])
+
+model.summary()
+
+# 定义优化方法
+optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
+
+train_dataset = reader.train_reader_tfrecord('dataset/train.tfrecord', EPOCHS, batch_size=BATCH_SIZE)
+test_dataset = reader.test_reader_tfrecord('dataset/test.tfrecord', batch_size=BATCH_SIZE)
+
+if init_model:
+    model.load_weights(init_model)
+</code></pre>
+<p>开始执行训练，要注意的是在创建TFRecord文件时，已经把音频数据的梅尔频谱转换为一维list了，所以在数据输入到模型前，需要把数据reshape为之前的shape，操作方式为<code>reshape((-1, 128, 128, 1))</code>。要注意的是如果读者使用了其他长度的音频，需要根据梅尔频谱的shape修改，训练数据和测试数据都需要做同样的处理。每训练200个batch执行一次测试和保存模型，包括预测模型和网络权重。</p>
+<pre><code class="language-python">for batch_id, data in enumerate(train_dataset):
+    # [可能需要修改参数】 设置的梅尔频谱的shape
+    sounds = data['data'].numpy().reshape((-1, 128, 128, 1))
+    labels = data['label']
+    # 执行训练
+    with tf.GradientTape() as tape:
+        predictions = model(sounds)
+        # 获取损失值
+        train_loss = tf.keras.losses.sparse_categorical_crossentropy(labels, predictions)
+        train_loss = tf.reduce_mean(train_loss)
+        # 获取准确率
+        train_accuracy = tf.keras.metrics.sparse_categorical_accuracy(labels, predictions)
+        train_accuracy = np.sum(train_accuracy.numpy()) / len(train_accuracy.numpy())
+
+    # 更新梯度
+    gradients = tape.gradient(train_loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
+    if batch_id % 20 == 0:
+        print("Batch %d, Loss %f, Accuracy %f" % (batch_id, train_loss.numpy(), train_accuracy))
+
+    if batch_id % 200 == 0 and batch_id != 0:
+        test_losses = list()
+        test_accuracies = list()
+        for d in test_dataset:
+            # [可能需要修改参数】 设置的梅尔频谱的shape
+            test_sounds = d['data'].numpy().reshape((-1, 128, 128, 1))
+            test_labels = d['label']
+
+            test_result = model(test_sounds)
+            # 获取损失值
+            test_loss = tf.keras.losses.sparse_categorical_crossentropy(test_labels, test_result)
+            test_loss = tf.reduce_mean(test_loss)
+            test_losses.append(test_loss)
+            # 获取准确率
+            test_accuracy = tf.keras.metrics.sparse_categorical_accuracy(test_labels, test_result)
+            test_accuracy = np.sum(test_accuracy.numpy()) / len(test_accuracy.numpy())
+            test_accuracies.append(test_accuracy)
+
+        print('=================================================')
+        print("Test, Loss %f, Accuracy %f" % (
+            sum(test_losses) / len(test_losses), sum(test_accuracies) / len(test_accuracies)))
+        print('=================================================')
+
+        # 保存模型
+        model.save(filepath='models/resnet.h5')
+        model.save_weights(filepath='models/model_weights.h5')
+</code></pre>
+<h1 id="toc_h1_7">声纹对比</h1>
+<p>下面开始实现声纹对比，创建<code>infer_contrast.py</code>程序，在加载模型时，不要直接加载整个模型，而是加载模型的最后分类层的上一层，这样就可以获取到语音的特征数据。通过使用<a href="https://github.com/lutzroeder/netron" target="_blank">netron</a>查看每一层的输入和输出的名称。</p>
+<pre><code class="language-python">layer_name = 'global_max_pooling2d'
+model = tf.keras.models.load_model('models/resnet.h5')
+intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
+</code></pre>
+<p>然后编写两个函数，分类是加载数据和执行预测的函数，在这个加载数据函数中并没有限定输入音频的大小，只是不允许裁剪静音后的音频不能小于0.5秒，这样就可以输入任意长度的音频。执行预测之后数据的是语音的特征值。</p>
+<pre><code class="language-python">def load_data(data_path):
+    wav, sr = librosa.load(data_path, sr=16000)
+    intervals = librosa.effects.split(wav, top_db=20)
+    wav_output = []
+    for sliced in intervals:
+        wav_output.extend(wav[sliced[0]:sliced[1]])
+    assert len(wav_output) &gt;= 8000, "有效音频小于0.5s"
+    wav_output = np.array(wav_output)
+    ps = librosa.feature.melspectrogram(y=wav_output, sr=sr, hop_length=256).astype(np.float32)
+    ps = ps[np.newaxis, ..., np.newaxis]
+    return ps
+
+
+def infer(audio_path):
+    data = load_data(audio_path)
+    feature = intermediate_layer_model.predict(data)
+    return feature
+</code></pre>
+<p>有了上面两个函数，就可以做声纹识别了。我们输入两个语音，通过预测函数获取他们的特征数据，使用这个特征数据可以求他们的对角余弦值，得到的结果可以作为他们相识度。对于这个相识度的阈值，读者可以根据自己项目的准确度要求进行修改。</p>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 要预测的两个人的音频文件
+    person1 = 'dataset/ST-CMDS-20170001_1-OS/20170001P00011A0001.wav'
+    person2 = 'dataset/ST-CMDS-20170001_1-OS/20170001P00011I0081.wav'
+    feature1 = infer(person1)[0]
+    feature2 = infer(person2)[0]
+    # 对角余弦值
+    dist = np.dot(feature1, feature2) / (np.linalg.norm(feature1) * np.linalg.norm(feature2))
+    if dist &gt; 0.7:
+        print("%s 和 %s 为同一个人，相似度为：%f" % (person1, person2, dist))
+    else:
+        print("%s 和 %s 不是同一个人，相似度为：%f" % (person1, person2, dist))
+</code></pre>
+<h1 id="toc_h1_8">声纹识别</h1>
+<p>在上面的声纹对比的基础上，我们创建<code>infer_recognition.py</code>实现声纹识别。同样是使用上面声纹对比的数据加载函数和预测函数，通过这两个同样获取语音的特征数据。</p>
+<pre><code class="language-python">layer_name = 'global_max_pooling2d'
+model = tf.keras.models.load_model('models/resnet.h5')
+intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
+
+person_feature = []
+person_name = []
+
+
+# 读取音频数据
+def load_data(data_path):
+    wav, sr = librosa.load(data_path, sr=16000)
+    intervals = librosa.effects.split(wav, top_db=20)
+    wav_output = []
+    for sliced in intervals:
+        wav_output.extend(wav[sliced[0]:sliced[1]])
+    if len(wav_output) &lt; 8000:
+        raise Exception("有效音频小于0.5s")
+    wav_output = np.array(wav_output)
+    ps = librosa.feature.melspectrogram(y=wav_output, sr=sr, hop_length=256).astype(np.float32)
+    ps = ps[np.newaxis, ..., np.newaxis]
+    return ps
+
+
+def infer(audio_path):
+    data = load_data(audio_path)
+    feature = intermediate_layer_model.predict(data)
+    return feature
+</code></pre>
+<p>不同的是笔者增加了<code>load_audio_db()</code>和<code>recognition()</code>，第一个函数是加载语音库中的语音数据，这些音频就是相当于已经注册的用户，他们注册的语音数据会存放在这里，如果有用户需要通过声纹登录，就需要拿到用户的语音和语音库中的语音进行声纹对比，如果对比成功，那就相当于登录成功并且获取用户注册时的信息数据。完成识别的主要在<code>recognition()</code>函数中，这个函数就是将输入的语音和语音库中的语音一一对比。</p>
+<pre><code class="language-python">def load_audio_db(audio_db_path):
+    audios = os.listdir(audio_db_path)
+    for audio in audios:
+        path = os.path.join(audio_db_path, audio)
+        name = audio[:-4]
+        feature = infer(path)
+        person_name.append(name)
+        person_feature.append(feature)
+        print("Loaded %s audio." % name)
+
+
+def recognition(path):
+    name = ''
+    pro = 0
+    feature = infer(path)
+    for i, person_f in enumerate(person_feature):
+        dist = np.dot(feature, person_f) / (np.linalg.norm(feature) * np.linalg.norm(person_f))
+        if dist &gt; pro:
+            pro = dist
+            name = person_name[i]
+    return name, pro
+</code></pre>
+<p>有了上面的声纹识别的函数，读者可以根据自己项目的需求完成声纹识别的方式，例如笔者下面提供的是通过录音来完成声纹识别。首先必须要加载语音库中的语音，语音库文件夹为<code>audio_db</code>，然后用户回车后录音3秒钟，然后程序会自动录音，并使用录音到的音频进行声纹识别，去匹配语音库中的语音，获取用户的信息。通过这样方式，读者也可以修改成通过服务请求的方式完成声纹识别，例如提供一个API供APP调用，用户在APP上通过声纹登录时，把录音到的语音发送到后端完成声纹识别，再把结果返回给APP，前提是用户已经使用语音注册，并成功把语音数据存放在<code>audio_db</code>文件夹中。</p>
+<pre><code class="language-python">if __name__ == '__main__':
+    load_audio_db('audio_db')
+    # 录音参数
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 16000
+    RECORD_SECONDS = 3
+    WAVE_OUTPUT_FILENAME = "infer_audio.wav"
+
+    # 打开录音
+    p = pyaudio.PyAudio()
+    stream = p.open(format=FORMAT,
+                    channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    frames_per_buffer=CHUNK)
+
+    while True:
+        try:
+            i = input("按下回车键开机录音，录音3秒中：")
+            print("开始录音......")
+            frames = []
+            for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+                data = stream.read(CHUNK)
+                frames.append(data)
+
+            print("录音已结束!")
+
+            wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+            wf.setnchannels(CHANNELS)
+            wf.setsampwidth(p.get_sample_size(FORMAT))
+            wf.setframerate(RATE)
+            wf.writeframes(b''.join(frames))
+            wf.close()
+
+            # 识别对比音频库的音频
+            name, p = recognition(WAVE_OUTPUT_FILENAME)
+            if p &gt; 0.7:
+                print("识别说话的为：%s，相似度为：%f" % (name, p))
+            else:
+                print("音频库没有该用户的语音")
+        except:
+            pass
+</code></pre>
+<h1 id="toc_h1_9">模型</h1>
+<table>
+<thead>
+<tr><th align="center">模型名称</th><th align="center">所用数据集</th><th align="center">下载地址</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">网络权重</td><td align="center">ST-CMDS-20170001_1-OS</td><td align="center"><a href="https://resource.doiduoyi.com/#q81u0uw" target="_blank">点击下载</a></td></tr>
+<tr><td align="center">网络预测模型</td><td align="center">ST-CMDS-20170001_1-OS</td><td align="center"><a href="https://resource.doiduoyi.com/#4g6u00i" target="_blank">点击下载</a></td></tr>
+<tr><td align="center">网络预测模型</td><td align="center">更大数据集</td><td align="center"> </td></tr>
+</tbody>
+</table>
+<p><strong>Github地址：</strong> <a href="https://github.com/yeyupiaoling/VoiceprintRecognition-Tensorflow/tree/master" target="_blank">https://github.com/yeyupiaoling/VoiceprintRecognition-Tensorflow/tree/master</a></p>
+<h1 id="toc_h1_10">其他版本</h1>
+<ul>
+<li>PaddlePaddle：<a href="https://github.com/yeyupiaoling/VoiceprintRecognition-PaddlePaddle" target="_blank">VoiceprintRecognition-PaddlePaddle</a></li>
+<li>Pytorch：<a href="https://github.com/yeyupiaoling/VoiceprintRecognition-Pytorch" target="_blank">VoiceprintRecognition-Pytorch</a></li>
+<li>Keras：<a href="https://github.com/yeyupiaoling/VoiceprintRecognition-Keras" target="_blank">VoiceprintRecognition-Keras</a></li>
+<li>Tensorflow：<a href="https://github.com/yeyupiaoling/VoiceprintRecognition-Tensorflow" target="_blank">VoiceprintRecognition-Tensorflow</a></li>
+</ul>
+                <div>
+                    <hr>
+
+标题：使用Tensorflow实现声纹识别<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1642514887301.html" target="_blank">https://yeyupiaoling.github.io/articles/1642514887301.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1642514646600.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 基于PaddlePaddle实现声音分类&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1642515820791.html">
+                            <span>基于PaddlePaddle实现声纹识别&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="使用Tensorflow实现声纹识别"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1642514887301.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1642514887301"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1642514887301",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1642514887301",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1642514887301', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

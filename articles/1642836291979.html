@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>基于PaddlePaddle2.0验证码端到端的识别 - 夜雨飘零</title><meta name="description" content="验证码端到端的识别，是对《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 的升级，这篇文章是我18年初写的，基于当时的V2版本编写，现在有点过时了，突然想升级一下。"/><meta property="og:description" content="验证码端到端的识别，是对《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别 的升级，这篇文章是我18年初写的，基于当时的V2版本编写，现在有点过时了，突然想升级一下。"/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="基于PaddlePaddle2.0验证码端到端的识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1642836291979.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="基于PaddlePaddle2.0验证码端到端的识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1642836291979.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="PPASR中文语音识别（入门级）" href="https://yeyupiaoling.github.io/articles/1642836209911.html">
+            <link rel="next" title="基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型" href="https://yeyupiaoling.github.io/articles/1642836351421.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">在线运行</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">创建数据列表和词汇表</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">解码器</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">数据读取器</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">模型结构</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">训练</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_6">预测</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1642836291979.html">
+                    基于PaddlePaddle2.0验证码端到端的识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89">
+                        计算机视觉</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1642836291979.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1642836291979">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1642836291979.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1642836291979.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://b3logfile.com/bing/20180115.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<p>验证码端到端的识别，是对<a href="https://yeyupiaoling.blog.csdn.net/article/details/79233565" target="_blank">《我的PaddlePaddle学习之路》笔记六——验证码端到端的识别</a> 的升级，这篇文章是我18年初写的，基于当时的V2版本编写，现在有点过时了，突然想升级一下。</p>
+<h1 id="toc_h1_0">在线运行</h1>
+<p><strong>在线运行：<a href="https://aistudio.baidu.com/aistudio/projectdetail/1679868" target="_blank">https://aistudio.baidu.com/aistudio/projectdetail/1679868</a></strong></p>
+<h1 id="toc_h1_1">创建数据列表和词汇表</h1>
+<p>数据列表是为了方便训练是读取数据的。</p>
+<pre><code class="language-python">import os
+import cv2
+
+def createDataList(data_path, list_path):
+    # 读取所有的图像路径
+    imgs = os.listdir(data_path)
+    with open(list_path, 'w', encoding='utf-8') as f:
+        for img in imgs:
+           name = img.split('.')[0]
+           image_path = os.path.join(data_path, img)
+           # 写入图像路径和label，用Tab隔开
+           f.write(image_path + '\t' + name + '\n')
+
+createDataList('dataset/train_data/', 'dataset/train.txt')
+createDataList('dataset/test_data/', 'dataset/test.txt')
+</code></pre>
+<p>还缺词汇表，执行下面的代码。</p>
+<pre><code class="language-python">with open('dataset/train.txt', 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+v = set()
+for line in lines:
+    _, label = line.replace('\n', '').split('\t')
+    for c in label:
+        v.add(c)
+
+vocabulary_path = 'dataset/vocabulary.txt'
+with open(vocabulary_path, 'w', encoding='utf-8') as f:
+    for c in v:
+        f.write(c + '\n')
+</code></pre>
+<h1 id="toc_h1_2">解码器</h1>
+<p>这个好似贪心解码方法，用于解码预测的输出的结果，将PaddlePaddle输出的结果转换为字符串。这里还提供了数据标签转字符串的，和计算字错率的。</p>
+<pre><code class="language-python">%%writefile decoder.py
+
+import Levenshtein as Lev
+from itertools import groupby
+import paddle
+
+
+def ctc_greedy_decoder(probs_seq, vocabulary):
+    """CTC贪婪（最佳路径）解码器。
+    由最可能的令牌组成的路径被进一步后处理
+    删除连续的重复和所有的空白。
+    :param probs_seq: 每个词汇表上概率的二维列表字符。
+                      每个元素都是浮点概率列表为一个字符。
+    :type probs_seq: list
+    :param vocabulary: 词汇表
+    :type vocabulary: list
+    :return: 解码结果字符串
+    :rtype: baseline
+    """
+    # 尺寸验证
+    for probs in probs_seq:
+        if not len(probs) == len(vocabulary) + 1:
+            raise ValueError("probs_seq 尺寸与词汇不匹配")
+    # argmax以获得每个时间步长的最佳指标
+    max_index_list = paddle.argmax(probs_seq, -1).numpy()
+    # 删除连续的重复索引
+    index_list = [index_group[0] for index_group in groupby(max_index_list)]
+    # 删除空白索引
+    blank_index = len(vocabulary)
+    index_list = [index for index in index_list if index != blank_index]
+    # 将索引列表转换为字符串
+    return ''.join([vocabulary[index] for index in index_list])[:4]
+
+
+def label_to_string(label, vocabulary):
+    """标签转文字
+
+    :param label: 结果的标签，或者数据集的标签
+    :type label: list
+    :param vocabulary: 词汇表
+    :type vocabulary: list
+    :return: 解码结果字符串
+    :rtype: baseline
+    """
+    return ''.join([vocabulary[index] for index in label])
+
+
+def cer(out_string, target_string):
+    """通过计算两个字符串的距离，得出字错率
+
+    Arguments:
+        out_string (string): 比较的字符串
+        target_string (string): 比较的字符串
+    """
+    s1, s2, = out_string.replace(" ", ""), target_string.replace(" ", "")
+    return Lev.distance(s1, s2)
+</code></pre>
+<h1 id="toc_h1_3">数据读取器</h1>
+<p>这个是用于训练时读取数据的，用数据列表中读取图片和标签，将图片进行预处理，字符串标签转换为整型的标签输入的网络模型中。</p>
+<pre><code class="language-python">%%writefile data.py
+
+import cv2
+import numpy as np
+from paddle.io import Dataset
+
+
+# 图像预处理
+def process(path):
+    image = cv2.imread(path)
+    # 转灰度图
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # 统一缩放大小
+    image = cv2.resize(image, (72, 27))
+    # 转换成CHW
+    image = image[np.newaxis, :]
+    # 归一化
+    image = (image - 128) / 128
+    return image
+
+
+# 数据加载器
+class CustomDataset(Dataset):
+    def __init__(self, data_list_path, voc_path):
+        super(CustomDataset, self).__init__()
+        with open(data_list_path, 'r', encoding='utf-8') as f:
+            self.lines = f.readlines()
+        with open(voc_path, 'r', encoding='utf-8') as f:
+            labels = f.readlines()
+        self.vocabulary = [labels[i].replace('\n', '') for i in range(len(labels))]
+        self.vocabulary_dict = dict([(labels[i].replace('\n', ''), i) for i in range(len(labels))])
+
+    def __getitem__(self, idx):
+        path, label = self.lines[idx].replace('\n', '').split('\t')
+        img = process(path)
+        # 将字符标签转换为int数据
+        transcript = [self.vocabulary_dict.get(x) for x in label]
+        img = np.array(img, dtype='float32')
+        transcript = np.array(transcript, dtype='int32')
+        return img, transcript
+
+    def __len__(self):
+        return len(self.lines)
+</code></pre>
+<h1 id="toc_h1_4">模型结构</h1>
+<p>这个模型类型CRNN，前面使用卷积层提前图像特征，后面用一个GRU，他是LSTM的变种，最后的全连接层，输出的大小为词汇表+1，因为还有一个空格字符，这个是CTC需要的。</p>
+<pre><code class="language-python">%%writefile model.py
+
+import paddle
+import paddle.nn as nn
+
+
+class Model(nn.Layer):
+    def __init__(self, vocabulary):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2D(in_channels=1, out_channels=32, kernel_size=3)
+        self.relu1 = nn.ReLU()
+        self.bn1 = nn.BatchNorm2D(32)
+        self.pool1 = nn.MaxPool2D(kernel_size=2, stride=1)
+
+        self.conv2 = nn.Conv2D(in_channels=32, out_channels=64, kernel_size=3)
+        self.relu2 = nn.ReLU()
+        self.bn2 = nn.BatchNorm2D(64)
+        self.pool2 = nn.MaxPool2D(kernel_size=2, stride=1)
+
+        self.conv3 = nn.Conv2D(in_channels=64, out_channels=128, kernel_size=3)
+        self.relu3 = nn.ReLU()
+        self.bn3 = nn.BatchNorm2D(128)
+        self.pool3 = nn.MaxPool2D(kernel_size=2, stride=1)
+
+        self.conv4 = nn.Conv2D(in_channels=128, out_channels=256, kernel_size=3)
+        self.relu4 = nn.ReLU()
+        self.bn4 = nn.BatchNorm2D(256)
+        self.pool4 = nn.MaxPool2D(kernel_size=2, stride=1)
+
+        self.conv5 = nn.Conv2D(in_channels=256, out_channels=256, kernel_size=3)
+        self.relu5 = nn.ReLU()
+        self.bn5 = nn.BatchNorm2D(256)
+        self.pool5 = nn.MaxPool2D(kernel_size=2, stride=1)
+
+        self.conv6 = nn.Conv2D(in_channels=256, out_channels=256, kernel_size=3)
+        self.relu6 = nn.ReLU()
+        self.bn6 = nn.BatchNorm2D(256)
+        self.pool6 = nn.MaxPool2D(kernel_size=2, stride=1)
+
+        self.conv7 = nn.Conv2D(in_channels=256, out_channels=256, kernel_size=3)
+        self.relu7 = nn.ReLU()
+        self.bn7 = nn.BatchNorm2D(256)
+        self.pool7 = nn.MaxPool2D(kernel_size=2, stride=1)
+
+        self.fc = nn.Linear(in_features=306, out_features=128)
+
+        self.gru = nn.GRU(input_size=256, hidden_size=128)
+
+        self.output = nn.Linear(in_features=128, out_features=len(vocabulary) + 1)
+
+    def forward(self, x):
+        x = self.relu1(self.bn1(self.conv1(x)))
+        x = self.pool1(x)
+        x = self.relu2(self.bn2(self.conv2(x)))
+        x = self.pool2(x)
+        x = self.relu3(self.bn3(self.conv3(x)))
+        x = self.pool3(x)
+        x = self.relu4(self.bn4(self.conv4(x)))
+        x = self.pool4(x)
+        x = self.relu5(self.bn5(self.conv5(x)))
+        x = self.pool5(x)
+        x = self.relu6(self.bn6(self.conv6(x)))
+        x = self.pool6(x)
+        x = self.relu7(self.bn7(self.conv7(x)))
+        x = self.pool7(x)
+        x = paddle.reshape(x, shape=(x.shape[0], x.shape[1], -1))
+        x = self.fc(x)
+        x = paddle.transpose(x, perm=[0, 2, 1])
+        y, h = self.gru(x)
+        x = self.output(y)
+        return x
+</code></pre>
+<h1 id="toc_h1_5">训练</h1>
+<p>这就开始训练了。三两下就可以训练完，主要是数据量少。每十轮训练结束都执行一次评估，输出的是字错率。保存的模型是静态模型，方便预测。</p>
+<pre><code class="language-python">import paddle
+import numpy as np
+import os
+from datetime import datetime
+from model import Model
+from decoder import ctc_greedy_decoder, label_to_string, cer
+from paddle.io import DataLoader
+from data import CustomDataset
+from visualdl import LogWriter
+from paddle.static import InputSpec
+
+train_data_list_path = 'dataset/train.txt'
+test_data_list_path = 'dataset/test.txt'
+voc_path = 'dataset/vocabulary.txt'
+save_model = 'models/model'
+batch_size = 32
+pretrained_model = None
+num_epoch = 100
+learning_rate = 1e-3
+writer = LogWriter(logdir='log')
+
+
+def train():
+    # 获取训练数据
+    train_dataset = CustomDataset(train_data_list_path, voc_path)
+    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+    # 获取测试数据
+    test_dataset = CustomDataset(test_data_list_path, voc_path)
+    test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size)
+    # 获取模型
+    model = Model(train_dataset.vocabulary)
+    paddle.summary(model, input_size=(batch_size, 1, 27, 72))
+    # 设置优化方法
+    boundaries = [10, 20, 50]
+    lr = [0.1 ** l * learning_rate for l in range(len(boundaries) + 1)]
+    scheduler = paddle.optimizer.lr.PiecewiseDecay(boundaries=boundaries, values=lr, verbose=False)
+    optimizer = paddle.optimizer.Adam(parameters=model.parameters(), learning_rate=scheduler)
+    # 获取损失函数
+    ctc_loss = paddle.nn.CTCLoss(blank=len(train_dataset.vocabulary))
+    # 加载预训练模型
+    if pretrained_model is not None:
+        model.set_state_dict(paddle.load(os.path.join(pretrained_model, 'model.pdparams')))
+        optimizer.set_state_dict(paddle.load(os.path.join(pretrained_model, 'optimizer.pdopt')))
+    train_step = 0
+    test_step = 0
+    # 开始训练
+    for epoch in range(num_epoch):
+        for batch_id, (inputs, labels) in enumerate(train_loader()):
+            out = model(inputs)
+            out = paddle.transpose(out, perm=[1, 0, 2])
+            input_lengths = paddle.full(shape=[out.shape[1]], fill_value=out.shape[0], dtype="int64")
+            label_lengths = paddle.full(shape=[out.shape[1]], fill_value=4, dtype="int64")
+            # 计算损失
+            loss = ctc_loss(out, labels, input_lengths, label_lengths)
+            loss.backward()
+            optimizer.step()
+            optimizer.clear_grad()
+            # 多卡训练只使用一个进程打印
+            if batch_id % 100 == 0:
+                print('[%s] Train epoch %d, batch %d, loss: %f' % (datetime.now(), epoch, batch_id, loss))
+                writer.add_scalar('Train loss', loss, train_step)
+                train_step += 1
+        if (epoch % 10 == 0 and epoch != 0) or epoch == num_epoch:
+            # 执行评估
+            model.eval()
+            cer = evaluate(model, test_loader, train_dataset.vocabulary)
+            print('[%s] Test epoch %d, cer: %f' % (datetime.now(), epoch, cer))
+            writer.add_scalar('Test cer', cer, test_step)
+            test_step += 1
+            model.train()
+        # 记录学习率
+        writer.add_scalar('Learning rate', scheduler.last_lr, epoch)
+        scheduler.step()
+        # 保存模型
+        paddle.jit.save(layer=model, path=save_model, input_spec=[InputSpec(shape=[None, 1, 27, 72], dtype='float32')])
+
+
+# 评估模型
+def evaluate(model, test_loader, vocabulary):
+    cer_result = []
+    for batch_id, (inputs, labels) in enumerate(test_loader()):
+        # 执行识别
+        outs = model(inputs)
+        outs = paddle.nn.functional.softmax(outs)
+        # 解码获取识别结果
+        labelss = []
+        out_strings = []
+        for out in outs:
+            out_string = ctc_greedy_decoder(out, vocabulary)
+            out_strings.append(out_string)
+        for label in labels:
+            labels = label_to_string(label, vocabulary)
+            labelss.append(labels)
+        for out_string, label in zip(*(out_strings, labelss)):
+            print(label, out_string)
+            # 计算字错率
+            c = cer(out_string, label) / float(len(label))
+            cer_result.append(c)
+    cer_result = float(np.mean(cer_result))
+    return cer_result
+
+
+train()
+
+</code></pre>
+<h1 id="toc_h1_6">预测</h1>
+<p>使用训练好的模型识别验证码图片。</p>
+<pre><code class="language-python">import numpy as np
+import paddle
+
+from data import process
+from decoder import ctc_greedy_decoder
+
+
+with open('dataset/vocabulary.txt', 'r', encoding='utf-8') as f:
+    vocabulary = f.readlines()
+
+vocabulary = [v.replace('\n', '') for v in vocabulary]
+
+save_model = 'models/model'
+model = paddle.jit.load(save_model)
+model.eval()
+
+
+def infer(path):
+    data = process(path)
+    data = data[np.newaxis, :]
+    data = paddle.to_tensor(data, dtype='float32')
+    # 执行识别
+    out = model(data)
+    out = paddle.nn.functional.softmax(out)[0]
+    # 解码获取识别结果
+    out_string = ctc_greedy_decoder(out, vocabulary)
+
+    print('预测结果：%s' % out_string)
+
+
+if __name__ == '__main__':
+    image_path = 'dataset/test.png'
+    infer(image_path)
+
+</code></pre>
+                <div>
+                    <hr>
+
+标题：基于PaddlePaddle2.0验证码端到端的识别<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1642836291979.html" target="_blank">https://yeyupiaoling.github.io/articles/1642836291979.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1642836209911.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; PPASR中文语音识别（入门级）&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1642836351421.html">
+                            <span>基于PaddlePaddle 2.0动态图实现的CRNN文字识别模型&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="基于PaddlePaddle2.0验证码端到端的识别"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1642836291979.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1642836291979"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1642836291979",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1642836291979",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1642836291979', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

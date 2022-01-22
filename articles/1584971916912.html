@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Python2实现简单的爬虫 - 夜雨飘零</title><meta name="description" content="前言 有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。 爬虫的框架 整体框架 下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下： 调度端：主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口； URL管理器：管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL； 网页下载器：通过URL下载网页数据，并以字符串保存； 网页解析器：解析网页下载器获取到的字符串数据，获取用户需要的数据； 价值数据：所有有用的数据都存储在这里。 *图像来自慕课网课程 下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。 *图像来自慕课网课程 URL管理器 如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判...."/><meta property="og:description" content="前言 有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。 爬虫的框架 整体框架 下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下： 调度端：主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口； URL管理器：管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL； 网页下载器：通过URL下载网页数据，并以字符串保存； 网页解析器：解析网页下载器获取到的字符串数据，获取用户需要的数据； 价值数据：所有有用的数据都存储在这里。 *图像来自慕课网课程 下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。 *图像来自慕课网课程 URL管理器 如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Python2实现简单的爬虫 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584971916912.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Python2实现简单的爬虫 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584971916912.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="构建深度神经网络实现猫的二分类" href="https://yeyupiaoling.github.io/articles/1584971882247.html">
+            <link rel="next" title="《Improving Deep Neural Networks》的理论知识点" href="https://yeyupiaoling.github.io/articles/1584971993833.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">爬虫的框架</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">整体框架</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_3">URL管理器</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_4">网页下载器</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_5">网页解析器</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_6">爬虫程序</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_7">调度器</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_8">URL管理器</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_9">网页下载器</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_10">网页解析器</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_11">数据存储器</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_12">运行代码</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_13">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584971916912.html">
+                    Python2实现简单的爬虫
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584971916912.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584971916086">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584971916912.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584971916912.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20171208.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>有时候我们需要一些网络数据来工作、学习，比如我们做深度学习的。当做一个分类任务时，需要大量的图像数据，这个图像数据如果要人工一个个下载的，这很明显不合理的，这是就要用到爬虫程序。使用爬虫程序帮我们下载所需要的图像。那么我们就开始学习爬虫吧。</p>
+<h1 id="toc_h1_1">爬虫的框架</h1>
+<h2 id="toc_h2_2">整体框架</h2>
+<p>下图是爬虫的整体框架，其中包括调度端、URL管理器、网页下载器、网页解析器、价值数据，它们的作用如下：<br>
+<code>调度端：</code>主要是调用URL管理器、网页下载器、网页解析器，也设置爬虫的入口；<br>
+<code>URL管理器：</code>管理要爬网页的URL，添加新的URL，标记已爬过的URL，获取要爬的URL；<br>
+<code>网页下载器：</code>通过URL下载网页数据，并以字符串保存；<br>
+<code>网页解析器：</code>解析网页下载器获取到的字符串数据，获取用户需要的数据；<br>
+<code>价值数据：</code>所有有用的数据都存储在这里。<br>
+<img src="https://s1.ax1x.com/2020/03/31/Glnc5j.png" alt="这里写图片描述"></p>
+<center>*图像来自慕课网课程</center>
+<p>下图是爬虫的一个顺序图，从顺序图中可以看出调度器通过训练调用URL管理器、网页下载器、网页解析器来不断获取网络数据。<br>
+<img src="https://s1.ax1x.com/2020/04/03/GaAyss.png" alt="这里写图片描述"></p>
+<center>*图像来自慕课网课程</center>
+<h2 id="toc_h2_3">URL管理器</h2>
+<p>如图所示，URL管理器是负责管理要爬取网页的URL的。当有新的URL，就把新的URL添加到管理器中，在添加之前还有判断URL是否已经存在。在获取时，先判断是否还有URL，如果有就提前URL并将它移动到已爬取的列表中。这样保证不添加新的重复的URL<br>
+<img src="https://s1.ax1x.com/2020/03/30/GmcalT.png" alt="这里写图片描述"></p>
+<center>*图像来自慕课网课程</center>
+<h2 id="toc_h2_4">网页下载器</h2>
+<p>从URL管理器中获取的URL，我们要把这些URL的网页数据下载下来，这是就要使用到了网页下载器，这说到下载的有本地文件或字符串，这是因为当我们爬取的是文件时，如图片，下载的就是文件了。当我们爬取的是网页中的内容数据时，这时就是字符串。</p>
+<p><img src="https://s1.ax1x.com/2020/03/31/GlnW2q.png" alt="这里写图片描述"></p>
+<center>*图像来自慕课网课程</center>
+<p>网页下载器的代码片段：</p>
+<pre><code class="language-python"># coding=utf-8
+import urllib2
+
+url = "https://www.baidu.com"
+response = urllib2.urlopen(url)
+code = response.getcode()
+content = response.read()
+
+print "状态码：", code
+print "网页内容", content
+</code></pre>
+<p>还可以添加请求头，模仿其他浏览器访问</p>
+<pre><code class="language-python"># coding=utf-8
+import urllib2
+
+url = "https://www.baidu.com"
+request = urllib2.Request(url)
+# 模仿火狐浏览器
+request.add_header("user-agent", "Mozilla/5.0")
+response = urllib2.urlopen(request)
+code = response.getcode()
+content = response.read()
+
+print "状态码：", code
+print "网页内容", content
+</code></pre>
+<p>输出信息为：</p>
+<pre><code>状态码： 200
+网页内容 &lt;html&gt;
+&lt;head&gt;
+	&lt;script&gt;
+		location.replace(location.href.replace("https://","http://"));
+	&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;noscript&gt;&lt;meta http-equiv="refresh" content="0;url=http://www.baidu.com/"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2 id="toc_h2_5">网页解析器</h2>
+<p>在网页下载器中下载的众多字符串中，我们要提前我们需要的数据，如新的要爬取的URL、我们需要的网页数据。通过这个网页解析器就可以解析这些数据了。获取新的URL可以添加到URL管理器中，获取有用的数据就将它保存。<br>
+<img src="https://s1.ax1x.com/2020/04/02/GGfcfx.png" alt="这里写图片描述"></p>
+<center>*图像来自慕课网课程</center>
+<p>网页解析器的代码片段：</p>
+<pre><code class="language-python"># coding=utf-8
+from bs4 import BeautifulSoup
+
+html_doc = """
+&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse's story&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;p class="title"&gt;&lt;b&gt;The Dormouse's story&lt;/b&gt;&lt;/p&gt;
+"""
+
+soup = BeautifulSoup(html_doc, 'html.parser', from_encoding='utf-8')
+# 寻找属性class为title的p标签
+title_all = soup.find('p', class_="title")
+print title_all
+# 获取该标签对应的内容
+title = title_all.get_text()
+print title
+</code></pre>
+<p>输出信息如下：</p>
+<pre><code>&lt;p class="title"&gt;&lt;b&gt;The Dormouse's story&lt;/b&gt;&lt;/p&gt;
+The Dormouse's story
+</code></pre>
+<h1 id="toc_h1_6">爬虫程序</h1>
+<p>这个程序是爬取CSDN博客的文章，并爬取相关的文章。比如我们的爬虫入口是一篇<a href="https://blog.csdn.net/qq_33200967/article/details/70186759" target="_blank">《把项目上传到码云》</a>的文章，在每章文章的最后都有相关的文章推荐，这些推荐的文章的URL就是我们补充的URL来源。如：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GGW5iq.png" alt="这里写图片描述"></p>
+<p>然后观察整个文章的网页源码，可以得到文章的标题的代码片段如下，关键定位信息是<code>class="csdn_top"</code>：</p>
+<pre><code class="language-html">&lt;article&gt;
+    &lt;h1 class="csdn_top"&gt;把项目上传到码云&lt;/h1&gt;
+    &lt;div class="article_bar clearfix"&gt;
+        &lt;div class="artical_tag"&gt;
+            &lt;span class="original"&gt;
+            原创                &lt;/span&gt;
+            &lt;span class="time"&gt;2017年04月15日 20:39:02&lt;/span&gt;
+        &lt;/div&gt;
+</code></pre>
+<p>文章内容的代码片段如下，关键定位信息是<code>class="article_content csdn-tracking-statistics tracking-click"</code>：</p>
+<pre><code class="language-html"> &lt;div id="article_content" class="article_content csdn-tracking-statistics tracking-click" data-mod="popu_519" data-dsm="post"&gt;
+                            &lt;div class="markdown_views"&gt;
+                        &lt;p&gt;一、为什么要使用码云而不使用GitHub？会有很多朋友这样问，原因有以下几条： &lt;br&gt;
+</code></pre>
+<p>推荐文章的代码片段如下，关键定位信息是<code>strategy="BlogCommendFromBaidu_0"</code>：</p>
+<pre><code>      &lt;div class="recommend_list clearfix" id="rasss"&gt;
+                                          &lt;dl class="clearfix csdn-tracking-statistics recommend_article" data-mod="popu_387" data-poputype="feed"  data-feed-show="false"  data-dsm="post"&gt;
+                &lt;a href="https://blog.csdn.net/Mastery_Nihility/article/details/53020481"  target="_blank" strategy="BlogCommendFromBaidu_0"&gt;
+                    &lt;dd&gt;
+                        &lt;h2&gt;上传项目到开源中国码云&lt;/h2&gt;
+                        &lt;div class="summary"&gt;
+                            上传项目到开源中国码云 
+                        &lt;/div&gt;
+</code></pre>
+<p>有了这些定位，就可以开始爬取数据了，我们开始吧。</p>
+<h2 id="toc_h2_7">调度器</h2>
+<p>创建一个<code>spider_mamin.py</code>文件来编写调度器的代码，这个就是调度中心，在这里控制整个爬虫程序：</p>
+<pre><code class="language-python"># coding=utf-8
+import html_downloader
+import html_outputer
+import html_parser
+import url_manager
+
+class SpiderMain(object):
+    # 调度程序
+    def __init__(self):
+        # 获取URL管理器
+        self.urls = url_manager.UrlManager()
+        # 获取网页下载器
+        self.downloader = html_downloader.HtmlDownloader()
+        # 获取网页解析器
+        self.parser = html_parser.HtmlParser()
+        # 获取数据输出器
+        self.output = html_outputer.HtmlOutput()
+
+    def craw(self, root_url, max_count):
+        count = 1
+        # 添加爬虫入口的跟路径
+        self.urls.add_new_url(root_url)
+        # 创建一个循环,如果URL管理器中还有新的URL就一直循环
+        while self.urls.has_new_url():
+            try:
+                # 从URL管理器中获取新的URL
+                new_url = self.urls.get_new_url()
+                print 'craw %d : %s ' % (count, new_url)
+                # 下载网页
+                html_cont = self.downloader.downloader(new_url)
+                # 解析网页数据
+                new_urls, new_data = self.parser.parser(new_url, html_cont)
+                # 添加新的URL
+                self.urls.add_new_urls(new_urls)
+                # 添加新的数据
+                self.output.collect_data(new_data)
+                # 满足爬取数量及中断
+                if count == max_count:
+                    break
+                count = count + 1
+            except Exception, e:
+                print '爬取失败：', e
+        # 输出数据
+        self.output.output_html()
+
+if __name__ == '__main__':
+    # 爬虫的根URL
+    root_url = "https://blog.csdn.net/qq_33200967/article/details/70186759"
+    # 爬取的数量
+    max_count = 100
+    obj_spider = SpiderMain()
+    # 启动调度器
+    obj_spider.craw(root_url, max_count)
+</code></pre>
+<h2 id="toc_h2_8">URL管理器</h2>
+<p>创建一个<code>url_manager.py</code>文件编写URL管理器的代码，添加新的URL和提供URL给网页下载器，由这个程序负责：</p>
+<pre><code class="language-python"># coding=utf-8
+
+class UrlManager(object):
+    # url管理器
+    def __init__(self):
+        self.new_urls = set()
+        self.old_urls = set()
+
+    # 向管理器中添加一个新的url
+    def add_new_url(self, url):
+        if url is None:
+            return
+        # 判断要添加的URL是否已存在新列表或者旧列表中
+        if url not in self.new_urls and url not in self.old_urls:
+            self.new_urls.add(url)
+
+    # 向管理器中添加批量url
+    def add_new_urls(self, urls):
+        if urls is None or len(urls) == 0:
+            return
+        for url in urls:
+            # 添加新的URL
+            self.add_new_url(url)
+
+    # 判断管理器中是否有新的待爬取的url
+    def has_new_url(self):
+        return len(self.new_urls) != 0
+
+    # 从url中获取一个新的待爬取的url
+    def get_new_url(self):
+        # 获取并移除最先添加的URL
+        new_url = self.new_urls.pop()
+        # 把这个路径添加到已爬取的列表中
+        self.old_urls.add(new_url)
+        return new_url
+</code></pre>
+<h2 id="toc_h2_9">网页下载器</h2>
+<p>创建一个<code>html_downloader.py</code>文件来编写网页下载器的代码，下载网页的字符串数据，都是HTML的代码：</p>
+<pre><code class="language-python"># coding=utf-8
+import urllib2
+
+class HtmlDownloader(object):
+    # html下载器
+    def downloader(self, url):
+        # 如果路径为空就返回空
+        if url is None:
+            return None
+        # 打开网页数据
+        response = urllib2.urlopen(url)
+        # 判断是否访问成功，如果不成功就返回空
+        if response.getcode() != 200:
+            return None
+        # 返回网页数据
+        return response.read()
+</code></pre>
+<h2 id="toc_h2_10">网页解析器</h2>
+<p>创建一个<code>html_parser.py</code>文件来编写网页解析器的代码，从网页下载器获取的HTML格式的字符串中解析想要的数据个URL：</p>
+<pre><code class="language-python"># coding=utf-8
+import re
+from bs4 import BeautifulSoup
+
+class HtmlParser(object):
+    def parser(self, page_url, html_cont):
+        """
+        # html解析器
+        :param page_url: 网页的URL
+        :param html_cont: 网页的字符串数据
+        :return: 网页包含相关的URL和文章的内容
+        """
+        # 判断网页URL和网页内容是否为空
+        if page_url is None or html_cont is None:
+            return
+        # 获取解析器
+        soup = BeautifulSoup(html_cont, 'html.parser', from_encoding='utf-8')
+        # 获取解析到的URL
+        new_urls = self._get_new_urls(soup)
+        # 获取解析到的文章数据
+        new_data = self._get_new_data(page_url, soup)
+        return new_urls, new_data
+
+    # 解析相关文章的URL
+    def _get_new_urls(self, soup):
+        new_urls = set()
+        # 获取相关的文章URL,格式如下:
+        # &lt;a href="https://blog.csdn.net/qq_18601953/article/details/78395878"
+        # target="_blank" strategy="BlogCommendFromBaidu_7"&gt;
+        links = soup.find_all('a', strategy=re.compile(r"BlogCommendFromBaidu_\d+"))
+        # 提取所有相关的URL
+        for link in links:
+            new_url = link['href']
+            new_urls.add(new_url)
+        return new_urls
+
+    # 解析数据
+    def _get_new_data(self, page_url, soup):
+        res_data = {}
+        # 获取URLurl
+        res_data['url'] = page_url
+
+        # 获取标题&lt;h1 class="csdn_top"&gt;把项目上传到码云&lt;/h1&gt;
+        essay_title = soup.find('h1', class_="csdn_top")
+        res_data['title'] = essay_title.get_text()
+
+        # 内容标签的格式如下:
+        # &lt;div id="article_content" class="article_content csdn-tracking-statistics tracking-click"
+        # data-mod="popu_519" data-dsm="post"&gt;
+        essay_content = soup.find('div', class_="article_content csdn-tracking-statistics tracking-click")
+        res_data['content'] = essay_content.get_text()
+        return res_data
+</code></pre>
+<h2 id="toc_h2_11">数据存储器</h2>
+<p>创建一个<code>html_outputer.py</code>文件来编写存储数据的代码，当爬取完成数据之后，通过这个程序永久保存爬取的数据：</p>
+<pre><code class="language-python"># coding=utf-8
+
+class HtmlOutput(object):
+    #html输出器
+    def __init__(self):
+        self.datas = []
+
+    #收集数据
+    def collect_data(self, data):
+        if data is None:
+            return
+        self.datas.append(data)
+
+    #将收集好的数据写出到html文件中
+    def output_html(self):
+        fout = open('output.html','w')
+
+        fout.write("&lt;html&gt;")
+        fout.write("&lt;body&gt;")
+        fout.write("&lt;table&gt;")
+        if len(self.datas) == 0:
+            print "数据为空！"
+        #ascii
+        for data in self.datas:
+            fout.write("&lt;tr&gt;")
+            fout.write("&lt;td&gt;%s&lt;/td&gt;" % data['url'])
+            fout.write("&lt;td&gt;%s&lt;/td&gt;" % data['title'].encode('utf-8'))
+            fout.write("&lt;td&gt;%s&lt;/td&gt;" % data['content'].encode('utf-8'))
+            fout.write("&lt;/tr&gt;")
+
+        fout.write("&lt;/table&gt;")
+        fout.write("&lt;/body&gt;")
+        fout.write("&lt;/html&gt;")
+
+        fout.close()
+</code></pre>
+<h2 id="toc_h2_12">运行代码</h2>
+<p>运行调度器代码<code>spider_mamin.py</code>，可以看到爬取过程输出的日志信息，如果出现失败是正常的：</p>
+<pre><code class="language-text">craw 1 : https://blog.csdn.net/qq_33200967/article/details/70186759 
+craw 2 : https://blog.csdn.net/qq_18601953/article/details/78395878 
+craw 3 : https://blog.csdn.net/wust_lh/article/details/68068176 
+</code></pre>
+<p>爬取完成之后，所有的数据都会以HTML格式存储在<code>output.html</code>中。可以在浏览器中打开，如：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GMKpSx.png" alt="这里写图片描述"><br>
+为了读者方便使用代码，我已将这些代码打包了，可以在<a href="https://download.csdn.net/download/qq_33200967/10339299" target="_blank">这里下载</a>完整代码。</p>
+<h1 id="toc_h1_13">参考资料</h1>
+<ol>
+<li><a href="http://www.imooc.com/learn/563" target="_blank">http://www.imooc.com/learn/563</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：Python2实现简单的爬虫<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584971916912.html" target="_blank">https://yeyupiaoling.github.io/articles/1584971916912.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584971882247.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 构建深度神经网络实现猫的二分类&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584971993833.html">
+                            <span>《Improving Deep Neural Networks》的理论知识点&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="Python2实现简单的爬虫"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584971916912.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584971916086"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584971916086",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584971916086",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584971916086', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

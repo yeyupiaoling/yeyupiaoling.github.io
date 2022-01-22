@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>Python实现常见的排序算法 - 夜雨飘零</title><meta name="description" content="本章介绍使用Python实现场景的几种排序算法。分别有冒泡算法、快速排序、插入排序、希尔排序、选择排序、堆排序、归并排序、计数排序、桶排序、基数排序。"/><meta property="og:description" content="本章介绍使用Python实现场景的几种排序算法。分别有冒泡算法、快速排序、插入排序、希尔排序、选择排序、堆排序、归并排序、计数排序、桶排序、基数排序。"/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="Python实现常见的排序算法 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1642516665233.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="Python实现常见的排序算法 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1642516665233.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="双目摄像头测量距离" href="https://yeyupiaoling.github.io/articles/1642516237551.html">
+            <link rel="next" title="基于PaddlePaddle实现的目标检测模型SSD" href="https://yeyupiaoling.github.io/articles/1642598329432.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">冒泡排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">快速排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">插入排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">希尔排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">选择排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_6">堆排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_7">归并排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_8">计数排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_9">桶排序</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_10">基数排序</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1642516665233.html">
+                    Python实现常见的排序算法
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Python">
+                        Python</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1642516665233.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1642516665233">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1642516665233.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1642516665233.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://b3logfile.com/bing/20210215.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<blockquote>
+<p>原文博客：<a href="http://blog.doiduoyi.com" target="_blank">Doi技术团队</a><br>
+链接地址：<a href="https://blog.doiduoyi.com/authors/1584446358138" target="_blank">https://blog.doiduoyi.com/authors/1584446358138</a><br>
+初心：记录优秀的Doi技术团队学习经历<br>
+本文链接：<a href="https://blog.doiduoyi.com/articles/1589603256882.html" target="_blank">Python实现常见的排序算法</a></p>
+</blockquote>
+<h1 id="toc_h1_0">前言</h1>
+<p>本章介绍使用Python实现场景的几种排序算法。分别有冒泡算法、快速排序、插入排序、希尔排序、选择排序、堆排序、归并排序、计数排序、桶排序、基数排序。</p>
+<p>创建一个比较大的list，用于测试排序算法使用。</p>
+<pre><code class="language-python">import numpy as np
+import time
+
+src_list = np.random.randint(1, 10000000, (100000)).tolist()
+</code></pre>
+<h1 id="toc_h1_1">冒泡排序</h1>
+<p>冒泡排序是一种简单直观的排序算法。它重复地走访过要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来。走访数列的工作是重复地进行直到没有再需要交换，也就是说该数列已经排序完成。这个算法的名字由来是因为越小的元素会经由交换慢慢"浮"到数列的顶端。</p>
+<pre><code class="language-python">def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n-1):
+        for j in range(0, n-1-i):
+            if arr[j] &gt; arr[j+1] :
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = bubble_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_2">快速排序</h1>
+<p>在一个数据集中取个数作为参考点，大于该数的元素放在其右边；小于该数的元素放在其左边。这样就将数据集分成两部分，大于参考值部分和小于参考值部分，递归该过程，直到序列中所有记录均有序。</p>
+<pre><code class="language-python">def quick_sort(listt, left, right):
+    if left &gt;= right:
+        return listt
+ 
+    # 选择参考点，该调整范围的第1个值
+    pivot = listt[left]
+    low = left  
+    high = right
+ 
+    while left &lt; right:
+        # 从右边开始查找大于参考点的值
+        while left &lt; right and listt[right] &gt;= pivot:
+            right -= 1
+         # 这个位置的值先挪到左边
+        listt[left] = listt[right] 
+ 
+         # 从左边开始查找小于参考点的值
+        while left &lt; right and listt[left] &lt;= pivot:
+            left += 1
+         # 这个位置的值先挪到右边
+        listt[right] = listt[left]
+ 
+    # 写回改成的值
+    listt[left] = pivot
+ 
+    # 递归，并返回结果
+    quick_sort(listt, low, left - 1)    # 递归左边部分
+    quick_sort(listt, left + 1, high)   # 递归右边部分
+    return listt
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = quick_sort(src_list, 0, 1000)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_3">插入排序</h1>
+<p>插入排序是一种简单直观的排序算法。它的工作原理是通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入</p>
+<pre><code class="language-python">def insert_sort(alist):
+    length = len(alist)
+    for i in range(1,length):
+        for j in range(i, 0, -1):
+            if alist[j] &lt; alist[j - 1]:
+                alist[j], alist[j - 1] = alist[j - 1], alist[i]
+            else:
+                break
+    return alist
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = insert_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_4">希尔排序</h1>
+<p>希尔排序，也称递减增量排序算法，是插入排序的一种更高效的改进版本。但希尔排序是非稳定排序算法。希尔排序的基本思想是：先将整个待排序的记录序列分割成为若干子序列分别进行直接插入排序，待整个序列中的记录"基本有序"时，再对全体记录进行依次直接插入排序。</p>
+<pre><code class="language-python">def shell_sort(alist):
+    n = len(alist)
+    gap = n // 2
+    while gap &gt;= 1:
+        for i in range(gap,n):
+            while (i - gap) &gt;= 0:
+                if alist[i] &lt; alist[i-gap]:
+                    alist[i], alist[i-gap] = alist[i-gap], alist[i]
+                    i = i - gap
+                else:
+                    break
+        gap = gap // 2
+    return alist
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = shell_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_5">选择排序</h1>
+<p>选择排序是一种简单直观的排序算法。它的工作原理：首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置，然后再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。</p>
+<pre><code class="language-python">def select_sort(alist):
+    n = len(alist)
+    for i in range(n):
+    # 设置索引 i为最小值的索引
+        min_idx = i
+        # 通过比较，不断调整最小值的索引位置
+        for j in range(i,n):
+            if alist[j] &lt; alist[min_idx]:
+                min_idx = j
+        # 交换第i个值与最小值
+        alist[i], alist[min_idx] = alist[min_idx], alist[i]
+    return alist
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = select_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_6">堆排序</h1>
+<p>堆排序（Heapsort）是指利用堆这种数据结构所设计的一种排序算法。堆是一个近似完全二叉树的结构，并同时满足堆的性质：即子结点的键值或索引总是小于（或者大于）它的父节点。堆排序可以说是一种利用堆的概念来排序的选择排序。</p>
+<pre><code class="language-python"># 调整堆的结构，使其父节点的值大于子节点的值
+def max_heap(heap, heapsize, root):
+    left = 2*root+1
+    right = left + 1
+    large = root
+    if left &lt; heapsize and heap[large] &lt; heap[left]:
+        large = left
+    if right &lt; heapsize and heap[large] &lt; heap[right]:
+        large = right
+    # 若large=right或large=left，则说明，出现比父节点大的子节点，这时对调，使子节点变为父节点
+    if large != root:
+        heap[large], heap[root] = heap[root], heap[large]
+        max_heap(heap, heapsize, large)
+    
+# 构造一个堆，对堆中数据重新排序
+def build_max_heap(heap):
+    length = len(heap)
+    # 从后往前调整结构
+    for i in range((length-2)//2,-1,-1):
+        max_heap(heap, length, i)
+    
+# 将根节点取出与最后一位对调，对前面len-1个节点继续进行对调过程
+def heap_sort(heap):
+    build_max_heap(heap)
+    for i in range(len(heap)-1,-1,-1):
+        heap[0], heap[i] = heap[i], heap[0]
+        max_heap(heap,i,0)
+    return heap
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = heap_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_7">归并排序</h1>
+<p>归并排序(mergesort)是创建在归并操作上的一种有效的排序算法，该算法是采用分治法的一个非常典型的应用。<br>
+分治法：<br>
+分割：递归地把当前序列平均分割成两半<br>
+集成：在保持元素顺序的同时将上一步得到的子序列集成到一起(归并)</p>
+<pre><code class="language-python">def merge_sort(alist):
+    if len(alist) &lt; 2:
+        return alist
+    # 将列表分成更小的两个列表
+    mid = int(len(alist)/2)
+    # 分别对左右两个列表进行处理，分别返回两个排序好的列表
+    left = merge_sort(alist[:mid])
+    right = merge_sort(alist[mid:])
+    # 对排序好的两个列表合并，产生一个新的排序好的列表
+    return merge(left,right)
+
+def merge(left,right):
+    i = 0
+    j = 0
+    result = []
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt; right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result += left[i:]
+    result += right[j:]
+    return result
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = merge_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_8">计数排序</h1>
+<p>计数排序的核心在于将输入的数据值转化为键存储在额外开辟的数组空间中。作为一种线性时间复杂度的排序，计数排序要求输入的数据必须是有确定范围的整数。<br>
+对每一个输入的元素a[i]，确定小于 a[i] 的元素个数。所以可以直接把 a[i] 放到它输出数组中的位置上。假设有5个数小于 a[i]，所以 a[i] 应该放在数组的第6个位置上</p>
+<pre><code class="language-python">def count_sort(alist):
+    # 找到最大最小值
+    min_num = min(alist)
+    max_num = max(alist)
+    # 初始化计数列表
+    count_list = [0]*(max_num-min_num+1)
+    # 对列表中的每一个元素计数
+    for num in alist:
+        count_list[num-min_num] += 1
+    alist.clear()
+    # 当某个元素的个数不为 0，将该元素填回alist列表
+    for cur_num, count in enumerate(count_list):
+        while count != 0:
+            alist.append(cur_num+min_num)
+            count -= 1
+    return alist
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = count_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_9">桶排序</h1>
+<p>把数组a划分为n个大小相同子区间（桶），每个子区间各自排序，最后合并。桶排序要求数据的分布必须均匀，不然可能会失效。计数排序是桶排序的一种特殊情况，可以把计数排序当成每个桶里只有一个元素的情况。</p>
+<p><strong>原理：</strong><br>
+(1) 设置一个定量的数组当作空桶<br>
+(2) 遍历输入数据，并且把数据一个一个放到对应的桶里去<br>
+(3) 对每个不是空的桶进行排序<br>
+(4) 从不是空的桶里把排好序的数据拼接起来</p>
+<pre><code class="language-python">def bucket_sort(alist):
+    min_num = min(alist)
+    max_num = max(alist)
+    # 设置桶的大小
+    bucket_size = (max_num - min_num)/len(alist)
+    # 创建桶数组
+    bucket_list = [[]for i in range(len(alist)+1)]
+    # 向桶数组填数
+    for num in alist:
+        bucket_list[int((num-min_num)//bucket_size)].append(num)
+    alist.clear()
+    # 回填，这里桶内部排序直接调用了sorted
+    for i in bucket_list:
+        for j in sorted(i):
+            alist.append(j)
+    return alist
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = bucket_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+<h1 id="toc_h1_10">基数排序</h1>
+<p>基数排序的总体思路就是将待排序数据拆分成多个关键字进行排序，也就是说，基数排序的实质是多关键字排序，比如说成绩的排序，如果两个人总分相同，则语文高的排在前面，语文成绩也相同则数学高的排在前面，如果对数字进行排序，那么个位、十位、百位就是不同优先级的关键</p>
+<p><strong>原理：</strong><br>
+(1) 取得数组中的最大数，并取得位数<br>
+(2) 建立桶数组<br>
+(3) 按位数的大小分别装进不同的桶里<br>
+(4) 将原数组清空，将各个桶里的数据依次添加进原列表<br>
+(5) 再进行前一位的排序，依次循环，直到排序的位数大于最大值的位数</p>
+<pre><code class="language-python">def radix_sort(alist):
+    # 记录正在对哪一位进行排序，最低位为个位
+    i = 0
+    # 最大值的位数
+    max_num = max(alist)
+    j = len(str(max_num))
+    while i &lt; j:
+        # 建立桶数组，数字为0-9，所以建10个桶
+        bucket_list = [[]for i in range(10)]
+        # 按位数的大小分别装进不同的桶里
+        for num in alist:
+            bucket_list[int(num/(10**i)%10)].append(num)
+        #将原列表清空，将各个桶里的数据依次添加进原列表
+        alist.clear()
+        for l in bucket_list:
+            for b in l:
+                alist.append(b)
+        # 再进行前一位的排序，依次循环，直到排序的位数大于最大值的位数
+        i += 1
+    return alist
+</code></pre>
+<pre><code class="language-python">start = time.time()
+result = radix_sort(src_list)
+end = time.time()
+print ("耗时：%d 毫秒" % int(round((end - start) * 1000)))
+</code></pre>
+                <div>
+                    <hr>
+
+标题：Python实现常见的排序算法<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1642516665233.html" target="_blank">https://yeyupiaoling.github.io/articles/1642516665233.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1642516237551.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 双目摄像头测量距离&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1642598329432.html">
+                            <span>基于PaddlePaddle实现的目标检测模型SSD&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="Python实现常见的排序算法"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1642516665233.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1642516665233"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1642516665233",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1642516665233",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1642516665233', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 3ms, 2022/01/22 16:08:29 -->

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《我的PaddlePaddle学习之路》笔记十——自定义图像数据集实现目标检测 - 夜雨飘零</title><meta name="description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 在阅读这一篇文章之前，要先阅读上一篇文章使用VOC数据集的实现目标检测，因为大部分的程序都是使用上一篇文章所使用到的代码和数据集的格式。在这篇文章中介绍如何使用自定义的图像数据集来做目标检测。 数据集介绍 我们本次使用的到的数据集是自然场景下的车牌，不知读者是否还记得在车牌端到端的识别这篇文章中，我们使用到的车牌是如何裁剪的，我们是使用OpenCV经过多重的的图像处理才达到车牌定位的，而且定位的效果比较差。在这篇文章中我们尝试使用神经网络来定位车牌位置。 下载车牌 我们先从网络上下载车牌数据，来提供给我们进行训练，核心代码片段如下： def start_download(self): self.download_sum = 0 gsm = 80 str_gsm = str(gsm) pn = 0 if not os.path.exists(self.save_path): os.makedirs(self.save_path) while self.download_sum &lt; self.do...."/><meta property="og:description" content="*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7 前言 在阅读这一篇文章之前，要先阅读上一篇文章使用VOC数据集的实现目标检测，因为大部分的程序都是使用上一篇文章所使用到的代码和数据集的格式。在这篇文章中介绍如何使用自定义的图像数据集来做目标检测。 数据集介绍 我们本次使用的到的数据集是自然场景下的车牌，不知读者是否还记得在车牌端到端的识别这篇文章中，我们使用到的车牌是如何裁剪的，我们是使用OpenCV经过多重的的图像处理才达到车牌定位的，而且定位的效果比较差。在这篇文章中我们尝试使用神经网络来定位车牌位置。 下载车牌 我们先从网络上下载车牌数据，来提供给我们进行训练，核心代码片段如下： def start_download(self): self.download_sum = 0 gsm = 80 str_gsm = str(gsm) pn = 0 if not os.path.exists(self.save_path): os.makedirs(self.save_path) while self.download_sum &lt; self.do...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《我的PaddlePaddle学习之路》笔记十——自定义图像数据集实现目标检测 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584971203171.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《我的PaddlePaddle学习之路》笔记十——自定义图像数据集实现目标检测 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584971203171.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="《我的PaddlePaddle学习之路》笔记九——使用VOC数据集的实现目标检测" href="https://yeyupiaoling.github.io/articles/1584971126233.html">
+            <link rel="next" title="《我的PaddlePaddle学习之路》笔记十一——新版本Fluid的使用" href="https://yeyupiaoling.github.io/articles/1584971267141.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">数据集介绍</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_2">下载车牌</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_3">重命名图像</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">标注数据集</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_5">安装LabelImg</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_6">使用LabelImg</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_7">生成图像列表</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_8">训练模型</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_9">预训练模型处理</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_10">开始训练</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_11">评估模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_12">预测数据</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_13">获取预测数据</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_14">获取预测结果</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_15">显示预测结果</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_16">项目代码</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_17">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584971203171.html">
+                    《我的PaddlePaddle学习之路》笔记十——自定义图像数据集实现目标检测
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584971203171.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584971203051">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584971203171.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584971203171.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20180302.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<p>*本篇文章基于 PaddlePaddle 0.11.0、Python 2.7</p>
+<h1 id="toc_h1_0">前言</h1>
+<hr>
+<p>在阅读这一篇文章之前，要先阅读上一篇文章<a href="http://blog.csdn.net/qq_33200967/article/details/79126780" target="_blank">使用VOC数据集的实现目标检测</a>，因为大部分的程序都是使用上一篇文章所使用到的代码和数据集的格式。在这篇文章中介绍如何使用自定义的图像数据集来做目标检测。</p>
+<h1 id="toc_h1_1">数据集介绍</h1>
+<hr>
+<p>我们本次使用的到的数据集是自然场景下的车牌，不知读者是否还记得在<a href="http://blog.csdn.net/qq_33200967/article/details/79095335" target="_blank">车牌端到端的识别</a>这篇文章中，我们使用到的车牌是如何裁剪的，我们是使用OpenCV经过多重的的图像处理才达到车牌定位的，而且定位的效果比较差。在这篇文章中我们尝试使用神经网络来定位车牌位置。</p>
+<h2 id="toc_h2_2">下载车牌</h2>
+<p>我们先从网络上下载车牌数据，来提供给我们进行训练，核心代码片段如下：</p>
+<pre><code class="language-python">def start_download(self):
+    self.download_sum = 0
+    gsm = 80
+    str_gsm = str(gsm)
+    pn = 0
+    if not os.path.exists(self.save_path):
+        os.makedirs(self.save_path)
+    while self.download_sum &lt; self.download_max:
+        str_pn = str(self.download_sum)
+        url = 'http://image.baidu.com/search/flip?tn=baiduimage&amp;ie=utf-8&amp;' \
+              'word=' + self.key_word + '&amp;pn=' + str_pn + '&amp;gsm=' + str_gsm + '&amp;ct=&amp;ic=0&amp;lm=-1&amp;width=0&amp;height=0'
+        print url
+        result = requests.get(url)
+        self.downloadImages(result.text)
+    print '下载完成'
+</code></pre>
+<h2 id="toc_h2_3">重命名图像</h2>
+<p>下载好的图像会存放在<code>data/plate_number/images/</code>这个路径下，其中下载的一下数据可能不是车牌的图像，我们需要把它删除掉。然后为了让我们的数据集更符合VOC数据集，我们要对图像重命名，命名程序如下：</p>
+<pre><code class="language-python"># coding=utf-8
+import os
+
+def rename(images_dir):
+    # 获取所有图像
+    images = os.listdir(images_dir)
+    i = 1
+    for image in images:
+        src_name = images_dir + image
+        # 以六位数字命名，符合VOC数据集格式
+        name = '%06d.jpg' % i
+        dst_name = images_dir + name
+        os.rename(src_name,dst_name)
+        i += 1
+    print '重命名完成'
+
+if __name__ == '__main__':
+    # 要重命名的文件所在的路径
+    images_dir = '../data/plate_number/images/'
+    rename(images_dir)
+</code></pre>
+<h1 id="toc_h1_4">标注数据集</h1>
+<hr>
+<p>图像数据我们有了，也命名完成了，但是我们还缺少一个非常重要的标注信息，在VOC数据集中，每张图像的标注信息是存放在<code>XML</code>文件中的，并且命名跟图像是一样的（后缀名除外），所以我们要制作标注信息文件。当然，那么复杂的工作，肯定要一个程序来协助完成，我们使用的是LabelImg。下面就介绍使用LabelImg标注我们的图像。</p>
+<h2 id="toc_h2_5">安装LabelImg</h2>
+<p>在Ubuntu 16.04上安装LabelImg，操作非常简单，通过几行命名就可以完成安装了</p>
+<pre><code class="language-python"># 获取管理员权限
+sudo su
+# 安装依赖库
+apt-get install pyqt4-dev-tools
+pip install lxml
+# 安装labelImg
+pip install labelImg
+# 退出管理员权限
+exit
+# 运行labelImg
+labelImg
+</code></pre>
+<h2 id="toc_h2_6">使用LabelImg</h2>
+<p>运行程序之后，显示的界面如下：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GMKu1P.png" alt="这里写图片描述"><br>
+然后我们点击<code>Open Dir</code>打开图像所在的文件夹<code>data/plate_number/images/</code>，程序显示如下：<br>
+<img src="https://s1.ax1x.com/2020/04/02/GYw9ET.png" alt="这里写图片描述"><br>
+到这里我们不要急于标注图像，我们要先设置保存标注文件存放的位置，点击<code>Change Save Dir</code>选择保存标注文件存放的位置<code>data/plate_number/annotation/</code>，然后在点击<code>Create RectBox</code>标注车牌的位置，并打上标签<code>plate_number</code>。最后别忘了保存标注文件，点击<code>Save</code>，就会以图像的名称命名标注文件并保存。然后就可以点击<code>Next Image</code>，标注下一个图像了。<br>
+<img src="https://s1.ax1x.com/2020/04/02/GGfUpV.png" alt="这里写图片描述"><br>
+标注的文件信息如下，符合VOC数据集格式要求：</p>
+<pre><code class="language-xml">&lt;annotation&gt;
+	&lt;folder&gt;images&lt;/folder&gt;
+	&lt;filename&gt;000001.jpg&lt;/filename&gt;
+	&lt;path&gt;/home/yeyupiaoling/data/plate_number/images/000001.jpg&lt;/path&gt;
+	&lt;source&gt;
+		&lt;database&gt;Unknown&lt;/database&gt;
+	&lt;/source&gt;
+	&lt;size&gt;
+		&lt;width&gt;750&lt;/width&gt;
+		&lt;height&gt;562&lt;/height&gt;
+		&lt;depth&gt;3&lt;/depth&gt;
+	&lt;/size&gt;
+	&lt;segmented&gt;0&lt;/segmented&gt;
+	&lt;object&gt;
+		&lt;name&gt;plate_number&lt;/name&gt;
+		&lt;pose&gt;Unspecified&lt;/pose&gt;
+		&lt;truncated&gt;0&lt;/truncated&gt;
+		&lt;difficult&gt;0&lt;/difficult&gt;
+		&lt;bndbox&gt;
+			&lt;xmin&gt;225&lt;/xmin&gt;
+			&lt;ymin&gt;298&lt;/ymin&gt;
+			&lt;xmax&gt;560&lt;/xmax&gt;
+			&lt;ymax&gt;405&lt;/ymax&gt;
+		&lt;/bndbox&gt;
+	&lt;/object&gt;
+&lt;/annotation&gt;
+</code></pre>
+<h2 id="toc_h2_7">生成图像列表</h2>
+<p>有了图像和图像的标注文件，我们还需要两个图像列表，训练图像列表<code>trainval.txt</code>和测试图像列表<code>test.txt</code>，应为我们这次的数据集的文件夹的结构跟之前的不一样，所以我们生成图像列表的程序也不一样了。</p>
+<p>首先要读取所有的图像和标注文件，并将他们一一对应：</p>
+<pre><code class="language-python">for images in all_images:
+    trainval = []
+    test = []
+    if data_num % 10 == 0:
+        # 没10张图像取一个做测试集
+        name = images.split('.')[0]
+        annotation = os.path.join(annotation_path, name + '.xml')
+        # 如果该图像的标注文件不存在，就不添加到图像列表中
+        if not os.path.exists(annotation):
+            continue
+        test.append(os.path.join(images_path, images))
+        test.append(annotation)
+        # 添加到总的测试数据中
+        test_list.append(test)
+    else:
+        # 其他的的图像做训练数据集
+        name = images.split('.')[0]
+        annotation = os.path.join(annotation_path, name + '.xml')
+        # 如果该图像的标注文件不存在，就不添加到图像列表中
+        if not os.path.exists(annotation):
+            continue
+        trainval.append(os.path.join(images_path, images))
+        trainval.append(annotation)
+        # 添加到总的训练数据中
+        trainval_list.append(trainval)
+    data_num += 1
+</code></pre>
+<p>然后把他们写入到图像列表的文件中，为了使得训练数据是随机性的，可以对训练的数据集打乱一下。</p>
+<pre><code class="language-python"># 打乱训练数据
+random.shuffle(trainval_list)
+# 保存训练图像列表
+with open(os.path.join(output_dir, 'trainval.txt'), 'w') as ftrainval:
+    for item in trainval_list:
+        ftrainval.write(item[0] + ' ' + item[1] + '\n')
+# 保存测试图像列表
+with open(os.path.join(output_dir, 'test.txt'), 'w') as ftest:
+    for item in test_list:
+        ftest.write(item[0] + ' ' + item[1] + '\n')
+</code></pre>
+<h1 id="toc_h1_8">训练模型</h1>
+<hr>
+<p>有了图像数据和标注文件，也有了图像列表，我们就可以开始训练模型了，在训练之前，我们还有修改一下配置文件<code>pascal_voc_conf.py</code>，把类别改成2，因为我们只有车牌和背景，所以只有两个类别。</p>
+<pre><code class="language-python"># 图像的分类种数
+__C.CLASS_NUM = 2
+</code></pre>
+<h2 id="toc_h2_9">预训练模型处理</h2>
+<p>如果直接训练是会出现浮点异常的，我们需要一个预训练的模型来初始化训练模型，我们这次使用的初始化模型同样是<a href="http://paddlemodels.bj.bcebos.com/v2/vgg_model.tar.gz" target="_blank">官方预训练的模型</a>，但是不能直接使用，还有删除一些没用的文件，因为我们的类别数量更之前的不一样，官方预训练的模型的部分文件如下：<br>
+<img src="https://s1.ax1x.com/2020/03/30/GmcUpV.png" alt="这里写图片描述"><br>
+<strong>我们把文件名中包含mbox的文件都删掉</strong>就可以用来做我们的初始化模型了。</p>
+<h2 id="toc_h2_10">开始训练</h2>
+<p>最后开始训练使用的是2个GPU，因为使用到的神经网络仅支持CUDA GPU环境，所以只能使用GPU来进行训练。<code>train_file_list</code>是训练图像列表文件路径，<code>dev_file_list</code>是测试图像列表文件路径，<code>data_args</code>是数据集的设置信息，<code>init_model_path</code>使用预训练的模型初始化训练参数的模型。</p>
+<pre><code class="language-python">
+if __name__ == "__main__":
+    # 初始化PaddlePaddle
+    paddle.init(use_gpu=True, trainer_count=2)
+    # 设置数据参数
+    data_args = data_provider.Settings(
+        data_dir='../data',
+        label_file='../data/label_list',
+        resize_h=cfg.IMG_HEIGHT,
+        resize_w=cfg.IMG_WIDTH,
+        mean_value=[104, 117, 124])
+    # 开始训练
+    train(
+        train_file_list='../data/trainval.txt',
+        dev_file_list='../data/test.txt',
+        data_args=data_args,
+        init_model_path='../models/vgg_model.tar.gz')
+</code></pre>
+<p>训练的过程中输入以下的日志信息：</p>
+<pre><code class="language-text">
+Pass 0, Batch 0, TrainCost 16.567970, Detection mAP=0.014627
+......
+Test with Pass 0, TestCost: 8.723172, Detection mAP=0.00609719
+
+Pass 1, Batch 0, TrainCost 7.185760, Detection mAP=0.239866
+......
+Test with Pass 1, TestCost: 6.301503, Detection mAP=60.357
+
+Pass 2, Batch 0, TrainCost 6.052617, Detection mAP=32.094097
+......
+Test with Pass 2, TestCost: 5.375503, Detection mAP=48.9882
+</code></pre>
+<h1 id="toc_h1_11">评估模型</h1>
+<hr>
+<p>我们同样可以评估我们训练好的模型，了解模型收敛的情况。<code>eval_file_list</code>是要用来评估模型的数据集，我们使用的是训练是使用的测试数据集，<code>batch_size</code>是batch的大小，<code>data_args</code>是数据集的设置信息，<code>model_path</code>要评估模型的路径。</p>
+<pre><code class="language-python">if __name__ == "__main__":
+    paddle.init(use_gpu=True, trainer_count=2)
+    # 设置数据参数
+    data_args = data_provider.Settings(
+        data_dir='../data',
+        label_file='../data/label_list',
+        resize_h=cfg.IMG_HEIGHT,
+        resize_w=cfg.IMG_WIDTH,
+        mean_value=[104, 117, 124])
+    # 开始评估
+    eval(eval_file_list='../data/test.txt',
+         batch_size=4,
+         data_args=data_args,
+         model_path='../models/params_pass.tar.gz')
+</code></pre>
+<p>评估输出的结果如下：</p>
+<pre><code class="language-text">TestCost: 1.813083, Detection mAP=90.5595
+</code></pre>
+<h1 id="toc_h1_12">预测数据</h1>
+<hr>
+<h2 id="toc_h2_13">获取预测数据</h2>
+<p>首先我们先要找几张图像来作为预测的数据，我们在网上下载几张之前没有使用到的图像，把它们存放在<code>images/infer/</code>目录下，并在<code>images/infer.txt</code>文件中写入它们的路径，如下：</p>
+<pre><code class="language-text">infer/000001.jpg
+infer/000002.jpg
+infer/000003.jpg
+infer/000004.jpg
+infer/000005.jpg
+infer/000006.jpg
+</code></pre>
+<h2 id="toc_h2_14">获取预测结果</h2>
+<p>然后通过调用预测函数就可以获取到预测结果，并且把预测结果存放在<code>images/infer.res</code>。<code>eval_file_list</code>是要用来预测的数据集，就是上面获得的图像路径文件；<code>save_path</code>是保存预测结果的路径，预测的结果会存放在这个文件中；<code>batch_size</code>是batch的大小；<code>data_args</code>是数据集的设置信息；<code>model_path</code>要使用模型的路径；<code>threshold</code>筛选的最低得分。</p>
+<pre><code class="language-python">if __name__ == "__main__":
+    paddle.init(use_gpu=True, trainer_count=2)
+    # 设置数据参数
+    data_args = data_provider.Settings(
+        data_dir='../images',
+        label_file='../data/label_list',
+        resize_h=cfg.IMG_HEIGHT,
+        resize_w=cfg.IMG_WIDTH,
+        mean_value=[104, 117, 124])
+    # 开始预测,batch_size只能设置为1，否则会数据丢失
+    infer(
+        eval_file_list='../images/infer.txt',
+        save_path='../images/infer.res',
+        data_args=data_args,
+        batch_size=1,
+        model_path='../models/params_pass.tar.gz',
+        threshold=0.3)
+</code></pre>
+<p>预测的结果保存的文件格式是：<code>图像的路径 分类的标签 目标框的得分 xmin ymin xmax ymax</code>，具体如下：</p>
+<pre><code class="language-text">infer/000001.jpg        0       0.9999114       357.44736313819885 521.2164137363434 750.5996704101562 648.5584638118744
+infer/000002.jpg        0       0.9970805       102.86840772628784 94.18213963508606 291.60091638565063 155.58562874794006
+infer/000003.jpg        0       0.7187747       222.9731798171997 168.14028024673462 286.6227865219116 194.68939304351807
+infer/000004.jpg        0       0.9988129       197.94835299253464 177.8149015903473 285.8962297439575 218.93768119812012
+infer/000005.jpg        0       0.9149439       98.09065014123917 288.86341631412506 237.42297291755676 331.9027876853943
+infer/000005.jpg        0       0.9114895       544.3056106567383 235.35346180200577 674.311637878418 283.9097347855568
+infer/000006.jpg        0       0.92390853      265.203565120697 277.6864364147186 412.7485656738281 344.3739159107208
+</code></pre>
+<h2 id="toc_h2_15">显示预测结果</h2>
+<p>预测的结果是一串数据，对于我们来说，并不是很直观，我们同样要编写一个程序，让它把每张图像的车牌框出来。程序的核心代码如下：</p>
+<pre><code class="language-python"># 读取每张图像
+for img_path in all_img_paht:
+    im = cv2.imread('../images/' + img_path)
+    # 为每张图像画上所有的框
+    for label_1 in all_labels:
+        label_img_path = label_1[0]
+        # 判断是否是统一路径
+        if img_path == label_img_path:
+            xmin, ymin, xmax, ymax = label_1[3].split(' ')
+            # 类型转换
+            xmin = float(xmin)
+            ymin = float(ymin)
+            xmax = float(xmax)
+            ymax = float(ymax)
+            # 画框
+            cv2.rectangle(im, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (0, 255, 0), 3)
+    # 保存画好的图像
+    names = img_path.strip().split('/')
+    name = names[len(names)-1]
+    cv2.imwrite('../images/result/%s' % name, im)
+</code></pre>
+<p>最后通过在入口调用该方法就可以，画好的框的图像都会保存到<code>images/result/</code>目录下，代码如下：</p>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 预测的图像路径文件
+    img_path_list = '../images/infer.txt'
+    # 预测结果的文件路径
+    result_data_path = '../images/infer.res'
+    # 保存画好的图像路径
+    save_path = '../images/result'
+    show(img_path_list, result_data_path, save_path)
+</code></pre>
+<p>预测前的图像：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GMK0nU.jpg" alt="这里写图片描述"></p>
+<p>预测后的图像：<br>
+<img src="https://s1.ax1x.com/2020/03/30/GnCuOf.jpg" alt="这里写图片描述"></p>
+<h1 id="toc_h1_16">项目代码</h1>
+<hr>
+<p>GitHub地址:<a href="https://github.com/yeyupiaoling/LearnPaddle" target="_blank">https://github.com/yeyupiaoling/LearnPaddle</a></p>
+<h1 id="toc_h1_17">参考资料</h1>
+<hr>
+<ol>
+<li><a href="http://paddlepaddle.org/" target="_blank">http://paddlepaddle.org/</a></li>
+<li><a href="https://github.com/tzutalin/labelImg" target="_blank">https://github.com/tzutalin/labelImg</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《我的PaddlePaddle学习之路》笔记十——自定义图像数据集实现目标检测<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584971203171.html" target="_blank">https://yeyupiaoling.github.io/articles/1584971203171.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584971126233.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《我的PaddlePaddle学习之路》笔记九——使用VOC数据集的实现目标检测&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584971267141.html">
+                            <span>《我的PaddlePaddle学习之路》笔记十一——新版本Fluid的使用&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《我的PaddlePaddle学习之路》笔记十——自定义图像数据集实现目标检测"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584971203171.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584971203051"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584971203051",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584971203051",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584971203051', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 5ms, 2022/01/22 16:08:29 -->

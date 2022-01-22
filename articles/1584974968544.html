@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别 - 夜雨飘零</title><meta name="description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note11 前言 本章将介绍如何使用PaddlePaddle训练自己的图片数据集，在之前的图像数据集中，我们都是使用PaddlePaddle自带的数据集，本章我们就来学习如何让PaddlePaddle训练我们自己的图片数据集。 爬取图像 在本章中，我们使用的是自己的图片数据集，所以我们需要弄一堆图像来制作训练的数据集。下面我们就编写一个爬虫程序，让其帮我们从百度图片中爬取相应类别的图片。 创建一个download_image.py文件用于编写爬取图片程序。首先导入所需的依赖包。 import re import uuid import requests import os import numpy import imghdr from PIL import Image 然后编写一个下载图片的函数，这个是程序核心代码。参数是下载图片的关键、保存的名字、下载图片的数量。关键字是百度搜索图片的关键。 # 获取百度图片下载图片 def download_ima...."/><meta property="og:description" content="GitHub地址：https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note11 前言 本章将介绍如何使用PaddlePaddle训练自己的图片数据集，在之前的图像数据集中，我们都是使用PaddlePaddle自带的数据集，本章我们就来学习如何让PaddlePaddle训练我们自己的图片数据集。 爬取图像 在本章中，我们使用的是自己的图片数据集，所以我们需要弄一堆图像来制作训练的数据集。下面我们就编写一个爬虫程序，让其帮我们从百度图片中爬取相应类别的图片。 创建一个download_image.py文件用于编写爬取图片程序。首先导入所需的依赖包。 import re import uuid import requests import os import numpy import imghdr from PIL import Image 然后编写一个下载图片的函数，这个是程序核心代码。参数是下载图片的关键、保存的名字、下载图片的数量。关键字是百度搜索图片的关键。 # 获取百度图片下载图片 def download_ima...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584974968544.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584974968544.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化" href="https://yeyupiaoling.github.io/articles/1584974915236.html">
+            <link rel="next" title="《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类" href="https://yeyupiaoling.github.io/articles/1584975038292.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">爬取图像</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">创建图像列表</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">定义模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">定义数据读取</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">训练模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_6">预测图片</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_7">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584974968544.html">
+                    《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584974968544.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584974968205">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584974968544.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584974968544.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20200119.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<p>GitHub地址：<a href="https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note11" target="_blank">https://github.com/yeyupiaoling/LearnPaddle2/tree/master/note11</a></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>本章将介绍如何使用PaddlePaddle训练自己的图片数据集，在之前的图像数据集中，我们都是使用PaddlePaddle自带的数据集，本章我们就来学习如何让PaddlePaddle训练我们自己的图片数据集。</p>
+<h1 id="toc_h1_1">爬取图像</h1>
+<p>在本章中，我们使用的是自己的图片数据集，所以我们需要弄一堆图像来制作训练的数据集。下面我们就编写一个爬虫程序，让其帮我们从百度图片中爬取相应类别的图片。</p>
+<p>创建一个<code>download_image.py</code>文件用于编写爬取图片程序。首先导入所需的依赖包。</p>
+<pre><code class="language-python">import re
+import uuid
+import requests
+import os
+import numpy
+import imghdr
+from PIL import Image
+</code></pre>
+<p>然后编写一个下载图片的函数，这个是程序核心代码。参数是下载图片的关键、保存的名字、下载图片的数量。关键字是百度搜索图片的关键。</p>
+<pre><code class="language-python"># 获取百度图片下载图片
+def download_image(key_word, save_name, download_max):
+    download_sum = 0
+    str_gsm = '80'
+    # 把每个类别的图片存放在单独一个文件夹中
+    save_path = 'images' + '/' + save_name
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    while download_sum &lt; download_max:
+        # 下载次数超过指定值就停止下载
+        if download_sum &gt;= download_max:
+            break
+        str_pn = str(download_sum)
+        # 定义百度图片的路径
+        url = 'http://image.baidu.com/search/flip?tn=baiduimage&amp;ie=utf-8&amp;' \
+              'word=' + key_word + '&amp;pn=' + str_pn + '&amp;gsm=' + str_gsm + '&amp;ct=&amp;ic=0&amp;lm=-1&amp;width=0&amp;height=0'
+        print('正在下载 %s 的第 %d 张图片.....' % (key_word, download_sum))
+        try:
+            # 获取当前页面的源码
+            result = requests.get(url, timeout=30).text
+            # 获取当前页面的图片URL
+            img_urls = re.findall('"objURL":"(.*?)",', result, re.S)
+            if len(img_urls) &lt; 1:
+                break
+            # 把这些图片URL一个个下载
+            for img_url in img_urls:
+                # 获取图片内容
+                img = requests.get(img_url, timeout=30)
+                img_name = save_path + '/' + str(uuid.uuid1()) + '.jpg'
+                # 保存图片
+                with open(img_name, 'wb') as f:
+                    f.write(img.content)
+                download_sum += 1
+                if download_sum &gt;= download_max:
+                    break
+        except Exception as e:
+            print('【错误】当前图片无法下载，%s' % e)
+            download_sum += 1
+            continue
+    print('下载完成')
+</code></pre>
+<p>图片下载完成之后，需要删除一家损坏的图片，因为在下载的过程中，由于图片本身的问题或者下载过程造成的图片损坏，需要把这些已经损坏的图片上传。下面的函数就是删除所有损坏的图片，根据图像数据集的目录读取获取所有图片文件的路径，然后使用<code>imghdr</code>工具获取图片的类型是否为<code>png</code>或者<code>jpg</code>来判断图片文件是否完整，最后再删除根据图片的通道数据来删除灰度图片。</p>
+<pre><code class="language-python"># 删除不是JPEG或者PNG格式的图片
+def delete_error_image(father_path):
+    # 获取父级目录的所有文件以及文件夹
+    try:
+        image_dirs = os.listdir(father_path)
+        for image_dir in image_dirs:
+            image_dir = os.path.join(father_path, image_dir)
+            # 如果是文件夹就继续获取文件夹中的图片
+            if os.path.isdir(image_dir):
+                images = os.listdir(image_dir)
+                for image in images:
+                    image = os.path.join(image_dir, image)
+                    try:
+                        # 获取图片的类型
+                        image_type = imghdr.what(image)
+                        # 如果图片格式不是JPEG同时也不是PNG就删除图片
+                        if image_type is not 'jpeg' and image_type is not 'png':
+                            os.remove(image)
+                            print('已删除：%s' % image)
+                            continue
+                        # 删除灰度图
+                        img = numpy.array(Image.open(image))
+                        if len(img.shape) is 2:
+                            os.remove(image)
+                            print('已删除：%s' % image)
+                    except:
+                        os.remove(image)
+                        print('已删除：%s' % image)
+    except:
+        pass
+</code></pre>
+<p>最后在main入口中通过调用两个函数来完成下载图像数据集，使用中文进行百度搜索图片，使用英文是为了出现中文路径导致图片读取错误。</p>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 定义要下载的图片中文名称和英文名称，ps：英文名称主要是为了设置文件夹名
+    key_words = {'西瓜': 'watermelon', '哈密瓜': 'cantaloupe',
+                 '樱桃': 'cherry', '苹果': 'apple', '黄瓜': 'cucumber', '胡萝卜': 'carrot'}
+    # 每个类别下载一千个
+    max_sum = 500
+    for key_word in key_words:
+        save_name = key_words[key_word]
+        download_image(key_word, save_name, max_sum)
+
+    # 删除错误图片
+    delete_error_image('images/')
+</code></pre>
+<p>输出信息：</p>
+<pre><code>正在下载 哈密瓜 的第 0 张图片.....
+【错误】当前图片无法下载，HTTPConnectionPool(host='www.boyingsj.com', port=80): Read timed out.
+正在下载 哈密瓜 的第 10 张图片.....
+</code></pre>
+<p><strong>注意：</strong> 下载处理完成之后，还可能存在其他杂乱的图片，所以还需要我们手动删除这些不属于这个类别的图片，这才算完成图像数据集的制作。</p>
+<h1 id="toc_h1_2">创建图像列表</h1>
+<p>创建一个<code>create_data_list.py</code>文件，在这个程序中，我们只要把爬取保存图片的路径的文件夹路径传进去就可以了，生成固定格式的列表，格式为<code>图片的路径 &lt;Tab&gt; 图片类别的标签</code>：</p>
+<pre><code class="language-python">import json
+import os
+
+def create_data_list(data_root_path):
+    with open(data_root_path + "test.list", 'w') as f:
+        pass
+    with open(data_root_path + "train.list", 'w') as f:
+        pass
+    # 所有类别的信息
+    class_detail = []
+    # 获取所有类别
+    class_dirs = os.listdir(data_root_path)
+    # 类别标签
+    class_label = 0
+    # 获取总类别的名称
+    father_paths = data_root_path.split('/')
+    while True:
+        if father_paths[len(father_paths) - 1] == '':
+            del father_paths[len(father_paths) - 1]
+        else:
+            break
+    father_path = father_paths[len(father_paths) - 1]
+
+    all_class_images = 0
+    other_file = 0
+    # 读取每个类别
+    for class_dir in class_dirs:
+        if class_dir == 'test.list' or class_dir == "train.list" or class_dir == 'readme.json':
+            other_file += 1
+            continue
+        print('正在读取类别：%s' % class_dir)
+        # 每个类别的信息
+        class_detail_list = {}
+        test_sum = 0
+        trainer_sum = 0
+        # 统计每个类别有多少张图片
+        class_sum = 0
+        # 获取类别路径
+        path = data_root_path + "/" + class_dir
+        # 获取所有图片
+        img_paths = os.listdir(path)
+        for img_path in img_paths:
+            # 每张图片的路径
+            name_path = class_dir + '/' + img_path
+            # 如果不存在这个文件夹,就创建
+            if not os.path.exists(data_root_path):
+                os.makedirs(data_root_path)
+            # 每10张图片取一个做测试数据
+            if class_sum % 10 == 0:
+                test_sum += 1
+                with open(data_root_path + "test.list", 'a') as f:
+                    f.write(name_path + "\t%d" % class_label + "\n")
+            else:
+                trainer_sum += 1
+                with open(data_root_path + "train.list", 'a') as f:
+                    f.write(name_path + "\t%d" % class_label + "\n")
+            class_sum += 1
+            all_class_images += 1
+        # 说明的json文件的class_detail数据
+        class_detail_list['class_name'] = class_dir
+        class_detail_list['class_label'] = class_label
+        class_detail_list['class_test_images'] = test_sum
+        class_detail_list['class_trainer_images'] = trainer_sum
+        class_detail.append(class_detail_list)
+        class_label += 1
+    # 获取类别数量
+    all_class_sum = len(class_dirs) - other_file
+    # 说明的json文件信息
+    readjson = {}
+    readjson['all_class_name'] = father_path
+    readjson['all_class_sum'] = all_class_sum
+    readjson['all_class_images'] = all_class_images
+    readjson['class_detail'] = class_detail
+    jsons = json.dumps(readjson, sort_keys=True, indent=4, separators=(',', ': '))
+    with open(data_root_path + "readme.json", 'w') as f:
+        f.write(jsons)
+    print('图像列表已生成')
+</code></pre>
+<p>最后执行就可以生成图像的列表。</p>
+<pre><code class="language-python">if __name__ == '__main__':
+    # 把生产的数据列表都放在自己的总类别文件夹中
+    data_root_path = "images/"
+    create_data_list(data_root_path)
+</code></pre>
+<p>输出信息：</p>
+<pre><code>正在读取类别：apple
+正在读取类别：cantaloupe
+正在读取类别：carrot
+正在读取类别：cherry
+正在读取类别：cucumber
+正在读取类别：watermelon
+图像列表已生成
+</code></pre>
+<p>运行这个程序之后，会生成在data文件夹中生成一个单独的大类文件夹，比如我们这次是使用到蔬菜类，所以我生成一个<code>vegetables</code>文件夹，在这个文件夹下有3个文件：</p>
+<table>
+<thead>
+<tr><th align="center">文件名</th><th align="center">作用</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">trainer.list</td><td align="center">用于训练的图像列表</td></tr>
+<tr><td align="center">test.list</td><td align="center">用于测试的图像列表</td></tr>
+<tr><td align="center">readme.json</td><td align="center">该数据集的json格式的说明,方便以后使用</td></tr>
+</tbody>
+</table>
+<p><code>readme.json</code>文件的格式如下，可以很清楚看到整个数据的图像数量,总类别名称和类别数量，还有每个类对应的标签，类别的名字，该类别的测试数据和训练数据的数量：</p>
+<pre><code class="language-json">{
+    "all_class_images": 2200,
+    "all_class_name": "images",
+    "all_class_sum": 2,
+    "class_detail": [
+        {
+            "class_label": 1,
+            "class_name": "watermelon",
+            "class_test_images": 110,
+            "class_trainer_images": 990
+        },
+        {
+            "class_label": 2,
+            "class_name": "cantaloupe",
+            "class_test_images": 110,
+            "class_trainer_images": 990
+        }
+    ]
+}
+</code></pre>
+<h1 id="toc_h1_3">定义模型</h1>
+<p>创建一个<code>mobilenet_v1.py</code>文件，在本章我们使用的是MobileNet神经网络，MobileNet是Google针对手机等嵌入式设备提出的一种轻量级的深层神经网络，它的核心思想就是卷积核的巧妙分解，可以有效减少网络参数，从而达到减小训练时网络的模型。因为太大的模型模型文件是不利于移植到移动设备上的，比如我们把模型文件迁移到Android手机应用上，那么模型文件的大小就直接影响应用安装包的大小。以下就是使用PaddlePaddle定义的MobileNet神经网络：</p>
+<pre><code class="language-python">import paddle.fluid as fluid
+
+def conv_bn_layer(input, filter_size, num_filters, stride,
+                  padding, channels=None, num_groups=1, act='relu', use_cudnn=True):
+    conv = fluid.layers.conv2d(input=input,
+                               num_filters=num_filters,
+                               filter_size=filter_size,
+                               stride=stride,
+                               padding=padding,
+                               groups=num_groups,
+                               act=None,
+                               use_cudnn=use_cudnn,
+                               bias_attr=False)
+
+    return fluid.layers.batch_norm(input=conv, act=act)
+</code></pre>
+<pre><code class="language-python">def depthwise_separable(input, num_filters1, num_filters2, num_groups, stride, scale):
+    depthwise_conv = conv_bn_layer(input=input,
+                                   filter_size=3,
+                                   num_filters=int(num_filters1 * scale),
+                                   stride=stride,
+                                   padding=1,
+                                   num_groups=int(num_groups * scale),
+                                   use_cudnn=False)
+
+    pointwise_conv = conv_bn_layer(input=depthwise_conv,
+                                   filter_size=1,
+                                   num_filters=int(num_filters2 * scale),
+                                   stride=1,
+                                   padding=0)
+    return pointwise_conv
+</code></pre>
+<pre><code class="language-python">def net(input, class_dim, scale=1.0):
+    # conv1: 112x112
+    input = conv_bn_layer(input=input,
+                          filter_size=3,
+                          channels=3,
+                          num_filters=int(32 * scale),
+                          stride=2,
+                          padding=1)
+
+    # 56x56
+    input = depthwise_separable(input=input,
+                                num_filters1=32,
+                                num_filters2=64,
+                                num_groups=32,
+                                stride=1,
+                                scale=scale)
+
+    input = depthwise_separable(input=input,
+                                num_filters1=64,
+                                num_filters2=128,
+                                num_groups=64,
+                                stride=2,
+                                scale=scale)
+
+    # 28x28
+    input = depthwise_separable(input=input,
+                                num_filters1=128,
+                                num_filters2=128,
+                                num_groups=128,
+                                stride=1,
+                                scale=scale)
+
+    input = depthwise_separable(input=input,
+                                num_filters1=128,
+                                num_filters2=256,
+                                num_groups=128,
+                                stride=2,
+                                scale=scale)
+
+    # 14x14
+    input = depthwise_separable(input=input,
+                                num_filters1=256,
+                                num_filters2=256,
+                                num_groups=256,
+                                stride=1,
+                                scale=scale)
+
+    input = depthwise_separable(input=input,
+                                num_filters1=256,
+                                num_filters2=512,
+                                num_groups=256,
+                                stride=2,
+                                scale=scale)
+
+    # 14x14
+    for i in range(5):
+        input = depthwise_separable(input=input,
+                                    num_filters1=512,
+                                    num_filters2=512,
+                                    num_groups=512,
+                                    stride=1,
+                                    scale=scale)
+    # 7x7
+    input = depthwise_separable(input=input,
+                                num_filters1=512,
+                                num_filters2=1024,
+                                num_groups=512,
+                                stride=2,
+                                scale=scale)
+
+    input = depthwise_separable(input=input,
+                                num_filters1=1024,
+                                num_filters2=1024,
+                                num_groups=1024,
+                                stride=1,
+                                scale=scale)
+
+    feature = fluid.layers.pool2d(input=input,
+                                  pool_size=0,
+                                  pool_stride=1,
+                                  pool_type='avg',
+                                  global_pooling=True)
+
+    net = fluid.layers.fc(input=feature,
+                          size=class_dim,
+                          act='softmax')
+    return net
+</code></pre>
+<h1 id="toc_h1_4">定义数据读取</h1>
+<p>创建一个<code>reader.py</code>文件，这个程序就是用户训练和测试的使用读取数据的。训练的时候，通过这个程序从本地读取图片，然后通过一系列的预处理操作，最后转换成训练所需的Numpy数组。</p>
+<p>首先导入所需的包，其中<code>cpu_count</code>是获取当前计算机有多少个CPU，然后使用多线程读取数据。</p>
+<pre><code class="language-python">import os
+import random
+from multiprocessing import cpu_count
+import numpy as np
+import paddle
+from PIL import Image
+</code></pre>
+<p>首先定义一个<code>train_mapper()</code>函数，这个函数是根据传入进来的图片路径来对图片进行预处理，比如训练的时候需要统一图片的大小，同时也使用多种的数据增强的方式，如水平翻转、垂直翻转、角度翻转、随机裁剪，这些方式都可以让有限的图片数据集在训练的时候成倍的增加。最后因为PIL打开图片存储顺序为H(高度)，W(宽度)，C(通道)，PaddlePaddle要求数据顺序为CHW，所以需要转换顺序。最后返回的是处理后的图片数据和其对应的标签。</p>
+<pre><code class="language-python"># 训练图片的预处理
+def train_mapper(sample):
+    img_path, label, crop_size, resize_size = sample
+    try:
+        img = Image.open(img_path)
+        # 统一图片大小
+        img = img.resize((resize_size, resize_size), Image.ANTIALIAS)
+        # 随机水平翻转
+        r1 = random.random()
+        if r1 &gt; 0.5:
+            img = img.transpose(Image.FLIP_LEFT_RIGHT)
+        # 随机垂直翻转
+        r2 = random.random()
+        if r2 &gt; 0.5:
+            img = img.transpose(Image.FLIP_TOP_BOTTOM)
+        # 随机角度翻转
+        r3 = random.randint(-3, 3)
+        img = img.rotate(r3, expand=False)
+        # 随机裁剪
+        r4 = random.randint(0, int(resize_size - crop_size))
+        r5 = random.randint(0, int(resize_size - crop_size))
+        box = (r4, r5, r4 + crop_size, r5 + crop_size)
+        img = img.crop(box)
+        # 把图片转换成numpy值
+        img = np.array(img).astype(np.float32)
+        # 转换成CHW
+        img = img.transpose((2, 0, 1))
+        # 转换成BGR
+        img = img[(2, 1, 0), :, :] / 255.0
+        return img, int(label)
+    except:
+        print("%s 该图片错误，请删除该图片并重新创建图像数据列表" % img_path)
+</code></pre>
+<p>这个<code>train_reader()</code>函数是根据已经创建的图像列表解析得到每张图片的路径和其他对应的标签，然后使用<code>paddle.reader.xmap_readers()</code>把数据传递给上面定义的<code>train_mapper()</code>函数进行处理，最后得到一个训练所需的reader。</p>
+<pre><code class="language-python"># 获取训练的reader
+def train_reader(train_list_path, crop_size, resize_size):
+    father_path = os.path.dirname(train_list_path)
+
+    def reader():
+        with open(train_list_path, 'r') as f:
+            lines = f.readlines()
+            # 打乱图像列表
+            np.random.shuffle(lines)
+            # 开始获取每张图像和标签
+            for line in lines:
+                img, label = line.split('\t')
+                img = os.path.join(father_path, img)
+                yield img, label, crop_size, resize_size
+
+    return paddle.reader.xmap_readers(train_mapper, reader, cpu_count(), 102400)
+</code></pre>
+<p>这是一个测试数据的预处理函数<code>test_mapper()</code>，这个没有做太多处理，因为测试的数据不需要数据增强操作，只需统一图片大小和设置好图片的通过顺序和数据类型即可。</p>
+<pre><code class="language-python"># 测试图片的预处理
+def test_mapper(sample):
+    img, label, crop_size = sample
+    img = Image.open(img)
+    # 统一图像大小
+    img = img.resize((crop_size, crop_size), Image.ANTIALIAS)
+    # 转换成numpy值
+    img = np.array(img).astype(np.float32)
+    # 转换成CHW
+    img = img.transpose((2, 0, 1))
+    # 转换成BGR
+    img = img[(2, 1, 0), :, :] / 255.0
+    return img, int(label)
+</code></pre>
+<p>这个是测试的reader函数<code>test_reader()</code>，这个跟训练的reader函数定义一样。</p>
+<pre><code class="language-python"># 测试的图片reader
+def test_reader(test_list_path, crop_size):
+    father_path = os.path.dirname(test_list_path)
+
+    def reader():
+        with open(test_list_path, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                img, label = line.split('\t')
+                img = os.path.join(father_path, img)
+                yield img, label, crop_size
+
+    return paddle.reader.xmap_readers(test_mapper, reader, cpu_count(), 1024)
+</code></pre>
+<h1 id="toc_h1_5">训练模型</h1>
+<p>万事俱备，只等训练了。关于PaddlePaddle训练流程，我们已经非常熟悉了，那么我们就简单地过一遍。</p>
+<p>创建<code>train.py</code>文件，首先导入所需的包，其中包括我们定义的MobileNet模型和数据读取程序：</p>
+<pre><code class="language-python">import os
+import shutil
+import mobilenet_v1
+import paddle as paddle
+import reader
+import paddle.fluid as fluid
+</code></pre>
+<p>然后定义数据输入层，这次我们使用的是图片大小是224，这比之前使用的CIFAR数据集的32大小要大很多，所以训练其他会慢不少。至于<code>resize_size</code>是用于统一缩放到这个大小，然后再随机裁剪成<code>crop_size</code>大小，<code>crop_size</code>才是最终训练图片的大小。</p>
+<pre><code class="language-python">crop_size = 224
+resize_size = 250
+
+# 定义输入层
+image = fluid.layers.data(name='image', shape=[3, crop_size, crop_size], dtype='float32')
+label = fluid.layers.data(name='label', shape=[1], dtype='int64')
+</code></pre>
+<p>接着获取MobileNet网络的分类器，传入的第一个参数就是上面定义的输入层，第二个是分类的类别大小，比如我们这次爬取的图像类别数量是6个。</p>
+<pre><code class="language-python"># 获取分类器，因为这次只爬取了6个类别的图片，所以分类器的类别大小为6
+model = mobilenet_v1.net(image, 6)
+</code></pre>
+<p>再接着是获取损失函数和平均准确率函数，还有测试程序和优化方法，这个优化方法我加了正则，因为爬取的图片数量太少，在训练容易过拟合，所以加上正则一定程度上可以抑制过拟合。</p>
+<pre><code class="language-python"># 获取损失函数和准确率函数
+cost = fluid.layers.cross_entropy(input=model, label=label)
+avg_cost = fluid.layers.mean(cost)
+acc = fluid.layers.accuracy(input=model, label=label)
+
+# 获取训练和测试程序
+test_program = fluid.default_main_program().clone(for_test=True)
+
+# 定义优化方法
+optimizer = fluid.optimizer.AdamOptimizer(learning_rate=1e-3,
+                                          regularization=fluid.regularizer.L2DecayRegularizer(1e-4))
+opts = optimizer.minimize(avg_cost)
+</code></pre>
+<p>这里就是获取训练测试是所以想的数据读取reader，通过使用<code>paddle.batch()</code>函数可以把多条数据打包成一个批次，训练的时候是按照一个个批次训练的。</p>
+<pre><code class="language-python"># 获取自定义数据
+train_reader = paddle.batch(reader=reader.train_reader('images/train.list', crop_size, resize_size), batch_size=32)
+test_reader = paddle.batch(reader=reader.test_reader('images/test.list', crop_size), batch_size=32)
+</code></pre>
+<p>执行训练之前，还需要创建一个执行器，建议使用GPU进行训练，因为我们训练的图片比较大，所以使用CPU训练速度会相当的慢。</p>
+<pre><code class="language-python"># 定义一个使用GPU的执行器
+place = fluid.CUDAPlace(0)
+# place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+# 进行参数初始化
+exe.run(fluid.default_startup_program())
+
+# 定义输入数据维度
+feeder = fluid.DataFeeder(place=place, feed_list=[image, label])
+</code></pre>
+<p>最后终于可以执行训练了，这里跟在前些章节都几乎一样，就不重复介绍了。</p>
+<pre><code class="language-python"># 训练100次
+for pass_id in range(100):
+    # 进行训练
+    for batch_id, data in enumerate(train_reader()):
+        train_cost, train_acc = exe.run(program=fluid.default_main_program(),
+                                        feed=feeder.feed(data),
+                                        fetch_list=[avg_cost, acc])
+
+        # 每100个batch打印一次信息
+        if batch_id % 100 == 0:
+            print('Pass:%d, Batch:%d, Cost:%0.5f, Accuracy:%0.5f' %
+                  (pass_id, batch_id, train_cost[0], train_acc[0]))
+
+    # 进行测试
+    test_accs = []
+    test_costs = []
+    for batch_id, data in enumerate(test_reader()):
+        test_cost, test_acc = exe.run(program=test_program,
+                                      feed=feeder.feed(data),
+                                      fetch_list=[avg_cost, acc])
+        test_accs.append(test_acc[0])
+        test_costs.append(test_cost[0])
+    # 求测试结果的平均值
+    test_cost = (sum(test_costs) / len(test_costs))
+    test_acc = (sum(test_accs) / len(test_accs))
+    print('Test:%d, Cost:%0.5f, Accuracy:%0.5f' % (pass_id, test_cost, test_acc))
+</code></pre>
+<p>训练的过程中可以保存预测模型，用于之后的预测。笔者一般是每一个pass保存一次模型。</p>
+<pre><code class="language-python">    # 保存预测模型
+    save_path = 'infer_model/'
+    # 删除旧的模型文件
+    shutil.rmtree(save_path, ignore_errors=True)
+    # 创建保持模型文件目录
+    os.makedirs(save_path)
+    # 保存预测模型
+    fluid.io.save_inference_model(save_path, feeded_var_names=[image.name], target_vars=[model], executor=exe)
+</code></pre>
+<p>训练输出的信息：</p>
+<pre><code>Pass:0, Batch:0, Cost:1.84754, Accuracy:0.15625
+Test:0, Cost:4.66276, Accuracy:0.17857
+Pass:1, Batch:0, Cost:1.04008, Accuracy:0.59375
+Test:1, Cost:1.23828, Accuracy:0.54464
+Pass:2, Batch:0, Cost:1.04778, Accuracy:0.65625
+Test:2, Cost:0.99189, Accuracy:0.64286
+Pass:3, Batch:0, Cost:1.21555, Accuracy:0.65625
+Test:3, Cost:1.01552, Accuracy:0.57589
+Pass:4, Batch:0, Cost:0.64620, Accuracy:0.81250
+Test:4, Cost:1.19264, Accuracy:0.63393
+</code></pre>
+<h1 id="toc_h1_6">预测图片</h1>
+<p>经过上面训练后，得到了一个预测模型，下面我们就使用一个预测模型来预测一些图片。</p>
+<p>创建一个<code>infer.py</code>文件作为预测程序。首先导入所需的依赖包。</p>
+<pre><code class="language-python">import paddle.fluid as fluid
+from PIL import Image
+import numpy as np
+</code></pre>
+<p>创建一个执行器，这些不需要训练，所以可以使用CPU进行预测，速度不会太慢，当然，使用GPU的预测速度会更快一些。</p>
+<pre><code class="language-python"># 创建执行器
+place = fluid.CPUPlace()
+exe = fluid.Executor(place)
+exe.run(fluid.default_startup_program())
+</code></pre>
+<p>然后加载预测模型，获取预测程序和输入层的名字，还有网络的分类器。</p>
+<pre><code class="language-python"># 保存预测模型路径
+save_path = 'infer_model/'
+# 从模型中获取预测程序、输入数据名称列表、分类器
+[infer_program, feeded_var_names, target_var] = fluid.io.load_inference_model(dirname=save_path, executor=exe)
+</code></pre>
+<p>预测图片之前，还需要对图片进行预处理，处理的方式跟测试的时候处理的方式一样。</p>
+<pre><code class="language-python"># 预处理图片
+def load_image(file):
+    img = Image.open(file)
+    # 统一图像大小
+    img = img.resize((224, 224), Image.ANTIALIAS)
+    # 转换成numpy值
+    img = np.array(img).astype(np.float32)
+    # 转换成CHW
+    img = img.transpose((2, 0, 1))
+    # 转换成BGR
+    img = img[(2, 1, 0), :, :] / 255.0
+    img = np.expand_dims(img, axis=0)
+    return img
+</code></pre>
+<p>最后获取经过预处理的图片数据，再使用这些图像数据进行预测，得到分类结果。</p>
+<pre><code class="language-python"># 获取图片数据
+img = load_image('images/apple/0fdd5422-31e0-11e9-9cfd-3c970e769528.jpg')
+
+# 执行预测
+result = exe.run(program=infer_program,
+                 feed={feeded_var_names[0]: img},
+                 fetch_list=target_var)
+</code></pre>
+<p>我们可以通过解析分类的结果，获取概率最大类别标签。关于预测输出的<code>result</code>是数据，它是3维的，第一层是输出本身就是一个数组，第二层图片的数量，因为PaddlePaddle支持多张图片同时预测，最后一层就是每个类别的概率，这个概率的总和为1，概率最大的标签就是预测结果。</p>
+<pre><code class="language-python"># 显示图片并输出结果最大的label
+lab = np.argsort(result)[0][0][-1]
+
+names = ['苹果', '哈密瓜', '胡萝卜', '樱桃', '黄瓜', '西瓜']
+
+print('预测结果标签为：%d， 名称为：%s， 概率为：%f' % (lab, names[lab], result[0][0][lab]))
+</code></pre>
+<p>预测输出的结果：</p>
+<pre><code>预测结果标签为：0， 名称为：苹果， 概率为：0.948698
+</code></pre>
+<h1 id="toc_h1_7">参考资料</h1>
+<ol>
+<li><a href="https://yeyupiaoling.blog.csdn.net/article/details/79095265" target="_blank">https://yeyupiaoling.blog.csdn.net/article/details/79095265</a></li>
+<li><a href="https://yeyupiaoling.blog.csdn.net/article/details/79127017" target="_blank">https://yeyupiaoling.blog.csdn.net/article/details/79127017</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584974968544.html" target="_blank">https://yeyupiaoling.github.io/articles/1584974968544.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584974915236.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 《PaddlePaddle从入门到炼丹》十——VisualDL 训练可视化&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584975038292.html">
+                            <span>《PaddlePaddle从入门到炼丹》十二——自定义文本数据集分类&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="《PaddlePaddle从入门到炼丹》十一——自定义图像数据集识别"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584974968544.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584974968205"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584974968205",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584974968205",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584974968205', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

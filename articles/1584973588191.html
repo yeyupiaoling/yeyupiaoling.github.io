@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零</title><meta name="description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。 ncnn的GitHub地址：https://github.com/Tencent/ncnn 使用Ubuntu编译ncnn库 1、首先要下载和解压NDK。 wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip unzip android-ndk-r17b-linux-x86_64.zip 2、设置NDK环境变量，目录是NDK的解压目录。 export NDK_ROOT=&quot;/home/test/paddlepaddle/android-ndk-r17b&quot; 设置好之后，可以使用以下的命令查看配置情况。 root@test:/home/test/paddlepaddle# echo $NDK_ROOT /hom...."/><meta property="og:description" content="前言 在之前笔者有介绍过《在Android设备上使用PaddleMobile实现图像分类》，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。 ncnn的GitHub地址：https://github.com/Tencent/ncnn 使用Ubuntu编译ncnn库 1、首先要下载和解压NDK。 wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip unzip android-ndk-r17b-linux-x86_64.zip 2、设置NDK环境变量，目录是NDK的解压目录。 export NDK_ROOT=&quot;/home/test/paddlepaddle/android-ndk-r17b&quot; 设置好之后，可以使用以下的命令查看配置情况。 root@test:/home/test/paddlepaddle# echo $NDK_ROOT /hom...."/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1584973588191.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="在Android手机上使用腾讯的ncnn实现图像分类 - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1584973588191.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="在Android手机上使用MACE实现图像分类" href="https://yeyupiaoling.github.io/articles/1584973497621.html">
+            <link rel="next" title="在Ubuntu上安装CPU版本的Caffe" href="https://yeyupiaoling.github.io/articles/1584973667027.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">前言</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">使用Ubuntu编译ncnn库</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">转换预测模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">开发Android项目</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">参考资料</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1584973588191.html">
+                    在Android手机上使用腾讯的ncnn实现图像分类
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/Android">
+                        Android</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">
+                        人工智能</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1584973588191.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1584973588089">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1584973588191.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1584973588191.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://img.hacpai.com/bing/20190909.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">前言</h1>
+<p>在之前笔者有介绍过<a href="https://blog.csdn.net/qq_33200967/article/details/81066970" target="_blank">《在Android设备上使用PaddleMobile实现图像分类》</a>，使用的框架是百度开源的PaddleMobile。在本章中，笔者将会介绍使用腾讯的开源手机深度学习框架ncnn来实现在Android手机实现图像分类，这个框架开源时间比较长，相对稳定很多。</p>
+<p>ncnn的GitHub地址：<a href="https://github.com/Tencent/ncnn" target="_blank">https://github.com/Tencent/ncnn</a></p>
+<h1 id="toc_h1_1">使用Ubuntu编译ncnn库</h1>
+<p>1、首先要下载和解压NDK。</p>
+<pre><code>wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
+unzip android-ndk-r17b-linux-x86_64.zip
+</code></pre>
+<p>2、设置NDK环境变量，目录是NDK的解压目录。</p>
+<pre><code>export NDK_ROOT="/home/test/paddlepaddle/android-ndk-r17b"
+</code></pre>
+<p>设置好之后，可以使用以下的命令查看配置情况。</p>
+<pre><code>root@test:/home/test/paddlepaddle# echo $NDK_ROOT
+/home/test/paddlepaddle/android-ndk-r17b
+</code></pre>
+<p>3、安装cmake，需要安装较高版本的，笔者的cmake版本是3.11.2。</p>
+<p>下载cmake源码</p>
+<pre><code>wget https://cmake.org/files/v3.11/cmake-3.11.2.tar.gz
+</code></pre>
+<p>解压cmake源码</p>
+<pre><code>tar -zxvf cmake-3.11.2.tar.gz
+</code></pre>
+<p>进入到cmake源码根目录，并执行bootstrap。</p>
+<pre><code>cd cmake-3.11.2
+./bootstrap
+</code></pre>
+<p>最后执行以下两条命令开始安装cmake。</p>
+<pre><code>make
+make install
+</code></pre>
+<p>安装完成之后，可以使用cmake --version是否安装成功。</p>
+<pre><code>root@test:/home/test/paddlepaddle# cmake --version
+cmake version 3.11.2
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+</code></pre>
+<p>4、克隆ncnn源码。</p>
+<pre><code>git clone https://github.com/Tencent/ncnn.git
+</code></pre>
+<p>5、编译源码。</p>
+<pre><code class="language-python"># 进入到ncnn源码根目录下
+cd ncnn
+# 创建一个新的文件夹
+mkdir -p build-android-armv7
+# 进入到该文件夹中
+cd build-android-armv7
+# 执行编译命令
+cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
+    -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
+    -DANDROID_PLATFORM=android-14 ..
+# 这里笔者使用4个行程并行编译
+make -j4
+make install
+</code></pre>
+<p>6、编译完成，会在<code>build-android-armv7</code>目录下生成一个<code>install</code>目录，我们编译得到的文件都在该文件夹下：</p>
+<ul>
+<li><code>include</code> 调用ncnn所需的头文件，该文件夹会存放在Android项目的<code>src/main/cpp</code>目录下；</li>
+<li><code>lib</code> 编译得到的ncnn库<code>libncnn.a</code>，之后会存放在Android项目的<code>src/main/jniLibs/armeabi-v7a/libncnn.a</code></li>
+</ul>
+<h1 id="toc_h1_2">转换预测模型</h1>
+<p>1、克隆Caffe源码。</p>
+<pre><code>git clone https://github.com/BVLC/caffe.git
+</code></pre>
+<p>2、编译Caffe源码。</p>
+<pre><code class="language-python"># 切换到Caffe目录
+cd caffe
+# 在当前目录执行cmake
+cmake .
+# 使用4个线程编译
+make -j4
+make install
+</code></pre>
+<p>3、升级Caffe模型。</p>
+<pre><code class="language-python"># 把需要转换的模型复制到caffe/tools，并切入到该目录
+cd tools
+# 升级Caffe模型
+./upgrade_net_proto_text mobilenet_v2_deploy.prototxt mobilenet_v2_deploy_new.prototxt
+./upgrade_net_proto_binary mobilenet_v2.caffemodel mobilenet_v2_new.caffemodel
+</code></pre>
+<p>4、检查模型配置文件，因为只能一张一张图片预测，所以输入要设置为<code>dim: 1</code>。</p>
+<pre><code>name: "MOBILENET_V2"
+layer {
+  name: "input"
+  type: "Input"
+  top: "data"
+  input_param {
+    shape {
+      dim: 1
+      dim: 3
+      dim: 224
+      dim: 224
+    }
+  }
+}
+</code></pre>
+<p>5、切换到ncnn的根目录，就是我们上一部分克隆的ncnn源码。</p>
+<pre><code>cd ncnn/
+</code></pre>
+<p>6、在根目录下编译ncnn源码。</p>
+<pre><code>mkdir -p build
+cd build
+cmake ..
+make -j4
+make install
+</code></pre>
+<p>7、把新的Caffe模型转换成NCNN模型。</p>
+<pre><code class="language-python"># 经过上一步，会生产一个tools，我们进入到以下目录
+cd tools/caffe/
+# 把已经升级的网络定义文件和权重文件复制到当目录，并执行以下命令
+./caffe2ncnn mobilenet_v2_deploy_new.prototxt mobilenet_v2_new.caffemodel mobilenet_v2.param mobilenet_v2.bin
+</code></pre>
+<p>8、对象模型参数进行加密，这样就算别人反编译我们的apk也用不了我们的模型文件。把上一步获得的<code>mobilenet_v2.param</code>、<code>mobilenet_v2.bin</code>复制到该目录的上一个目录，也就是tools目录。</p>
+<pre><code class="language-python"># 切换到上一个目录
+cd ../
+# 执行命令之后会生成mobilenet_v2.param、mobilenet_v2.id.h、mobilenet_v2.mem.h
+./ncnn2mem mobilenet_v2.param mobilenet_v2.bin mobilenet_v2.id.h mobilenet_v2.mem.h
+</code></pre>
+<p>经过上面的步骤，得到的文件中，以下文件时需要的：</p>
+<ul>
+<li><code>mobilenet_v2.param.bin</code> 网络的模型参数；</li>
+<li><code>mobilenet_v2.bin</code> 网络的权重；</li>
+<li><code>mobilenet_v2.id.h</code> 在预测图片的时候使用到。</li>
+</ul>
+<h1 id="toc_h1_3">开发Android项目</h1>
+<ul>
+<li>我们在Android Studio上创建一个NCNN1的项目，别忘了选择C++支持。<br>
+<img src="https://s1.ax1x.com/2020/04/03/GaAk24.png" alt="这里写图片描述"></li>
+</ul>
+<p>其他的可以直接默认就可以了，在这里要注意选择C++11支持。<br>
+<img src="https://s1.ax1x.com/2020/04/03/GaANZt.png" alt="这里写图片描述"></p>
+<ul>
+<li>在<code>main</code>目录下创建<code>assets</code>目录，并复制以下目录到该目录：</li>
+<li><code>mobilenet_v2.param.bin</code> 上一步获取网络的模型参数；</li>
+<li><code>mobilenet_v2.bin</code> 上一步获取网络的权重；</li>
+<li><code>synset.txt</code> label对应的名称，下载地址：<a href="https://github.com/shicai/MobileNet-Caffe/blob/master/synset.txt。" target="_blank">https://github.com/shicai/MobileNet-Caffe/blob/master/synset.txt。</a></li>
+<li>在<code>cpp</code>目录下复制在<code>使用Ubuntu编译NCNN库</code>部分编译得到的<code>include</code>文件夹，包括里面的C++头文件。</li>
+<li>把<code>mobilenet_v2.id.h</code>复制到<code>cpp</code>目录下。</li>
+<li>在main目录下创建<code>jniLibs/armeabi-v7a/</code>目录，并把<code>使用Ubuntu编译NCNN库</code>部分编译得到的<code>libncnn.a</code>复制到该目录。</li>
+<li>在<code>cpp</code>目录下创建一个C++文件，并编写以下代码，这段代码是用于加载模型和预测图片的：</li>
+</ul>
+<pre><code class="language-cpp">#include &lt;android/bitmap.h&gt;
+#include &lt;android/log.h&gt;
+#include &lt;jni.h&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+// ncnn
+#include "include/net.h"
+#include "mobilenet_v2.id.h"
+#include &lt;sys/time.h&gt;
+#include &lt;unistd.h&gt;
+
+static ncnn::UnlockedPoolAllocator g_blob_pool_allocator;
+static ncnn::PoolAllocator g_workspace_pool_allocator;
+
+static ncnn::Mat ncnn_param;
+static ncnn::Mat ncnn_bin;
+static ncnn::Net ncnn_net;
+
+
+extern "C" {
+
+// public native boolean Init(byte[] param, byte[] bin, byte[] words);
+JNIEXPORT jboolean JNICALL
+Java_com_example_ncnn1_NcnnJni_Init(JNIEnv *env, jobject thiz, jbyteArray param, jbyteArray bin) {
+    // init param
+    {
+        int len = env-&gt;GetArrayLength(param);
+        ncnn_param.create(len, (size_t) 1u);
+        env-&gt;GetByteArrayRegion(param, 0, len, (jbyte *) ncnn_param);
+        int ret = ncnn_net.load_param((const unsigned char *) ncnn_param);
+        __android_log_print(ANDROID_LOG_DEBUG, "NcnnJni", "load_param %d %d", ret, len);
+    }
+
+    // init bin
+    {
+        int len = env-&gt;GetArrayLength(bin);
+        ncnn_bin.create(len, (size_t) 1u);
+        env-&gt;GetByteArrayRegion(bin, 0, len, (jbyte *) ncnn_bin);
+        int ret = ncnn_net.load_model((const unsigned char *) ncnn_bin);
+        __android_log_print(ANDROID_LOG_DEBUG, "NcnnJni", "load_model %d %d", ret, len);
+    }
+
+    ncnn::Option opt;
+    opt.lightmode = true;
+    opt.num_threads = 4;
+    opt.blob_allocator = &amp;g_blob_pool_allocator;
+    opt.workspace_allocator = &amp;g_workspace_pool_allocator;
+
+    ncnn::set_default_option(opt);
+
+    return JNI_TRUE;
+}
+
+// public native String Detect(Bitmap bitmap);
+JNIEXPORT jfloatArray JNICALL Java_com_example_ncnn1_NcnnJni_Detect(JNIEnv* env, jobject thiz, jobject bitmap)
+{
+    // ncnn from bitmap
+    ncnn::Mat in;
+    {
+        AndroidBitmapInfo info;
+        AndroidBitmap_getInfo(env, bitmap, &amp;info);
+        int width = info.width;
+        int height = info.height;
+        if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
+            return NULL;
+
+        void* indata;
+        AndroidBitmap_lockPixels(env, bitmap, &amp;indata);
+        // 把像素转换成data，并指定通道顺序
+        in = ncnn::Mat::from_pixels((const unsigned char*)indata, ncnn::Mat::PIXEL_RGBA2BGR, width, height);
+
+        AndroidBitmap_unlockPixels(env, bitmap);
+    }
+
+    // ncnn_net
+    std::vector&lt;float&gt; cls_scores;
+    {
+        // 减去均值和乘上比例
+        const float mean_vals[3] = {103.94f, 116.78f, 123.68f};
+        const float scale[3] = {0.017f, 0.017f, 0.017f};
+
+        in.substract_mean_normalize(mean_vals, scale);
+
+        ncnn::Extractor ex = ncnn_net.create_extractor();
+        // 如果时不加密是使用ex.input("data", in);
+        ex.input(mobilenet_v2_param_id::BLOB_data, in);
+
+        ncnn::Mat out;
+        // 如果时不加密是使用ex.extract("prob", out);
+        ex.extract(mobilenet_v2_param_id::BLOB_prob, out);
+
+        int output_size = out.w;
+        jfloat *output[output_size];
+        for (int j = 0; j &lt; out.w; j++) {
+            output[j] = &amp;out[j];
+        }
+
+        jfloatArray jOutputData = env-&gt;NewFloatArray(output_size);
+        if (jOutputData == nullptr) return nullptr;
+        env-&gt;SetFloatArrayRegion(jOutputData, 0, output_size,
+                                 reinterpret_cast&lt;const jfloat *&gt;(*output));  // copy
+
+        return jOutputData;
+    }
+}
+}
+</code></pre>
+<ul>
+<li>在项目包<code>com.example.ncnn1</code>下，修改<code>MainActivity.java</code>中的代码，修改如下：</li>
+</ul>
+<pre><code class="language-java">package com.example.ncnn1;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+public class MainActivity extends Activity {
+    private static final String TAG = MainActivity.class.getName();
+    private static final int USE_PHOTO = 1001;
+    private String camera_image_path;
+    private ImageView show_image;
+    private TextView result_text;
+    private boolean load_result = false;
+    private int[] ddims = {1, 3, 224, 224};
+    private int model_index = 1;
+    private List&lt;String&gt; resultLabel = new ArrayList&lt;&gt;();
+    private NcnnJni squeezencnn = new NcnnJni();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        try {
+            initSqueezeNcnn();
+        } catch (IOException e) {
+            Log.e("MainActivity", "initSqueezeNcnn error");
+        }
+
+        init_view();
+        readCacheLabelFromLocalFile();
+    }
+
+    private void initSqueezeNcnn() throws IOException {
+        byte[] param = null;
+        byte[] bin = null;
+
+        {
+            InputStream assetsInputStream = getAssets().open("mobilenet_v2.param.bin");
+            int available = assetsInputStream.available();
+            param = new byte[available];
+            int byteCode = assetsInputStream.read(param);
+            assetsInputStream.close();
+        }
+        {
+            InputStream assetsInputStream = getAssets().open("mobilenet_v2.bin");
+            int available = assetsInputStream.available();
+            bin = new byte[available];
+            int byteCode = assetsInputStream.read(bin);
+            assetsInputStream.close();
+        }
+
+        load_result = squeezencnn.Init(param, bin);
+        Log.d("load model", "result:" + load_result);
+    }
+
+    // initialize view
+    private void init_view() {
+        request_permissions();
+        show_image = (ImageView) findViewById(R.id.show_image);
+        result_text = (TextView) findViewById(R.id.result_text);
+        result_text.setMovementMethod(ScrollingMovementMethod.getInstance());
+        Button use_photo = (Button) findViewById(R.id.use_photo);
+
+        // use photo click
+        use_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!load_result) {
+                    Toast.makeText(MainActivity.this, "never load model", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                PhotoUtil.use_photo(MainActivity.this, USE_PHOTO);
+            }
+        });
+    }
+
+	// load label's name
+    private void readCacheLabelFromLocalFile() {
+        try {
+            AssetManager assetManager = getApplicationContext().getAssets();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("synset.txt")));
+            String readLine = null;
+            while ((readLine = reader.readLine()) != null) {
+                resultLabel.add(readLine);
+            }
+            reader.close();
+        } catch (Exception e) {
+            Log.e("labelCache", "error " + e);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String image_path;
+        RequestOptions options = new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case USE_PHOTO:
+                    if (data == null) {
+                        Log.w(TAG, "user photo data is null");
+                        return;
+                    }
+                    Uri image_uri = data.getData();
+                    Glide.with(MainActivity.this).load(image_uri).apply(options).into(show_image);
+                    // get image path from uri
+                    image_path = PhotoUtil.get_path_from_URI(MainActivity.this, image_uri);
+                    // predict image
+                    predict_image(image_path);
+                    break;
+            }
+        }
+    }
+
+    //  predict image
+    private void predict_image(String image_path) {
+        // picture to float array
+        Bitmap bmp = PhotoUtil.getScaleBitmap(image_path);
+        Bitmap rgba = bmp.copy(Bitmap.Config.ARGB_8888, true);
+
+        // resize to 227x227
+        Bitmap input_bmp = Bitmap.createScaledBitmap(rgba, ddims[2], ddims[3], false);
+        try {
+            // Data format conversion takes too long
+            // Log.d("inputData", Arrays.toString(inputData));
+            long start = System.currentTimeMillis();
+            // get predict result
+            float[] result = squeezencnn.Detect(input_bmp);
+            long end = System.currentTimeMillis();
+            Log.d(TAG, "origin predict result:" + Arrays.toString(result));
+            long time = end - start;
+            Log.d("result length", String.valueOf(result.length));
+            // show predict result and time
+            int r = get_max_result(result);
+            String show_text = "result：" + r + "\nname：" + resultLabel.get(r) + "\nprobability：" + result[r] + "\ntime：" + time + "ms";
+            result_text.setText(show_text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // get max probability label
+    private int get_max_result(float[] result) {
+        float probability = result[0];
+        int r = 0;
+        for (int i = 0; i &lt; result.length; i++) {
+            if (probability &lt; result[i]) {
+                probability = result[i];
+                r = i;
+            }
+        }
+        return r;
+    }
+
+    // request permissions
+    private void request_permissions() {
+
+        List&lt;String&gt; permissionList = new ArrayList&lt;&gt;();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.CAMERA);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        // if list is not empty will request permissions
+        if (!permissionList.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length &gt; 0) {
+                    for (int i = 0; i &lt; grantResults.length; i++) {
+
+                        int grantResult = grantResults[i];
+                        if (grantResult == PackageManager.PERMISSION_DENIED) {
+                            String s = permissions[i];
+                            Toast.makeText(this, s + " permission was denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>同样在项目的包<code>com.example.ncnn1</code>下，创建一个<code>NcnnJni.java</code>类，用于提供JNI接口，代码如下：</li>
+</ul>
+<pre><code class="language-java">package com.example.ncnn1;
+
+import android.graphics.Bitmap;
+
+public class NcnnJni
+{
+    public native boolean Init(byte[] param, byte[] bin);
+
+    public native float[] Detect(Bitmap bitmap);
+
+    static {
+        System.loadLibrary("ncnn_jni");
+    }
+}
+</code></pre>
+<ul>
+<li>还是在项目的包<code>com.example.ncnn1</code>下，创建一个<code>PhotoUtil.java</code>类，这个是图片的工具类，代码如下：</li>
+</ul>
+<pre><code class="language-java">package com.example.ncnn1;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
+
+import java.nio.FloatBuffer;
+
+public class PhotoUtil {
+    // get picture in photo
+    public static void use_photo(Activity activity, int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    // get photo from Uri
+    public static String get_path_from_URI(Context context, Uri uri) {
+        String result;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor == null) {
+            result = uri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
+
+    // compress picture
+    public static Bitmap getScaleBitmap(String filePath) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, opt);
+
+        int bmpWidth = opt.outWidth;
+        int bmpHeight = opt.outHeight;
+
+        int maxSize = 500;
+
+        // compress picture with inSampleSize
+        opt.inSampleSize = 1;
+        while (true) {
+            if (bmpWidth / opt.inSampleSize &lt; maxSize || bmpHeight / opt.inSampleSize &lt; maxSize) {
+                break;
+            }
+            opt.inSampleSize *= 2;
+        }
+        opt.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, opt);
+    }
+}
+</code></pre>
+<ul>
+<li>修改启动页面的布局，修改如下：</li>
+</ul>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"&gt;
+
+    &lt;LinearLayout
+        android:id="@+id/btn_ll"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"&gt;
+
+        &lt;Button
+            android:id="@+id/use_photo"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="相册" /&gt;
+
+    &lt;/LinearLayout&gt;
+
+    &lt;TextView
+        android:layout_above="@id/btn_ll"
+        android:id="@+id/result_text"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:hint="预测结果会在这里显示"
+        android:layout_height="100dp" /&gt;
+
+    &lt;ImageView
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/result_text"
+        android:id="@+id/show_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /&gt;
+
+&lt;/RelativeLayout&gt;
+</code></pre>
+<ul>
+<li>修改APP目录下的<code>CMakeLists.txt</code>文件，修改如下：</li>
+</ul>
+<pre><code># For more information about using CMake with Android Studio, read the
+# documentation: https://d.android.com/studio/projects/add-native-code.html
+
+# Sets the minimum version of CMake required to build the native library.
+
+cmake_minimum_required(VERSION 3.4.1)
+
+# Creates and names a library, sets it as either STATIC
+# or SHARED, and provides the relative paths to its source code.
+# You can define multiple libraries, and CMake builds them for you.
+# Gradle automatically packages shared libraries with your APK.
+
+set(ncnn_lib ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a/libncnn.a)
+add_library (ncnn_lib STATIC IMPORTED)
+set_target_properties(ncnn_lib PROPERTIES IMPORTED_LOCATION ${ncnn_lib})
+
+
+add_library( # Sets the name of the library.
+             ncnn_jni
+
+             # Sets the library as a shared library.
+             SHARED
+
+             # Provides a relative path to your source file(s).
+             src/main/cpp/ncnn_jni.cpp )
+
+# Searches for a specified prebuilt library and stores the path as a
+# variable. Because CMake includes system libraries in the search path by
+# default, you only need to specify the name of the public NDK library
+# you want to add. CMake verifies that the library exists before
+# completing its build.
+
+find_library( # Sets the name of the path variable.
+              log-lib
+
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              log )
+
+# Specifies libraries CMake should link to your target library. You
+# can link multiple libraries, such as libraries you define in this
+# build script, prebuilt third-party libraries, or system libraries.
+
+target_link_libraries( # Specifies the target library.
+                       ncnn_jni
+                       ncnn_lib
+                       jnigraphics
+
+                       # Links the target library to the log library
+                       # included in the NDK.
+                       ${log-lib} )
+</code></pre>
+<ul>
+<li>修改APP目录下的<code>build.gradle</code>文件，修改如下：</li>
+</ul>
+<pre><code>apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.ncnn1"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11 -fopenmp"
+                abiFilters "armeabi-v7a"
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["src/main/jniLibs"]
+            jni.srcDirs = ['src/cpp']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.github.bumptech.glide:glide:4.3.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+</code></pre>
+<ul>
+<li>最后别忘了在配置文件中添加权限。</li>
+</ul>
+<pre><code>&lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/&gt;
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/&gt;
+</code></pre>
+<p>最后的效果图如下：<br>
+<img src="https://s1.ax1x.com/2020/03/31/GMKK6f.png" alt="在这里插入图片描述"></p>
+<p><strong>代码传送门：</strong> 上面已经几乎包括所有的代码了，为了读者方便直接使用，可以在<a href="https://download.csdn.net/download/qq_33200967/10647900" target="_blank">这里下载</a>项目源代码。</p>
+<h1 id="toc_h1_4">参考资料</h1>
+<ol>
+<li><a href="https://github.com/BVLC/caffe" target="_blank">https://github.com/BVLC/caffe</a></li>
+<li><a href="https://github.com/Tencent/ncnn/wiki/how-to-use-ncnn-with-alexnet" target="_blank">https://github.com/Tencent/ncnn/wiki/how-to-use-ncnn-with-alexnet</a></li>
+<li><a href="https://github.com/Tencent/ncnn/wiki/how-to-build" target="_blank">https://github.com/Tencent/ncnn/wiki/how-to-build</a></li>
+<li><a href="https://github.com/Tencent/ncnn/tree/master/examples/squeezencnn" target="_blank">https://github.com/Tencent/ncnn/tree/master/examples/squeezencnn</a></li>
+</ol>
+                <div>
+                    <hr>
+
+标题：在Android手机上使用腾讯的ncnn实现图像分类<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1584973588191.html" target="_blank">https://yeyupiaoling.github.io/articles/1584973588191.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1584973497621.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 在Android手机上使用MACE实现图像分类&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1584973667027.html">
+                            <span>在Ubuntu上安装CPU版本的Caffe&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="在Android手机上使用腾讯的ncnn实现图像分类"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1584973588191.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1584973588089"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1584973588089",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1584973588089",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1584973588089', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->

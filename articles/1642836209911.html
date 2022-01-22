@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="theme-color" content="#3b3e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"/><title>PPASR中文语音识别（入门级） - 夜雨飘零</title><meta name="description" content="PPASR基于PaddlePaddle2实现的端到端自动语音识别，本项目最大的特点简单，在保证准确率不低的情况下，项目尽量做得浅显易懂，能够让每个想入门语音识别的开发者都能够轻松上手。PPASR只使用卷积神经网络，无其他特殊网络结构，模型简单易懂，且是端到端的，不需要音频对齐，因为本项目使用了CTC Loss作为损失函数。在传统的语音识别的模型中，我们对语音模型进行训练之前，往往都要将文本与语音进行严格的对齐操作。在传统的语音识别的模型中，我们对语音模型进行训练之前，往往都要将文本与语音进行严格的对齐操作，这种对齐非常浪费时间，而且对齐之后，模型预测出的label只是局部分类的结果，而无法给出整个序列的输出结果，往往要对预测出的label做一些后处理才可以得到我们最终想要的结果。基于这种情况，就出现了CTC（Connectionist temporal classification），使用CTC Loss就不需要进行音频对齐，直接输入是一句完整的语音数据，输出的是整个序列结果，这种情况OCR也是同样的情况。"/><meta property="og:description" content="PPASR基于PaddlePaddle2实现的端到端自动语音识别，本项目最大的特点简单，在保证准确率不低的情况下，项目尽量做得浅显易懂，能够让每个想入门语音识别的开发者都能够轻松上手。PPASR只使用卷积神经网络，无其他特殊网络结构，模型简单易懂，且是端到端的，不需要音频对齐，因为本项目使用了CTC Loss作为损失函数。在传统的语音识别的模型中，我们对语音模型进行训练之前，往往都要将文本与语音进行严格的对齐操作。在传统的语音识别的模型中，我们对语音模型进行训练之前，往往都要将文本与语音进行严格的对齐操作，这种对齐非常浪费时间，而且对齐之后，模型预测出的label只是局部分类的结果，而无法给出整个序列的输出结果，往往要对预测出的label做一些后处理才可以得到我们最终想要的结果。基于这种情况，就出现了CTC（Connectionist temporal classification），使用CTC Loss就不需要进行音频对齐，直接输入是一句完整的语音数据，输出的是整个序列结果，这种情况OCR也是同样的情况。"/>    <meta name="keywords" content="夜雨飘零,PaddlePaddle,Pytorch,yeyupiaoling"/><link rel="dns-prefetch" href="https://yeyupiaoling.github.io"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://yeyupiaoling.github.io"><link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="apple-touch-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><link rel="shortcut icon" type="image/x-icon" href="https://s1.ax1x.com/2020/03/28/GFfl6J.png"><meta name="copyright" content="B3log"/><meta http-equiv="Window-target" content="_top"/><meta property="og:locale" content="zh_CN"/><meta property="og:title" content="PPASR中文语音识别（入门级） - 夜雨飘零"/><meta property="og:site_name" content="夜雨飘零"/><meta property="og:url"      content="https://yeyupiaoling.github.io/articles/1642836209911.html?"/><meta property="og:image" content="https://s1.ax1x.com/2020/03/28/GFfl6J.png"/><link rel="search" type="application/opensearchdescription+xml" title="PPASR中文语音识别（入门级） - 夜雨飘零" href="/opensearch.xml"><link href="https://yeyupiaoling.github.io/rss.xml" title="RSS" type="application/rss+xml" rel="alternate"/><link rel="manifest" href="https://yeyupiaoling.github.io/manifest.json">        <link rel="canonical" href="https://yeyupiaoling.github.io/articles/1642836209911.html">        <link rel="stylesheet"
+              href="https://yeyupiaoling.github.io/skins/yilia/css/base.css?1642833606409"/>
+            <link rel="prev" title="基于TNN在Android手机上实现图像分类" href="https://yeyupiaoling.github.io/articles/1642836165072.html">
+            <link rel="next" title="基于PaddlePaddle2.0验证码端到端的识别" href="https://yeyupiaoling.github.io/articles/1642836291979.html">
+    <!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 百度搜索 -->
+<meta name="baidu-site-verification" content="hUGUF8EtyO" />
+
+<!-- 百度搜索推送 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/vditor@3.8.4/dist/js/icons/ant.js" async="" id="vditorIconScript"></script></head>
+<body>
+<div class="side fn__flex-column">
+    <div class="overlay">
+        <a onclick="$('.side .toc').show()" href="javascript:void(0)" class="toc-btn">目录</a>
+    </div>
+    <header class="content fn__flex-1">
+        <a href="https://yeyupiaoling.github.io">
+            <img class="avatar" src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100" title="" alt=""/>
+        </a>
+        <hgroup>
+            <h1>
+                <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+            </h1>
+        </hgroup>
+        <p class="subtitle">
+            记录精彩的程序人生
+        </p>
+        <nav>
+            <ul>
+                    <li>
+                        <a href="http://localhost:8080/tags/Pytorch" target="_blank">Pytorch系列教程</a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/tags/PaddlePaddle" target="_blank">PaddlePaddle系列教程</a>
+                    </li>
+                <li>
+                    <a href="https://yeyupiaoling.github.io/tags.html">标签墙</a>
+                    &nbsp; &nbsp;
+                    <a href="https://yeyupiaoling.github.io/archives.html">存档</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <footer>
+            <div class="vditor-reset">寒江孤影,江湖故人,<br/>相逢何必曾相识.
+
+<!-- 公告栏可使用 HTML、JavaScript，比如可以在此加入第三方统计 js -->
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?323b22cab8431af3867539dfaf5f12f1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</div>
+    </footer>
+        <div class="toc">
+            <a onclick="$('.side .toc').hide();" href="javascript:void(0)" class="close">X</a>
+<ul class="article__toc">
+        <li class="toc__h1">
+            <a href="#toc_h1_0">PPASR语音识别（入门级）</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_1">在线运行</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_2">安装环境</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_3">数据准备</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_4">训练模型</a>
+        </li>
+        <li class="toc__h1">
+            <a href="#toc_h1_5">评估和预测</a>
+        </li>
+        <li class="toc__h2">
+            <a href="#toc_h2_6">模型下载</a>
+        </li>
+</ul>        </div>
+</div>
+<main>
+    <article class="post">
+        <header class="fn__flex">
+            <h2 class="fn__flex-1">
+                <a rel="bookmark" href="https://yeyupiaoling.github.io/articles/1642836209911.html">
+                    PPASR中文语音识别（入门级）
+                </a>
+            </h2>
+            <time><span class="icon-date"></span> 2022-01-22</time>
+        </header>
+        <div class="article__footer fn__flex">
+            <span class="icon-tag fn__flex-center"></span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <div class="tags fn__flex-1 fn__flex-center">
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E8%AF%AD%E9%9F%B3">
+                        语音</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB">
+                        语音识别</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/PaddlePaddle">
+                        PaddlePaddle</a>
+                    <a class="tag" rel="tag" href="https://yeyupiaoling.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">
+                        深度学习</a>
+            </div>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+                <a href="https://yeyupiaoling.github.io/articles/1642836209911.html#b3logsolocomments"
+                   class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+                   aria-label="评论">
+                    <span data-uvstatcmt="1642836209911">0</span>
+                    <span class="icon-chat"></span>
+                </a>
+            <a class="vditor-tooltipped__n vditor-tooltipped link fn__flex-center"
+               href="https://yeyupiaoling.github.io/articles/1642836209911.html"
+               aria-label="浏览">
+                <span data-uvstaturl="https://yeyupiaoling.github.io/articles/1642836209911.html">0</span>
+                <span class="icon-views"></span>
+            </a>
+            <a rel="nofollow" href="https://yeyupiaoling.github.io/authors/1641912711535" class="fn__flex-center">
+                <img class="avatar" title="yeyupiaoling" alt="yeyupiaoling"
+                     src="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100"/>
+            </a>
+        </div>
+
+        <section class="abstract vditor-reset">
+            <p><img src="https://b3logfile.com/bing/20211013.jpg?imageView2/1/w/960/h/540/interlace/1/q/100" alt=""></p>
+<h1 id="toc_h1_0">PPASR语音识别（入门级）</h1>
+<p>本项目将分三个阶段分支，分别是入门级、进阶级和应用级分支，当前为入门级，随着级别的提升，识别准确率也随之提升，也更适合实际项目使用，敬请关注！</p>
+<p>PPASR基于PaddlePaddle2实现的端到端自动语音识别，本项目最大的特点简单，在保证准确率不低的情况下，项目尽量做得浅显易懂，能够让每个想入门语音识别的开发者都能够轻松上手。PPASR只使用卷积神经网络，无其他特殊网络结构，模型简单易懂，且是端到端的，不需要音频对齐，因为本项目使用了CTC Loss作为损失函数。在传统的语音识别的模型中，我们对语音模型进行训练之前，往往都要将文本与语音进行严格的对齐操作。在传统的语音识别的模型中，我们对语音模型进行训练之前，往往都要将文本与语音进行严格的对齐操作，这种对齐非常浪费时间，而且对齐之后，模型预测出的label只是局部分类的结果，而无法给出整个序列的输出结果，往往要对预测出的label做一些后处理才可以得到我们最终想要的结果。基于这种情况，就出现了CTC（Connectionist temporal classification），使用CTC Loss就不需要进行音频对齐，直接输入是一句完整的语音数据，输出的是整个序列结果，这种情况OCR也是同样的情况。</p>
+<p>在数据预处理方便，本项目主要是将音频执行梅尔频率倒谱系数(MFCCs)处理，然后在使用出来的数据进行训练，在读取音频时，使用<code>librosa.load(wav_path, sr=16000)</code>函数读取音频文件，再使用<code>librosa.feature.mfcc()</code>执行数据处理。MFCC全称梅尔频率倒谱系数。梅尔频率是基于人耳听觉特性提出来的， 它与Hz频率成非线性对应关系。梅尔频率倒谱系数(MFCC)则是利用它们之间的这种关系，计算得到的Hz频谱特征，主要计算方式分别是预加重，分帧，加窗，快速傅里叶变换(FFT)，梅尔滤波器组，离散余弦变换(DCT)，最后提取语音数据特征和降低运算维度。本项目使用的全部音频的采样率都是16000Hz，如果其他采样率的音频都需要转为16000Hz，<code>create_manifest.py</code>程序也提供了把音频转为16000Hz。</p>
+<p><strong>本项目Github地址：<a href="https://github.com/yeyupiaoling/PPASR/tree/%E5%85%A5%E9%97%A8%E7%BA%A7" target="_blank">https://github.com/yeyupiaoling/PPASR/tree/入门级</a></strong></p>
+<h1 id="toc_h1_1">在线运行</h1>
+<p>项目地址：<a href="https://aistudio.baidu.com/aistudio/projectdetail/1597936" target="_blank">https://aistudio.baidu.com/aistudio/projectdetail/1597936</a></p>
+<h1 id="toc_h1_2">安装环境</h1>
+<ul>
+<li>本项目可以在Windows或者Ubuntu都可以运行，安装环境很简单，只需要执行以下一条命令即可。</li>
+</ul>
+<pre><code class="language-shell">pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+</code></pre>
+<h1 id="toc_h1_3">数据准备</h1>
+<ol>
+<li>在<code>data</code>目录下是公开数据集的下载和制作训练数据列表和字典的，本项目提供了下载公开的中文普通话语音数据集，分别是Aishell，Free ST-Chinese-Mandarin-Corpus，THCHS-30 这三个数据集，总大小超过28G。下载这三个数据只需要执行一下代码即可，当然如果想快速训练，也可以只下载其中一个。</li>
+</ol>
+<pre><code class="language-shell">python3 data/aishell.py
+python3 data/free_st_chinese_mandarin_corpus.py
+python3 data/thchs_30.py
+</code></pre>
+<ul>
+<li>如果开发者有自己的数据集，可以使用自己的数据集进行训练，当然也可以跟上面下载的数据集一起训练。自定义的语音数据需要符合一下格式：
+<ol>
+<li>语音文件需要放在<code>dataset/audio/</code>目录下，例如我们有个<code>wav</code>的文件夹，里面都是语音文件，我们就把这个文件存放在<code>dataset/audio/</code>。</li>
+<li>然后把数据列表文件存在<code>dataset/annotation/</code>目录下，程序会遍历这个文件下的所有数据列表文件。例如这个文件下存放一个<code>my_audio.txt</code>，它的内容格式如下，路径和Label间的分隔符为'\t'，即一个Tab。每一行数据包含该语音文件的相对路径和该语音文件对应的中文文本，要注意的是该中文文本只能包含纯中文，不能包含标点符号、阿拉伯数字以及英文字母。</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-shell">dataset/audio/wav/0175/H0175A0171.wav 我需要把空调温度调到二十度
+dataset/audio/wav/0175/H0175A0377.wav 出彩中国人
+dataset/audio/wav/0175/H0175A0470.wav 据克而瑞研究中心监测
+dataset/audio/wav/0175/H0175A0180.wav 把温度加大到十八
+</code></pre>
+<ul>
+<li>执行下面的命令，创建数据列表，以及建立词表，也就是数据字典，把所有出现的字符都存放子在<code>zh_vocab.json</code>文件中，生成的文件都存放在<code>dataset/</code>目录下。最最最重要的是还计算了数据集的均值和标准值，计算得到的均值和标准值需要更新在训练参数<code>data_mean</code>和<code>data_std</code>中，之后的评估和预测同样需要用到。有几个参数需要注意，参数<code>is_change_frame_rate</code>是指定在生成数据集的时候，是否要把音频的采样率转换为16000Hz，最好是使用默认值。参数<code>min_duration</code>和<code>max_duration</code>限制音频的长度，特别是有些音频太长，会导致显存不足，训练直接崩掉。</li>
+</ul>
+<pre><code class="language-shell">python3 create_manifest.py
+</code></pre>
+<p>我们来说说这些文件和数据的具体作用，创建数据列表是为了在训练是读取数据，读取数据程序通过读取图像列表的每一行都能得到音频的文件路径、音频长度以及这句话的内容。通过路径读取音频文件并进行预处理，音频长度用于统计数据总长度，文字内容就是输入数据的标签，在训练是还需要数据字典把这些文字内容转置整型的数字，比如<code>是</code>这个字在数据字典中排在第5，那么它的标签就是4，标签从0开始。至于最后生成的均值和标准值，因为我们的数据在训练之前还需要归一化，因为每个数据的分布不一样，不同图像，最大最小值都是确定的，所以我们要统计一批数据来计算均值和标准值，之后的数据的归一化都使用这个均值和标准值。</p>
+<p>输出结果如下：</p>
+<pre><code class="language-shell">-----------  Configuration Arguments -----------
+annotation_path: dataset/annotation/
+count_threshold: 0
+is_change_frame_rate: True
+manifest_path: dataset/manifest.train
+manifest_prefix: dataset/
+max_duration: 20
+min_duration: 0
+vocab_path: dataset/zh_vocab.json
+------------------------------------------------
+开始生成数据列表...
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████| 141600/141600 [00:17&lt;00:00, 8321.22it/s]
+完成生成数据列表，数据集总长度为178.97小时！
+开始生成数据字典...
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████| 140184/140184 [00:01&lt;00:00, 89476.12it/s]
+数据字典生成完成！
+开始抽取1%的数据计算均值和标准值...
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████| 140184/140184 [01:33&lt;00:00, 1507.15it/s]
+【特别重要】：均值：-3.146301, 标准值：52.998405, 请根据这两个值修改训练参数！
+</code></pre>
+<p>可以用使用<code>python create_manifest.py --help</code>命令查看各个参数的说明和默认值。</p>
+<pre><code class="language-shell">usage: create_manifest.py [-h] [----annotation_path ANNOTATION_PATH]
+                          [--manifest_prefix MANIFEST_PREFIX]
+                          [--is_change_frame_rate IS_CHANGE_FRAME_RATE]
+                          [--min_duration MIN_DURATION]
+                          [--max_duration MAX_DURATION]
+                          [--count_threshold COUNT_THRESHOLD]
+                          [--vocab_path VOCAB_PATH]
+                          [--manifest_path MANIFEST_PATH]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  ----annotation_path ANNOTATION_PATH
+                        标注文件的路径 默认: dataset/annotation/.
+  --manifest_prefix MANIFEST_PREFIX
+                        训练数据清单，包括音频路径和标注信息 默认: dataset/.
+  --is_change_frame_rate IS_CHANGE_FRAME_RATE
+                        是否统一改变音频为16000Hz，这会消耗大量的时间 默认: True.
+  --min_duration MIN_DURATION
+                        过滤最短的音频长度 默认: 0.
+  --max_duration MAX_DURATION
+                        过滤最长的音频长度，当为-1的时候不限制长度 默认: 20.
+  --count_threshold COUNT_THRESHOLD
+                        字符计数的截断阈值，0为不做限制 默认: 0.
+  --vocab_path VOCAB_PATH
+                        生成的数据字典文件 默认: dataset/zh_vocab.json.
+  --manifest_path MANIFEST_PATH
+                        数据列表路径 默认: dataset/manifest.train.
+</code></pre>
+<h1 id="toc_h1_4">训练模型</h1>
+<ul>
+<li>执行训练脚本，开始训练语音识别模型， 每训练一轮保存一次模型，模型保存在<code>models/</code>目录下，测试使用的是贪心解码路径解码方法。本项目支持多卡训练，在没有指定<code>CUDA_VISIBLE_DEVICES</code>时，会使用全部的GPU进行执行训练，也可以指定某几个GPU训练，如<code>CUDA_VISIBLE_DEVICES=0,1</code>指定使用第1张和第2张显卡训练。除了参数<code>data_mean</code>和<code>data_std</code>需要根据计算的结果修改，其他的参数一般不需要改动，参数<code>num_workers</code>可以更加CPU的核数修改，这个参数是指定使用多少个线程读取数据。参数<code>pretrained_model</code>是指定预训练模型所在的文件夹，如果使用训练模型，必须使用跟预训练配套的数据字典，原因是，其一，数据字典的大小指定了模型的输出大小，如果使用了其他更大的数据字典，预训练模型就无法完全加载。其二，数值字典定义了文字的ID，不同的数据字典文字的ID可能不一样，这样预训练模型的作用就不是那么大了。</li>
+</ul>
+<pre><code class="language-shell">CUDA_VISIBLE_DEVICES=0,1 python3 train.py
+</code></pre>
+<p>训练输出结果如下：</p>
+<pre><code class="language-shell">-----------  Configuration Arguments -----------
+batch_size: 32
+data_mean: -3.146301
+data_std: 52.998405
+dataset_vocab: dataset/zh_vocab.json
+learning_rate: 0.001
+num_epoch: 200
+num_workers: 8
+pretrained_model: None
+save_model: models/
+test_manifest: dataset/manifest.test
+train_manifest: dataset/manifest.train
+------------------------------------------------
+I0303 16:55:39.645823 16572 nccl_context.cc:189] init nccl context nranks: 2 local rank: 0 gpu id: 0 ring id: 0
+I0303 16:55:39.645821 16573 nccl_context.cc:189] init nccl context nranks: 2 local rank: 1 gpu id: 1 ring id: 0
+W0303 16:55:39.905000 16572 device_context.cc:362] Please NOTE: device: 0, GPU Compute Capability: 7.5, Driver API Version: 11.0, Runtime API Version: 10.2
+W0303 16:55:39.905090 16573 device_context.cc:362] Please NOTE: device: 1, GPU Compute Capability: 7.5, Driver API Version: 11.0, Runtime API Version: 10.2
+W0303 16:55:39.907197 16572 device_context.cc:372] device: 0, cuDNN Version: 7.6.
+W0303 16:55:39.907199 16573 device_context.cc:372] device: 1, cuDNN Version: 7.6.
+input_size的第三个参数是变长的，这里为了能查看输出的大小变化，指定了一个值！
+---------------------------------------------------------------------------
+ Layer (type)       Input Shape          Output Shape         Param #  
+===========================================================================
+   Conv1D-1       [[32, 128, 500]]      [32, 500, 324]       3,073,000   
+   Sigmoid-1      [[32, 250, 324]]      [32, 250, 324]           0     
+     GLU-1        [[32, 500, 324]]      [32, 250, 324]           0     
+   Dropout-1      [[32, 250, 324]]      [32, 250, 324]           0     
+  ConvBlock-1     [[32, 128, 500]]      [32, 250, 324]           0     
+   Conv1D-2       [[32, 250, 288]]      [32, 500, 282]        876,000  
+   Sigmoid-2      [[32, 250, 282]]      [32, 250, 282]           0     
+     GLU-2        [[32, 500, 282]]      [32, 250, 282]           0     
+   Dropout-2      [[32, 250, 282]]      [32, 250, 282]           0     
+  ConvBlock-2     [[32, 250, 288]]      [32, 250, 282]           0     
+   Conv1D-3       [[32, 250, 282]]     [32, 2000, 251]      16,004,000   
+   Sigmoid-3     [[32, 1000, 251]]     [32, 1000, 251]           0     
+     GLU-3       [[32, 2000, 251]]     [32, 1000, 251]           0     
+   Dropout-3     [[32, 1000, 251]]     [32, 1000, 251]           0     
+  ConvBlock-3     [[32, 250, 282]]     [32, 1000, 251]           0     
+   Conv1D-4      [[32, 1000, 251]]     [32, 2000, 251]       2,004,000   
+   Sigmoid-4     [[32, 1000, 251]]     [32, 1000, 251]           0     
+     GLU-4       [[32, 2000, 251]]     [32, 1000, 251]           0     
+   Dropout-4     [[32, 1000, 251]]     [32, 1000, 251]           0     
+  ConvBlock-4    [[32, 1000, 251]]     [32, 1000, 251]           0     
+   Conv1D-5      [[32, 1000, 251]]     [32, 4323, 251]       4,331,646   
+===========================================================================
+Total params: 26,288,646
+Trainable params: 26,288,646
+Non-trainable params: 0
+---------------------------------------------------------------------------
+Input size (MB): 7.81
+Forward/backward pass size (MB): 1222.19
+Params size (MB): 100.28
+Estimated Total Size (MB): 1330.28
+---------------------------------------------------------------------------
+Epoch 0: ExponentialDecay set learning rate to 0.001.
+Epoch 0: ExponentialDecay set learning rate to 0.001.
+[2021-03-03 16:56:01.754491] Train epoch 0, batch 0, loss: 269.343811
+[2021-03-03 16:58:08.436214] Train epoch 0, batch 100, loss: 7.195621
+[2021-03-03 16:59:54.781490] Train epoch 0, batch 200, loss: 6.914866
+[2021-03-03 17:01:34.841955] Train epoch 0, batch 300, loss: 6.824973
+[2021-03-03 17:03:09.492905] Train epoch 0, batch 400, loss: 6.905243
+</code></pre>
+<p>可以用使用<code>python train.py --help</code>命令查看各个参数的说明和默认值。</p>
+<pre><code class="language-shell">usage: train.py [-h] [--batch_size BATCH_SIZE] [--num_workers NUM_WORKERS]
+                [--num_epoch NUM_EPOCH] [--learning_rate LEARNING_RATE]
+                [--data_mean DATA_MEAN] [--data_std DATA_STD]
+                [--train_manifest TRAIN_MANIFEST]
+                [--test_manifest TEST_MANIFEST]
+                [--dataset_vocab DATASET_VOCAB] [--save_model SAVE_MODEL]
+                [--pretrained_model PRETRAINED_MODEL]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --batch_size BATCH_SIZE
+                        训练的批量大小 默认: 32.
+  --num_workers NUM_WORKERS
+                        读取数据的线程数量 默认: 8.
+  --num_epoch NUM_EPOCH
+                        训练的轮数 默认: 200.
+  --learning_rate LEARNING_RATE
+                        初始学习率的大小 默认: 0.001.
+  --data_mean DATA_MEAN
+                        数据集的均值 默认: -3.146301.
+  --data_std DATA_STD   数据集的标准值 默认: 52.998405.
+  --train_manifest TRAIN_MANIFEST
+                        训练数据的数据列表路径 默认: dataset/manifest.train.
+  --test_manifest TEST_MANIFEST
+                        测试数据的数据列表路径 默认: dataset/manifest.test.
+  --dataset_vocab DATASET_VOCAB
+                        数据字典的路径 默认: dataset/zh_vocab.json.
+  --save_model SAVE_MODEL
+                        模型保存的路径 默认: models/.
+  --pretrained_model PRETRAINED_MODEL
+                        预训练模型的路径，当为None则不使用预训练模型 默认: None.
+</code></pre>
+<ul>
+<li>在训练过程中，程序会使用VisualDL记录训练结果，可以通过以下的命令启动VisualDL。</li>
+</ul>
+<pre><code class="language-shell">visualdl --logdir=log --host 0.0.0.0
+</code></pre>
+<ul>
+<li>然后再浏览器上访问<code>http://localhost:8040</code>可以查看结果显示，如下。</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/f2dcfc5e4d3168614126914a97acdc42.png" alt="Train"></p>
+<h1 id="toc_h1_5">评估和预测</h1>
+<p>在评估和预测中，对结果解码的贪心策略解码方法，贪心策略是在每一步选择概率最大的输出值，这样就可以得到最终解码的输出序列。然而，CTC网络的输出序列只对应了搜索空间的一条路径，一个最终标签可对应搜索空间的N条路径，所以概率最大的路径并不等于最终标签的概率最大，即不是最优解。但贪心策略是最简单易懂且快速地一种方法。在语音识别上使用最多的解码方法还有定向搜索策略，这种策略准确率更高，同时也相对复杂，解码速度也相对慢很多。</p>
+<ul>
+<li>我们可以使用这个脚本对模型进行评估，通过字符错误率来评价模型的性能。目前只支持贪心策略解码方法。在评估中音频预处理的<code>mean</code>和<code>std</code>需要跟训练时一样，但这里不需要开发者手动指定，因为这两个参数在训练的时候就已经保持在模型中，这时只需从模型中读取这两个参数的值就可以。参数<code>model_path</code>指定模型所在的文件夹的路径。</li>
+</ul>
+<pre><code class="language-shell">python3 eval.py --model_path=models/step_final/
+</code></pre>
+<p>可以用使用<code>python eval.py --help</code>命令查看各个参数的说明和默认值。</p>
+<pre><code class="language-shell">usage: eval.py [-h] [--batch_size BATCH_SIZE] [--num_workers NUM_WORKERS]
+               [--test_manifest TEST_MANIFEST] [--dataset_vocab DATASET_VOCAB]
+               [--model_path MODEL_PATH]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --batch_size BATCH_SIZE
+                        训练的批量大小 默认: 32.
+  --num_workers NUM_WORKERS
+                        读取数据的线程数量 默认: 8.
+  --test_manifest TEST_MANIFEST
+                        测试数据的数据列表路径 默认: dataset/manifest.test.
+  --dataset_vocab DATASET_VOCAB
+                        数据字典的路径 默认: dataset/zh_vocab.json.
+  --model_path MODEL_PATH
+                        模型的路径 默认: models/step_final/.
+</code></pre>
+<ul>
+<li>我们可以使用这个脚本使用模型进行预测，通过传递音频文件的路径进行识别。在预测中音频预处理的<code>mean</code>和<code>std</code>需要跟训练时一样，但这里不需要开发者手动指定，因为这两个参数在训练的时候就已经保持在模型中，这时只需从模型中读取这两个参数的值就可以。参数<code>model_path</code>指定模型所在的文件夹的路径，参数<code>wav_path</code>指定需要预测音频文件的路径。</li>
+</ul>
+<pre><code class="language-shell">python3 infer.py --audio_path=./dataset/test.wav
+</code></pre>
+<p>可以用使用<code>python infer.py --help</code>命令查看各个参数的说明和默认值。</p>
+<pre><code class="language-shell">usage: infer.py [-h] [--audio_path AUDIO_PATH] [--dataset_vocab DATASET_VOCAB]
+                [--model_path MODEL_PATH]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --audio_path AUDIO_PATH
+                        用于识别的音频路径 默认: dataset/test.wav.
+  --dataset_vocab DATASET_VOCAB
+                        数据字典的路径 默认: dataset/zh_vocab.json.
+  --model_path MODEL_PATH
+                        模型的路径 默认: models/step_final/.
+</code></pre>
+<h2 id="toc_h2_6">模型下载</h2>
+<table>
+<thead>
+<tr><th align="center">数据集</th><th align="center">字错率</th><th align="center">下载地址</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">AISHELL</td><td align="center">0.151082</td><td align="center"><a href="https://download.csdn.net/download/qq_33200967/15780478" target="_blank">点击下载</a></td></tr>
+<tr><td align="center">free_st_chinese_mandarin_corpus</td><td align="center">0.214240</td><td align="center"><a href="https://download.csdn.net/download/qq_33200967/15833119" target="_blank">点击下载</a></td></tr>
+<tr><td align="center">thchs30</td><td align="center">0.081742</td><td align="center"><a href="https://download.csdn.net/download/qq_33200967/16740564" target="_blank">点击下载</a></td></tr>
+</tbody>
+</table>
+                <div>
+                    <hr>
+
+标题：PPASR中文语音识别（入门级）<br>
+作者：<a href="https://yeyupiaoling.github.io" target="_blank">yeyupiaoling</a><br>
+地址：<a href="https://yeyupiaoling.github.io/articles/1642836209911.html" target="_blank">https://yeyupiaoling.github.io/articles/1642836209911.html</a><br>
+
+<!-- 签名档内可使用 HTML、JavaScript -->
+<br>
+                </div>
+
+                <aside class="fn__flex">
+                        <a class="fn__flex-1 fn__flex-inline" rel="prev" href="https://yeyupiaoling.github.io/articles/1642836165072.html">
+                            <strong>&lt;</strong>
+                            <span>&nbsp; 基于TNN在Android手机上实现图像分类&nbsp;&nbsp;&nbsp;</span>
+                        </a>
+                        <a class="fn__flex-inline" rel="next" href="https://yeyupiaoling.github.io/articles/1642836291979.html">
+                            <span>基于PaddlePaddle2.0验证码端到端的识别&nbsp; </span>
+                            <strong>&gt;</strong>
+                        </a>
+                </aside>
+        </section>
+
+        <footer class="fn-clear share">
+            <div class="fn-right">
+<div class="article__share"
+     data-title="PPASR中文语音识别（入门级）"
+     data-blogtitle="夜雨飘零"
+     data-url="https://yeyupiaoling.github.io/articles/1642836209911.html"
+     data-avatar="https://b3logfile.com/avatar/1584446294285_1585209594823.png?imageView2/1/w/128/h/128/interlace/0/q/100">
+    <span class="item" data-type="qqz">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M22.824 13.989l-8.348 6.287s3.351 0.522 8.404 0.461l-0.23-1.040 7.2-6.549c0.132-0.12 0.183-0.312 0.129-0.487s-0.203-0.299-0.377-0.314l-9.492-0.856-3.708-9.213c-0.068-0.169-0.226-0.279-0.401-0.279s-0.333 0.11-0.401 0.279l-3.708 9.213-9.492 0.856c-0.174 0.015-0.323 0.139-0.377 0.314s-0.004 0.366 0.129 0.487l7.2 6.549-2.158 9.742c-0.040 0.178 0.026 0.365 0.168 0.474 0.142 0.107 0.331 0.115 0.481 0.021l8.158-5.165 8.158 5.165c0.070 0.045 0.147 0.066 0.225 0.066 0.090 0 0.18-0.029 0.256-0.086 0.142-0.109 0.208-0.295 0.168-0.474l-1.707-7.704c0.732-0.386 1.538-1.040 1.538-1.040s-3.195 1.638-14.664 0.838l8.312-6.325s-0.327-0.534-10.744-0.914c-0.697-0.026 8.493-1.83 15.281-0.305z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="wechat">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M9.062 9.203c0-0.859-0.562-1.422-1.422-1.422-0.844 0-1.703 0.562-1.703 1.422 0 0.844 0.859 1.406 1.703 1.406 0.859 0 1.422-0.562 1.422-1.406zM20.672 17.125c0-0.562-0.562-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.859 0 1.422-0.562 1.422-1.141zM16.984 9.203c0-0.859-0.562-1.422-1.406-1.422-0.859 0-1.703 0.562-1.703 1.422 0 0.844 0.844 1.406 1.703 1.406 0.844 0 1.406-0.562 1.406-1.406zM26.906 17.125c0-0.562-0.578-1.125-1.422-1.125-0.562 0-1.125 0.562-1.125 1.125 0 0.578 0.562 1.141 1.125 1.141 0.844 0 1.422-0.562 1.422-1.141zM22.75 10.922c-0.359-0.047-0.719-0.063-1.094-0.063-5.375 0-9.625 4.016-9.625 8.953 0 0.828 0.125 1.625 0.359 2.375-0.359 0.031-0.703 0.047-1.063 0.047-1.422 0-2.547-0.281-3.969-0.562l-3.953 1.984 1.125-3.406c-2.828-1.984-4.531-4.547-4.531-7.656 0-5.391 5.094-9.625 11.328-9.625 5.563 0 10.453 3.391 11.422 7.953zM32 19.687c0 2.547-1.688 4.813-3.969 6.516l0.859 2.828-3.109-1.703c-1.141 0.281-2.281 0.578-3.406 0.578-5.391 0-9.625-3.688-9.625-8.219s4.234-8.219 9.625-8.219c5.094 0 9.625 3.688 9.625 8.219z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="weibo">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M13.444 27.064c-5.3 0.525-9.875-1.875-10.219-5.35-0.344-3.481 3.675-6.719 8.969-7.244 5.3-0.525 9.875 1.875 10.212 5.35 0.35 3.481-3.669 6.725-8.963 7.244zM24.038 15.521c-0.45-0.137-0.762-0.225-0.525-0.819 0.512-1.287 0.563-2.394 0.006-3.188-1.038-1.481-3.881-1.406-7.137-0.037 0 0-1.025 0.444-0.762-0.363 0.5-1.613 0.425-2.956-0.356-3.737-1.769-1.769-6.469 0.069-10.5 4.1-3.013 3.006-4.763 6.212-4.763 8.981 0 5.287 6.787 8.506 13.425 8.506 8.7 0 14.494-5.056 14.494-9.069 0-2.431-2.044-3.806-3.881-4.375z"></path>
+            <path d="M29.819 5.833c-2.1-2.331-5.2-3.219-8.063-2.612v0c-0.663 0.144-1.081 0.794-0.938 1.45 0.144 0.662 0.788 1.081 1.45 0.938 2.038-0.431 4.238 0.2 5.731 1.856s1.9 3.913 1.256 5.888v0c-0.206 0.644 0.144 1.331 0.788 1.544 0.644 0.206 1.331-0.144 1.544-0.787v-0.006c0.9-2.762 0.331-5.938-1.769-8.269z"></path>
+            <path d="M26.588 8.752c-1.025-1.138-2.538-1.569-3.925-1.269-0.569 0.119-0.931 0.688-0.813 1.256 0.125 0.569 0.688 0.931 1.25 0.806v0c0.681-0.144 1.419 0.069 1.919 0.619 0.5 0.556 0.637 1.313 0.419 1.975v0c-0.175 0.55 0.125 1.15 0.681 1.331 0.556 0.175 1.15-0.125 1.331-0.681 0.438-1.356 0.163-2.906-0.863-4.037z"></path>
+            <path d="M13.738 20.771c-0.188 0.319-0.594 0.469-0.912 0.337-0.319-0.125-0.412-0.488-0.231-0.794 0.188-0.306 0.581-0.456 0.894-0.337 0.313 0.113 0.425 0.469 0.25 0.794zM12.044 22.933c-0.512 0.819-1.613 1.175-2.438 0.8-0.813-0.369-1.056-1.319-0.544-2.119 0.506-0.794 1.569-1.15 2.388-0.806 0.831 0.356 1.1 1.3 0.594 2.125zM13.969 17.146c-2.519-0.656-5.369 0.6-6.463 2.819-1.119 2.262-0.037 4.781 2.506 5.606 2.638 0.85 5.75-0.456 6.831-2.894 1.069-2.394-0.262-4.85-2.875-5.531z"></path>
+        </svg>
+    </span>
+    <span class="item" data-type="twitter">
+        <svg viewBox="0 0 32 32" width="100%" height="100%">
+            <path d="M32.003 6.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
+        </svg>
+    </span>
+    <span class="item__qr"></span>
+</div>            </div>
+        </footer>
+            <div id="relevantArticles" class="abstract"></div>
+            <div id="randomArticles" class="abstract"></div>
+        <br>
+    </article>
+        <div style="padding: 30px 60px 30px 50px;" id="gitalk-container"></div>
+        <div id="b3logsolocomments"></div>
+        <div id="vcomment" style="padding: 30px 60px 30px 50px;" data-name="yeyupiaoling"
+             data-postId="1642836209911"></div>
+
+<footer class="footer">
+    <div class="fn-clear">
+        浏览数：<span data-uvstaturl="https://yeyupiaoling.github.io">0</span>
+        &nbsp;
+        文章总数：120
+        <br>
+        &copy; 2022
+        <a href="https://yeyupiaoling.github.io">夜雨飘零</a>
+        <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17019586号</a>
+    </div>
+    <span onclick="Util.goTop()" class="icon-goup"></span>
+</footer>
+<script>
+  var Label = {
+    speech: true,
+    servePath: "https://yeyupiaoling.github.io",
+    staticServePath: "https://yeyupiaoling.github.io",
+    luteAvailable: false,
+    hljsStyle: 'github',
+    langLabel: "zh_CN",
+    version: "4.3.1",
+    staticSite: true,
+    showCodeBlockLn: false,
+    articleId: "1642836209911",
+  }
+</script>
+<script src="https://yeyupiaoling.github.io/skins/yilia/js/common.min.js?1642833606409"></script>
+
+
+<script type="text/javascript">
+    Util.addScript('https://yeyupiaoling.github.io/js/page.min.js?1642833606409', 'soloPageScript')
+    var page = new Page({
+        "commentContentCannotEmptyLabel": "评论不能为空",
+        "oId": "1642836209911",
+        "blogHost": "https://yeyupiaoling.github.io",
+        "randomArticles1Label": "随机阅读：",
+        "externalRelevantArticles1Label": "站外相关阅读："
+    });
+    $(document).ready(function () {
+        page.load();
+        page.tips.externalRelevantArticlesDisplayCount = "0";
+            page.loadRandomArticles();
+            page.loadRelevantArticles('1642836209911', '<h4>相关阅读：</h4>');
+        page.share()
+    });
+</script>
+</main>
+</body>
+</html>
+
+<!-- Generated by Latke (https://github.com/88250/latke) in 4ms, 2022/01/22 16:08:29 -->
